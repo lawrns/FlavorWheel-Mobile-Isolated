@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Design Token CSS Variables */
+:root {
+  /* Colors */
+  --primary-green: #4A704A;
+  --background-cream: #FAF7F2;
+  --text-black: #000000;
+  --text-gray: #6B7280;
+  --card-white: #FFFFFF;
+  --card-beige: #F5F1E8;
+  --border-light: #E5E7EB;
+  --button-black: #000000;
+  --button-green: #4A704A;
+
+  /* Spacing */
+  --padding-card: 16px;
+  --padding-section: 24px;
+  --gap-items: 16px;
+  --gap-small: 8px;
+  --icon-size: 24px;
+
+  /* Border Radius */
+  --border-radius-card: 8px;
+  --border-radius-button: 9999px;
+
+  /* Typography */
+  --font-family: 'Inter', sans-serif;
+}
+
+/* Mobile-first optimizations */
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-family);
+  line-height: 1.5;
+}
+
+/* Safe area support for mobile devices */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Touch target optimization */
+button, a, [role="button"] {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Disable text selection on interactive elements */
+button, input, textarea {
+  -webkit-user-select: text;
+}
+
+/* Improve tap targets on mobile */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Loading states */
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Error states */
+.error {
+  border-color: #ef4444;
+  background-color: #fef2f2;
+}
