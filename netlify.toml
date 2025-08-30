@@ -4,6 +4,7 @@
 
 [build.environment]
   NODE_VERSION = "18"
+  NEXT_PUBLIC_SITE_URL = "https://flavorwheel-mobile.netlify.app"
 
 # Headers for better performance and security
 [[headers]]
@@ -20,28 +21,8 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
-# Redirect rules for SPA
+# SPA fallback for client-side routing
 [[redirects]]
-  from = "/api/*"
-  to = "/404.html"
-  status = 404
-
-# Environment variables
-[build.environment]
-  NEXT_PUBLIC_SITE_URL = "https://flavorwheel-mobile.netlify.app"
-
-# Build settings
-[build.processing]
-  skip_processing = false
-[build.processing.css]
-  bundle = true
-  minify = true
-[build.processing.js]
-  bundle = true
-  minify = true
-[build.processing.html]
-  pretty_urls = true
-
-# Plugins
-[[plugins]]
-  package = "netlify-plugin-submit-sitemap"
+  from = "/*"
+  to = "/index.html"
+  status = 200
