@@ -5,6 +5,22 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export function transformFlavorDataToNode(data: any) {
+  // Transform flavor data for sunburst visualization
+  if (!data || !data.children) {
+    return { name: 'No Data', children: [] }
+  }
+
+  return {
+    name: data.name || 'Flavors',
+    children: data.children.map((category: any) => ({
+      name: category.name,
+      children: category.children || [],
+      color: category.color
+    }))
+  }
+}
+
 // Mock data for isolated build
 export const mockTastingData = {
   categories: [

@@ -3,6 +3,9 @@ import type React from 'react'
 import { Inter } from 'next/font/google'
 import { ErrorBoundary } from '@/components/error-boundary'
 import { MobileNavigation } from '@/components/ui/mobile-navigation'
+import { AuthProvider } from '@/components/auth-provider'
+import { SupabaseProvider } from '@/components/providers/supabase-provider'
+import { RealtimeProvider } from '@/components/providers/realtime-provider'
 
 export const metadata = {
   title: 'Flavatix - Discover the Art of Spirits Tasting',
@@ -30,10 +33,16 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <ErrorBoundary>
-          {children}
-          <MobileNavigation
-            activeScreen="home"
-          />
+          <SupabaseProvider>
+            <RealtimeProvider>
+              <AuthProvider>
+                {children}
+                <MobileNavigation
+                  activeScreen="home"
+                />
+              </AuthProvider>
+            </RealtimeProvider>
+          </SupabaseProvider>
         </ErrorBoundary>
       </body>
     </html>
