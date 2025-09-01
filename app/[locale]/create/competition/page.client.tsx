@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Slider } from '@/components/ui/slider'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import ProductTypeSelect from '@/components/ProductTypeSelect'
 import {
   Plus, Minus, Camera, Upload, ChevronDown, X, Sparkles,
@@ -337,51 +338,52 @@ export default function CreateCompetitionPage() {
   }
   return (
     <div className="min-h-screen bg-[#FAF7F0]">
-      {/* Enhanced Header with Auto-save */}
+      {/* Header */}
       <header className="sticky top-0 z-10 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-[#E6E1D9]">
         <div className="px-3 sm:px-4 py-4 flex items-center justify-between">
           <button
             onClick={() => router.back()}
             className="h-10 w-10 inline-flex items-center justify-center rounded-md hover:bg-[#f9fafb] transition-colors"
-            aria-label="Back to Create Tasting"
+            aria-label="Back"
+            data-testid="btn_back"
           >
             <ArrowLeft className="h-5 w-5" />
           </button>
 
           <div className="text-center">
-            <h1 className="text-3xl font-bold leading-9 tracking-tight"
+            <h1 className="text-2xl font-bold"
                 style={{ fontFamily: "'Playfair Display', serif" }}>
               Create Competition
             </h1>
             <p className="text-sm text-[#5A5A56]">Structured competition with scoring and ranking</p>
           </div>
 
-          <div className="text-xs text-[#737373]" data-testid="text-auto-saved">
+          <div className="text-xs text-[#737373]" data-testid="auto_save_indicator">
             {lastSaved && `Auto-saved ${lastSaved}`}
           </div>
         </div>
       </header>
 
-      {/* Enhanced Main Content */}
+      {/* Main Content */}
       <main className="mx-auto max-w-[768px] px-3 sm:px-4 space-y-6 sm:space-y-8 pb-24">
         {/* Basic Information */}
-        <section>
-          <Card className="rounded-[16px] shadow-[0_1px_3px_rgba(0,0,0,0.05)] bg-white p-4 sm:p-5">
+        <section id="basic_info">
+          <Card className="rounded-[16px] bg-white shadow-md p-4 sm:p-5">
             <CardHeader>
-              <CardTitle className="text-lg font-bold text-[#333333]">Basic Information</CardTitle>
+              <CardTitle className="text-lg font-bold text-[#1B1B18]">Basic Information</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="grid grid-cols-1 gap-4">
               <div>
-                <Label htmlFor="competition-name" className="text-sm font-medium text-[#525252] mb-2 block">
+                <Label htmlFor="competition_name" className="text-sm font-medium text-[#525252] mb-2 block">
                   Competition Name *
                 </Label>
                 <Input
-                  id="competition-name"
-                  data-testid="ti-competition-name"
+                  id="competition_name"
+                  data-testid="input-competition-name"
                   placeholder="e.g., Wine Competition 2024"
                   value={formData.competition_name}
                   onChange={(e) => updateFormData({ competition_name: e.target.value })}
-                  className="h-12 w-full rounded-md border border-[#e5e7eb] px-3 text-sm"
+                  className="h-12 w-full rounded-md border border-[#E6E1D9] px-3 text-sm"
                   required
                 />
               </div>
@@ -392,22 +394,22 @@ export default function CreateCompetitionPage() {
                 </Label>
                 <Textarea
                   id="description"
-                  data-testid="ta-competition-description"
+                  data-testid="textarea-description"
                   placeholder="Optional description of your competition"
                   value={formData.description}
                   onChange={(e) => updateFormData({ description: e.target.value })}
-                  className="w-full rounded-md border border-[#e5e7eb] px-3 py-3 text-sm min-h-[88px]"
+                  className="min-h-[80px] w-full rounded-md border border-[#E6E1D9] px-3 py-3 text-sm"
                 />
               </div>
 
               <div>
-                <Label htmlFor="product-type" className="text-sm font-medium text-[#525252] mb-2 block">
+                <Label htmlFor="product_type" className="text-sm font-medium text-[#525252] mb-2 block">
                   Product Type *
                 </Label>
                 <ProductTypeSelect
                   value={formData.product_type}
                   onChange={(value) => updateFormData({ product_type: value })}
-                  data-testid="sel-product-type"
+                  data-testid="select-product-type"
                 />
               </div>
 
@@ -417,80 +419,83 @@ export default function CreateCompetitionPage() {
                 </Label>
                 <Button
                   type="button"
-                  id="template"
-                  data-testid="btn-template-picker"
+                  id="template_picker"
+                  data-testid="button-template-picker"
                   variant="outline"
-                  className="h-12 w-full justify-start rounded-md border border-[#e5e7eb] px-3 text-sm"
+                  className="h-12 w-full justify-start rounded-md border border-[#E6E1D9] px-3 text-sm"
                   onClick={() => alert('Template picker dialog would open here')}
                 >
                   <Sparkles className="h-4 w-4 mr-2" />
                   Choose Template
                 </Button>
-                <p className="text-xs text-[#737373] mt-1">Optional. Prefills categories.</p>
+                <p className="text-xs text-[#5A5A56] mt-1">Optional. Prefills categories.</p>
               </div>
 
               <div className="flex items-center justify-between">
-                <Label htmlFor="blind-toggle" className="text-sm font-medium text-[#525252]">
+                <Label htmlFor="blind_toggle" className="text-sm font-medium text-[#525252]">
                   Blind Tasting
                 </Label>
                 <Switch
-                  id="blind-toggle"
-                  data-testid="sw-blind"
+                  id="blind_toggle"
+                  data-testid="switch-blind-tasting"
                   checked={formData.blind_toggle}
                   onCheckedChange={(checked) => updateFormData({ blind_toggle: checked })}
+                  className="h-6 w-11"
                 />
               </div>
             </CardContent>
           </Card>
         </section>
 
-        {/* Enhanced Evaluation Categories with Collapsible */}
-        <section>
-          <Card className="rounded-[16px] shadow-[0_1px_3px_rgba(0,0,0,0.05)] bg-white p-4 sm:p-5">
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="text-lg font-bold text-[#333333]">Evaluation Categories</CardTitle>
-                <p className="text-sm text-[#525252]">Define categories for evaluation (max 10)</p>
-              </div>
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={() => setCategoriesExpanded(!categoriesExpanded)}
-                className="p-2"
-                aria-label={categoriesExpanded ? "Collapse categories" : "Expand categories"}
-              >
-                <ChevronDown className={`h-4 w-4 transition-transform ${categoriesExpanded ? 'rotate-180' : ''}`} />
-              </Button>
-            </div>
-
-            {categoriesExpanded && (
-              <CardContent className="mt-4 space-y-4">
-                {/* Prefill Options */}
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-[#525252]">Quick Add:</Label>
-                  <div className="flex flex-wrap gap-2">
-                    {[
-                      { name: 'Variety', type: 'multiple_choice' as const },
-                      { name: 'Region', type: 'exact_answer' as const },
-                      { name: 'Aroma', type: 'subjective_input' as const }
-                    ].map(({ name, type }) => (
-                      <Button
-                        key={name}
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => addPrefillCategory(name, type)}
-                        className="text-xs h-8"
-                      >
-                        {name} ({type.replace('_', ' ')})
-                      </Button>
-                    ))}
-                  </div>
+        {/* Evaluation Categories */}
+        <section id="evaluation_categories">
+          <Card className="rounded-[16px] bg-white shadow-md p-4 sm:p-5">
+            <Collapsible defaultOpen={false}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-lg font-bold text-[#1B1B18]">Evaluation Categories</CardTitle>
+                  <p className="text-sm text-[#5A5A56]">Define categories for evaluation (max 10)</p>
                 </div>
+                <CollapsibleTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="p-2"
+                    aria-label="Toggle categories section"
+                  >
+                    <ChevronDown className="h-4 w-4 transition-transform data-[state=open]:rotate-180" />
+                  </Button>
+                </CollapsibleTrigger>
+              </div>
 
-                {/* Categories Repeater */}
-                <div data-testid="rep-categories" className="space-y-4">
+              <CollapsibleContent>
+                <div className="mt-4 space-y-4">
+                  {/* Prefill Options */}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium text-[#525252]">Quick Add:</Label>
+                    <div className="flex flex-wrap gap-2">
+                      {[
+                        { name: 'Variety', type: 'multiple_choice' as const },
+                        { name: 'Region', type: 'exact_answer' as const },
+                        { name: 'Aroma', type: 'subjective_input' as const }
+                      ].map(({ name, type }) => (
+                        <Button
+                          key={name}
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => addPrefillCategory(name, type)}
+                          className="text-xs h-8"
+                        >
+                          {name} ({type.replace('_', ' ')})
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Categories Repeater */}
+                  <div data-testid="repeater-categories" className="space-y-4">
                   {formData.categories.map((category, index) => (
                     <div key={category.id} className="border border-[#E6E1D9] rounded-lg p-4 space-y-3">
                       <div className="flex items-center justify-between">
@@ -628,32 +633,50 @@ export default function CreateCompetitionPage() {
                   ))}
                 </div>
 
-                {formData.categories.length < 10 && (
-                  <Button
-                    type="button"
-                    onClick={addCategory}
-                    data-testid="btn-add-category"
-                    className="w-full h-12 rounded-xl font-semibold bg-[#2E7D32] text-white hover:bg-[#7FB889]"
-                    aria-label="Add category"
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Category
-                  </Button>
-                )}
-              </CardContent>
-            )}
+                  {formData.categories.length < 10 && (
+                    <Button
+                      type="button"
+                      onClick={addCategory}
+                      data-testid="button-add-category"
+                      variant="outline"
+                      className="w-full h-12 rounded-xl border border-[#E6E1D9] font-semibold"
+                      disabled={formData.categories.length >= 10}
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Category
+                    </Button>
+                  )}
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
           </Card>
         </section>
 
         {/* Items to Taste */}
-        <section>
-          <Card className="rounded-xl bg-white shadow-md">
-            <CardHeader>
-              <CardTitle className="text-lg font-bold text-[#1B1B18]">Items to Taste</CardTitle>
-              <p className="text-sm text-[#5A5A56]">Pre-load items and correct answers</p>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div data-testid="rep-items" className="space-y-4">
+        <section id="items_to_taste">
+          <Card className="rounded-[16px] bg-white shadow-md p-4 sm:p-5">
+            <Collapsible defaultOpen={false}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-lg font-bold text-[#1B1B18]">Items to Taste</CardTitle>
+                  <p className="text-sm text-[#5A5A56]">Pre-load items and correct answers</p>
+                </div>
+                <CollapsibleTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="p-2"
+                    aria-label="Toggle items section"
+                  >
+                    <ChevronDown className="h-4 w-4 transition-transform data-[state=open]:rotate-180" />
+                  </Button>
+                </CollapsibleTrigger>
+              </div>
+
+              <CollapsibleContent>
+                <div className="mt-4 space-y-4">
+                  <div data-testid="repeater-items" className="space-y-4">
                 {formData.items.map((item, index) => (
                   <div key={item.id} className="border border-[#E6E1D9] rounded-lg p-4 space-y-3">
                     <div className="flex items-center justify-between">
@@ -743,55 +766,61 @@ export default function CreateCompetitionPage() {
                 ))}
               </div>
 
-              <Button
-                type="button"
-                onClick={addItem}
-                data-testid="btn-add-item"
-                className="w-full h-12 rounded-xl font-semibold bg-[#2E7D32] text-white hover:bg-[#7FB889]"
-                aria-label="Add item"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Add Item
-              </Button>
-            </CardContent>
+                  <Button
+                    type="button"
+                    onClick={addItem}
+                    data-testid="button-add-item"
+                    variant="outline"
+                    className="w-full h-12 rounded-xl border border-[#E6E1D9] font-semibold"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Item
+                  </Button>
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
           </Card>
         </section>
       </main>
 
-      {/* Sticky Footer */}
-      <footer className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t border-[#E6E1D9] p-4 pb-safe">
-        <div className="flex gap-3 max-w-md mx-auto">
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={() => router.back()}
-            data-testid="btn-cancel"
-            className="flex-1 h-12 rounded-xl border-[#E6E1D9] font-semibold"
-            disabled={isSubmitting}
-          >
-            Cancel
-          </Button>
-          <Button
-            type="button"
-            onClick={clearDraft}
-            data-testid="btn-clear"
-            variant="outline"
-            className="flex-1 h-12 rounded-xl border-[#E6E1D9] font-semibold"
-            disabled={isSubmitting}
-          >
-            Clear Draft
-          </Button>
-          <Button
-            type="button"
-            onClick={handleCreateCompetition}
-            data-testid="btn-create-competition"
-            className="flex-1 h-12 rounded-xl font-semibold bg-[#2E7D32] text-white hover:bg-[#7FB889]"
-            disabled={isSubmitting || !isFormValid()}
-          >
-            {isSubmitting ? 'Creating...' : 'Create Competition'}
-          </Button>
+      {/* Footer Actions */}
+      <section id="footer_actions">
+        <div className="sticky bottom-0 bg-white/95 backdrop-blur border-t border-[#E6E1D9] p-4 pb-safe">
+          <div className="flex gap-3 max-w-md mx-auto">
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => router.back()}
+              data-testid="button-cancel"
+              className="flex-1 h-12 rounded-xl font-semibold"
+              disabled={isSubmitting}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              onClick={clearDraft}
+              data-testid="button-clear-draft"
+              variant="outline"
+              className="flex-1 h-12 rounded-xl border-[#E6E1D9] font-semibold"
+              disabled={isSubmitting}
+            >
+              <X className="h-4 w-4 mr-2" />
+              Clear Draft
+            </Button>
+            <div className="flex-1" />
+            <Button
+              type="button"
+              onClick={handleCreateCompetition}
+              data-testid="button-create-competition"
+              className="flex-1 h-12 rounded-xl font-semibold bg-[#2E7D32] text-white hover:bg-[#256a29]"
+              disabled={isSubmitting || !isFormValid()}
+            >
+              {isSubmitting ? 'Creating...' : 'Create Competition'}
+            </Button>
+          </div>
         </div>
-      </footer>
+      </section>
     </div>
   )
 }
