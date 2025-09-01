@@ -142,3 +142,39 @@ button, input, textarea {
 .hover-lift:hover {
   @apply transform -translate-y-0.5 transition-transform duration-200;
 }
+
+/* Enhanced create page styles */
+.create-page-gradient {
+  background: linear-gradient(135deg, #FAF7F0 0%, #F8F5EF 100%);
+}
+
+.create-card-hover {
+  @apply transition-all duration-300 ease-out;
+}
+
+.create-card-hover:hover {
+  @apply transform scale-[1.02] shadow-xl;
+}
+
+.create-icon-bg {
+  background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);
+}
+
+.create-text-shadow {
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* Loading spinner */
+.spinner {
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid rgba(255, 255, 255, 1);
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
