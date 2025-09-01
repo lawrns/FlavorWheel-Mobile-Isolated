@@ -19,7 +19,7 @@ export default function LandingPage() {
       style={{
         WebkitOverflowScrolling: 'touch',
         overscrollBehavior: 'none',
-        backgroundImage: 'url(/images/Landing%20BG%20SD.jpg)',
+        backgroundImage: 'url(/images/landing-bg-sd.jpg)',
         minHeight: '100vh'
       }}
     >
