@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, Plus, Minus, Camera, Upload, ChevronDown, X } from 'lucide-react'
+import { ArrowLeft, Plus, Minus, Camera, Upload, ChevronDown, X, Sparkles, FileText, Sliders, CheckSquare, Type, Search, Save } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -12,8 +12,9 @@ import { Switch } from '@/components/ui/switch'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Slider } from '@/components/ui/slider'
 
-// Types based on the JSON specification
-type EvaluationType = 'subjective' | 'multiple_choice' | 'sliding_scale' | 'exact_answer' | 'contains_x'
+
+// Enhanced types based on the updated JSON specification
+type EvaluationType = 'subjective_input' | 'multiple_choice' | 'sliding_scale' | 'exact_answer' | 'contains_x'
 
 interface Category {
   id: string
@@ -32,13 +33,29 @@ interface Item {
   item_image?: string
 }
 
-const PRODUCT_TYPES = [
-  { value: 'wine', label: 'Wine' },
-  { value: 'beer', label: 'Beer' },
-  { value: 'coffee', label: 'Coffee' },
-  { value: 'spirits', label: 'Spirits' },
-  { value: 'tea', label: 'Tea' },
-  { value: 'other', label: 'Other' }
+interface FormData {
+  tasting_name: string
+  product_type: string
+  template: string
+  blind_toggle: boolean
+  categories: Category[]
+  items: Item[]
+}
+
+const PRODUCT_TYPE_GROUPS = {
+  wine: ['Red Wine', 'White Wine', 'Rosé Wine', 'Sparkling Wine', 'Dessert Wine'],
+  coffee: ['Espresso', 'Pour Over', 'French Press', 'Cold Brew', 'Turkish Coffee'],
+  beer: ['Lager', 'Ale', 'Stout', 'IPA', 'Pilsner'],
+  spirits: ['Whiskey', 'Vodka', 'Rum', 'Gin', 'Tequila'],
+  other: ['Tea', 'Juice', 'Soft Drink', 'Other']
+}
+
+const EVALUATION_TYPE_OPTIONS = [
+  { value: 'subjective_input', label: 'Subjective Input', icon: FileText },
+  { value: 'sliding_scale', label: 'Sliding Scale', icon: Sliders },
+  { value: 'multiple_choice', label: 'Multiple Choice', icon: CheckSquare },
+  { value: 'exact_answer', label: 'Exact Answer', icon: Type },
+  { value: 'contains_x', label: 'Contains X', icon: Search }
 ]
 
 const TEMPLATES = [
@@ -50,45 +67,64 @@ const TEMPLATES = [
 
 export default function CreateStudyPage() {
   const router = useRouter()
-  const [tastingName, setTastingName] = useState('')
-  const [productType, setProductType] = useState('')
-  const [template, setTemplate] = useState('')
-  const [blindToggle, setBlindToggle] = useState(false)
-  const [categories, setCategories] = useState<Category[]>([
-    {
+  const [formData, setFormData] = useState<FormData>({
+    tasting_name: '',
+    product_type: '',
+    template: '',
+    blind_toggle: false,
+    categories: [{
       id: '1',
       category_name: '',
-      evaluation_type: 'subjective'
-    }
-  ])
-  const [items, setItems] = useState<Item[]>([
-    {
+      evaluation_type: 'subjective_input'
+    }],
+    items: [{
       id: '1',
       item_name: '',
       item_description: ''
-    }
-  ])
+    }]
+  })
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [lastSaved, setLastSaved] = useState<string | null>(null)
+  const [categoriesExpanded, setCategoriesExpanded] = useState(false)
+
+  // Auto-save functionality
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const now = new Date()
+      setLastSaved(now.toLocaleTimeString())
+    }, 2000)
+    return () => clearTimeout(timer)
+  }, [formData])
+
+  const updateFormData = (updates: Partial<FormData>) => {
+    setFormData(prev => ({ ...prev, ...updates }))
+  }
 
   const addCategory = () => {
-    if (categories.length < 10) {
+    if (formData.categories.length < 10) {
       const newCategory: Category = {
         id: Date.now().toString(),
         category_name: '',
-        evaluation_type: 'subjective'
+        evaluation_type: 'subjective_input'
       }
-      setCategories([...categories, newCategory])
+      updateFormData({
+        categories: [...formData.categories, newCategory]
+      })
     }
   }
 
   const removeCategory = (id: string) => {
-    setCategories(categories.filter(cat => cat.id !== id))
+    updateFormData({
+      categories: formData.categories.filter(cat => cat.id !== id)
+    })
   }
 
   const updateCategory = (id: string, updates: Partial<Category>) => {
-    setCategories(categories.map(cat =>
-      cat.id === id ? { ...cat, ...updates } : cat
-    ))
+    updateFormData({
+      categories: formData.categories.map(cat =>
+        cat.id === id ? { ...cat, ...updates } : cat
+      )
+    })
   }
 
   const addItem = () => {
@@ -97,49 +133,76 @@ export default function CreateStudyPage() {
       item_name: '',
       item_description: ''
     }
-    setItems([...items, newItem])
+    updateFormData({
+      items: [...formData.items, newItem]
+    })
   }
 
   const removeItem = (id: string) => {
-    setItems(items.filter(item => item.id !== id))
+    updateFormData({
+      items: formData.items.filter(item => item.id !== id)
+    })
   }
 
   const updateItem = (id: string, updates: Partial<Item>) => {
-    setItems(items.map(item =>
-      item.id === id ? { ...item, ...updates } : item
-    ))
+    updateFormData({
+      items: formData.items.map(item =>
+        item.id === id ? { ...item, ...updates } : item
+      )
+    })
+  }
+
+  const addPrefillCategory = (name: string) => {
+    if (formData.categories.length < 10) {
+      const newCategory: Category = {
+        id: Date.now().toString(),
+        category_name: name,
+        evaluation_type: 'subjective_input'
+      }
+      updateFormData({
+        categories: [...formData.categories, newCategory]
+      })
+    }
   }
 
   const clearDraft = () => {
-    setTastingName('')
-    setProductType('')
-    setTemplate('')
-    setBlindToggle(false)
-    setCategories([{
-      id: '1',
-      category_name: '',
-      evaluation_type: 'subjective'
-    }])
-    setItems([{
-      id: '1',
-      item_name: '',
-      item_description: ''
-    }])
+    setFormData({
+      tasting_name: '',
+      product_type: '',
+      template: '',
+      blind_toggle: false,
+      categories: [{
+        id: '1',
+        category_name: '',
+        evaluation_type: 'subjective_input'
+      }],
+      items: [{
+        id: '1',
+        item_name: '',
+        item_description: ''
+      }]
+    })
+    setLastSaved(null)
   }
 
   const handleCreateTasting = async () => {
-    // Basic validation
-    if (!tastingName.trim() || !productType) {
-      alert('Please fill in required fields')
+    // Validation
+    if (!formData.tasting_name.trim()) {
+      alert('Tasting name is required')
       return
     }
 
-    if (categories.some(cat => !cat.category_name.trim())) {
+    if (!formData.product_type) {
+      alert('Product type is required')
+      return
+    }
+
+    if (formData.categories.some(cat => !cat.category_name.trim())) {
       alert('Please fill in all category names')
       return
     }
 
-    if (items.some(item => !item.item_name.trim())) {
+    if (formData.items.some(item => !item.item_name.trim())) {
       alert('Please fill in all item names')
       return
     }
@@ -155,160 +218,167 @@ export default function CreateStudyPage() {
     setIsSubmitting(false)
   }
 
-  const addPrefillCategory = (preset: { category_name: string; evaluation_type: EvaluationType }) => {
-    if (categories.length < 10) {
-      const newCategory: Category = {
-        id: Date.now().toString(),
-        category_name: preset.category_name,
-        evaluation_type: preset.evaluation_type
-      }
-      setCategories([...categories, newCategory])
-    }
+  const isFormValid = () => {
+    return (
+      formData.tasting_name.trim() &&
+      formData.product_type &&
+      formData.categories.every(cat => cat.category_name.trim()) &&
+      formData.items.every(item => item.item_name.trim())
+    )
   }
 
   return (
-    <div className="min-h-screen bg-[#FAF7F0]">
-      {/* Header */}
-      <header className="sticky top-0 z-10 bg-[#FAF7F0]/80 backdrop-blur border-b border-[#E6E1D9]">
-        <div className="px-4 py-4 flex items-center gap-4">
+    <div className="min-h-screen bg-white">
+      {/* Enhanced Header with Auto-save */}
+      <header className="sticky top-0 z-10 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-[#e5e7eb]">
+        <div className="px-3 sm:px-4 py-4 flex items-center justify-between">
           <button
             onClick={() => router.back()}
-            className="h-9 w-9 rounded-lg inline-flex items-center justify-center hover:bg-[#F4F1EC] transition-colors"
-            aria-label="Back"
+            className="h-10 w-10 inline-flex items-center justify-center rounded-md hover:bg-[#f9fafb] transition-colors"
+            data-testid="button-header-back"
+            aria-label="Back to Create Tasting"
           >
             <ArrowLeft className="h-5 w-5" />
           </button>
-          <h1 className="text-2xl font-bold text-[#1B1B18] flex-1 text-center">
+
+          <h1
+            className="text-3xl font-bold leading-9 tracking-tight flex-1 text-center"
+            style={{ fontFamily: "'Playfair Display', serif" }}
+          >
             Create Study Mode Tasting
           </h1>
+
+          <div className="text-xs text-[#737373]" data-testid="text-auto-saved">
+            {lastSaved && `Auto-saved ${lastSaved}`}
+          </div>
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="px-4 pb-24 space-y-6">
+      {/* Enhanced Main Content */}
+      <main className="mx-auto max-w-[768px] px-3 sm:px-4 space-y-6 sm:space-y-8 pb-24">
         {/* Basic Information */}
         <section>
-          <Card className="rounded-xl bg-white shadow-md">
+          <Card className="rounded-[16px] shadow-[0_1px_3px_rgba(0,0,0,0.05)] bg-white p-4 sm:p-5">
             <CardHeader>
-              <CardTitle className="text-lg font-bold text-[#1B1B18]">Basic Information</CardTitle>
+              <CardTitle className="text-lg font-bold text-[#333333]">Basic Information</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label htmlFor="tasting-name" className="text-sm font-semibold text-[#1B1B18] mb-2 block">
+                <Label htmlFor="tasting-name" className="text-sm font-medium text-[#525252] mb-2 block">
                   Tasting Name *
                 </Label>
                 <Input
                   id="tasting-name"
-                  data-testid="ti-tasting-name"
+                  data-testid="input-tasting-name"
                   placeholder="e.g., Red Wine Tasting 2024"
-                  value={tastingName}
-                  onChange={(e) => setTastingName(e.target.value)}
-                  className="w-full rounded-lg border-[#D6D1C8] bg-white p-3 text-sm"
+                  value={formData.tasting_name}
+                  onChange={(e) => updateFormData({ tasting_name: e.target.value })}
+                  className="h-12 w-full rounded-md border border-[#e5e7eb] px-3 text-sm"
                   required
                 />
               </div>
 
               <div>
-                <Label htmlFor="product-type" className="text-sm font-semibold text-[#1B1B18] mb-2 block">
+                <Label htmlFor="product-type" className="text-sm font-medium text-[#525252] mb-2 block">
                   Product Type *
                 </Label>
-                <Select value={productType} onValueChange={setProductType}>
+                <Select value={formData.product_type} onValueChange={(value) => updateFormData({ product_type: value })}>
                   <SelectTrigger
                     id="product-type"
-                    data-testid="sel-product-type"
-                    className="w-full rounded-lg border-[#D6D1C8] bg-white p-3 text-sm"
+                    data-testid="select-product-type"
+                    className="h-12 w-full rounded-md border border-[#e5e7eb] px-3 text-sm"
                   >
                     <SelectValue placeholder="Select a product type" />
                   </SelectTrigger>
                   <SelectContent>
-                    {PRODUCT_TYPES.map(type => (
-                      <SelectItem key={type.value} value={type.value}>
-                        {type.label}
-                      </SelectItem>
+                    {Object.entries(PRODUCT_TYPE_GROUPS).map(([group, items]) => (
+                      <div key={group}>
+                        <div className="px-2 py-1 text-xs font-semibold text-[#737373] uppercase tracking-wide">
+                          {group}
+                        </div>
+                        {items.map(item => (
+                          <SelectItem key={item} value={item.toLowerCase().replace(/\s+/g, '_')}>
+                            {item}
+                          </SelectItem>
+                        ))}
+                      </div>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
 
               <div>
-                <Label htmlFor="template" className="text-sm font-semibold text-[#1B1B18] mb-2 block">
+                <Label htmlFor="template" className="text-sm font-medium text-[#525252] mb-2 block">
                   Templates
                 </Label>
-                <Select value={template} onValueChange={setTemplate}>
-                  <SelectTrigger
-                    id="template"
-                    data-testid="sel-template"
-                    className="w-full rounded-lg border-[#D6D1C8] bg-white p-3 text-sm"
-                  >
-                    <SelectValue placeholder="Choose Template" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {TEMPLATES.map(tmpl => (
-                      <SelectItem key={tmpl.value} value={tmpl.value}>
-                        {tmpl.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <p className="text-xs text-[#5A5A56] mt-1">Optional. Prefills categories.</p>
+                <Button
+                  type="button"
+                  id="template"
+                  data-testid="button-template-picker"
+                  variant="outline"
+                  className="h-12 w-full justify-start rounded-md border border-[#e5e7eb] px-3 text-sm"
+                  onClick={() => alert('Template picker dialog would open here')}
+                >
+                  <Sparkles className="h-4 w-4 mr-2" />
+                  Choose Template
+                </Button>
+                <p className="text-xs text-[#737373] mt-1">Optional. Prefills categories.</p>
               </div>
 
               <div className="flex items-center justify-between">
-                <Label htmlFor="blind-toggle" className="text-sm font-semibold text-[#1B1B18]">
+                <Label htmlFor="blind-toggle" className="text-sm font-medium text-[#525252]">
                   Blind Tasting
                 </Label>
                 <Switch
                   id="blind-toggle"
-                  data-testid="sw-blind"
-                  checked={blindToggle}
-                  onCheckedChange={setBlindToggle}
+                  data-testid="switch-blind-tasting"
+                  checked={formData.blind_toggle}
+                  onCheckedChange={(checked) => updateFormData({ blind_toggle: checked })}
                 />
               </div>
             </CardContent>
           </Card>
         </section>
 
-        {/* Evaluation Categories */}
+        {/* Enhanced Evaluation Categories with Collapsible */}
         <section>
-          <Card className="rounded-xl bg-white shadow-md">
-            <CardHeader>
-              <CardTitle className="text-lg font-bold text-[#1B1B18]">Evaluation Categories</CardTitle>
-              <p className="text-sm text-[#5A5A56]">Define categories for evaluation (max 10)</p>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {/* Prefill Options */}
-              <div className="space-y-2">
-                <Label className="text-sm font-semibold text-[#1B1B18]">Quick Add:</Label>
-                <div className="flex flex-wrap gap-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => addPrefillCategory({ category_name: 'Aroma', evaluation_type: 'subjective' })}
-                    className="text-xs"
-                  >
-                    Aroma (subjective)
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => addPrefillCategory({ category_name: 'Flavor', evaluation_type: 'subjective' })}
-                    className="text-xs"
-                  >
-                    Flavor (subjective)
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => addPrefillCategory({ category_name: 'Texture', evaluation_type: 'subjective' })}
-                    className="text-xs"
-                  >
-                    Texture (subjective)
-                  </Button>
-                </div>
+          <Card className="rounded-[16px] shadow-[0_1px_3px_rgba(0,0,0,0.05)] bg-white p-4 sm:p-5">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-lg font-bold text-[#333333]">Evaluation Categories</CardTitle>
+                <p className="text-sm text-[#525252]">Define categories for evaluation (max 10)</p>
               </div>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => setCategoriesExpanded(!categoriesExpanded)}
+                className="p-2"
+              >
+                <ChevronDown className={`h-4 w-4 transition-transform ${categoriesExpanded ? 'rotate-180' : ''}`} />
+              </Button>
+            </div>
+
+            {categoriesExpanded && (
+              <CardContent className="mt-4 space-y-4">
+                {/* Prefill Options */}
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium text-[#525252]">Quick Add:</Label>
+                  <div className="flex flex-wrap gap-2">
+                    {['Aroma', 'Flavor', 'Texture'].map(name => (
+                      <Button
+                        key={name}
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => addPrefillCategory(name)}
+                        className="text-xs h-8"
+                      >
+                        {name} (subjective)
+                      </Button>
+                    ))}
+                  </div>
+                </div>
 
               {/* Categories Repeater */}
               <div data-testid="rep-categories" className="space-y-4">
