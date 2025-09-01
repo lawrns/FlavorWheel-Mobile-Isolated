@@ -18,7 +18,7 @@ export default function LandingPage() {
       <main id="landing" className="px-6 py-8 max-w-sm mx-auto">
         {/* Hero Section */}
         <section className="hero mb-8">
-          <div className="text-center">
+          <div className="text-left">
             <h1 className="text-2xl font-bold text-black mb-3">
               Welcome back
             </h1>
