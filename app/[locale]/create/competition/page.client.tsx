@@ -391,16 +391,26 @@ export default function CreateCompetitionPage() {
           status={lastSaved ? 'saved' : null}
         />
       }
-      className="pb-20"
+      footer={
+        <CreateFooterActions
+          primaryLabel="Create Competition"
+          onPrimary={handleCreateCompetition}
+          secondaryLabel="Cancel"
+          onSecondary={() => router.back()}
+          disabled={!isFormValid()}
+          busy={isSubmitting}
+          statusMessage={isSubmitting ? 'Creating competition...' : undefined}
+        />
+      }
     >
 
       {/* Main Content */}
-      <div className="mx-auto max-w-[768px] px-3 sm:px-4 space-y-6 sm:space-y-8">
+      <div className="space-y-6">
         {/* Basic Information */}
         <section id="basic_info">
-          <Card className="rounded-xl bg-white shadow-fx border border-fx-border p-4 sm:p-5">
-            <CardHeader>
-              <CardTitle className="text-lg font-bold text-fx-text">Basic Information</CardTitle>
+          <Card className="rounded-xl bg-white shadow-soft border border-fx-border p-4 sm:p-5 hover-lift card-enter">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-xl font-semibold text-fx-text font-heading">Basic Information</CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-1 gap-4">
               <div>
@@ -812,18 +822,8 @@ export default function CreateCompetitionPage() {
           </Card>
         </section>
 
-        {/* Footer Actions - Non-sticky, integrated into page flow */}
-        <section className="mt-8">
-          <CreateFooterActions
-            primaryLabel="Create Competition"
-            onPrimary={handleCreateCompetition}
-            secondaryLabel="Cancel"
-            onSecondary={() => router.back()}
-            disabled={!isFormValid()}
-            busy={isSubmitting}
-            statusMessage={isSubmitting ? 'Creating competition...' : undefined}
-          />
-        </section>
+        {/* Footer Actions - Fixed bottom */}
+        <div className="h-24"></div>
       </div>
     </CreateShell>
   )

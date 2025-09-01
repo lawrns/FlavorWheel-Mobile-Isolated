@@ -272,16 +272,26 @@ export default function CreateStudyPage() {
           status={lastSaved ? 'saved' : null}
         />
       }
-      className="pb-20"
+      footer={
+        <CreateFooterActions
+          primaryLabel="Create Study"
+          onPrimary={handleCreateTasting}
+          secondaryLabel="Cancel"
+          onSecondary={() => router.back()}
+          disabled={!isFormValid()}
+          busy={isSubmitting}
+          statusMessage={isSubmitting ? 'Creating tasting...' : undefined}
+        />
+      }
     >
 
       {/* Enhanced Main Content */}
-      <div className="mx-auto max-w-[768px] px-3 sm:px-4 space-y-6 sm:space-y-8">
+      <div className="space-y-6">
         {/* Basic Information */}
         <section>
           <Card className="rounded-xl bg-white shadow-fx border border-fx-border p-4 sm:p-5">
-            <CardHeader>
-              <CardTitle className="text-lg font-bold text-fx-text">Basic Information</CardTitle>
+            <CardHeader className="pb-4">
+              <CardTitle className="text-xl font-semibold text-fx-text font-heading">Basic Information</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
@@ -294,7 +304,7 @@ export default function CreateStudyPage() {
                   placeholder="e.g., Red Wine Tasting 2024"
                   value={formData.tasting_name}
                   onChange={(e) => updateFormData({ tasting_name: e.target.value })}
-                  className="min-h-[48px] w-full rounded-lg border border-[#D6D1C8] bg-white px-3 text-sm"
+                  className="min-h-[48px] w-full rounded-lg border border-fx-border bg-white px-3 text-sm text-fx-text placeholder:text-fx-muted focus-enhanced form-input"
                   required
                 />
               </div>
@@ -319,7 +329,7 @@ export default function CreateStudyPage() {
                   id="template"
                   data-testid="button-template-picker"
                   variant="outline"
-                  className="min-h-[48px] w-full justify-start rounded-lg border border-[#D6D1C8] bg-white px-3 text-sm"
+                  className="min-h-[48px] w-full justify-start rounded-lg border border-fx-border bg-white px-3 text-sm text-fx-text hover:bg-fx-bg focus-enhanced hover-lift"
                   onClick={() => alert('Template picker dialog would open here')}
                 >
                   <Sparkles className="h-4 w-4 mr-2" />
@@ -345,20 +355,20 @@ export default function CreateStudyPage() {
 
         {/* Enhanced Evaluation Categories with Collapsible */}
         <section>
-          <Card className="rounded-xl bg-white shadow-fx border border-fx-border p-4 sm:p-5">
+          <Card className="rounded-xl bg-white shadow-soft border border-fx-border p-4 sm:p-5 hover-lift card-enter">
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="text-lg font-bold text-fx-text">Evaluation Categories</CardTitle>
-                <p className="text-sm text-fx-text2">Define categories for evaluation (max 10)</p>
+                <CardTitle className="text-xl font-semibold text-fx-text font-heading">Evaluation Categories</CardTitle>
+                <p className="text-sm text-fx-text2 mt-1">Define categories for evaluation (max 10)</p>
               </div>
               <Button
                 type="button"
                 variant="ghost"
                 size="sm"
                 onClick={() => setCategoriesExpanded(!categoriesExpanded)}
-                className="p-2"
+                className="p-2 rounded-lg hover:bg-fx-bg focus-enhanced"
               >
-                <ChevronDown className={`h-4 w-4 transition-transform ${categoriesExpanded ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${categoriesExpanded ? 'rotate-180' : ''}`} />
               </Button>
             </div>
 
@@ -514,7 +524,7 @@ export default function CreateStudyPage() {
                   type="button"
                   onClick={addCategory}
                   data-testid="btn-add-category"
-                  className="w-full min-h-[48px] rounded-xl font-semibold bg-fx-primary text-white hover:bg-fx-primaryHover"
+                  className="w-full min-h-[48px] rounded-xl font-semibold bg-fx-primary text-white hover:bg-fx-primaryHover focus-enhanced btn-primary"
                   aria-label="Add category"
                 >
                   <Plus className="h-4 w-4 mr-2" />
@@ -528,10 +538,10 @@ export default function CreateStudyPage() {
 
         {/* Items to Taste */}
         <section>
-          <Card className="rounded-xl bg-white shadow-fx border border-fx-border p-4 sm:p-5">
-            <CardHeader>
-              <CardTitle className="text-lg font-bold text-fx-text">Items to Taste</CardTitle>
-              <p className="text-sm text-fx-text2">Add the items participants will evaluate</p>
+          <Card className="rounded-xl bg-white shadow-soft border border-fx-border p-4 sm:p-5 hover-lift card-enter">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-xl font-semibold text-fx-text font-heading">Items to Taste</CardTitle>
+              <p className="text-sm text-fx-text2 mt-1">Add the items participants will evaluate</p>
             </CardHeader>
             <CardContent className="space-y-4">
               <div data-testid="rep-items" className="space-y-4">
@@ -607,32 +617,22 @@ export default function CreateStudyPage() {
                 ))}
               </div>
 
-              <Button
-                type="button"
-                onClick={addItem}
-                data-testid="btn-add-item"
-                className="w-full min-h-[48px] rounded-xl font-semibold bg-fx-primary text-white hover:bg-fx-primaryHover"
-                aria-label="Add item"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Add Item
-              </Button>
+                          <Button
+              type="button"
+              onClick={addItem}
+              data-testid="btn-add-item"
+              className="w-full min-h-[48px] rounded-xl font-semibold bg-fx-primary text-white hover:bg-fx-primaryHover focus-enhanced btn-primary"
+              aria-label="Add item"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add Item
+            </Button>
             </CardContent>
           </Card>
         </section>
 
-        {/* Footer Actions - Non-sticky, integrated into page flow */}
-        <section className="mt-8">
-          <CreateFooterActions
-            primaryLabel="Create Study"
-            onPrimary={handleCreateTasting}
-            secondaryLabel="Cancel"
-            onSecondary={() => router.back()}
-            disabled={!isFormValid()}
-            busy={isSubmitting}
-            statusMessage={isSubmitting ? 'Creating tasting...' : undefined}
-          />
-        </section>
+        {/* Footer Actions - Fixed bottom */}
+        <div className="h-24"></div>
       </div>
     </CreateShell>
   )

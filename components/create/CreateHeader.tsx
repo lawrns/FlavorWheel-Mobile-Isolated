@@ -38,8 +38,8 @@ export function CreateHeader({ title, onBack, status }: CreateHeaderProps) {
   }
 
   return (
-    <header className="sticky top-0 z-40 backdrop-blur bg-fx-bg/80 border-b border-fx-border">
-      <div className="h-14 flex items-center gap-3 px-3 sm:px-4">
+    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-fx-border shadow-soft">
+      <div className="h-16 flex items-center gap-3 px-4 sm:px-6">
         {/* Back Button */}
         {onBack && (
           <Button

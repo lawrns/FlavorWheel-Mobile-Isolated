@@ -78,11 +78,11 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["'Inter', sans-serif"],
-        heading: ['var(--font-heading)', 'Playfair Display', 'serif'],
-        body: ['var(--font-body)', 'Inter', 'sans-serif'],
-        accent: ['var(--font-accent)', 'Crimson Text', 'serif'],
-        display: ['var(--font-display)', 'Playfair Display', 'serif'],
-        mono: ['var(--font-mono)', 'JetBrains Mono', 'monospace'],
+        heading: ['Playfair Display', 'serif'],
+        body: ['Inter', 'sans-serif'],
+        accent: ['Crimson Text', 'serif'],
+        display: ['Playfair Display', 'serif'],
+        mono: ['JetBrains Mono', 'monospace'],
       },
       spacing: {
         // Design Token Spacing

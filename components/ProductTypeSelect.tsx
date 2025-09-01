@@ -35,7 +35,7 @@ const ProductTypeSelect: React.FC<ProductTypeSelectProps> = ({
   return (
     <Select onValueChange={onChange} value={value}>
       <SelectTrigger
-        className="h-12 w-full rounded-md border border-[#e5e7eb] px-3 text-sm"
+        className="h-12 w-full rounded-md border border-fx-border bg-white px-3 text-sm text-fx-text focus:border-fx-primary focus:ring-2 focus:ring-fx-primary/20"
         data-testid={dataTestId}
         aria-label="Product Type"
       >
@@ -45,7 +45,7 @@ const ProductTypeSelect: React.FC<ProductTypeSelectProps> = ({
         position="popper"
         sideOffset={8}
         avoidCollisions={true}
-        className="z-[1000] w-[calc(100vw-2rem)] max-w-[28rem] max-h-[60vh] rounded-lg border bg-white/98 backdrop-blur supports-[backdrop-filter]:bg-white/80 shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out"
+        className="z-[1000] w-[calc(100vw-2rem)] max-w-[28rem] max-h-[60vh] rounded-lg border bg-white shadow-xl data-[state=open]:animate-in data-[state=closed]:animate-out"
       >
         <SelectScrollUpButton className="py-2 text-muted-foreground" />
         {groups.map(g => (
@@ -57,7 +57,7 @@ const ProductTypeSelect: React.FC<ProductTypeSelectProps> = ({
               <SelectItem
                 key={opt.value}
                 value={opt.value}
-                className="min-h-[44px] w-full cursor-pointer rounded-md px-3 py-3 text-base leading-6 data-[highlighted]:bg-muted/70 data-[state=checked]:bg-accent/10 select-mobile-text"
+                className="min-h-[44px] w-full cursor-pointer rounded-md px-3 py-3 text-base leading-6 text-fx-text data-[highlighted]:bg-fx-primary/10 data-[highlighted]:text-fx-text data-[state=checked]:bg-fx-primary/20 select-mobile-text hover:bg-fx-bg"
               >
                 {opt.label}
               </SelectItem>

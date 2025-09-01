@@ -339,18 +339,17 @@ export default function QuickTastingPage() {
           statusMessage={isSubmitting ? 'Saving tasting...' : undefined}
         />
       }
-      className="pb-[calc(88px+env(safe-area-inset-bottom))]"
     >
-      <div className="mx-auto max-w-[768px] px-3 sm:px-4 space-y-6 sm:space-y-8">
+      <div className="space-y-6">
 
         {/* Basic Info Section */}
-        <Card className="rounded-xl bg-white shadow-fx border border-fx-border p-4 sm:p-5">
+        <Card className="rounded-xl bg-white shadow-soft border border-fx-border p-4 sm:p-5 hover-lift card-enter">
           <CardHeader className="pb-4">
-            <CardTitle className="text-lg font-bold text-fx-text">What are you tasting?</CardTitle>
+            <CardTitle className="text-xl font-semibold text-fx-text font-heading">What are you tasting?</CardTitle>
           </CardHeader>
           <CardContent className="pt-0">
             <Select value={productType} onValueChange={setProductType} data-testid="qt-select-product-type">
-              <SelectTrigger className="w-full min-h-[48px] rounded-lg border border-[#D6D1C8] bg-white px-3 text-sm">
+              <SelectTrigger className="w-full min-h-[48px] rounded-lg border border-fx-border bg-white px-3 text-sm text-fx-text focus-enhanced form-input">
                 <SelectValue placeholder="Choose a category" />
               </SelectTrigger>
               <SelectContent>
@@ -566,6 +565,8 @@ export default function QuickTastingPage() {
           </CardContent>
         </Card>
 
+        {/* Footer Actions - Fixed bottom */}
+        <div className="h-24"></div>
       </div>
     </CreateShell>
   )

@@ -26,19 +26,19 @@ export function CreateFooterActions({
 
   return (
     <div
-      className="bg-white border border-fx-border rounded-xl shadow-fx p-4 sm:p-5"
+      className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-fx-border shadow-medium p-4 sm:p-5 pb-safe"
       role="region"
       aria-live="polite"
       data-testid="create-footer"
     >
-      <div className="flex items-center gap-3">
+      <div className="max-w-[768px] mx-auto flex items-center gap-3">
         {/* Secondary Action */}
         {secondaryLabel && onSecondary && (
           <Button
             variant="ghost"
             onClick={onSecondary}
             disabled={disabled || busy}
-            className="flex-1 h-11 px-4 rounded-xl border border-fx-border bg-white text-fx-text hover:bg-[#F4F1EC]"
+            className="flex-1 h-12 px-4 rounded-xl border border-fx-border bg-white text-fx-text hover:bg-fx-bg focus-enhanced transition-all duration-200"
             aria-label={`Secondary action: ${secondaryLabel}`}
           >
             {secondaryLabel}
@@ -49,7 +49,7 @@ export function CreateFooterActions({
         <Button
           onClick={onPrimary}
           disabled={disabled || busy}
-          className="flex-1 h-11 px-4 rounded-xl bg-fx-primary text-white hover:bg-fx-primaryHover disabled:opacity-50"
+          className="flex-1 h-12 px-4 rounded-xl bg-fx-primary text-white hover:bg-fx-primaryHover disabled:opacity-50 focus-enhanced btn-primary"
           id="create-primary-action"
           aria-label="Primary action: proceed"
           data-testid="create-primary-action"
