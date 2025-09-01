@@ -26,7 +26,7 @@ export function CreateFooterActions({
 
   return (
     <div
-      className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-fx-border shadow-medium p-4 sm:p-5 pb-safe"
+      className="fixed bottom-16 left-0 right-0 z-[60] bg-white/95 backdrop-blur-sm border-t border-fx-border shadow-medium p-4 sm:p-5 pb-safe"
       role="region"
       aria-live="polite"
       data-testid="create-footer"

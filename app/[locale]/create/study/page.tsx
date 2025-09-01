@@ -634,6 +634,17 @@ export default function CreateStudyPage() {
         {/* Footer Actions - Fixed bottom */}
         <div className="h-24"></div>
       </div>
+
+      {/* Fixed Footer Actions */}
+      <CreateFooterActions
+        primaryLabel="Create Study"
+        onPrimary={handleCreateTasting}
+        secondaryLabel="Cancel"
+        onSecondary={() => router.back()}
+        disabled={!isFormValid()}
+        busy={isSubmitting}
+        statusMessage={isSubmitting ? 'Creating tasting...' : undefined}
+      />
     </CreateShell>
   )
 }

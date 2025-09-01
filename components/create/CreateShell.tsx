@@ -16,7 +16,7 @@ export function CreateShell({ children, header, footer, className = '' }: Create
       {header}
 
       {/* Main Content */}
-      <main className="pb-24">
+      <main className="pb-32">
         <div className="max-w-[768px] mx-auto px-4 sm:px-6">
           {children}
         </div>
