@@ -391,17 +391,6 @@ export default function CreateCompetitionPage() {
           status={lastSaved ? 'saved' : null}
         />
       }
-      footer={
-        <CreateFooterActions
-          primaryLabel="Create Competition"
-          onPrimary={handleCreateCompetition}
-          secondaryLabel="Cancel"
-          onSecondary={() => router.back()}
-          disabled={!isFormValid()}
-          busy={isSubmitting}
-          statusMessage={isSubmitting ? 'Creating competition...' : undefined}
-        />
-      }
     >
 
       {/* Main Content */}

@@ -272,17 +272,6 @@ export default function CreateStudyPage() {
           status={lastSaved ? 'saved' : null}
         />
       }
-      footer={
-        <CreateFooterActions
-          primaryLabel="Create Study"
-          onPrimary={handleCreateTasting}
-          secondaryLabel="Cancel"
-          onSecondary={() => router.back()}
-          disabled={!isFormValid()}
-          busy={isSubmitting}
-          statusMessage={isSubmitting ? 'Creating tasting...' : undefined}
-        />
-      }
     >
 
       {/* Enhanced Main Content */}
