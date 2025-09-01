@@ -19,13 +19,13 @@ export default function LandingPage() {
       style={{
         WebkitOverflowScrolling: 'touch',
         overscrollBehavior: 'none',
-        backgroundImage: 'url(/images/landing-bg-sd.jpg)',
+        backgroundImage: 'url("/images/landing-bg-sd.jpg")',
         minHeight: '100vh'
       }}
     >
       <main id="landing" className="px-6 py-8 max-w-sm mx-auto min-h-screen pb-32 relative">
         {/* Backdrop overlay for better text readability */}
-        <div className="absolute inset-0 bg-white/80 backdrop-blur-sm rounded-2xl mx-4 mt-4 mb-8"></div>
+        {/* <div className="absolute inset-0 bg-white/10 backdrop-blur-sm rounded-2xl mx-4 mt-4 mb-8"></div> */}
 
         {/* Content wrapper with proper z-index */}
         <div className="relative z-10">
