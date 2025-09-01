@@ -1,0 +1,978 @@
+{
+  "analysis_metadata": {
+    "title": "Comprehensive Technical UI Analysis - FlavorWheel Landing & Create Pages",
+    "version": "1.0.0",
+    "created": "2024-01-27",
+    "purpose": "Technical analysis for development guidance and precise feedback implementation",
+    "scope": "Landing (/landing) and Create (/create/study, /create/competition, /quick-tasting) URL implementations",
+    "analysis_depth": "Component-level, pixel-perfect technical specifications"
+  },
+
+  "technical_stack": {
+    "framework": {
+      "name": "Next.js 15.2.4",
+      "architecture": "App Router",
+      "rendering": "Client-side (React 18)",
+      "configuration": {
+        "port": 3001,
+        "strictMode": true,
+        "cssOptimization": true,
+        "compression": true,
+        "imageOptimization": {
+          "formats": ["webp", "avif"],
+          "domains": ["localhost"]
+        }
+      }
+    },
+    "styling_system": {
+      "primary": "Tailwind CSS v3.4.17",
+      "utilities": "tailwind-merge v2.5.5, clsx v2.1.1",
+      "animations": "tailwindcss-animate v1.0.7, framer-motion v12.23.12",
+      "design_tokens": {
+        "css_variables": {
+          "fx-bg": "#FAF7F0",
+          "fx-card": "#FFFFFF",
+          "fx-border": "#E6E1D9",
+          "fx-text": "#1B1B18",
+          "fx-text-2": "#5A5A56",
+          "fx-text-muted": "#737373",
+          "fx-primary": "#2E7D32",
+          "fx-primary-hover": "#256a29"
+        },
+        "typography": {
+          "font_family": {
+            "primary": "Inter, sans-serif",
+            "heading": "Playfair Display, serif",
+            "display": "Playfair Display, serif",
+            "mono": "JetBrains Mono, monospace"
+          },
+          "sizes": {
+            "h1": ["24px", {"lineHeight": "1.2", "fontWeight": "700"}],
+            "h2": ["20px", {"lineHeight": "1.3", "fontWeight": "600"}],
+            "p": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}]
+          }
+        },
+        "spacing": {
+          "card_padding": "16px",
+          "section_gap": "24px",
+          "item_gap": "16px"
+        },
+        "border_radius": {
+          "card": "16px",
+          "button": "8px",
+          "xl": "16px"
+        },
+        "shadows": {
+          "fx": "0 1px 3px rgba(0,0,0,0.05)",
+          "soft": "0 2px 6px rgba(0,0,0,0.05)",
+          "medium": "0 4px 12px rgba(0,0,0,0.08)"
+        }
+      }
+    },
+    "ui_components": {
+      "radix_ui": {
+        "accordion": "^1.2.12",
+        "avatar": "^1.1.10",
+        "collapsible": "^1.1.12",
+        "dialog": "^1.1.15",
+        "label": "^2.1.7",
+        "select": "^2.2.6",
+        "slider": "^1.3.6",
+        "switch": "^1.2.6",
+        "toggle": "^1.1.10"
+      },
+      "custom_components": {
+        "create_shell": "Layout wrapper for create pages",
+        "create_header": "Sticky header with title and auto-save status",
+        "create_footer_actions": "Non-sticky action buttons",
+        "product_type_select": "Grouped dropdown for product categories",
+        "mobile_navigation": "Bottom navigation with expandable menu"
+      }
+    },
+    "performance": {
+      "optimization": {
+        "css": "optimizeCss: true",
+        "compression": true,
+        "image_formats": ["webp", "avif"],
+        "font_loading": "display: swap"
+      },
+      "accessibility": {
+        "touch_targets": "44px minimum",
+        "aria_labels": "Comprehensive labeling",
+        "focus_management": "Keyboard navigation support",
+        "contrast_ratios": "WCAG AA compliance"
+      }
+    }
+  },
+
+  "page_analysis": {
+    "landing_page": {
+      "route": "/[locale]/landing/page.tsx",
+      "component_type": "Client Component ('use client')",
+      "layout_structure": {
+        "root_container": {
+          "element": "div",
+          "styling": {
+            "overflow-x": "hidden",
+            "webkit-overflow-scrolling": "touch",
+            "overscroll-behavior": "none",
+            "background-image": "url(/images/landing-bg-sd.jpg)",
+            "background-size": "cover",
+            "background-position": "center",
+            "background-repeat": "no-repeat",
+            "min-height": "100vh"
+          }
+        },
+        "main_content": {
+          "element": "main",
+          "id": "landing",
+          "styling": {
+            "padding": "24px 24px 128px",
+            "max-width": "768px",
+            "margin": "0 auto",
+            "min-height": "100vh",
+            "padding-bottom": "128px",
+            "position": "relative"
+          }
+        },
+        "content_wrapper": {
+          "styling": {
+            "position": "relative",
+            "z-index": "10"
+          }
+        }
+      },
+      "sections": {
+        "hero_section": {
+          "structure": {
+            "container": "section.hero.mb-8",
+            "content": "div.text-left",
+            "title": {
+              "element": "h1",
+              "text": "Welcome back",
+              "styling": {
+                "font-size": "24px",
+                "font-weight": "bold",
+                "color": "black",
+                "margin-bottom": "12px"
+              }
+            },
+            "subtitle": {
+              "element": "p",
+              "text": "Explore the world of flavors",
+              "styling": {
+                "font-size": "16px",
+                "color": "gray-600"
+              }
+            }
+          }
+        },
+        "cta_stack": {
+          "structure": {
+            "container": "nav.cta-stack.space-y-4.mb-8",
+            "role": "navigation",
+            "aria_label": "Primary actions",
+            "buttons": [
+              {
+                "action": "quick_tasting",
+                "route": "/quick-tasting",
+                "label": "Quick Taste",
+                "icon": "Sparkles",
+                "styling": {
+                  "background": "black",
+                  "color": "white",
+                  "border-radius": "16px",
+                  "padding": "16px 16px",
+                  "min-height": "48px",
+                  "hover": "bg-gray-800"
+                }
+              },
+              {
+                "action": "create_tasting",
+                "route": "/create",
+                "label": "Create Tasting",
+                "icon": "Plus",
+                "styling": {
+                  "background": "black",
+                  "color": "white",
+                  "border-radius": "16px",
+                  "padding": "16px 16px",
+                  "min-height": "48px",
+                  "hover": "bg-gray-800"
+                }
+              },
+              {
+                "action": "review",
+                "route": "/review",
+                "label": "Review",
+                "icon": "MessageCircle",
+                "styling": {
+                  "background": "black",
+                  "color": "white",
+                  "border-radius": "16px",
+                  "padding": "16px 16px",
+                  "min-height": "48px",
+                  "hover": "bg-gray-800"
+                }
+              },
+              {
+                "action": "flavor_wheels",
+                "route": "/wheels",
+                "label": "Flavor Wheels",
+                "icon": "Target",
+                "styling": {
+                  "background": "black",
+                  "color": "white",
+                  "border-radius": "16px",
+                  "padding": "16px 16px",
+                  "min-height": "48px",
+                  "hover": "bg-gray-800"
+                }
+              }
+            ]
+          }
+        },
+        "overview_card": {
+          "structure": {
+            "container": "section.overview-card",
+            "card": {
+              "element": "div",
+              "styling": {
+                "background": "white",
+                "border": "1px solid gray-200",
+                "border-radius": "16px",
+                "padding": "24px",
+                "box-shadow": "0 1px 3px rgba(0,0,0,0.05)"
+              }
+            },
+            "title": {
+              "element": "h2",
+              "text": "Overview",
+              "styling": {
+                "font-size": "20px",
+                "font-weight": "semibold",
+                "color": "black",
+                "margin-bottom": "16px"
+              }
+            },
+            "metrics_grid": {
+              "container": "div.grid.grid-cols-3.gap-4",
+              "metrics": [
+                {
+                  "label": "Tastings",
+                  "value": "12",
+                  "color": "black"
+                },
+                {
+                  "label": "Score",
+                  "value": "87",
+                  "color": "black"
+                },
+                {
+                  "label": "Streak",
+                  "value": "5",
+                  "color": "black"
+                }
+              ]
+            }
+          }
+        },
+        "spacer": {
+          "element": "div",
+          "styling": {
+            "height": "32px"
+          },
+          "purpose": "Bottom spacing for navigation"
+        }
+      },
+      "mobile_optimizations": {
+        "safe_area": "pb-safe class support",
+        "touch_targets": "48px minimum height",
+        "overflow_handling": "webkit-overflow-scrolling: touch",
+        "viewport_meta": "user-scalable=no, maximum-scale=1"
+      },
+      "accessibility": {
+        "aria_labels": "Comprehensive navigation labeling",
+        "semantic_html": "nav, section, main elements",
+        "keyboard_support": "Full keyboard navigation",
+        "screen_reader": "Proper heading hierarchy"
+      }
+    },
+
+    "create_pages": {
+      "shared_components": {
+        "create_shell": {
+          "file": "components/create/CreateShell.tsx",
+          "purpose": "Layout wrapper for all create pages",
+          "structure": {
+            "props": ["children", "header", "footer", "className"],
+            "layout": {
+              "root": "div.bg-fx-bg.className",
+              "header": "header slot",
+              "main": "main wrapper",
+              "footer": "footer slot"
+            }
+          }
+        },
+        "create_header": {
+          "file": "components/create/CreateHeader.tsx",
+          "purpose": "Sticky header with navigation and status",
+          "structure": {
+            "styling": {
+              "position": "sticky",
+              "top": "0",
+              "z-index": "40",
+              "background": "white",
+              "border-bottom": "1px solid fx-border",
+              "box-shadow": "0 1px 3px rgba(0,0,0,0.05)"
+            },
+            "layout": {
+              "height": "56px",
+              "flex_layout": "flex items-center gap-3 px-3 sm:px-4",
+              "back_button": {
+                "size": "h-10 w-10 p-0",
+                "variant": "ghost"
+              },
+              "title": {
+                "font_family": "'Playfair Display', ui-serif, Georgia, serif",
+                "font_size": "24px",
+                "font_weight": "bold",
+                "color": "fx-text",
+                "flex": "1",
+                "truncate": true
+              },
+              "status_badge": {
+                "position": "right",
+                "font_size": "12px",
+                "colors": {
+                  "saving": "text-fx-muted",
+                  "saved": "text-fx-text2",
+                  "error": "text-red-600"
+                }
+              }
+            }
+          }
+        },
+        "create_footer_actions": {
+          "file": "components/create/CreateFooterActions.tsx",
+          "purpose": "Non-sticky action buttons integrated into page flow",
+          "structure": {
+            "styling": {
+              "container": "bg-white border border-fx-border rounded-xl shadow-fx p-4 sm:p-5",
+              "flex_layout": "flex items-center gap-3",
+              "buttons": {
+                "height": "44px",
+                "border_radius": "16px",
+                "padding": "0 16px"
+              }
+            },
+            "primary_button": {
+              "background": "bg-fx-primary",
+              "color": "text-white",
+              "hover": "hover:bg-fx-primaryHover",
+              "disabled": "disabled:opacity-50"
+            },
+            "secondary_button": {
+              "variant": "ghost",
+              "background": "bg-white",
+              "border": "border-fx-border",
+              "hover": "hover:bg-[#F4F1EC]"
+            }
+          }
+        }
+      },
+
+      "study_page": {
+        "route": "/[locale]/create/study/page.tsx",
+        "component_type": "Client Component",
+        "layout_structure": {
+          "create_shell": {
+            "header": "CreateHeader with title 'Study Session'",
+            "className": "pb-20",
+            "content_container": "mx-auto max-w-[768px] px-3 sm:px-4 space-y-6 sm:space-y-8"
+          },
+          "sections": [
+            {
+              "name": "basic_information",
+              "card": {
+                "styling": "rounded-xl bg-white shadow-fx border border-fx-border p-4 sm:p-5",
+                "header": "text-lg font-bold text-fx-text",
+                "content": "space-y-4"
+              },
+              "fields": [
+                {
+                  "name": "tasting_name",
+                  "type": "Input",
+                  "label": "Tasting Name *",
+                  "placeholder": "e.g., Red Wine Tasting 2024",
+                  "styling": "min-h-[48px] rounded-lg border-[#D6D1C8] bg-white"
+                },
+                {
+                  "name": "product_type",
+                  "type": "ProductTypeSelect",
+                  "label": "Product Type *"
+                },
+                {
+                  "name": "template",
+                  "type": "Button",
+                  "label": "Templates",
+                  "variant": "outline",
+                  "action": "Template picker dialog"
+                },
+                {
+                  "name": "blind_toggle",
+                  "type": "Switch",
+                  "label": "Blind Tasting"
+                }
+              ]
+            },
+            {
+              "name": "evaluation_categories",
+              "card": {
+                "styling": "rounded-xl bg-white shadow-fx border border-fx-border p-4 sm:p-5",
+                "collapsible": true,
+                "default_state": "closed"
+              },
+              "dynamic_fields": [
+                {
+                  "type": "category_repeater",
+                  "max_items": 10,
+                  "fields": [
+                    {
+                      "name": "category_name",
+                      "type": "Input",
+                      "placeholder": "e.g., Aroma / Flavor / Texture"
+                    },
+                    {
+                      "name": "evaluation_type",
+                      "type": "Select",
+                      "options": [
+                        "Subjective Input",
+                        "Multiple Choice",
+                        "Sliding Scale",
+                        "Exact Answer",
+                        "Contains X"
+                      ]
+                    },
+                    {
+                      "name": "mc_options",
+                      "type": "Textarea",
+                      "condition": "evaluation_type === 'multiple_choice'",
+                      "placeholder": "Add option and press enter"
+                    },
+                    {
+                      "name": "scale_settings",
+                      "type": "Slider",
+                      "condition": "evaluation_type === 'sliding_scale'",
+                      "range": "0-100"
+                    },
+                    {
+                      "name": "contains_value",
+                      "type": "Input",
+                      "condition": "evaluation_type === 'contains_x'",
+                      "placeholder": "e.g., cabernet"
+                    },
+                    {
+                      "name": "notes_placeholder",
+                      "type": "Textarea",
+                      "placeholder": "Describe what to capture in this category"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "items_to_taste",
+              "card": {
+                "styling": "rounded-xl bg-white shadow-fx border border-fx-border p-4 sm:p-5"
+              },
+              "dynamic_fields": [
+                {
+                  "type": "item_repeater",
+                  "fields": [
+                    {
+                      "name": "item_name",
+                      "type": "Input",
+                      "placeholder": "Item 1"
+                    },
+                    {
+                      "name": "description",
+                      "type": "Textarea",
+                      "placeholder": "Any additional details..."
+                    },
+                    {
+                      "name": "image",
+                      "type": "Button",
+                      "variant": "outline",
+                      "action": "Photo upload"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "footer_actions",
+              "component": "CreateFooterActions",
+              "container": "section.mt-8",
+              "buttons": [
+                {
+                  "type": "secondary",
+                  "label": "Cancel",
+                  "action": "router.back()"
+                },
+                {
+                  "type": "primary",
+                  "label": "Create Study",
+                  "action": "handleCreateTasting",
+                  "validation": "isFormValid()"
+                }
+              ]
+            }
+          ]
+        },
+        "state_management": {
+          "form_data": {
+            "structure": {
+              "tasting_name": "string",
+              "product_type": "string",
+              "template": "string",
+              "blind_toggle": "boolean",
+              "categories": "Category[]",
+              "items": "Item[]"
+            },
+            "initial_state": {
+              "categories": "[{ id: '1', category_name: '', evaluation_type: 'subjective_input' }]",
+              "items": "[{ id: '1', item_name: '', item_description: '' }]"
+            }
+          },
+          "ui_state": {
+            "is_submitting": "boolean",
+            "last_saved": "string | null",
+            "categories_expanded": "boolean"
+          }
+        },
+        "validation_logic": {
+          "required_fields": [
+            "tasting_name",
+            "product_type",
+            "categories[].category_name",
+            "items[].item_name"
+          ],
+          "dynamic_validation": {
+            "categories": "every(category => category.category_name.trim())",
+            "items": "every(item => item.item_name.trim())"
+          },
+          "error_handling": {
+            "focus_management": "scrollIntoView({ behavior: 'smooth', block: 'center' })",
+            "field_highlighting": "document.getElementById()",
+            "user_feedback": "Inline error messages"
+          }
+        },
+        "auto_save": {
+          "trigger": "useEffect with 2000ms debounce",
+          "storage": "localStorage.setItem('draft-key', JSON.stringify(data))",
+          "restore": "localStorage.getItem() with 24h expiration",
+          "ui_feedback": "Status badge: 'Auto-saved'"
+        }
+      },
+
+      "competition_page": {
+        "route": "/[locale]/create/competition/page.client.tsx",
+        "extends": "study_page",
+        "unique_features": {
+          "preloaded_answers": {
+            "purpose": "Allow judges to input expected answers for ranking categories",
+            "data_structure": "preloaded_answers: { [categoryId: string]: any }",
+            "ui_component": "Collapsible section per item",
+            "validation": "Required for ranking categories"
+          },
+          "ranking_categories": {
+            "field": "include_in_ranking: boolean",
+            "ui_element": "Switch per category",
+            "impact": "Requires preloaded_answers if true"
+          },
+          "competition_metadata": {
+            "competition_name": "string",
+            "description": "string",
+            "additional_validation": "competition_name.trim() && description.trim()"
+          }
+        }
+      },
+
+      "quick_tasting_page": {
+        "route": "/quick-tasting/page.tsx",
+        "component_type": "Client Component",
+        "unique_architecture": {
+          "simplified_flow": {
+            "steps": [
+              "Product Type Selection",
+              "Flavor Detection",
+              "Item Evaluation",
+              "Submission"
+            ]
+          },
+          "dynamic_ui": {
+            "conditional_sections": "Show flavor detection after product type selection",
+            "interactive_flavor_grid": "Toggle flavor selection with visual feedback",
+            "intensity_sliders": "Only show for selected flavors"
+          },
+          "local_storage": {
+            "draft_key": "quick-tasting-draft",
+            "expiration": "24 hours",
+            "auto_restore": "Toast notification on successful restore"
+          }
+        },
+        "sections": [
+          {
+            "name": "product_selection",
+            "component": "Select with grouped options",
+            "data_source": "PRODUCT_TYPES.groups",
+            "validation": "Required before proceeding"
+          },
+          {
+            "name": "flavor_detection",
+            "conditional": "productType !== null",
+            "components": [
+              "FlavorGrid: grid-cols-2 md:grid-cols-3",
+              "CustomFlavorInput: with Enter key handler",
+              "IntensitySliders: for selected flavors only"
+            ]
+          },
+          {
+            "name": "item_evaluation",
+            "dynamic_repeater": "Add multiple tasting items",
+            "fields": [
+              "Name (required)",
+              "Photo (optional, placeholder)",
+              "Aroma (textarea)",
+              "Flavor (textarea, shows detected flavors)",
+              "Other Notes (textarea)",
+              "Overall Rating (0-100 slider)"
+            ]
+          }
+        ],
+        "state_management": {
+          "product_type": "string",
+          "flavors": "FlavorDescriptor[] with intensity and selection state",
+          "items": "TastingItem[] with nested evaluation data",
+          "custom_flavor_input": "string",
+          "is_submitting": "boolean",
+          "last_saved": "Date | null"
+        }
+      }
+    }
+  },
+
+  "design_system_patterns": {
+    "color_system": {
+      "primary_palette": {
+        "fx-primary": "#2E7D32",
+        "fx-primary-hover": "#256a29",
+        "fx-bg": "#FAF7F0",
+        "fx-card": "#FFFFFF",
+        "fx-border": "#E6E1D9",
+        "fx-text": "#1B1B18",
+        "fx-text-2": "#5A5A56",
+        "fx-text-muted": "#737373"
+      },
+      "semantic_colors": {
+        "success": "#10b981",
+        "warning": "#f59e0b",
+        "error": "#ef4444",
+        "info": "#3b82f6"
+      }
+    },
+
+    "typography_hierarchy": {
+      "display": {
+        "font_family": "Playfair Display, serif",
+        "sizes": ["24px", "20px"],
+        "weights": ["700", "600"],
+        "usage": ["Page titles", "Section headers"]
+      },
+      "body": {
+        "font_family": "Inter, sans-serif",
+        "sizes": ["16px", "14px", "12px"],
+        "weights": ["400", "500", "600"],
+        "usage": ["Body text", "Labels", "Captions"]
+      },
+      "mono": {
+        "font_family": "JetBrains Mono, monospace",
+        "usage": ["Code", "Technical content"]
+      }
+    },
+
+    "spacing_system": {
+      "scale": {
+        "xs": "4px",
+        "sm": "8px",
+        "md": "16px",
+        "lg": "24px",
+        "xl": "32px",
+        "2xl": "48px"
+      },
+      "layout_patterns": {
+        "card_padding": "16px 16px",
+        "section_spacing": "24px",
+        "item_spacing": "16px",
+        "touch_target": "44px minimum"
+      }
+    },
+
+    "component_patterns": {
+      "cards": {
+        "base_styling": "rounded-xl bg-white shadow-fx border border-fx-border",
+        "padding": "p-4 sm:p-5",
+        "header_pattern": "CardHeader with CardTitle text-lg font-bold",
+        "content_pattern": "CardContent with space-y-4"
+      },
+      "buttons": {
+        "primary": "bg-fx-primary text-white hover:bg-fx-primaryHover",
+        "secondary": "border border-fx-border bg-white text-fx-text hover:bg-[#F4F1EC]",
+        "sizes": {
+          "sm": "h-8 px-3",
+          "md": "h-9 px-4",
+          "lg": "h-10 px-6"
+        },
+        "touch_optimized": "min-h-[44px]"
+      },
+      "inputs": {
+        "base_styling": "min-h-[48px] rounded-lg border-[#D6D1C8] bg-white px-3 text-sm",
+        "focus_states": "focus:border-fx-primary focus:ring-2 focus:ring-fx-primary/20",
+        "validation_states": "error:border-red-500"
+      },
+      "form_layout": {
+        "field_spacing": "space-y-4",
+        "label_styling": "text-sm font-medium text-fx-text2 mb-2 block",
+        "required_indicators": "* text-red-500"
+      }
+    },
+
+    "responsive_patterns": {
+      "breakpoints": {
+        "sm": "640px",
+        "md": "768px",
+        "lg": "1024px",
+        "xl": "1280px"
+      },
+      "mobile_first": {
+        "container_max_width": "768px",
+        "horizontal_padding": "px-3 sm:px-4",
+        "spacing_adjustments": "space-y-6 sm:space-y-8"
+      },
+      "touch_optimizations": {
+        "min_touch_target": "44px",
+        "tap_highlight_removal": "-webkit-tap-highlight-color: transparent",
+        "safe_area_support": "pb-safe, env(safe-area-inset-bottom)"
+      }
+    }
+  },
+
+  "interaction_patterns": {
+    "navigation_flow": {
+      "landing_to_create": {
+        "trigger": "Create Tasting button",
+        "route": "/create",
+        "intermediate_step": "Product type selection",
+        "destination": "/create/study or /create/competition"
+      },
+      "create_to_tasting": {
+        "validation": "Complete form validation",
+        "submission": "CreateFooterActions primary button",
+        "navigation": "router.push('/en/landing')",
+        "feedback": "Loading states and success messages"
+      },
+      "quick_tasting_flow": {
+        "steps": [
+          "Product selection",
+          "Flavor detection",
+          "Item evaluation",
+          "Submission with confirmation"
+        ],
+        "navigation": "router.push('/quick-tasting/confirm')"
+      }
+    },
+
+    "form_interactions": {
+      "dynamic_fields": {
+        "add_remove_pattern": "Plus/Minus buttons with confirmation",
+        "validation_feedback": "Real-time field validation",
+        "auto_save": "2-second debounce with localStorage"
+      },
+      "conditional_ui": {
+        "evaluation_types": "Dynamic subfields based on selection",
+        "product_types": "Flavor defaults and grid visibility",
+        "ranking_categories": "Preloaded answers requirement"
+      },
+      "accessibility": {
+        "keyboard_navigation": "Full tab order support",
+        "screen_reader": "ARIA labels and live regions",
+        "focus_management": "Automatic focus on validation errors"
+      }
+    },
+
+    "mobile_interactions": {
+      "touch_gestures": {
+        "tap_targets": "44px minimum size",
+        "swipe_navigation": "Bottom navigation gestures",
+        "drag_interactions": "Slider components with touch feedback"
+      },
+      "performance": {
+        "smooth_scrolling": "webkit-overflow-scrolling: touch",
+        "animation_performance": "transform3d, will-change properties",
+        "loading_states": "Skeleton screens and progressive disclosure"
+      }
+    }
+  },
+
+  "performance_considerations": {
+    "bundle_optimization": {
+      "code_splitting": "Route-based splitting with Next.js App Router",
+      "tree_shaking": "Automatic with Next.js build system",
+      "dynamic_imports": "Lazy loading for heavy components"
+    },
+    "rendering_performance": {
+      "client_side_only": "'use client' directives for interactive components",
+      "state_optimization": "useMemo and useCallback for expensive operations",
+      "reconciliation": "React 18 concurrent features"
+    },
+    "asset_optimization": {
+      "images": "WebP/AVIF formats with automatic optimization",
+      "fonts": "display: swap for non-blocking loading",
+      "css": "Tailwind purging and optimization"
+    },
+    "mobile_performance": {
+      "touch_optimization": "Hardware acceleration for animations",
+      "memory_management": "Efficient state updates and cleanup",
+      "network_optimization": "Minimal bundle size for mobile networks"
+    }
+  },
+
+  "accessibility_compliance": {
+    "wcag_guidelines": {
+      "level": "WCAG 2.1 AA",
+      "contrast_ratios": "7:1 for normal text, 4.5:1 for large text",
+      "focus_indicators": "Clear focus rings with sufficient contrast",
+      "keyboard_support": "Full keyboard navigation support"
+    },
+    "semantic_html": {
+      "landmarks": "main, nav, section, header, footer",
+      "headings": "Proper h1-h6 hierarchy",
+      "lists": "Semantic list structures",
+      "forms": "Proper form structure with labels"
+    },
+    "aria_implementation": {
+      "labels": "aria-label for icon buttons",
+      "live_regions": "aria-live for status updates",
+      "descriptions": "aria-describedby for complex interactions",
+      "roles": "Explicit roles for custom components"
+    },
+    "mobile_accessibility": {
+      "touch_targets": "44px minimum touch target size",
+      "gesture_support": "Standard gesture patterns",
+      "screen_reader": "Comprehensive screen reader support"
+    }
+  },
+
+  "development_guidelines": {
+    "component_structure": {
+      "file_organization": "Feature-based organization in /components",
+      "naming_conventions": "PascalCase for components, kebab-case for files",
+      "prop_interfaces": "Typed interfaces for all component props"
+    },
+    "styling_approach": {
+      "utility_first": "Tailwind CSS utility classes",
+      "design_tokens": "CSS custom properties for theming",
+      "responsive_design": "Mobile-first approach",
+      "dark_mode": "CSS variables for theme switching"
+    },
+    "state_management": {
+      "local_state": "useState for component-level state",
+      "side_effects": "useEffect for async operations",
+      "form_state": "Controlled components with validation"
+    },
+    "testing_strategy": {
+      "unit_tests": "Component behavior testing",
+      "integration_tests": "User flow testing",
+      "accessibility_tests": "WCAG compliance testing",
+      "performance_tests": "Bundle size and runtime performance"
+    }
+  },
+
+  "implementation_recommendations": {
+    "critical_improvements": [
+      {
+        "priority": "high",
+        "area": "Performance",
+        "issue": "Bundle size optimization",
+        "solution": "Implement dynamic imports for heavy components"
+      },
+      {
+        "priority": "high",
+        "area": "Accessibility",
+        "issue": "Focus management in forms",
+        "solution": "Implement focus trapping in modals and better error focus"
+      },
+      {
+        "priority": "medium",
+        "area": "Mobile UX",
+        "issue": "Touch feedback",
+        "solution": "Add haptic feedback for touch interactions"
+      }
+    ],
+    "architectural_decisions": [
+      {
+        "decision": "Component composition",
+        "rationale": "Shared CreateShell, CreateHeader, CreateFooterActions for consistency",
+        "impact": "Reduced code duplication, consistent UX"
+      },
+      {
+        "decision": "Client-side rendering",
+        "rationale": "Interactive forms require client-side state management",
+        "impact": "Better user experience for complex forms"
+      },
+      {
+        "decision": "Mobile-first design",
+        "rationale": "Primary target is mobile users",
+        "impact": "Optimized performance and UX for mobile devices"
+      }
+    ],
+    "scaling_considerations": [
+      {
+        "aspect": "Component reusability",
+        "current_state": "Good - shared components across create pages",
+        "improvement": "Create component library with Storybook"
+      },
+      {
+        "aspect": "State management",
+        "current_state": "Local state with localStorage",
+        "improvement": "Consider Zustand or Redux for complex state"
+      },
+      {
+        "aspect": "Styling system",
+        "current_state": "Tailwind with design tokens",
+        "improvement": "Add design system documentation and tooling"
+      }
+    ]
+  },
+
+  "quality_assurance": {
+    "testing_coverage": {
+      "unit_tests": "Component rendering and logic",
+      "integration_tests": "Form submission flows",
+      "e2e_tests": "Complete user journeys",
+      "accessibility_tests": "WCAG compliance automation"
+    },
+    "performance_metrics": {
+      "bundle_size": "< 500KB for main chunks",
+      "first_contentful_paint": "< 1.5s",
+      "time_to_interactive": "< 3s",
+      "lighthouse_score": "> 90"
+    },
+    "cross_browser_support": {
+      "primary": "Chrome Mobile, Safari iOS",
+      "secondary": "Firefox Mobile, Samsung Internet",
+      "fallback": "Progressive enhancement for older browsers"
+    }
+  }
+}
