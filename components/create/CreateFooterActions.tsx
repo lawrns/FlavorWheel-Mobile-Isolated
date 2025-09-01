@@ -26,12 +26,12 @@ export function CreateFooterActions({
 
   return (
     <div
-      className="fixed bottom-16 left-0 right-0 z-[60] bg-white/95 backdrop-blur-sm border-t border-fx-border shadow-medium p-4 sm:p-5 pb-safe"
+      className="bg-white border border-fx-border rounded-xl shadow-soft p-4 sm:p-5 mt-8"
       role="region"
       aria-live="polite"
       data-testid="create-footer"
     >
-      <div className="max-w-[768px] mx-auto flex items-center gap-3">
+      <div className="flex items-center gap-3">
         {/* Secondary Action */}
         {secondaryLabel && onSecondary && (
           <Button

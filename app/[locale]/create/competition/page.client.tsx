@@ -822,20 +822,17 @@ export default function CreateCompetitionPage() {
           </Card>
         </section>
 
-        {/* Footer Actions - Fixed bottom */}
-        <div className="h-24"></div>
+        {/* Footer Actions - Static */}
+        <CreateFooterActions
+          primaryLabel="Create Competition"
+          onPrimary={handleCreateCompetition}
+          secondaryLabel="Cancel"
+          onSecondary={() => router.back()}
+          disabled={!isFormValid()}
+          busy={isSubmitting}
+          statusMessage={isSubmitting ? 'Creating competition...' : undefined}
+        />
       </div>
-
-      {/* Fixed Footer Actions */}
-      <CreateFooterActions
-        primaryLabel="Create Competition"
-        onPrimary={handleCreateCompetition}
-        secondaryLabel="Cancel"
-        onSecondary={() => router.back()}
-        disabled={!isFormValid()}
-        busy={isSubmitting}
-        statusMessage={isSubmitting ? 'Creating competition...' : undefined}
-      />
     </CreateShell>
   )
 }
