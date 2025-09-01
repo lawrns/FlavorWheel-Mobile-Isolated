@@ -12,7 +12,11 @@ export default function CreatePage() {
   const router = useRouter()
 
   const handleModeSelect = (mode: TastingMode) => {
-    setSelectedMode(mode)
+    if (mode === 'study') {
+      router.push('/en/create/study')
+    } else {
+      setSelectedMode(mode)
+    }
   }
 
   const handleBackToModes = () => {
