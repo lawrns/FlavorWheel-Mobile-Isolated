@@ -15,11 +15,14 @@ export default function LandingPage() {
 
   return (
     <div
-      className="overflow-x-hidden bg-cover bg-center bg-no-repeat"
+      className="overflow-x-hidden"
       style={{
         WebkitOverflowScrolling: 'touch',
         overscrollBehavior: 'none',
-        backgroundImage: 'url("/images/landing-bg-sd.jpg")',
+        backgroundImage: 'url(/images/landing-bg-sd.jpg)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
         minHeight: '100vh'
       }}
     >
