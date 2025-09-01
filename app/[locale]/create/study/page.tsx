@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, Plus, Minus, Camera, Upload, ChevronDown, X, Sparkles, FileText, Sliders, CheckSquare, Type, Search, Save } from 'lucide-react'
+import { Plus, Minus, Camera, Upload, ChevronDown, X, Sparkles, FileText, Sliders, CheckSquare, Type, Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -10,7 +10,9 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
 import { Slider } from '@/components/ui/slider'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import ProductTypeSelect from '@/components/ProductTypeSelect'
+import { CreateShell, CreateHeader, CreateFooterActions } from '@/components/create'
 
 
 // Enhanced types based on the updated JSON specification
@@ -44,6 +46,7 @@ interface FormData {
 
 
 
+// Evaluation type options
 const EVALUATION_TYPE_OPTIONS = [
   { value: 'subjective_input', label: 'Subjective Input', icon: FileText },
   { value: 'sliding_scale', label: 'Sliding Scale', icon: Sliders },
@@ -179,37 +182,76 @@ export default function CreateStudyPage() {
     setLastSaved(null)
   }
 
-  const handleCreateTasting = async () => {
-    // Validation
+  const validateAndFocusFirstError = () => {
+    // Check tasting name
     if (!formData.tasting_name.trim()) {
-      alert('Tasting name is required')
-      return
+      const nameInput = document.getElementById('tasting-name')
+      if (nameInput) {
+        nameInput.focus()
+        nameInput.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+      return 'Tasting name is required'
     }
 
+    // Check product type
     if (!formData.product_type) {
-      alert('Product type is required')
-      return
+      const productSelect = document.querySelector('[data-testid="select-product-type"]')
+      if (productSelect) {
+        productSelect.focus()
+        productSelect.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+      return 'Product type is required'
     }
 
-    if (formData.categories.some(cat => !cat.category_name.trim())) {
-      alert('Please fill in all category names')
-      return
+    // Check category names
+    for (let i = 0; i < formData.categories.length; i++) {
+      if (!formData.categories[i].category_name.trim()) {
+        const categoryInput = document.querySelector(`input[placeholder*="Category ${i + 1}"]`) ||
+                             document.querySelector(`input[placeholder*="Aroma"]`)
+        if (categoryInput) {
+          categoryInput.focus()
+          categoryInput.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }
+        return `Category ${i + 1} name is required`
+      }
     }
 
-    if (formData.items.some(item => !item.item_name.trim())) {
-      alert('Please fill in all item names')
+    // Check item names
+    for (let i = 0; i < formData.items.length; i++) {
+      if (!formData.items[i].item_name.trim()) {
+        const itemInput = document.querySelector(`input[placeholder*="Item ${i + 1}"]`)
+        if (itemInput) {
+          itemInput.focus()
+          itemInput.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }
+        return `Item ${i + 1} name is required`
+      }
+    }
+
+    return null
+  }
+
+  const handleCreateTasting = async () => {
+    const validationError = validateAndFocusFirstError()
+    if (validationError) {
+      // Could set a status message here if needed
       return
     }
 
     setIsSubmitting(true)
 
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000))
 
-    alert('Study Mode Tasting created successfully!')
-    router.push('/en/landing')
-
-    setIsSubmitting(false)
+      // Create draft tasting using existing logic
+      router.push('/en/landing')
+    } catch (error) {
+      console.error('Failed to create tasting:', error)
+      // Could set error status message here
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const isFormValid = () => {
@@ -222,43 +264,28 @@ export default function CreateStudyPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Enhanced Header with Auto-save */}
-      <header className="sticky top-0 z-10 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-[#e5e7eb]">
-        <div className="px-3 sm:px-4 py-4 flex items-center justify-between">
-          <button
-            onClick={() => router.back()}
-            className="h-10 w-10 inline-flex items-center justify-center rounded-md hover:bg-[#f9fafb] transition-colors"
-            data-testid="button-header-back"
-            aria-label="Back to Create Tasting"
-          >
-            <ArrowLeft className="h-5 w-5" />
-          </button>
-
-          <h1
-            className="text-3xl font-bold leading-9 tracking-tight flex-1 text-center"
-            style={{ fontFamily: "'Playfair Display', serif" }}
-          >
-            Create Study Mode Tasting
-          </h1>
-
-          <div className="text-xs text-[#737373]" data-testid="text-auto-saved">
-            {lastSaved && `Auto-saved ${lastSaved}`}
-          </div>
-        </div>
-      </header>
+    <CreateShell
+      header={
+        <CreateHeader
+          title="Study Session"
+          onBack={() => router.back()}
+          status={lastSaved ? 'saved' : null}
+        />
+      }
+      className="pb-20"
+    >
 
       {/* Enhanced Main Content */}
-      <main className="mx-auto max-w-[768px] px-3 sm:px-4 space-y-6 sm:space-y-8 pb-24">
+      <div className="mx-auto max-w-[768px] px-3 sm:px-4 space-y-6 sm:space-y-8">
         {/* Basic Information */}
         <section>
-          <Card className="rounded-[16px] shadow-[0_1px_3px_rgba(0,0,0,0.05)] bg-white p-4 sm:p-5">
+          <Card className="rounded-xl bg-white shadow-fx border border-fx-border p-4 sm:p-5">
             <CardHeader>
-              <CardTitle className="text-lg font-bold text-[#333333]">Basic Information</CardTitle>
+              <CardTitle className="text-lg font-bold text-fx-text">Basic Information</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label htmlFor="tasting-name" className="text-sm font-medium text-[#525252] mb-2 block">
+                <Label htmlFor="tasting-name" className="text-sm font-medium text-fx-text2 mb-2 block">
                   Tasting Name *
                 </Label>
                 <Input
@@ -267,13 +294,13 @@ export default function CreateStudyPage() {
                   placeholder="e.g., Red Wine Tasting 2024"
                   value={formData.tasting_name}
                   onChange={(e) => updateFormData({ tasting_name: e.target.value })}
-                  className="h-12 w-full rounded-md border border-[#e5e7eb] px-3 text-sm"
+                  className="min-h-[48px] w-full rounded-lg border border-[#D6D1C8] bg-white px-3 text-sm"
                   required
                 />
               </div>
 
               <div>
-                <Label htmlFor="product-type" className="text-sm font-medium text-[#525252] mb-2 block">
+                <Label htmlFor="product-type" className="text-sm font-medium text-fx-text2 mb-2 block">
                   Product Type *
                 </Label>
                 <ProductTypeSelect
@@ -284,7 +311,7 @@ export default function CreateStudyPage() {
               </div>
 
               <div>
-                <Label htmlFor="template" className="text-sm font-medium text-[#525252] mb-2 block">
+                <Label htmlFor="template" className="text-sm font-medium text-fx-text2 mb-2 block">
                   Templates
                 </Label>
                 <Button
@@ -292,17 +319,17 @@ export default function CreateStudyPage() {
                   id="template"
                   data-testid="button-template-picker"
                   variant="outline"
-                  className="h-12 w-full justify-start rounded-md border border-[#e5e7eb] px-3 text-sm"
+                  className="min-h-[48px] w-full justify-start rounded-lg border border-[#D6D1C8] bg-white px-3 text-sm"
                   onClick={() => alert('Template picker dialog would open here')}
                 >
                   <Sparkles className="h-4 w-4 mr-2" />
                   Choose Template
                 </Button>
-                <p className="text-xs text-[#737373] mt-1">Optional. Prefills categories.</p>
+                <p className="text-xs text-fx-muted mt-1">Optional. Prefills categories.</p>
               </div>
 
               <div className="flex items-center justify-between">
-                <Label htmlFor="blind-toggle" className="text-sm font-medium text-[#525252]">
+                <Label htmlFor="blind-toggle" className="text-sm font-medium text-fx-text2">
                   Blind Tasting
                 </Label>
                 <Switch
@@ -318,11 +345,11 @@ export default function CreateStudyPage() {
 
         {/* Enhanced Evaluation Categories with Collapsible */}
         <section>
-          <Card className="rounded-[16px] shadow-[0_1px_3px_rgba(0,0,0,0.05)] bg-white p-4 sm:p-5">
+          <Card className="rounded-xl bg-white shadow-fx border border-fx-border p-4 sm:p-5">
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="text-lg font-bold text-[#333333]">Evaluation Categories</CardTitle>
-                <p className="text-sm text-[#525252]">Define categories for evaluation (max 10)</p>
+                <CardTitle className="text-lg font-bold text-fx-text">Evaluation Categories</CardTitle>
+                <p className="text-sm text-fx-text2">Define categories for evaluation (max 10)</p>
               </div>
               <Button
                 type="button"
@@ -339,7 +366,7 @@ export default function CreateStudyPage() {
               <CardContent className="mt-4 space-y-4">
                 {/* Prefill Options */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-[#525252]">Quick Add:</Label>
+                  <Label className="text-sm font-medium text-fx-text2">Quick Add:</Label>
                   <div className="flex flex-wrap gap-2">
                     {['Aroma', 'Flavor', 'Texture'].map(name => (
                       <Button
@@ -348,7 +375,7 @@ export default function CreateStudyPage() {
                         variant="outline"
                         size="sm"
                         onClick={() => addPrefillCategory(name)}
-                        className="text-xs h-8"
+                        className="text-xs min-h-[32px] rounded-lg border border-[#D6D1C8] bg-white"
                       >
                         {name} (subjective)
                       </Button>
@@ -359,9 +386,9 @@ export default function CreateStudyPage() {
               {/* Categories Repeater */}
               <div data-testid="rep-categories" className="space-y-4">
                 {formData.categories.map((category, index) => (
-                  <div key={category.id} className="border border-[#E6E1D9] rounded-lg p-4 space-y-3">
+                  <div key={category.id} className="border border-fx-border rounded-lg p-4 space-y-3">
                     <div className="flex items-center justify-between">
-                      <Label className="text-sm font-semibold text-[#1B1B18]">
+                      <Label className="text-sm font-semibold text-fx-text">
                         Category {index + 1}
                       </Label>
                       {formData.categories.length > 1 && (
@@ -379,27 +406,27 @@ export default function CreateStudyPage() {
                     </div>
 
                     <div>
-                      <Label className="text-sm font-semibold text-[#1B1B18] mb-2 block">
+                      <Label className="text-sm font-semibold text-fx-text mb-2 block">
                         Category Name *
                       </Label>
                       <Input
                         placeholder="e.g., Aroma / Flavor / Texture"
                         value={category.category_name}
                         onChange={(e) => updateCategory(category.id, { category_name: e.target.value })}
-                        className="w-full rounded-lg border-[#D6D1C8] bg-white p-3 text-sm"
+                        className="w-full min-h-[48px] rounded-lg border-[#D6D1C8] bg-white p-3 text-sm"
                         required
                       />
                     </div>
 
                     <div>
-                      <Label className="text-sm font-semibold text-[#1B1B18] mb-2 block">
+                      <Label className="text-sm font-semibold text-fx-text mb-2 block">
                         Evaluation Type
                       </Label>
                       <Select
                         value={category.evaluation_type}
                         onValueChange={(value: EvaluationType) => updateCategory(category.id, { evaluation_type: value })}
                       >
-                        <SelectTrigger className="w-full rounded-lg border-[#D6D1C8] bg-white p-3 text-sm">
+                        <SelectTrigger className="w-full min-h-[48px] rounded-lg border-[#D6D1C8] bg-white p-3 text-sm">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -415,7 +442,7 @@ export default function CreateStudyPage() {
                     {/* Dynamic subfields based on evaluation type */}
                     {category.evaluation_type === 'multiple_choice' && (
                       <div>
-                        <Label className="text-sm font-semibold text-[#1B1B18] mb-2 block">
+                        <Label className="text-sm font-semibold text-fx-text mb-2 block">
                           Options
                         </Label>
                         <Textarea
@@ -431,11 +458,11 @@ export default function CreateStudyPage() {
 
                     {category.evaluation_type === 'sliding_scale' && (
                       <div>
-                        <Label className="text-sm font-semibold text-[#1B1B18] mb-2 block">
+                        <Label className="text-sm font-semibold text-fx-text mb-2 block">
                           Scale Settings
                         </Label>
                         <div className="space-y-2">
-                          <div className="flex justify-between text-xs text-[#5A5A56]">
+                          <div className="flex justify-between text-xs text-fx-text2">
                             <span>Min: {category.scale_meta?.min || 0}</span>
                             <span>Max: {category.scale_meta?.max || 100}</span>
                           </div>
@@ -455,20 +482,20 @@ export default function CreateStudyPage() {
 
                     {category.evaluation_type === 'contains_x' && (
                       <div>
-                        <Label className="text-sm font-semibold text-[#1B1B18] mb-2 block">
+                        <Label className="text-sm font-semibold text-fx-text mb-2 block">
                           Target substring
                         </Label>
                         <Input
                           placeholder="e.g., cabernet"
                           value={category.contains_value || ''}
                           onChange={(e) => updateCategory(category.id, { contains_value: e.target.value })}
-                          className="w-full rounded-lg border-[#D6D1C8] bg-white p-3 text-sm"
+                          className="w-full min-h-[48px] rounded-lg border-[#D6D1C8] bg-white p-3 text-sm"
                         />
                       </div>
                     )}
 
                     <div>
-                      <Label className="text-sm font-semibold text-[#1B1B18] mb-2 block">
+                      <Label className="text-sm font-semibold text-fx-text mb-2 block">
                         Notes Helper (optional)
                       </Label>
                       <Textarea
@@ -487,7 +514,7 @@ export default function CreateStudyPage() {
                   type="button"
                   onClick={addCategory}
                   data-testid="btn-add-category"
-                  className="w-full h-12 rounded-xl font-semibold bg-[#2E7D32] text-white hover:bg-[#7FB889]"
+                  className="w-full min-h-[48px] rounded-xl font-semibold bg-fx-primary text-white hover:bg-fx-primaryHover"
                   aria-label="Add category"
                 >
                   <Plus className="h-4 w-4 mr-2" />
@@ -501,17 +528,17 @@ export default function CreateStudyPage() {
 
         {/* Items to Taste */}
         <section>
-          <Card className="rounded-xl bg-white shadow-md">
+          <Card className="rounded-xl bg-white shadow-fx border border-fx-border p-4 sm:p-5">
             <CardHeader>
-              <CardTitle className="text-lg font-bold text-[#1B1B18]">Items to Taste</CardTitle>
-              <p className="text-sm text-[#5A5A56]">Add the items participants will evaluate</p>
+              <CardTitle className="text-lg font-bold text-fx-text">Items to Taste</CardTitle>
+              <p className="text-sm text-fx-text2">Add the items participants will evaluate</p>
             </CardHeader>
             <CardContent className="space-y-4">
               <div data-testid="rep-items" className="space-y-4">
                 {formData.items.map((item, index) => (
-                  <div key={item.id} className="border border-[#E6E1D9] rounded-lg p-4 space-y-3">
+                  <div key={item.id} className="border border-fx-border rounded-lg p-4 space-y-3">
                     <div className="flex items-center justify-between">
-                      <Label className="text-sm font-semibold text-[#1B1B18]">
+                      <Label className="text-sm font-semibold text-fx-text">
                         Item {index + 1}
                       </Label>
                       {formData.items.length > 1 && (
@@ -529,20 +556,20 @@ export default function CreateStudyPage() {
                     </div>
 
                     <div>
-                      <Label className="text-sm font-semibold text-[#1B1B18] mb-2 block">
+                      <Label className="text-sm font-semibold text-fx-text mb-2 block">
                         Item Name *
                       </Label>
                       <Input
                         placeholder="Item 1"
                         value={item.item_name}
                         onChange={(e) => updateItem(item.id, { item_name: e.target.value })}
-                        className="w-full rounded-lg border-[#D6D1C8] bg-white p-3 text-sm"
+                        className="w-full min-h-[48px] rounded-lg border-[#D6D1C8] bg-white p-3 text-sm"
                         required
                       />
                     </div>
 
                     <div>
-                      <Label className="text-sm font-semibold text-[#1B1B18] mb-2 block">
+                      <Label className="text-sm font-semibold text-fx-text mb-2 block">
                         Description (Optional)
                       </Label>
                       <Textarea
@@ -554,14 +581,14 @@ export default function CreateStudyPage() {
                     </div>
 
                     <div>
-                      <Label className="text-sm font-semibold text-[#1B1B18] mb-2 block">
+                      <Label className="text-sm font-semibold text-fx-text mb-2 block">
                         Image (Optional)
                       </Label>
                       <div className="flex gap-2">
                         <Button
                           type="button"
                           variant="outline"
-                          className="flex-1 h-12 rounded-xl border-[#D6D1C8]"
+                          className="flex-1 min-h-[48px] rounded-xl border-[#D6D1C8] bg-white"
                         >
                           <Camera className="h-4 w-4 mr-2" />
                           Take Photo
@@ -569,7 +596,7 @@ export default function CreateStudyPage() {
                         <Button
                           type="button"
                           variant="outline"
-                          className="flex-1 h-12 rounded-xl border-[#D6D1C8]"
+                          className="flex-1 min-h-[48px] rounded-xl border-[#D6D1C8] bg-white"
                         >
                           <Upload className="h-4 w-4 mr-2" />
                           Upload Image
@@ -584,7 +611,7 @@ export default function CreateStudyPage() {
                 type="button"
                 onClick={addItem}
                 data-testid="btn-add-item"
-                className="w-full h-12 rounded-xl font-semibold bg-[#2E7D32] text-white hover:bg-[#7FB889]"
+                className="w-full min-h-[48px] rounded-xl font-semibold bg-fx-primary text-white hover:bg-fx-primaryHover"
                 aria-label="Add item"
               >
                 <Plus className="h-4 w-4 mr-2" />
@@ -593,32 +620,20 @@ export default function CreateStudyPage() {
             </CardContent>
           </Card>
         </section>
-      </main>
 
-      {/* Sticky Footer */}
-      <footer className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t border-[#E6E1D9] p-4 pb-safe">
-        <div className="flex gap-3 max-w-md mx-auto">
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={clearDraft}
-            data-testid="btn-clear"
-            className="flex-1 h-12 rounded-xl border-[#E6E1D9] font-semibold"
-            disabled={isSubmitting}
-          >
-            Clear Draft
-          </Button>
-          <Button
-            type="button"
-            onClick={handleCreateTasting}
-            data-testid="btn-create"
-            className="flex-1 h-12 rounded-xl font-semibold bg-[#2E7D32] text-white hover:bg-[#7FB889]"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? 'Creating...' : 'Create Tasting'}
-          </Button>
-        </div>
-      </footer>
-    </div>
+        {/* Footer Actions - Non-sticky, integrated into page flow */}
+        <section className="mt-8">
+          <CreateFooterActions
+            primaryLabel="Create Study"
+            onPrimary={handleCreateTasting}
+            secondaryLabel="Cancel"
+            onSecondary={() => router.back()}
+            disabled={!isFormValid()}
+            busy={isSubmitting}
+            statusMessage={isSubmitting ? 'Creating tasting...' : undefined}
+          />
+        </section>
+      </div>
+    </CreateShell>
   )
 }

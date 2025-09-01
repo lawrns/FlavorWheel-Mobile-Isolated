@@ -20,16 +20,17 @@ const config: Config = {
     },
     extend: {
       colors: {
-        // Design Token Colors
-        'primary-green': '#4A704A',
-        'background-cream': '#FAF7F2',
-        'text-black': '#000000',
-        'text-gray': '#6B7280',
-        'card-white': '#FFFFFF',
-        'card-beige': '#F5F1E8',
-        'border-light': '#E5E7EB',
-        'button-black': '#000000',
-        'button-green': '#4A704A',
+        // fx Design Tokens
+        fx: {
+          bg: 'var(--fx-bg)',
+          card: 'var(--fx-card)',
+          border: 'var(--fx-border)',
+          text: 'var(--fx-text)',
+          text2: 'var(--fx-text-2)',
+          muted: 'var(--fx-text-muted)',
+          primary: 'var(--fx-primary)',
+          primaryHover: 'var(--fx-primary-hover)'
+        },
 
         // Legacy colors (keeping for compatibility)
         border: 'hsl(var(--border))',
@@ -67,17 +68,13 @@ const config: Config = {
         },
       },
       borderRadius: {
-        // Design Token Border Radius
-        'border-radius-card': '8px',
-        'border-radius-button': '9999px',
-
+        xl: '16px',
         // Legacy border radius
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
         card: '16px',
         pill: '9999px',
-        xl: '1rem',
       },
       fontFamily: {
         sans: ["'Inter', sans-serif"],
@@ -127,6 +124,7 @@ const config: Config = {
         '5xl': ['3rem', { lineHeight: '1' }],
       },
       boxShadow: {
+        fx: '0 1px 3px rgba(0,0,0,0.05)',
         subtle: '0 1px 3px rgba(0,0,0,0.05)',
         soft: '0 2px 6px rgba(0,0,0,0.05)',
         medium: '0 4px 12px rgba(0,0,0,0.08)',

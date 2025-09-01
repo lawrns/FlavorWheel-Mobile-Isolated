@@ -1,0 +1,586 @@
+{
+  "audit_metadata": {
+    "created_at": "2024-01-01T00:00:00Z",
+    "audit_type": "comprehensive_ui_functional_analysis",
+    "purpose": "Complete analysis for UI expert feedback covering technical, functional, and design aspects",
+    "scope": ["/en/create/competition", "/en/create/study"],
+    "analysis_depth": ["technical_implementation", "business_logic", "ui_design", "user_experience", "accessibility", "performance", "integration", "future_extensibility"]
+  },
+
+  "competition_mode_analysis": {
+    "overview": {
+      "name": "Competition Mode",
+      "route": "/en/create/competition",
+      "purpose": "Create structured tasting competitions with scoring, ranking, and pre-loaded correct answers",
+      "target_users": ["Competition organizers", "Wine judges", "Sensory evaluation professionals", "Educational institutions"],
+      "use_cases": [
+        "Wine competitions with blind judging",
+        "Product comparison studies with known standards",
+        "Certification exams for tasters",
+        "Professional sensory panels",
+        "Educational tasting exercises with answer keys"
+      ],
+      "key_differentiators": [
+        "Pre-loaded correct answers for ranking categories",
+        "Blind tasting toggle",
+        "Competition description field",
+        "Scoring and ranking system",
+        "Judge vs participant workflow separation"
+      ]
+    },
+
+    "business_logic": {
+      "core_workflow": {
+        "step_1": "Competition organizer defines competition parameters",
+        "step_2": "Sets up evaluation categories with ranking inclusion",
+        "step_3": "Adds items to be tasted with pre-loaded correct answers",
+        "step_4": "Configures blind tasting settings",
+        "step_5": "Creates competition for participant access"
+      },
+      "data_model": {
+        "competition_entity": {
+          "name": "string (required)",
+          "description": "string (optional)",
+          "product_type": "string (required)",
+          "blind_tasting": "boolean",
+          "created_by": "user_id",
+          "created_at": "timestamp",
+          "status": "enum: draft|active|completed"
+        },
+        "evaluation_categories": {
+          "name": "string (required)",
+          "type": "enum: subjective_input|multiple_choice|sliding_scale|exact_answer|contains_x",
+          "include_in_ranking": "boolean (default: true)",
+          "configuration": {
+            "multiple_choice": "string[] (options array)",
+            "sliding_scale": "{ min: number, max: number, step: number }",
+            "exact_answer": "string (expected answer)",
+            "contains_x": "string (substring to match)",
+            "subjective_input": "string (placeholder text)"
+          }
+        },
+        "competition_items": {
+          "name": "string (required)",
+          "description": "string (optional)",
+          "image": "File (optional)",
+          "preloaded_answers": "Record<categoryId, any> (for ranking categories)"
+        },
+        "participant_responses": {
+          "participant_id": "string",
+          "item_id": "string",
+          "category_id": "string",
+          "response": "any (depends on category type)",
+          "timestamp": "Date"
+        }
+      },
+      "scoring_algorithm": {
+        "ranking_categories": "Categories marked for inclusion in final ranking",
+        "correct_answers": "Pre-loaded answers for ranking categories",
+        "participant_scoring": "Compare responses to correct answers",
+        "ranking_calculation": "Aggregate scores across all items and ranking categories",
+        "tie_breaking": "Timestamp-based or secondary criteria"
+      }
+    },
+
+    "technical_implementation": {
+      "architecture": {
+        "framework": "Next.js 14+ with App Router",
+        "ui_library": "Custom component system with Tailwind CSS",
+        "state_management": "React useState with local auto-save",
+        "form_handling": "Controlled components with validation",
+        "routing": "Next.js navigation with dynamic routes"
+      },
+      "component_structure": {
+        "CreateShell": "Layout wrapper with header/footer slots",
+        "CreateHeader": "Navigation and status display",
+        "CreateFooterActions": "Primary/secondary action buttons",
+        "FormSections": [
+          "BasicInformation",
+          "EvaluationCategories (collapsible)",
+          "ItemsToTaste (collapsible)"
+        ]
+      },
+      "state_management": {
+        "formData": "Complete competition configuration state",
+        "isSubmitting": "Loading state for API calls",
+        "lastSaved": "Auto-save timestamp for UX feedback",
+        "categoriesExpanded": "UI state for collapsible sections",
+        "validationErrors": "Real-time validation state"
+      },
+      "validation_logic": {
+        "required_fields": ["competition_name", "product_type"],
+        "dynamic_validation": [
+          "All category names must be non-empty",
+          "All item names must be non-empty",
+          "Ranking categories must have pre-loaded answers for all items"
+        ],
+        "field_focus_logic": "On validation error, focus first invalid field with smooth scroll",
+        "real_time_validation": "Validate as user types, show inline errors"
+      },
+      "data_persistence": {
+        "auto_save": "Every 2 seconds to localStorage",
+        "draft_recovery": "Load from localStorage on component mount",
+        "api_integration": "POST to /api/competitions with full payload",
+        "error_handling": "Graceful degradation with user feedback"
+      }
+    },
+
+    "ui_design_system": {
+      "layout_patterns": {
+        "shell_layout": "Fixed header + scrollable content + sticky footer",
+        "content_container": "max-w-[768px] mx-auto px-3 sm:px-4",
+        "spacing_system": "space-y-6 sm:space-y-8 between sections",
+        "card_design": "rounded-xl bg-white shadow-fx border border-fx-border p-4 sm:p-5"
+      },
+      "color_system": {
+        "primary": "--fx-primary (#2E7D32)",
+        "background": "--fx-bg (#FAF7F0)",
+        "surface": "--fx-card (#FFFFFF)",
+        "border": "--fx-border (#E6E1D9)",
+        "text_primary": "--fx-text (#1B1B18)",
+        "text_secondary": "--fx-text-2 (#5A5A56)",
+        "text_muted": "--fx-text-muted (#737373)"
+      },
+      "typography_scale": {
+        "page_title": "text-3xl font-bold",
+        "card_title": "text-lg font-bold",
+        "section_title": "text-base font-semibold",
+        "body_text": "text-sm",
+        "label_text": "text-sm font-medium"
+      },
+      "component_patterns": {
+        "buttons": {
+          "primary": "h-11 px-4 rounded-xl bg-fx-primary text-white hover:bg-fx-primaryHover",
+          "secondary": "h-11 px-4 rounded-xl border border-fx-border bg-white text-fx-text hover:bg-[#F4F1EC]",
+          "ghost": "h-10 rounded-xl hover:bg-black/5"
+        },
+        "inputs": {
+          "standard": "min-h-[48px] rounded-lg border border-[#D6D1C8] bg-white px-3 text-sm",
+          "textarea": "min-h-[88px] rounded-lg border border-[#D6D1C8] bg-white px-3 py-3 text-sm"
+        },
+        "form_fields": {
+          "label": "text-sm font-medium text-fx-text2 mb-2 block",
+          "error": "text-sm text-red-600 mt-1",
+          "helper": "text-xs text-fx-muted mt-1"
+        }
+      }
+    },
+
+    "user_experience_flow": {
+      "entry_points": [
+        "From main create menu selection",
+        "Direct URL navigation",
+        "Deep link from saved draft"
+      ],
+      "progression_states": {
+        "draft": "Form is incomplete, auto-saving enabled",
+        "ready": "All required fields filled, can create competition",
+        "submitting": "API call in progress, show loading state",
+        "success": "Competition created, navigate to management screen",
+        "error": "API call failed, show retry options"
+      },
+      "form_sections": {
+        "basic_information": {
+          "order": 1,
+          "required": true,
+          "fields": ["competition_name", "description", "product_type", "template", "blind_toggle"],
+          "validation": "competition_name and product_type required"
+        },
+        "evaluation_categories": {
+          "order": 2,
+          "required": true,
+          "collapsible": true,
+          "dynamic": true,
+          "max_items": 10,
+          "validation": "All categories must have names, ranking categories need preloaded answers"
+        },
+        "items_to_taste": {
+          "order": 3,
+          "required": true,
+          "collapsible": true,
+          "dynamic": true,
+          "validation": "All items must have names"
+        }
+      },
+      "interaction_patterns": {
+        "add_remove_items": "Plus/minus buttons with visual feedback",
+        "expand_collapse": "ChevronDown icon with rotation animation",
+        "field_focus": "Smooth scroll to invalid fields on validation error",
+        "auto_save": "Visual indicator in header showing last save time",
+        "loading_states": "Skeleton loaders and disabled states during submission"
+      }
+    },
+
+    "accessibility_compliance": {
+      "wcag_standards": ["WCAG 2.1 AA compliance"],
+      "screen_reader_support": {
+        "semantic_html": "Proper heading hierarchy, form labels, ARIA landmarks",
+        "live_regions": "aria-live='polite' for status messages",
+        "focus_management": "Logical tab order, focus trapping in modals",
+        "error_announcements": "Field errors announced to screen readers"
+      },
+      "keyboard_navigation": {
+        "tab_order": "Logical progression through all interactive elements",
+        "keyboard_shortcuts": "Enter to submit, Escape to cancel",
+        "focus_indicators": "Visible focus rings on all interactive elements",
+        "skip_links": "Skip to main content, skip to navigation"
+      },
+      "touch_accessibility": {
+        "touch_targets": "Minimum 44px touch targets",
+        "gesture_support": "Swipe to navigate between sections",
+        "haptic_feedback": "Vibration on button presses (mobile)"
+      },
+      "visual_accessibility": {
+        "color_contrast": "All text meets 4.5:1 contrast ratio",
+        "text_scaling": "Supports browser zoom up to 200%",
+        "high_contrast": "Works with high contrast mode",
+        "reduced_motion": "Respects prefers-reduced-motion"
+      }
+    },
+
+    "performance_considerations": {
+      "bundle_splitting": "Lazy load complex components like image upload",
+      "render_optimization": "Memoize expensive calculations and form sections",
+      "network_optimization": "Debounced auto-save, compressed images",
+      "memory_management": "Clean up file references, limit concurrent uploads",
+      "mobile_performance": "Virtual scrolling for large item lists"
+    },
+
+    "integration_points": {
+      "api_endpoints": [
+        "POST /api/competitions - Create new competition",
+        "GET /api/templates - Fetch available templates",
+        "POST /api/upload - Image upload endpoint"
+      ],
+      "data_flow": {
+        "create_competition": "Form data → API → Database → Return competition ID",
+        "template_application": "Template selection → Form pre-population",
+        "image_upload": "File selection → Upload → URL generation → Form update"
+      },
+      "external_services": [
+        "Image hosting service for uploaded photos",
+        "Template library service",
+        "Analytics tracking for user behavior"
+      ]
+    },
+
+    "edge_cases_and_error_handling": {
+      "network_failures": "Offline mode with local storage, retry mechanisms",
+      "large_forms": "Pagination for >50 items, search/filter for categories",
+      "browser_compatibility": "Progressive enhancement for older browsers",
+      "data_corruption": "Validation on load, graceful fallback to defaults",
+      "concurrent_editing": "Last-write-wins with conflict resolution UI"
+    },
+
+    "future_extensibility": {
+      "modular_evaluation_types": "Plugin system for custom evaluation methods",
+      "template_marketplace": "User-generated template sharing",
+      "advanced_scoring": "Weighted categories, custom algorithms",
+      "real_time_collaboration": "Multi-user competition creation",
+      "ai_powered_suggestions": "Smart template recommendations"
+    }
+  },
+
+  "study_mode_analysis": {
+    "overview": {
+      "name": "Study Mode",
+      "route": "/en/create/study",
+      "purpose": "Create flexible tasting studies for learning, research, and sensory analysis",
+      "target_users": ["Students", "Researchers", "Sensory analysts", "Wine educators", "Product developers"],
+      "use_cases": [
+        "Educational tasting exercises",
+        "Sensory research studies",
+        "Product development testing",
+        "Quality control assessments",
+        "Personal tasting journals",
+        "Group learning sessions"
+      ],
+      "key_differentiators": [
+        "Flexible evaluation categories",
+        "No pre-loaded answers (exploratory learning)",
+        "Template-based quick setup",
+        "Research-oriented data collection",
+        "Educational focus with detailed notes"
+      ]
+    },
+
+    "business_logic": {
+      "core_workflow": {
+        "step_1": "Researcher/student defines study parameters",
+        "step_2": "Selects or creates custom evaluation categories",
+        "step_3": "Adds items to be evaluated",
+        "step_4": "Configures blind tasting and templates",
+        "step_5": "Creates study for data collection"
+      },
+      "data_model": {
+        "study_entity": {
+          "name": "string (required)",
+          "product_type": "string (required)",
+          "blind_tasting": "boolean",
+          "template_id": "string (optional)",
+          "created_by": "user_id",
+          "created_at": "timestamp",
+          "status": "enum: draft|active|completed|archived"
+        },
+        "evaluation_categories": {
+          "name": "string (required)",
+          "type": "enum: subjective_input|multiple_choice|sliding_scale|exact_answer|contains_x",
+          "configuration": {
+            "multiple_choice": "string[] (options array)",
+            "sliding_scale": "{ min: number, max: number, step: number }",
+            "exact_answer": "string (placeholder)",
+            "contains_x": "string (substring to match)",
+            "subjective_input": "string (notes placeholder)"
+          }
+        },
+        "study_items": {
+          "name": "string (required)",
+          "description": "string (optional)",
+          "image": "File (optional)"
+        },
+        "participant_responses": {
+          "participant_id": "string",
+          "item_id": "string",
+          "category_id": "string",
+          "response": "any (depends on category type)",
+          "notes": "string (optional subjective notes)",
+          "timestamp": "Date"
+        }
+      },
+      "analysis_capabilities": {
+        "qualitative_analysis": "Subjective notes and descriptions",
+        "quantitative_analysis": "Scale ratings and multiple choice responses",
+        "comparative_analysis": "Cross-participant response aggregation",
+        "trend_analysis": "Time-based response patterns",
+        "segmentation": "Demographic and group-based analysis"
+      }
+    },
+
+    "technical_implementation": {
+      "architecture": {
+        "framework": "Next.js 14+ with App Router",
+        "ui_library": "Custom component system with Tailwind CSS",
+        "state_management": "React useState with auto-save to localStorage",
+        "form_handling": "Controlled components with real-time validation",
+        "routing": "Next.js navigation with dynamic study routes"
+      },
+      "component_structure": {
+        "CreateShell": "Unified layout wrapper",
+        "CreateHeader": "Navigation and auto-save status",
+        "CreateFooterActions": "Primary/secondary action buttons",
+        "FormSections": [
+          "BasicInformation",
+          "EvaluationCategories (collapsible)",
+          "ItemsToTaste"
+        ],
+        "TemplateSelector": "Modal dialog for template selection",
+        "ImageUpload": "Camera and file upload components"
+      },
+      "state_management": {
+        "formData": "Complete study configuration",
+        "isSubmitting": "API submission loading state",
+        "lastSaved": "Auto-save timestamp",
+        "categoriesExpanded": "UI collapse state",
+        "validationState": "Real-time field validation"
+      },
+      "validation_logic": {
+        "required_fields": ["tasting_name", "product_type"],
+        "dynamic_validation": [
+          "All category names must be non-empty",
+          "All item names must be non-empty",
+          "Category configurations must be valid for their types"
+        ],
+        "smart_focus": "Focus first invalid field with smooth scroll animation",
+        "inline_validation": "Show errors as user types"
+      },
+      "data_persistence": {
+        "auto_save": "2-second debounced localStorage saves",
+        "draft_recovery": "Load saved drafts on mount",
+        "api_integration": "POST /api/studies with serialized data",
+        "offline_support": "Local storage with sync on reconnection"
+      }
+    },
+
+    "ui_design_system": {
+      "layout_patterns": {
+        "responsive_container": "max-w-[768px] mx-auto with mobile-first padding",
+        "section_spacing": "space-y-6 sm:space-y-8 between major sections",
+        "card_consistency": "rounded-xl shadow-fx border border-fx-border p-4 sm:p-5",
+        "form_layout": "Vertical stacking with consistent label-input spacing"
+      },
+      "interactive_elements": {
+        "dynamic_lists": "Add/remove buttons with visual feedback",
+        "collapsible_sections": "ChevronDown with rotation animation",
+        "template_selector": "Modal with grid layout and search",
+        "image_upload": "Camera/file picker with preview",
+        "evaluation_type_selector": "Dropdown with icons and descriptions"
+      },
+      "feedback_systems": {
+        "auto_save_indicator": "Header status with timestamp",
+        "validation_errors": "Inline error messages with field focus",
+        "loading_states": "Skeleton loaders and disabled interactions",
+        "success_feedback": "Toast notifications and navigation"
+      }
+    },
+
+    "user_experience_flow": {
+      "onboarding_journey": {
+        "first_time": "Template selection modal appears",
+        "experienced": "Direct form entry with quick-add options",
+        "educational": "Helpful placeholders and tooltips"
+      },
+      "form_progression": {
+        "basic_setup": "Name, type, template selection",
+        "category_design": "Define evaluation framework",
+        "item_collection": "Add items to be tasted",
+        "review_submit": "Validate and create study"
+      },
+      "power_user_features": {
+        "bulk_operations": "Import items from CSV",
+        "template_creation": "Save custom templates",
+        "advanced_filtering": "Search and filter large item lists",
+        "keyboard_shortcuts": "Accelerated form navigation"
+      }
+    },
+
+    "accessibility_compliance": {
+      "keyboard_support": {
+        "full_navigation": "Tab through all form elements",
+        "shortcut_keys": "Ctrl+Enter to submit, Escape to cancel",
+        "focus_trapping": "Proper focus management in modals"
+      },
+      "screen_reader_optimization": {
+        "semantic_structure": "Proper headings, landmarks, and form labels",
+        "contextual_help": "ARIA descriptions for complex interactions",
+        "progress_announcements": "Status updates for long operations"
+      },
+      "mobile_accessibility": {
+        "touch_targets": "44px minimum touch targets",
+        "gesture_recognition": "Swipe gestures for navigation",
+        "voice_control": "VoiceOver and TalkBack compatibility"
+      }
+    },
+
+    "performance_optimization": {
+      "render_efficiency": "Virtual scrolling for large item lists",
+      "image_handling": "Lazy loading and progressive enhancement",
+      "form_debouncing": "Debounced validation and auto-save",
+      "bundle_optimization": "Code splitting for heavy components"
+    },
+
+    "integration_points": {
+      "api_contracts": {
+        "create_study": "POST /api/studies with full study payload",
+        "template_library": "GET /api/templates with filtering",
+        "image_processing": "POST /api/upload with compression"
+      },
+      "external_dependencies": [
+        "Image processing service",
+        "Template marketplace",
+        "Analytics and tracking",
+        "Export functionality"
+      ]
+    },
+
+    "edge_cases_and_robustness": {
+      "network_resilience": "Offline draft saving with sync",
+      "data_validation": "Comprehensive input sanitization",
+      "browser_compatibility": "Graceful degradation",
+      "large_dataset_handling": "Pagination and search",
+      "error_recovery": "Automatic retry with user feedback"
+    },
+
+    "future_extensibility": {
+      "ai_integration": "Smart template suggestions",
+      "collaborative_editing": "Multi-user study creation",
+      "advanced_analytics": "Built-in statistical analysis",
+      "api_integrations": "Third-party sensory tools",
+      "custom_evaluation_types": "Plugin system for specialized analysis"
+    }
+  },
+
+  "cross_mode_comparison": {
+    "shared_architecture": {
+      "common_components": ["CreateShell", "CreateHeader", "CreateFooterActions"],
+      "shared_utilities": ["Form validation", "Auto-save", "Image upload"],
+      "consistent_patterns": ["Layout structure", "Color system", "Typography"],
+      "reusable_logic": ["Field validation", "Error handling", "State management"]
+    },
+    "functional_differences": {
+      "competition_mode": {
+        "pre_loaded_answers": true,
+        "ranking_system": true,
+        "judge_participant_separation": true,
+        "competition_management": true
+      },
+      "study_mode": {
+        "exploratory_learning": true,
+        "flexible_categories": true,
+        "research_focus": true,
+        "educational_tools": true
+      }
+    },
+    "ui_differences": {
+      "competition_mode": {
+        "ranking_toggle": true,
+        "answer_preloading_ui": true,
+        "competition_description": true,
+        "judge_workflow_indicators": true
+      },
+      "study_mode": {
+        "template_marketplace": true,
+        "research_tools": true,
+        "educational_guidance": true,
+        "flexible_configuration": true
+      }
+    }
+  },
+
+  "recommendations_for_ui_expert": {
+    "design_system_consistency": {
+      "color_hierarchy": "Ensure all states have proper contrast ratios",
+      "spacing_scale": "Standardize spacing tokens across all components",
+      "interaction_patterns": "Consistent hover/focus/active states",
+      "loading_states": "Unified skeleton and spinner designs"
+    },
+    "usability_improvements": {
+      "progress_indicators": "Visual progress through multi-step forms",
+      "contextual_help": "Inline tooltips and help text",
+      "error_prevention": "Smart defaults and validation hints",
+      "mobile_optimization": "Thumb-friendly interaction zones"
+    },
+    "accessibility_enhancements": {
+      "error_grouping": "Summary of all validation errors",
+      "progress_announcements": "Screen reader progress updates",
+      "keyboard_optimization": "Logical tab order and shortcuts",
+      "high_contrast_support": "WCAG AAA compliance"
+    },
+    "performance_considerations": {
+      "bundle_analysis": "Identify and optimize large components",
+      "render_profiling": "Optimize re-rendering patterns",
+      "image_optimization": "WebP support and lazy loading",
+      "caching_strategy": "Service worker for offline capability"
+    }
+  },
+
+  "implementation_guidelines": {
+    "development_phases": [
+      "Phase 1: Core functionality and validation",
+      "Phase 2: UI polish and accessibility",
+      "Phase 3: Performance optimization",
+      "Phase 4: Advanced features and integrations"
+    ],
+    "testing_strategy": {
+      "unit_tests": "Component logic and validation functions",
+      "integration_tests": "Form submission and API integration",
+      "e2e_tests": "Complete user workflows",
+      "accessibility_tests": "WCAG compliance validation"
+    },
+    "deployment_considerations": {
+      "feature_flags": "Gradual rollout with A/B testing",
+      "monitoring": "Error tracking and performance metrics",
+      "rollback_plan": "Quick reversion to previous version",
+      "user_feedback": "In-app feedback collection"
+    }
+  }
+}

@@ -2,9 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Design Token CSS Variables */
+/* fx Design Token CSS Variables */
 :root {
-  /* Colors */
+  /* fx Colors */
+  --fx-bg: #FAF7F0;
+  --fx-card: #FFFFFF;
+  --fx-border: #E6E1D9;
+  --fx-text: #1B1B18;
+  --fx-text-2: #5A5A56;
+  --fx-text-muted: #737373;
+  --fx-primary: #2E7D32;
+  --fx-primary-hover: #256a29;
+
+  /* Legacy Colors (keeping for compatibility) */
   --primary-green: #4A704A;
   --background-cream: #FAF7F2;
   --text-black: #000000;

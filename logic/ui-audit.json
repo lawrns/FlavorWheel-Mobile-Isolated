@@ -1,0 +1,353 @@
+{
+  "audit_metadata": {
+    "created_at": "2024-01-01T00:00:00Z",
+    "analyzed_pages": [
+      "/create/study",
+      "/create/competition", 
+      "/create/quick-tasting"
+    ],
+    "purpose": "Comprehensive UI/UX audit for creating cohesion between tasting creation pages",
+    "analysis_scope": "Layout, styling, components, interactions, and user experience patterns"
+  },
+  "pages_analysis": {
+    "study_mode": {
+      "route": "/create/study",
+      "files": ["page.tsx", "page.client.tsx"],
+      "primary_file": "page.tsx",
+      "ui_characteristics": {
+        "layout_pattern": "Single-column mobile-first with sticky elements",
+        "color_scheme": {
+          "background": "bg-white",
+          "cards": "rounded-[16px] shadow-[0_1px_3px_rgba(0,0,0,0.05)] bg-white",
+          "borders": "border-[#e5e7eb]",
+          "primary_buttons": "bg-[#2E7D32] text-white hover:bg-[#7FB889]",
+          "text_colors": {
+            "primary": "text-[#333333]",
+            "secondary": "text-[#525252]", 
+            "muted": "text-[#737373]"
+          }
+        },
+        "typography": {
+          "headers": "text-3xl font-bold leading-9 tracking-tight flex-1 text-center",
+          "font_family": "style={{ fontFamily: \"'Playfair Display', serif\" }}",
+          "card_titles": "text-lg font-bold text-[#333333]",
+          "labels": "text-sm font-medium text-[#525252] mb-2 block"
+        },
+        "spacing": {
+          "container": "mx-auto max-w-[768px] px-3 sm:px-4 space-y-6 sm:space-y-8 pb-24",
+          "card_content": "space-y-4",
+          "form_elements": "space-y-4"
+        },
+        "components_used": [
+          "Card/CardContent/CardHeader/CardTitle",
+          "Button (variants: outline, ghost)",
+          "Input", "Label", "Textarea", "Switch", "Slider",
+          "Select/SelectTrigger/SelectValue/SelectContent/SelectItem",
+          "ChevronDown", "Plus", "Minus", "ArrowLeft", "X"
+        ],
+        "interactive_patterns": {
+          "collapsible_sections": "categoriesExpanded state with ChevronDown rotation",
+          "dynamic_form_fields": "add/remove categories and items with limits",
+          "auto_save": "useEffect with 2-second timer",
+          "validation": "Real-time form validation with isFormValid()"
+        },
+        "responsive_design": {
+          "mobile_first": true,
+          "breakpoints": "sm:px-4, sm:space-y-8",
+          "sticky_footer": "fixed bottom-0 with pb-safe",
+          "header": "sticky top-0 with backdrop-blur"
+        }
+      },
+      "form_structure": {
+        "sections": [
+          "Basic Information (tasting_name, product_type, template, blind_toggle)",
+          "Evaluation Categories (collapsible, dynamic add/remove)",
+          "Items to Taste (dynamic add/remove with image upload)"
+        ],
+        "field_types": [
+          "Text inputs with placeholders",
+          "Select dropdowns", 
+          "Switches for boolean values",
+          "Dynamic repeater fields",
+          "Image upload buttons",
+          "Sliders for scale settings"
+        ]
+      },
+      "unique_features": [
+        "Collapsible categories section",
+        "Quick add category buttons (Aroma, Flavor, Texture)",
+        "Dynamic evaluation type fields (MC options, scale settings, contains text)",
+        "Image upload for items (Camera + Upload buttons)",
+        "Auto-save indicator in header",
+        "Form validation with error alerts"
+      ]
+    },
+    "competition_mode": {
+      "route": "/create/competition", 
+      "files": ["page.tsx", "page.client.tsx"],
+      "primary_file": "page.client.tsx",
+      "ui_characteristics": {
+        "layout_pattern": "Dashboard shell with max-width container",
+        "color_scheme": {
+          "background": "bg-[#FAF7F0]",
+          "cards": "rounded-[16px] bg-white shadow-md p-4 sm:p-5",
+          "borders": "border-[#E6E1D9]",
+          "primary_buttons": "bg-[#2E7D32] text-white hover:bg-[#256a29]",
+          "text_colors": {
+            "primary": "text-[#1B1B18]",
+            "secondary": "text-[#5A5A56]",
+            "muted": "text-[#737373]"
+          }
+        },
+        "typography": {
+          "headers": "text-2xl font-bold",
+          "font_family": "style={{ fontFamily: \"'Playfair Display', serif\" }}",
+          "card_titles": "text-lg font-bold text-[#1B1B18]",
+          "descriptions": "text-sm text-[#5A5A56]"
+        },
+        "spacing": {
+          "container": "mx-auto max-w-[768px] px-3 sm:px-4 space-y-6 sm:space-y-8 pb-24",
+          "card_content": "grid grid-cols-1 gap-4"
+        },
+        "components_used": [
+          "Card/CardContent/CardHeader/CardTitle", 
+          "Button (variants: outline, ghost)",
+          "Input", "Label", "Textarea", "Switch",
+          "Select/SelectTrigger/SelectValue/SelectContent/SelectItem",
+          "Collapsible/CollapsibleTrigger/CollapsibleContent",
+          "Plus", "Minus", "Camera", "Upload", "X", "ArrowLeft"
+        ],
+        "interactive_patterns": {
+          "collapsible_sections": "Collapsible component with ChevronDown rotation",
+          "dynamic_form_fields": "add/remove categories and items",
+          "preloaded_answers": "renderPreloadedAnswerField() for ranking categories",
+          "auto_save": "useEffect with 2-second timer",
+          "template_dialog": "Dialog for template selection"
+        },
+        "responsive_design": {
+          "mobile_first": true,
+          "breakpoints": "sm:px-4, sm:p-5",
+          "footer": "sticky bottom-0 with pb-safe"
+        }
+      },
+      "form_structure": {
+        "sections": [
+          "Basic Information (competition_name, description, product_type, template, blind_toggle)",
+          "Evaluation Categories (collapsible with ranking toggle)",
+          "Items to Taste (with pre-loaded answers section)"
+        ],
+        "field_types": [
+          "Text inputs with placeholders",
+          "Textarea for descriptions",
+          "Select dropdowns with grouped options",
+          "Switches for boolean values and ranking inclusion",
+          "Dynamic repeater fields",
+          "Pre-loaded answer fields (conditional based on evaluation type)"
+        ]
+      },
+      "unique_features": [
+        "Competition description field",
+        "Ranking toggle for categories",
+        "Pre-loaded answers section for items",
+        "Template dialog with difficulty badges",
+        "Grouped product type select (Wine, Coffee, Beer, Spirits, Other)",
+        "Complex preloaded answer rendering based on evaluation type"
+      ]
+    },
+    "quick_tasting": {
+      "route": "/quick-tasting",
+      "files": ["page.tsx"],
+      "primary_file": "page.tsx",
+      "ui_characteristics": {
+        "layout_pattern": "Centered container with mobile-first design",
+        "color_scheme": {
+          "background": "bg-[#fafafa]",
+          "cards": "rounded-xl p-4 bg-white border border-[#e5e7eb] shadow-[0_1px_3px_rgba(0,0,0,0.05)]",
+          "borders": "border-[#e5e7eb]",
+          "primary_buttons": "bg-[#10b981] text-white hover:bg-[#059669]",
+          "accent": "text-[#10b981] border-[#10b981]",
+          "text_colors": {
+            "primary": "text-[#1f2937]",
+            "secondary": "text-[#4b5563]",
+            "muted": "text-[#6b7280]"
+          }
+        },
+        "typography": {
+          "headers": "text-3xl font-bold text-[#1f2937]",
+          "card_titles": "text-lg font-semibold text-[#1f2937]",
+          "labels": "text-sm font-medium text-[#374151] mb-2 block",
+          "descriptions": "text-sm text-[#6b7280]"
+        },
+        "spacing": {
+          "container": "mx-auto max-w-2xl p-4 md:p-6",
+          "card_content": "pt-0"
+        },
+        "components_used": [
+          "Card/CardContent/CardHeader/CardTitle",
+          "Button (variants: outline, ghost)",
+          "Input", "Label", "Textarea", "Slider",
+          "Select/SelectTrigger/SelectValue/SelectContent/SelectItem",
+          "ChevronLeft", "Camera", "Plus", "Target"
+        ],
+        "interactive_patterns": {
+          "flavor_selection": "Toggle flavor buttons with selected state styling",
+          "dynamic_intensity_sliders": "Conditional sliders for selected flavors",
+          "auto_save": "localStorage with 2-second timer",
+          "draft_loading": "Automatic draft restoration on mount"
+        },
+        "responsive_design": {
+          "mobile_first": true,
+          "breakpoints": "md:p-6, md:grid-cols-3",
+          "footer": "sticky bottom-0 with backdrop-blur"
+        }
+      },
+      "form_structure": {
+        "sections": [
+          "Product Type Selection",
+          "Flavor Detection (conditional on product type)",
+          "Items to Taste (dynamic add/remove)"
+        ],
+        "field_types": [
+          "Grouped select dropdown",
+          "Interactive flavor grid (2/3 columns)",
+          "Dynamic intensity sliders",
+          "Text inputs and textareas",
+          "Image upload button",
+          "Overall rating slider"
+        ]
+      },
+      "unique_features": [
+        "Product type driven flavor defaults",
+        "Interactive flavor selection grid",
+        "Flavor intensity sliders",
+        "Custom flavor input",
+        "Draft persistence with toast notifications",
+        "Flavor hints in item descriptions",
+        "Overall rating slider (0-100)"
+      ]
+    }
+  },
+  "cross_page_patterns": {
+    "shared_components": [
+      "Button", "Card/CardContent/CardHeader/CardTitle",
+      "Input", "Label", "Textarea", "Switch", "Slider",
+      "Select/SelectTrigger/SelectValue/SelectContent/SelectItem"
+    ],
+    "common_layout_elements": [
+      "Sticky headers with back buttons",
+      "Auto-save indicators",
+      "Sticky footers with action buttons",
+      "Mobile-first responsive design",
+      "Card-based section organization"
+    ],
+    "consistent_patterns": [
+      "All use max-width containers (768px)",
+      "All have auto-save functionality",
+      "All use dynamic form fields (add/remove)",
+      "All have image upload capabilities",
+      "All use similar color schemes (greens, grays, whites)",
+      "All have form validation",
+      "All use Lucide icons consistently"
+    ],
+    "inconsistencies": [
+      "Background colors differ (white vs #FAF7F0 vs #fafafa)",
+      "Button colors vary (#2E7D32 vs #10b981)",
+      "Typography scales differ slightly",
+      "Form field spacing patterns vary",
+      "Some use DashboardAppShell, others don't",
+      "Different collapsible implementations (state vs Collapsible component)"
+    ]
+  },
+  "ui_cohesion_opportunities": {
+    "color_system": {
+      "recommended_primary": "#2E7D32 (consistent with study mode)",
+      "recommended_background": "bg-[#FAF7F0] (warm, consistent with competition)",
+      "recommended_border": "#E6E1D9 (consistent across pages)",
+      "recommended_text": {
+        "primary": "#1B1B18",
+        "secondary": "#5A5A56", 
+        "muted": "#737373"
+      }
+    },
+    "typography_system": {
+      "recommended_font_family": "'Playfair Display', serif",
+      "recommended_header_sizes": {
+        "page_title": "text-3xl font-bold",
+        "card_title": "text-lg font-bold", 
+        "section_title": "text-base font-semibold"
+      }
+    },
+    "spacing_system": {
+      "recommended_container": "mx-auto max-w-[768px] px-3 sm:px-4",
+      "recommended_card": "rounded-[16px] bg-white shadow-md p-4 sm:p-5",
+      "recommended_spacing": "space-y-6 sm:space-y-8"
+    },
+    "component_standardization": {
+      "button_variants": {
+        "primary": "bg-[#2E7D32] text-white hover:bg-[#256a29]",
+        "secondary": "border-[#E6E1D9] text-[#1B1B18] hover:bg-[#F4F1EC]"
+      },
+      "form_fields": {
+        "input_height": "min-h-[48px]",
+        "border_radius": "rounded-lg",
+        "border_color": "border-[#D6D1C8]"
+      }
+    },
+    "layout_standardization": {
+      "header_pattern": "sticky top-0 with backdrop-blur and auto-save indicator",
+      "footer_pattern": "sticky bottom-0 with pb-safe and action buttons",
+      "section_pattern": "Card with consistent padding and spacing"
+    }
+  },
+  "accessibility_analysis": {
+    "positive_patterns": [
+      "All form fields have proper labels",
+      "Buttons have aria-label attributes where needed",
+      "Color contrast appears adequate",
+      "Keyboard navigation supported",
+      "Screen reader friendly component structure"
+    ],
+    "improvement_opportunities": [
+      "Add data-testid attributes consistently across pages",
+      "Implement focus management for dynamic content",
+      "Add ARIA live regions for status updates",
+      "Ensure all interactive elements have sufficient touch targets"
+    ]
+  },
+  "performance_considerations": {
+    "positive_patterns": [
+      "Lazy loading of templates in competition mode",
+      "Efficient re-rendering with proper state management",
+      "Auto-save debounced to reduce API calls",
+      "Image URL generation for previews"
+    ],
+    "optimization_opportunities": [
+      "Implement virtualization for large lists",
+      "Add loading states for async operations",
+      "Optimize image handling and file uploads",
+      "Consider code splitting for complex forms"
+    ]
+  },
+  "recommendations": {
+    "high_priority": [
+      "Standardize color system across all pages",
+      "Unify button styling and color scheme",
+      "Implement consistent form field styling",
+      "Standardize spacing and layout patterns",
+      "Create shared component library for common patterns"
+    ],
+    "medium_priority": [
+      "Implement consistent collapsible behavior",
+      "Standardize auto-save indicators",
+      "Create unified product type selection component",
+      "Implement consistent validation messaging",
+      "Add loading states and error handling"
+    ],
+    "low_priority": [
+      "Add animation transitions for better UX",
+      "Implement keyboard shortcuts",
+      "Add progress indicators for multi-step forms",
+      "Create reusable form field components"
+    ]
+  }
+}

@@ -14,9 +14,10 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import ProductTypeSelect from '@/components/ProductTypeSelect'
 import {
   Plus, Minus, Camera, Upload, ChevronDown, X, Sparkles,
-  FileText, Sliders, CheckSquare, Type, Search, ArrowLeft
+  FileText, Sliders, CheckSquare, Type, Search
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { CreateShell, CreateHeader, CreateFooterActions } from '@/components/create'
 
 // Types matching the specification
 type EvaluationType = 'subjective_input' | 'multiple_choice' | 'sliding_scale' | 'exact_answer' | 'contains_x'
@@ -87,7 +88,7 @@ export default function CreateCompetitionPage() {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [lastSaved, setLastSaved] = useState<string | null>(null)
-  const [categoriesExpanded, setCategoriesExpanded] = useState(true)
+  const [categoriesExpanded, setCategoriesExpanded] = useState(false)
 
   // Auto-save functionality
   useEffect(() => {
@@ -177,26 +178,50 @@ export default function CreateCompetitionPage() {
     setLastSaved(null)
   }
 
-  const handleCreateCompetition = async () => {
-    // Validation
+  const validateAndFocusFirstError = () => {
+    // Check competition name
     if (!formData.competition_name.trim()) {
-      alert('Competition name is required')
-      return
+      const nameInput = document.getElementById('competition_name')
+      if (nameInput) {
+        nameInput.focus()
+        nameInput.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+      return 'Competition name is required'
     }
 
+    // Check product type
     if (!formData.product_type) {
-      alert('Product type is required')
-      return
+      const productSelect = document.querySelector('[data-testid="select-product-type"]')
+      if (productSelect) {
+        productSelect.focus()
+        productSelect.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+      return 'Product type is required'
     }
 
-    if (formData.categories.some(cat => !cat.category_name.trim())) {
-      alert('Please fill in all category names')
-      return
+    // Check category names
+    for (let i = 0; i < formData.categories.length; i++) {
+      if (!formData.categories[i].category_name.trim()) {
+        const categoryInput = document.querySelector(`input[placeholder*="Category ${i + 1}"]`) ||
+                             document.querySelector(`input[placeholder*="Aroma"]`)
+        if (categoryInput) {
+          categoryInput.focus()
+          categoryInput.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }
+        return `Category ${i + 1} name is required`
+      }
     }
 
-    if (formData.items.some(item => !item.item_name.trim())) {
-      alert('Please fill in all item names')
-      return
+    // Check item names
+    for (let i = 0; i < formData.items.length; i++) {
+      if (!formData.items[i].item_name.trim()) {
+        const itemInput = document.querySelector(`input[placeholder*="Item ${i + 1}"]`)
+        if (itemInput) {
+          itemInput.focus()
+          itemInput.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }
+        return `Item ${i + 1} name is required`
+      }
     }
 
     // Validate preloaded answers for ranking categories
@@ -205,21 +230,41 @@ export default function CreateCompetitionPage() {
       for (const item of formData.items) {
         const preloadedAnswer = item.preloaded_answers?.[category.id]
         if (!preloadedAnswer) {
-          alert(`Missing preloaded answer for "${item.item_name}" in category "${category.category_name}"`)
-          return
+          // Find the preloaded answer input for this item and category
+          const answerInput = document.querySelector(`[data-category-id="${category.id}"][data-item-id="${item.id}"]`)
+          if (answerInput) {
+            answerInput.focus()
+            answerInput.scrollIntoView({ behavior: 'smooth', block: 'center' })
+          }
+          return `Missing preloaded answer for "${item.item_name}" in category "${category.category_name}"`
         }
       }
     }
 
+    return null
+  }
+
+  const handleCreateCompetition = async () => {
+    const validationError = validateAndFocusFirstError()
+    if (validationError) {
+      // Could set a status message here if needed
+      return
+    }
+
     setIsSubmitting(true)
 
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000))
 
-    alert('Competition Mode Tasting created successfully!')
-    router.push('/en/landing')
-
-    setIsSubmitting(false)
+      // Create draft tasting using existing logic
+      router.push('/en/landing')
+    } catch (error) {
+      console.error('Failed to create competition:', error)
+      // Could set error status message here
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const addPrefillCategory = (name: string, type: EvaluationType) => {
@@ -336,45 +381,30 @@ export default function CreateCompetitionPage() {
 
     return hasName && hasProductType && hasValidCategories && hasValidItems && hasRankingAnswers
   }
+
   return (
-    <div className="min-h-screen bg-[#FAF7F0]">
-        {/* Header */}
-      <header className="sticky top-0 z-10 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-[#E6E1D9]">
-        <div className="px-3 sm:px-4 py-4 flex items-center justify-between">
-          <button
-            onClick={() => router.back()}
-            className="h-10 w-10 inline-flex items-center justify-center rounded-md hover:bg-[#f9fafb] transition-colors"
-            aria-label="Back"
-            data-testid="btn_back"
-          >
-            <ArrowLeft className="h-5 w-5" />
-          </button>
-
-          <div className="text-center">
-            <h1 className="text-2xl font-bold"
-                style={{ fontFamily: "'Playfair Display', serif" }}>
-              Create Competition
-            </h1>
-            <p className="text-sm text-[#5A5A56]">Structured competition with scoring and ranking</p>
-          </div>
-
-          <div className="text-xs text-[#737373]" data-testid="auto_save_indicator">
-            {lastSaved && `Auto-saved ${lastSaved}`}
-        </div>
-        </div>
-      </header>
+    <CreateShell
+      header={
+        <CreateHeader
+          title="Competition"
+          onBack={() => router.back()}
+          status={lastSaved ? 'saved' : null}
+        />
+      }
+      className="pb-20"
+    >
 
       {/* Main Content */}
-      <main className="mx-auto max-w-[768px] px-3 sm:px-4 space-y-6 sm:space-y-8 pb-24">
+      <div className="mx-auto max-w-[768px] px-3 sm:px-4 space-y-6 sm:space-y-8">
         {/* Basic Information */}
         <section id="basic_info">
-          <Card className="rounded-[16px] bg-white shadow-md p-4 sm:p-5">
+          <Card className="rounded-xl bg-white shadow-fx border border-fx-border p-4 sm:p-5">
             <CardHeader>
-              <CardTitle className="text-lg font-bold text-[#1B1B18]">Basic Information</CardTitle>
+              <CardTitle className="text-lg font-bold text-fx-text">Basic Information</CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-1 gap-4">
               <div>
-                <Label htmlFor="competition_name" className="text-sm font-medium text-[#525252] mb-2 block">
+                <Label htmlFor="competition_name" className="text-sm font-medium text-fx-text2 mb-2 block">
                   Competition Name *
                 </Label>
                 <Input
@@ -383,13 +413,13 @@ export default function CreateCompetitionPage() {
                   placeholder="e.g., Wine Competition 2024"
                   value={formData.competition_name}
                   onChange={(e) => updateFormData({ competition_name: e.target.value })}
-                  className="h-12 w-full rounded-md border border-[#E6E1D9] px-3 text-sm"
+                  className="min-h-[48px] w-full rounded-lg border border-[#D6D1C8] bg-white px-3 text-sm"
                   required
                 />
               </div>
 
               <div>
-                <Label htmlFor="description" className="text-sm font-medium text-[#525252] mb-2 block">
+                <Label htmlFor="description" className="text-sm font-medium text-fx-text2 mb-2 block">
                   Description
                 </Label>
                 <Textarea
@@ -398,12 +428,12 @@ export default function CreateCompetitionPage() {
                   placeholder="Optional description of your competition"
                   value={formData.description}
                   onChange={(e) => updateFormData({ description: e.target.value })}
-                  className="min-h-[80px] w-full rounded-md border border-[#E6E1D9] px-3 py-3 text-sm"
+                  className="min-h-[80px] w-full rounded-lg border border-[#D6D1C8] bg-white px-3 py-3 text-sm"
                 />
               </div>
 
               <div>
-                <Label htmlFor="product_type" className="text-sm font-medium text-[#525252] mb-2 block">
+                <Label htmlFor="product_type" className="text-sm font-medium text-fx-text2 mb-2 block">
                   Product Type *
                 </Label>
                 <ProductTypeSelect
@@ -414,7 +444,7 @@ export default function CreateCompetitionPage() {
               </div>
 
               <div>
-                <Label htmlFor="template" className="text-sm font-medium text-[#525252] mb-2 block">
+                <Label htmlFor="template" className="text-sm font-medium text-fx-text2 mb-2 block">
                   Templates
                 </Label>
                       <Button
@@ -422,17 +452,17 @@ export default function CreateCompetitionPage() {
                   id="template_picker"
                   data-testid="button-template-picker"
                         variant="outline"
-                  className="h-12 w-full justify-start rounded-md border border-[#E6E1D9] px-3 text-sm"
+                  className="min-h-[48px] w-full justify-start rounded-lg border border-[#D6D1C8] bg-white px-3 text-sm"
                   onClick={() => alert('Template picker dialog would open here')}
                       >
                         <Sparkles className="h-4 w-4 mr-2" />
                   Choose Template
                       </Button>
-                <p className="text-xs text-[#5A5A56] mt-1">Optional. Prefills categories.</p>
+                <p className="text-xs text-fx-muted mt-1">Optional. Prefills categories.</p>
                           </div>
 
               <div className="flex items-center justify-between">
-                <Label htmlFor="blind_toggle" className="text-sm font-medium text-[#525252]">
+                <Label htmlFor="blind_toggle" className="text-sm font-medium text-fx-text2">
                   Blind Tasting
                 </Label>
                 <Switch
@@ -449,12 +479,12 @@ export default function CreateCompetitionPage() {
 
         {/* Evaluation Categories */}
         <section id="evaluation_categories">
-          <Card className="rounded-[16px] bg-white shadow-md p-4 sm:p-5">
+          <Card className="rounded-xl bg-white shadow-fx border border-fx-border p-4 sm:p-5">
             <Collapsible defaultOpen={false}>
                       <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-lg font-bold text-[#1B1B18]">Evaluation Categories</CardTitle>
-                  <p className="text-sm text-[#5A5A56]">Define categories for evaluation (max 10)</p>
+                  <CardTitle className="text-lg font-bold text-fx-text">Evaluation Categories</CardTitle>
+                  <p className="text-sm text-fx-text2">Define categories for evaluation (max 10)</p>
                 </div>
                 <CollapsibleTrigger asChild>
                         <Button
@@ -473,7 +503,7 @@ export default function CreateCompetitionPage() {
                 <div className="mt-4 space-y-4">
                   {/* Prefill Options */}
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium text-[#525252]">Quick Add:</Label>
+                    <Label className="text-sm font-medium text-fx-text2">Quick Add:</Label>
                     <div className="flex flex-wrap gap-2">
                       {[
                         { name: 'Variety', type: 'multiple_choice' as const },
@@ -486,7 +516,7 @@ export default function CreateCompetitionPage() {
                           variant="outline"
                           size="sm"
                           onClick={() => addPrefillCategory(name, type)}
-                          className="text-xs h-8"
+                          className="text-xs min-h-[32px] rounded-lg border border-[#D6D1C8] bg-white"
                         >
                           {name} ({type.replace('_', ' ')})
                         </Button>
@@ -497,9 +527,9 @@ export default function CreateCompetitionPage() {
                   {/* Categories Repeater */}
                   <div data-testid="repeater-categories" className="space-y-4">
                   {formData.categories.map((category, index) => (
-                    <div key={category.id} className="border border-[#E6E1D9] rounded-lg p-4 space-y-3">
+                    <div key={category.id} className="border border-fx-border rounded-lg p-4 space-y-3">
                       <div className="flex items-center justify-between">
-                        <Label className="text-sm font-semibold text-[#1B1B18]">
+                        <Label className="text-sm font-semibold text-fx-text">
                           Category {index + 1}
                         </Label>
                         {formData.categories.length > 1 && (
@@ -516,28 +546,28 @@ export default function CreateCompetitionPage() {
                         )}
                       </div>
 
-                        <div>
-                        <Label className="text-sm font-semibold text-[#1B1B18] mb-2 block">
-                          Category Name *
-                        </Label>
+                                                <div>
+                      <Label className="text-sm font-semibold text-fx-text mb-2 block">
+                        Category Name *
+                      </Label>
                           <Input
                           placeholder="e.g., Aroma / Flavor / Texture"
                           value={category.category_name}
                           onChange={(e) => updateCategory(category.id, { category_name: e.target.value })}
-                          className="w-full rounded-lg border-[#D6D1C8] bg-white p-3 text-sm"
+                          className="w-full min-h-[48px] rounded-lg border-[#D6D1C8] bg-white p-3 text-sm"
                           required
                           />
                         </div>
 
                         <div>
-                        <Label className="text-sm font-semibold text-[#1B1B18] mb-2 block">
+                        <Label className="text-sm font-semibold text-fx-text mb-2 block">
                           Evaluation Type
                         </Label>
                         <Select
                           value={category.evaluation_type}
                           onValueChange={(value: EvaluationType) => updateCategory(category.id, { evaluation_type: value })}
                         >
-                          <SelectTrigger className="w-full rounded-lg border-[#D6D1C8] bg-white p-3 text-sm">
+                          <SelectTrigger className="w-full min-h-[48px] rounded-lg border-[#D6D1C8] bg-white p-3 text-sm">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -609,7 +639,7 @@ export default function CreateCompetitionPage() {
                         )}
 
                       <div className="flex items-center justify-between">
-                        <Label className="text-sm font-semibold text-[#1B1B18]">
+                        <Label className="text-sm font-semibold text-fx-text">
                           Include in ranking
                         </Label>
                           <Switch
@@ -654,12 +684,12 @@ export default function CreateCompetitionPage() {
 
           {/* Items to Taste */}
         <section id="items_to_taste">
-          <Card className="rounded-[16px] bg-white shadow-md p-4 sm:p-5">
+          <Card className="rounded-xl bg-white shadow-fx border border-fx-border p-4 sm:p-5">
             <Collapsible defaultOpen={false}>
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-lg font-bold text-[#1B1B18]">Items to Taste</CardTitle>
-                  <p className="text-sm text-[#5A5A56]">Pre-load items and correct answers</p>
+                  <CardTitle className="text-lg font-bold text-fx-text">Items to Taste</CardTitle>
+                  <p className="text-sm text-fx-text2">Pre-load items and correct answers</p>
                 </div>
                 <CollapsibleTrigger asChild>
                   <Button
@@ -678,9 +708,9 @@ export default function CreateCompetitionPage() {
                 <div className="mt-4 space-y-4">
                   <div data-testid="repeater-items" className="space-y-4">
                 {formData.items.map((item, index) => (
-                  <div key={item.id} className="border border-[#E6E1D9] rounded-lg p-4 space-y-3">
+                  <div key={item.id} className="border border-fx-border rounded-lg p-4 space-y-3">
                     <div className="flex items-center justify-between">
-                      <Label className="text-sm font-semibold text-[#1B1B18]">
+                      <Label className="text-sm font-semibold text-fx-text">
                         Item {index + 1}
                       </Label>
                       {formData.items.length > 1 && (
@@ -698,14 +728,14 @@ export default function CreateCompetitionPage() {
                       </div>
 
                         <div>
-                      <Label className="text-sm font-semibold text-[#1B1B18] mb-2 block">
+                      <Label className="text-sm font-semibold text-fx-text mb-2 block">
                         Item Name *
                       </Label>
                           <Input
                         placeholder="Item 1"
                         value={item.item_name}
                         onChange={(e) => updateItem(item.id, { item_name: e.target.value })}
-                        className="w-full rounded-lg border-[#D6D1C8] bg-white p-3 text-sm"
+                        className="w-full min-h-[48px] rounded-lg border-[#D6D1C8] bg-white p-3 text-sm"
                         required
                           />
                         </div>
@@ -781,46 +811,20 @@ export default function CreateCompetitionPage() {
             </Collapsible>
           </Card>
         </section>
-      </main>
 
-      {/* Footer Actions */}
-      <section id="footer_actions">
-        <div className="sticky bottom-0 bg-white/95 backdrop-blur border-t border-[#E6E1D9] p-4 pb-safe">
-          <div className="flex gap-3 max-w-md mx-auto">
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() => router.back()}
-              data-testid="button-cancel"
-              className="flex-1 h-12 rounded-xl font-semibold"
-              disabled={isSubmitting}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="button"
-              onClick={clearDraft}
-              data-testid="button-clear-draft"
-              variant="outline"
-              className="flex-1 h-12 rounded-xl border-[#E6E1D9] font-semibold"
-              disabled={isSubmitting}
-            >
-              <X className="h-4 w-4 mr-2" />
-              Clear Draft
-            </Button>
-            <div className="flex-1" />
-            <Button
-              type="button"
-              onClick={handleCreateCompetition}
-              data-testid="button-create-competition"
-              className="flex-1 h-12 rounded-xl font-semibold bg-[#2E7D32] text-white hover:bg-[#256a29]"
-              disabled={isSubmitting || !isFormValid()}
-            >
-              {isSubmitting ? 'Creating...' : 'Create Competition'}
-            </Button>
-          </div>
+        {/* Footer Actions - Non-sticky, integrated into page flow */}
+        <section className="mt-8">
+          <CreateFooterActions
+            primaryLabel="Create Competition"
+            onPrimary={handleCreateCompetition}
+            secondaryLabel="Cancel"
+            onSecondary={() => router.back()}
+            disabled={!isFormValid()}
+            busy={isSubmitting}
+            statusMessage={isSubmitting ? 'Creating competition...' : undefined}
+          />
+        </section>
       </div>
-      </section>
-    </div>
+    </CreateShell>
   )
 }

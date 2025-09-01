@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { ChevronLeft, Camera, Plus, Target } from 'lucide-react'
+import { Camera, Plus, Target } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -20,6 +20,7 @@ import {
 import { useRouter } from 'next/navigation'
 import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '@/components/auth-provider'
+import { CreateShell, CreateHeader, CreateFooterActions } from '@/components/create'
 
 interface TastingItem {
   id: string
@@ -321,40 +322,41 @@ export default function QuickTastingPage() {
 
 
   return (
-    <div className="min-h-screen bg-[#fafafa] p-4 md:p-6">
-      <div className="mx-auto max-w-2xl">
-        {/* Header */}
-        <div className="mb-8 flex items-center justify-between">
-          <Button
-            variant="ghost"
-            onClick={() => router.back()}
-            className="flex items-center gap-2 text-[#1f2937] hover:text-[#4b5563]"
-            data-testid="qt-btn-header-back"
-          >
-            <ChevronLeft className="h-5 w-5" />
-            Back
-          </Button>
-          <div className="text-center">
-            <h1 className="text-3xl font-bold text-[#1f2937]">Quick Tasting</h1>
-            <p className="text-sm text-[#6b7280]">Select your drink and start in seconds</p>
-          </div>
-          <div className="w-16"></div> {/* Spacer for centering */}
-        </div>
+    <CreateShell
+      header={
+        <CreateHeader
+          title="Quick Tasting"
+          onBack={() => router.back()}
+          status={lastSaved ? 'saved' : null}
+        />
+      }
+      footer={
+        <CreateFooterActions
+          primaryLabel="End Tasting"
+          onPrimary={handleSubmit}
+          disabled={!productType || items.every(item => !item.name.trim())}
+          busy={isSubmitting}
+          statusMessage={isSubmitting ? 'Saving tasting...' : undefined}
+        />
+      }
+      className="pb-[calc(88px+env(safe-area-inset-bottom))]"
+    >
+      <div className="mx-auto max-w-[768px] px-3 sm:px-4 space-y-6 sm:space-y-8">
 
         {/* Basic Info Section */}
-        <Card className="mb-6 rounded-xl p-4 bg-white border border-[#e5e7eb] shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
+        <Card className="rounded-xl bg-white shadow-fx border border-fx-border p-4 sm:p-5">
           <CardHeader className="pb-4">
-            <CardTitle className="text-lg font-semibold text-[#1f2937]">What are you tasting?</CardTitle>
+            <CardTitle className="text-lg font-bold text-fx-text">What are you tasting?</CardTitle>
           </CardHeader>
           <CardContent className="pt-0">
             <Select value={productType} onValueChange={setProductType} data-testid="qt-select-product-type">
-              <SelectTrigger className="w-full h-12 rounded-md border border-[#e5e7eb] px-3 text-sm">
+              <SelectTrigger className="w-full min-h-[48px] rounded-lg border border-[#D6D1C8] bg-white px-3 text-sm">
                 <SelectValue placeholder="Choose a category" />
               </SelectTrigger>
               <SelectContent>
                 {PRODUCT_TYPES.groups.map((group) => (
                   <SelectGroup key={group.label}>
-                    <SelectLabel className="text-xs font-medium text-[#6b7280] uppercase tracking-wide">
+                    <SelectLabel className="text-xs font-medium text-fx-muted uppercase tracking-wide">
                       {group.label}
                     </SelectLabel>
                     {group.items.map((item) => {
@@ -374,9 +376,9 @@ export default function QuickTastingPage() {
 
         {/* Flavor Detection Section */}
         {productType && (
-          <Card className="mb-6 rounded-xl p-4 bg-white border border-[#e5e7eb] shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
+          <Card className="rounded-xl bg-white shadow-fx border border-fx-border p-4 sm:p-5">
             <CardHeader className="pb-4">
-              <CardTitle className="text-lg font-semibold text-[#1f2937]">What flavors do you detect?</CardTitle>
+              <CardTitle className="text-lg font-bold text-fx-text">What flavors do you detect?</CardTitle>
             </CardHeader>
             <CardContent className="pt-0">
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4" data-testid="qt-flavor-grid">
@@ -384,10 +386,10 @@ export default function QuickTastingPage() {
                   <button
                     key={flavor.id}
                     onClick={() => toggleFlavor(flavor.id)}
-                    className={`min-h-[44px] px-3 py-2 rounded-md border text-sm font-medium transition-all ${
+                    className={`min-h-[44px] px-3 py-2 rounded-lg border text-sm font-medium transition-all ${
                       flavor.selected
                         ? 'bg-[#ecfdf5] text-[#10b981] border-[#10b981]'
-                        : 'bg-white text-[#4b5563] border-[#e5e7eb] hover:bg-[#f9fafb]'
+                        : 'bg-white text-fx-text2 border-fx-border hover:bg-[#F4F1EC]'
                     }`}
                   >
                     {flavor.name}
@@ -402,12 +404,12 @@ export default function QuickTastingPage() {
                   value={customFlavorInput}
                   onChange={(e) => setCustomFlavorInput(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  className="flex-1 h-12 rounded-md border border-[#e5e7eb] px-3 text-sm"
+                  className="flex-1 min-h-[48px] rounded-lg border border-[#D6D1C8] bg-white px-3 text-sm"
                 />
                 <Button
                   onClick={addCustomFlavor}
                   variant="outline"
-                  className="h-12 px-4 rounded-md border border-[#10b981] text-[#10b981] hover:bg-[#ecfdf5]"
+                  className="min-h-[48px] px-4 rounded-lg border border-[#10b981] text-[#10b981] hover:bg-[#ecfdf5]"
                 >
                   Add
                 </Button>
@@ -438,15 +440,15 @@ export default function QuickTastingPage() {
         )}
 
         {/* Items to Taste Section */}
-        <Card className="mb-6 rounded-xl p-4 bg-white border border-[#e5e7eb] shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
+        <Card className="rounded-xl bg-white shadow-fx border border-fx-border p-4 sm:p-5">
           <CardHeader className="pb-4">
-            <CardTitle className="text-lg font-semibold text-[#1f2937]">Items to Taste</CardTitle>
+            <CardTitle className="text-lg font-bold text-fx-text">Items to Taste</CardTitle>
           </CardHeader>
           <CardContent className="pt-0 space-y-4">
             {items.map((item, index) => (
-              <div key={item.id} className="border border-[#e5e7eb] rounded-lg p-4 space-y-4" style={{ marginTop: '16px' }}>
+              <div key={item.id} className="border border-fx-border rounded-lg p-4 space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-base font-medium text-[#1f2937]">Item {index + 1}</h3>
+                  <h3 className="text-base font-semibold text-fx-text">Item {index + 1}</h3>
                   {items.length > 1 && (
                     <Button
                       variant="ghost"
@@ -461,20 +463,20 @@ export default function QuickTastingPage() {
 
                 {/* Name */}
                 <div>
-                  <Label htmlFor={`name-${item.id}`} className="text-sm font-medium text-[#374151] mb-2 block">Name *</Label>
+                  <Label htmlFor={`name-${item.id}`} className="text-sm font-medium text-fx-text2 mb-2 block">Name *</Label>
                   <Input
                     id={`name-${item.id}`}
                     value={item.name}
                     onChange={(e) => updateItem(item.id, 'name', e.target.value)}
                     placeholder="Enter item name"
-                    className="w-full h-12 rounded-md border border-[#e5e7eb] px-3 text-sm"
+                    className="w-full min-h-[48px] rounded-lg border border-[#D6D1C8] bg-white px-3 text-sm"
                     required
                   />
                 </div>
 
                 {/* Photo */}
                 <div>
-                  <Label className="text-sm font-medium text-[#374151] mb-2 block">Photo (Optional)</Label>
+                  <Label className="text-sm font-medium text-fx-text2 mb-2 block">Photo (Optional)</Label>
                   <Button
                     variant="outline"
                     onClick={() => {
@@ -483,7 +485,7 @@ export default function QuickTastingPage() {
                         description: "Photo upload feature coming soon!",
                       })
                     }}
-                    className="w-full h-12 justify-start rounded-md border border-[#e5e7eb] text-sm"
+                    className="w-full min-h-[48px] justify-start rounded-lg border border-[#D6D1C8] bg-white text-sm"
                   >
                     <Camera className="mr-2 h-4 w-4" />
                     Add Photo
@@ -492,7 +494,7 @@ export default function QuickTastingPage() {
 
                 {/* Aroma */}
                 <div>
-                  <Label htmlFor={`aroma-${item.id}`} className="text-sm font-medium text-[#374151] mb-2 block">Aroma</Label>
+                  <Label htmlFor={`aroma-${item.id}`} className="text-sm font-medium text-fx-text2 mb-2 block">Aroma</Label>
                   {flavors.filter(f => f.selected).length > 0 && (
                     <div className="mb-3 p-3 bg-[#ecfdf5] rounded-md text-xs text-[#10b981]">
                       <strong>Detected flavors:</strong> {flavors.filter(f => f.selected).map(f => `${f.name} (${f.intensity}/10)`).join(', ')}
@@ -503,13 +505,13 @@ export default function QuickTastingPage() {
                     value={item.aroma}
                     onChange={(e) => updateItem(item.id, 'aroma', e.target.value)}
                     placeholder="Describe the aroma..."
-                    className="w-full min-h-[60px] rounded-md border border-[#e5e7eb] px-3 py-3 text-sm"
+                    className="w-full min-h-[60px] rounded-lg border border-[#D6D1C8] bg-white px-3 py-3 text-sm"
                   />
                 </div>
 
                 {/* Flavor */}
                 <div>
-                  <Label htmlFor={`flavor-${item.id}`} className="text-sm font-medium text-[#374151] mb-2 block">Flavor</Label>
+                  <Label htmlFor={`flavor-${item.id}`} className="text-sm font-medium text-fx-text2 mb-2 block">Flavor</Label>
                   {flavors.filter(f => f.selected).length > 0 && (
                     <div className="mb-3 p-3 bg-[#ecfdf5] rounded-md text-xs text-[#10b981]">
                       <strong>Selected flavors:</strong> {flavors.filter(f => f.selected).map(f => `${f.name} (${f.intensity}/10)`).join(', ')}
@@ -520,25 +522,25 @@ export default function QuickTastingPage() {
                     value={item.flavor}
                     onChange={(e) => updateItem(item.id, 'flavor', e.target.value)}
                     placeholder="Describe the flavor..."
-                    className="w-full min-h-[60px] rounded-md border border-[#e5e7eb] px-3 py-3 text-sm"
+                    className="w-full min-h-[60px] rounded-lg border border-[#D6D1C8] bg-white px-3 py-3 text-sm"
                   />
                 </div>
 
                 {/* Other Notes */}
                 <div>
-                  <Label htmlFor={`other-${item.id}`} className="text-sm font-medium text-[#374151] mb-2 block">Other Notes</Label>
+                  <Label htmlFor={`other-${item.id}`} className="text-sm font-medium text-fx-text2 mb-2 block">Other Notes</Label>
                   <Textarea
                     id={`other-${item.id}`}
                     value={item.other}
                     onChange={(e) => updateItem(item.id, 'other', e.target.value)}
                     placeholder="Any other important information?"
-                    className="w-full min-h-[60px] rounded-md border border-[#e5e7eb] px-3 py-3 text-sm"
+                    className="w-full min-h-[60px] rounded-lg border border-[#D6D1C8] bg-white px-3 py-3 text-sm"
                   />
                 </div>
 
                 {/* Overall Rating */}
                 <div>
-                  <Label className="text-sm font-medium text-[#374151] mb-2 block">Overall Rating: {item.overall}/100</Label>
+                  <Label className="text-sm font-medium text-fx-text2 mb-2 block">Overall Rating: {item.overall}/100</Label>
                   <Slider
                     value={[item.overall]}
                     onValueChange={(value) => updateItem(item.id, 'overall', value[0])}
@@ -555,7 +557,7 @@ export default function QuickTastingPage() {
             <Button
               onClick={addNewItem}
               variant="outline"
-              className="w-full h-12 mt-4 rounded-md border border-[#10b981] text-[#10b981] hover:bg-[#ecfdf5]"
+              className="w-full min-h-[48px] rounded-lg border border-[#10b981] text-[#10b981] hover:bg-[#ecfdf5]"
               data-testid="qt-btn-add-item"
             >
               <Plus className="mr-2 h-4 w-4" />
@@ -564,23 +566,7 @@ export default function QuickTastingPage() {
           </CardContent>
         </Card>
 
-        {/* Footer Actions */}
-        <div className="sticky bottom-0 bg-white/95 backdrop-blur border-t border-[#e5e7eb] p-4 pb-safe">
-          <div className="flex gap-3 max-w-md mx-auto">
-            <Button
-              onClick={handleSubmit}
-              disabled={isSubmitting || !productType || items.every(item => !item.name.trim())}
-              className="flex-1 h-12 rounded-xl font-semibold bg-[#10b981] text-white hover:bg-[#059669]"
-              data-testid="qt-btn-end-tasting"
-            >
-              {isSubmitting ? 'Saving...' : 'End Tasting'}
-            </Button>
-          </div>
-          <p className="text-center text-xs text-[#6b7280] mt-2">
-            Your tasting will be saved automatically
-          </p>
-        </div>
       </div>
-    </div>
+    </CreateShell>
   )
 }
