@@ -14,8 +14,21 @@ export default function LandingPage() {
   }
 
   return (
-    <div className="bg-white overflow-x-hidden" style={{ WebkitOverflowScrolling: 'touch', overscrollBehavior: 'none' }}>
-      <main id="landing" className="px-6 py-8 max-w-sm mx-auto min-h-screen pb-32">
+    <div
+      className="overflow-x-hidden bg-cover bg-center bg-no-repeat"
+      style={{
+        WebkitOverflowScrolling: 'touch',
+        overscrollBehavior: 'none',
+        backgroundImage: 'url(/images/Landing%20BG%20HD.png)',
+        minHeight: '100vh'
+      }}
+    >
+      <main id="landing" className="px-6 py-8 max-w-sm mx-auto min-h-screen pb-32 relative">
+        {/* Backdrop overlay for better text readability */}
+        <div className="absolute inset-0 bg-white/80 backdrop-blur-sm rounded-2xl mx-4 mt-4 mb-8"></div>
+
+        {/* Content wrapper with proper z-index */}
+        <div className="relative z-10">
         {/* Hero Section */}
         <section className="hero mb-8">
           <div className="text-left">
@@ -120,6 +133,7 @@ export default function LandingPage() {
 
         {/* Spacer for bottom navigation */}
         <div className="h-32"></div>
+        </div>
       </main>
     </div>
   )
