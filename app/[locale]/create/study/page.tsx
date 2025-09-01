@@ -382,13 +382,13 @@ export default function CreateStudyPage() {
 
               {/* Categories Repeater */}
               <div data-testid="rep-categories" className="space-y-4">
-                {categories.map((category, index) => (
+                {formData.categories.map((category, index) => (
                   <div key={category.id} className="border border-[#E6E1D9] rounded-lg p-4 space-y-3">
                     <div className="flex items-center justify-between">
                       <Label className="text-sm font-semibold text-[#1B1B18]">
                         Category {index + 1}
                       </Label>
-                      {categories.length > 1 && (
+                      {formData.categories.length > 1 && (
                         <Button
                           type="button"
                           variant="ghost"
@@ -506,7 +506,7 @@ export default function CreateStudyPage() {
                 ))}
               </div>
 
-              {categories.length < 10 && (
+              {formData.categories.length < 10 && (
                 <Button
                   type="button"
                   onClick={addCategory}
@@ -519,6 +519,7 @@ export default function CreateStudyPage() {
                 </Button>
               )}
             </CardContent>
+            )}
           </Card>
         </section>
 
@@ -531,13 +532,13 @@ export default function CreateStudyPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div data-testid="rep-items" className="space-y-4">
-                {items.map((item, index) => (
+                {formData.items.map((item, index) => (
                   <div key={item.id} className="border border-[#E6E1D9] rounded-lg p-4 space-y-3">
                     <div className="flex items-center justify-between">
                       <Label className="text-sm font-semibold text-[#1B1B18]">
                         Item {index + 1}
                       </Label>
-                      {items.length > 1 && (
+                      {formData.items.length > 1 && (
                         <Button
                           type="button"
                           variant="ghost"
