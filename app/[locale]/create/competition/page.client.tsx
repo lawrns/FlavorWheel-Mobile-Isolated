@@ -2,1133 +2,796 @@
 
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useForm } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
-import { Badge } from '@/components/ui/badge'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { useToast } from '@/hooks/use-toast'
-import { useAuth } from '@/hooks/use-auth'
-import { createTasting } from '@/services/create-tasting-service'
-import { DashboardAppShell } from '@/components/app-shell'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Slider } from '@/components/ui/slider'
+import ProductTypeSelect from '@/components/ProductTypeSelect'
 import {
-  Plus, Minus, Save, Camera, Upload, Wine, Coffee, Beer, ArrowLeft,
-  HelpCircle, Sliders, FileText, CheckSquare, Type, Search, X,
-  Palette, Sparkles, Target, Trophy
+  Plus, Minus, Camera, Upload, ChevronDown, X, Sparkles,
+  FileText, Sliders, CheckSquare, Type, Search, ArrowLeft
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-interface ProductTypeOption {
-  value: string
-  label: string
-  category: string
-  icon: React.ReactNode
-}
+// Types matching the specification
+type EvaluationType = 'subjective_input' | 'multiple_choice' | 'sliding_scale' | 'exact_answer' | 'contains_x'
 
 interface Category {
   id: string
-  name: string
-  parameterType: 'exact_answer' | 'subjective_input' | 'contains_x' | 'multiple_choice' | 'sliding_scale'
-  options: any
-  minValue?: number
-  maxValue?: number
-  containsText?: string
-  rankOption: boolean
+  category_name: string
+  evaluation_type: EvaluationType
+  mc_options?: string[]
+  scale_meta?: { min: number; max: number; step: number }
+  contains_value?: string
+  category_notes_placeholder?: string
+  include_in_ranking: boolean
 }
 
 interface Item {
   id: string
-  name: string
-  description?: string
-  image?: File
-  imageUrl?: string
-  // Pre-loaded data for competition
-  preLoadedData?: {
-    exactAnswer?: string
-    containsX?: string
-    slidingScaleValue?: number
-    multipleChoiceOptions?: string[]
-    correctAnswer?: string
-    subjectiveInput?: string
+  item_name: string
+  item_description?: string
+  item_image?: string
+  preloaded_answers?: {
+    [categoryId: string]: any
   }
 }
 
-interface Template {
-  id: string
-  name: string
+interface FormData {
+  competition_name: string
   description: string
-  difficulty_level: 'beginner' | 'intermediate' | 'professional'
-  duration: number
-  category: string
-  num_samples: number
-  evaluation_criteria: Array<{
-    name: string
-    type: 'scale' | 'text' | 'multipleChoice'
-    options?: string[]
-  }>
-  product_type?: {
-    name: string
-    display_name: string
-  }
+  product_type: string
+  template: string
+  blind_toggle: boolean
+  categories: Category[]
+  items: Item[]
 }
 
-// Comprehensive product types with categories
-const PRODUCT_TYPES: ProductTypeOption[] = [
-  // Wine
-  { value: 'White Wine', label: 'White Wine', category: 'wine', icon: <Wine className="h-4 w-4" /> },
-  { value: 'Red Wine', label: 'Red Wine', category: 'wine', icon: <Wine className="h-4 w-4" /> },
-  { value: 'Rosé Wine', label: 'Rosé Wine', category: 'wine', icon: <Wine className="h-4 w-4" /> },
-  { value: 'Sparkling Wine', label: 'Sparkling Wine', category: 'wine', icon: <Wine className="h-4 w-4" /> },
-  { value: 'Dessert Wine', label: 'Dessert Wine', category: 'wine', icon: <Wine className="h-4 w-4" /> },
 
-  // Coffee
-  { value: 'Espresso', label: 'Espresso', category: 'coffee', icon: <Coffee className="h-4 w-4" /> },
-  { value: 'Filter Coffee', label: 'Filter Coffee', category: 'coffee', icon: <Coffee className="h-4 w-4" /> },
-  { value: 'Cold Brew', label: 'Cold Brew', category: 'coffee', icon: <Coffee className="h-4 w-4" /> },
-  { value: 'Pour Over', label: 'Pour Over', category: 'coffee', icon: <Coffee className="h-4 w-4" /> },
-  { value: 'French Press', label: 'French Press', category: 'coffee', icon: <Coffee className="h-4 w-4" /> },
 
-  // Beer
-  { value: 'Pale Ale', label: 'Pale Ale', category: 'beer', icon: <Beer className="h-4 w-4" /> },
-  { value: 'IPA', label: 'IPA', category: 'beer', icon: <Beer className="h-4 w-4" /> },
-  { value: 'Stout', label: 'Stout', category: 'beer', icon: <Beer className="h-4 w-4" /> },
-  { value: 'Lager', label: 'Lager', category: 'beer', icon: <Beer className="h-4 w-4" /> },
-  { value: 'Wheat Beer', label: 'Wheat Beer', category: 'beer', icon: <Beer className="h-4 w-4" /> },
 
-  // Spirits
-  { value: 'Whiskey', label: 'Whiskey', category: 'spirits', icon: <Target className="h-4 w-4" /> },
-  { value: 'Vodka', label: 'Vodka', category: 'spirits', icon: <Target className="h-4 w-4" /> },
-  { value: 'Gin', label: 'Gin', category: 'spirits', icon: <Target className="h-4 w-4" /> },
-  { value: 'Rum', label: 'Rum', category: 'spirits', icon: <Target className="h-4 w-4" /> },
-  { value: 'Tequila', label: 'Tequila', category: 'spirits', icon: <Target className="h-4 w-4" /> },
-  { value: 'Mezcal', label: 'Mezcal', category: 'spirits', icon: <Target className="h-4 w-4" /> },
 
-  // Other
-  { value: 'Olive Oil', label: 'Olive Oil', category: 'other', icon: <Palette className="h-4 w-4" /> },
-  { value: 'Perfume', label: 'Perfume', category: 'other', icon: <Palette className="h-4 w-4" /> },
-  { value: 'Tea', label: 'Tea', category: 'other', icon: <Palette className="h-4 w-4" /> },
-  { value: 'Chocolate', label: 'Chocolate', category: 'other', icon: <Palette className="h-4 w-4" /> },
-  { value: 'Cheese', label: 'Cheese', category: 'other', icon: <Palette className="h-4 w-4" /> },
-  { value: 'Dessert', label: 'Dessert', category: 'other', icon: <Palette className="h-4 w-4" /> },
-  { value: 'Ice Cream', label: 'Ice Cream', category: 'other', icon: <Palette className="h-4 w-4" /> },
-  { value: 'Cake', label: 'Cake', category: 'other', icon: <Palette className="h-4 w-4" /> },
+// Evaluation type options
+const EVALUATION_TYPE_OPTIONS = [
+  { value: 'subjective_input', label: 'Subjective Input', icon: FileText },
+  { value: 'sliding_scale', label: 'Sliding Scale', icon: Sliders },
+  { value: 'multiple_choice', label: 'Multiple Choice', icon: CheckSquare },
+  { value: 'exact_answer', label: 'Exact Answer', icon: Type },
+  { value: 'contains_x', label: 'Contains X', icon: Search }
 ]
 
-interface CompetitionModePageProps {
-  params: {
-    locale: string
-  }
-}
-
-export default function CompetitionModePageClient({ params }: CompetitionModePageProps) {
-  const [selectedProductType, setSelectedProductType] = useState<string>('')
-  const [categories, setCategories] = useState<Category[]>([
-    {
-      id: '1',
-      name: 'Variety',
-      parameterType: 'multiple_choice',
-      options: [],
-      rankOption: true
-    },
-    {
-      id: '2',
-      name: 'Region',
-      parameterType: 'exact_answer',
-      options: {},
-      rankOption: true
-    }
-  ])
-  const [items, setItems] = useState<Item[]>([
-    { id: '1', name: '', preLoadedData: {} },
-    { id: '2', name: '', preLoadedData: {} }
-  ])
-  const [saving, setSaving] = useState(false)
-  const [lastSaved, setLastSaved] = useState<Date | null>(null)
-  const [isBlindTasting, setIsBlindTasting] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-
-  // Template-related state
-  const [templates, setTemplates] = useState<Template[]>([])
-  const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null)
-  const [showTemplateDialog, setShowTemplateDialog] = useState(false)
-  const [loadingTemplates, setLoadingTemplates] = useState(false)
-
+export default function CreateCompetitionPage() {
   const router = useRouter()
-  const { toast } = useToast()
-  const { isAuthenticated, user } = useAuth()
-
-  const { register, handleSubmit, formState: { errors }, watch, setValue, getValues } = useForm({
-    defaultValues: {
-      name: '',
-      description: '',
-      isBlind: false
-    },
-    mode: 'onChange'
+  const [formData, setFormData] = useState<FormData>({
+    competition_name: '',
+    description: '',
+    product_type: '',
+    template: '',
+    blind_toggle: false,
+    categories: [{
+      id: '1',
+      category_name: '',
+      evaluation_type: 'subjective_input',
+      include_in_ranking: true
+    }],
+    items: [{
+      id: '1',
+      item_name: '',
+      item_description: ''
+    }]
   })
-
-  // Load templates on mount
-  useEffect(() => {
-    loadTemplates()
-  }, [])
-
-  const loadTemplates = async () => {
-    setLoadingTemplates(true)
-    try {
-      const response = await fetch('/api/templates?featured=true&limit=20')
-      if (response.ok) {
-        const data = await response.json()
-        setTemplates(data.data || [])
-      }
-    } catch (error) {
-      console.error('Failed to load templates:', error)
-    } finally {
-      setLoadingTemplates(false)
-    }
-  }
-
-  const applyTemplate = (template: Template) => {
-    // Set product type from template
-    if (template.product_type) {
-      setSelectedProductType(template.product_type.name)
-    }
-
-    // Convert template categories to our format
-    const templateCategories = template.evaluation_criteria.map((criteria, index) => ({
-      id: `template-${index + 1}`,
-      name: criteria.name,
-      parameterType: (criteria.type === 'scale' ? 'sliding_scale' :
-                     criteria.type === 'multipleChoice' ? 'multiple_choice' :
-                     criteria.type === 'text' ? 'subjective_input' : 'exact_answer') as Category['parameterType'],
-      options: criteria.options || [],
-      minValue: criteria.type === 'scale' ? 1 : undefined,
-      maxValue: criteria.type === 'scale' ? 100 : undefined,
-      containsText: undefined,
-      rankOption: true
-    }))
-
-    setCategories(templateCategories)
-    setSelectedTemplate(template)
-    setShowTemplateDialog(false)
-
-    toast({
-      title: 'Template Applied',
-      description: `Applied ${template.name} template successfully.`,
-    })
-  }
-
-  const handleProductTypeChange = (value: string) => {
-    setSelectedProductType(value)
-  }
-
-  const addCategory = () => {
-    if (categories.length >= 10) {
-      alert('Maximum of 10 categories allowed')
-      return
-    }
-    const newCategory: Category = {
-      id: Date.now().toString(),
-      name: '',
-      parameterType: 'subjective_input',
-      options: {},
-      rankOption: true
-    }
-    setCategories([...categories, newCategory])
-  }
-
-  const removeCategory = (id: string) => {
-    if (categories.length <= 1) return
-    setCategories(categories.filter(c => c.id !== id))
-  }
-
-  const updateCategory = (id: string, field: string, value: any) => {
-    setCategories(categories.map(cat =>
-      cat.id === id ? { ...cat, [field]: value } : cat
-    ))
-  }
-
-  const addItem = () => {
-    if (items.length >= 10) {
-      alert('Maximum of 10 items allowed')
-      return
-    }
-    const newItem: Item = {
-      id: Date.now().toString(),
-      name: '',
-      preLoadedData: {}
-    }
-    setItems([...items, newItem])
-  }
-
-  const removeItem = (id: string) => {
-    if (items.length <= 2) return
-    setItems(items.filter(item => item.id !== id))
-  }
-
-  const updateItem = (id: string, updates: Partial<Item>) => {
-    setItems(items.map(item =>
-      item.id === id ? { ...item, ...updates } : item
-    ))
-  }
-
-  const handleBack = () => {
-    router.push(`/${params.locale}/create`)
-  }
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [lastSaved, setLastSaved] = useState<string | null>(null)
+  const [categoriesExpanded, setCategoriesExpanded] = useState(true)
 
   // Auto-save functionality
   useEffect(() => {
-    const autoSaveKey = `competition-draft-${params.locale}`
-    const interval = setInterval(() => {
-      if (getValues('name') || selectedProductType || categories.some(c => c.name) || items.some(i => i.name)) {
-        const draftData = {
-          selectedProductType,
-          categories,
-          items,
-          isBlindTasting,
-          selectedTemplate,
-          formData: getValues(),
-          timestamp: new Date().toISOString()
-        }
-        localStorage.setItem(autoSaveKey, JSON.stringify(draftData))
-        setLastSaved(new Date())
-      }
-    }, 2000) // Auto-save every 2 seconds
+    const timer = setTimeout(() => {
+      const now = new Date()
+      setLastSaved(now.toLocaleTimeString())
+    }, 2000)
+    return () => clearTimeout(timer)
+  }, [formData])
 
-    return () => clearInterval(interval)
-  }, [selectedProductType, categories, items, isBlindTasting, selectedTemplate, params.locale, getValues])
+  const updateFormData = (updates: Partial<FormData>) => {
+    setFormData(prev => ({ ...prev, ...updates }))
+  }
 
-  // Load draft on mount
-  useEffect(() => {
-    const autoSaveKey = `competition-draft-${params.locale}`
-    const draftData = localStorage.getItem(autoSaveKey)
-    if (draftData) {
-      try {
-        const parsed = JSON.parse(draftData)
-        if (parsed.selectedProductType) setSelectedProductType(parsed.selectedProductType)
-        if (parsed.categories) setCategories(parsed.categories)
-        if (parsed.items) setItems(parsed.items)
-        if (parsed.isBlindTasting) setIsBlindTasting(parsed.isBlindTasting)
-        if (parsed.selectedTemplate) setSelectedTemplate(parsed.selectedTemplate)
-        if (parsed.formData) {
-          Object.keys(parsed.formData).forEach(key => {
-            setValue(key as keyof typeof parsed.formData, parsed.formData[key])
-          })
-        }
-        toast({
-          title: 'Draft Loaded',
-          description: 'Your previous work has been restored.',
-        })
-      } catch (error) {
-        console.error('Failed to load draft:', error)
+  const addCategory = () => {
+    if (formData.categories.length < 10) {
+      const newCategory: Category = {
+        id: Date.now().toString(),
+        category_name: '',
+        evaluation_type: 'subjective_input',
+        include_in_ranking: true
       }
+      updateFormData({
+        categories: [...formData.categories, newCategory]
+      })
     }
-  }, [params.locale, setValue, toast])
+  }
+
+  const removeCategory = (id: string) => {
+    updateFormData({
+      categories: formData.categories.filter(cat => cat.id !== id)
+    })
+  }
+
+  const updateCategory = (id: string, updates: Partial<Category>) => {
+    updateFormData({
+      categories: formData.categories.map(cat =>
+        cat.id === id ? { ...cat, ...updates } : cat
+      )
+    })
+  }
+
+  const addItem = () => {
+    const newItem: Item = {
+      id: Date.now().toString(),
+      item_name: '',
+      item_description: ''
+    }
+    updateFormData({
+      items: [...formData.items, newItem]
+    })
+  }
+
+  const removeItem = (id: string) => {
+    updateFormData({
+      items: formData.items.filter(item => item.id !== id)
+    })
+  }
+
+  const updateItem = (id: string, updates: Partial<Item>) => {
+    updateFormData({
+      items: formData.items.map(item =>
+        item.id === id ? { ...item, ...updates } : item
+      )
+    })
+  }
 
   const clearDraft = () => {
-    if (confirm('Are you sure you want to clear your draft? This cannot be undone.')) {
-      const autoSaveKey = `competition-draft-${params.locale}`
-      localStorage.removeItem(autoSaveKey)
-      setSelectedProductType('')
-      setCategories([
-        {
-          id: '1',
-          name: 'Variety',
-          parameterType: 'multiple_choice',
-          options: [],
-          rankOption: true
-        },
-        {
-          id: '2',
-          name: 'Region',
-          parameterType: 'exact_answer',
-          options: {},
-          rankOption: true
-        }
-      ])
-      setItems([
-        { id: '1', name: '', preLoadedData: {} },
-        { id: '2', name: '', preLoadedData: {} }
-      ])
-      setIsBlindTasting(false)
-      setSelectedTemplate(null)
-      reset()
-      setLastSaved(null)
-      toast({
-        title: 'Draft Cleared',
-        description: 'All data has been reset.',
-      })
+    setFormData({
+      competition_name: '',
+      description: '',
+      product_type: '',
+      template: '',
+      blind_toggle: false,
+      categories: [{
+        id: '1',
+        category_name: '',
+        evaluation_type: 'subjective_input',
+        include_in_ranking: true
+      }],
+      items: [{
+        id: '1',
+        item_name: '',
+        item_description: ''
+      }]
+    })
+    setLastSaved(null)
+  }
+
+  const handleCreateCompetition = async () => {
+    // Validation
+    if (!formData.competition_name.trim()) {
+      alert('Competition name is required')
+      return
     }
-  }
 
-  const validatePreLoadedData = () => {
-    const errors: string[] = []
+    if (!formData.product_type) {
+      alert('Product type is required')
+      return
+    }
 
-    // Check if all items have names
-    items.forEach((item, index) => {
-      if (!item.name.trim()) {
-        errors.push(`Item ${index + 1} is missing a name`)
+    if (formData.categories.some(cat => !cat.category_name.trim())) {
+      alert('Please fill in all category names')
+      return
+    }
+
+    if (formData.items.some(item => !item.item_name.trim())) {
+      alert('Please fill in all item names')
+      return
+    }
+
+    // Validate preloaded answers for ranking categories
+    const rankingCategories = formData.categories.filter(cat => cat.include_in_ranking)
+    for (const category of rankingCategories) {
+      for (const item of formData.items) {
+        const preloadedAnswer = item.preloaded_answers?.[category.id]
+        if (!preloadedAnswer) {
+          alert(`Missing preloaded answer for "${item.item_name}" in category "${category.category_name}"`)
+          return
+        }
       }
-    })
+    }
 
-    // Check if pre-loaded data is provided for each category and item
-    categories.forEach((category) => {
-      if (category.rankOption) {
-        items.forEach((item, itemIndex) => {
-          const preLoadedData = item.preLoadedData || {}
-
-          switch (category.parameterType) {
-            case 'exact_answer':
-              if (!preLoadedData.exactAnswer?.trim()) {
-                errors.push(`"${item.name || `Item ${itemIndex + 1}`}" is missing pre-loaded data for "${category.name}" (Exact Answer)`)
-              }
-              break
-            case 'contains_x':
-              if (!preLoadedData.containsX?.trim()) {
-                errors.push(`"${item.name || `Item ${itemIndex + 1}`}" is missing pre-loaded data for "${category.name}" (Contains X)`)
-              }
-              break
-            case 'sliding_scale':
-              if (preLoadedData.slidingScaleValue === undefined || preLoadedData.slidingScaleValue === null || preLoadedData.slidingScaleValue === 0) {
-                errors.push(`"${item.name || `Item ${itemIndex + 1}`}" is missing pre-loaded data for "${category.name}" (Sliding Scale)`)
-              }
-              break
-            case 'multiple_choice':
-              if (!preLoadedData.correctAnswer?.trim()) {
-                errors.push(`"${item.name || `Item ${itemIndex + 1}`}" is missing pre-loaded data for "${category.name}" (Multiple Choice)`)
-              }
-              break
-            case 'subjective_input':
-              if (!preLoadedData.subjectiveInput?.trim()) {
-                errors.push(`"${item.name || `Item ${itemIndex + 1}`}" is missing pre-loaded data for "${category.name}" (Subjective Input)`)
-              }
-              break
-          }
-        })
-      }
-    })
-
-    return errors
-  }
-
-  const onSubmit = async (data: any) => {
     setIsSubmitting(true)
 
-    try {
-      // Validate pre-loaded data
-      const validationErrors = validatePreLoadedData()
-      if (validationErrors.length > 0) {
-        toast({
-          title: 'Validation Error',
-          description: validationErrors[0], // Show first error
-          variant: 'destructive'
-        })
-        setIsSubmitting(false)
-        return
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000))
+
+    alert('Competition Mode Tasting created successfully!')
+    router.push('/en/landing')
+
+    setIsSubmitting(false)
+  }
+
+  const addPrefillCategory = (name: string, type: EvaluationType) => {
+    if (formData.categories.length < 10) {
+      const newCategory: Category = {
+        id: Date.now().toString(),
+        category_name: name,
+        evaluation_type: type,
+        include_in_ranking: true
       }
-
-      const tastingData = {
-        mode: 'competition' as const,
-        name: data.name,
-        description: data.description || '',
-        product_type: selectedProductType,
-        is_blind: isBlindTasting,
-        categories: categories.map(cat => ({
-          id: cat.id,
-          name: cat.name,
-          parameter_type: cat.parameterType,
-          options: cat.options,
-          min_value: cat.minValue,
-          max_value: cat.maxValue,
-          contains_text: cat.containsText,
-          rank_option: cat.rankOption
-        })),
-        items: items.map(item => ({
-          id: item.id,
-          name: item.name,
-          description: item.description || '',
-          image: item.image,
-          pre_loaded_data: item.preLoadedData
-        })),
-        template_id: selectedTemplate?.id
-      }
-
-      await createTasting(tastingData)
-
-      toast({
-        title: 'Competition Created!',
-        description: 'Your competition tasting has been created successfully.',
+      updateFormData({
+        categories: [...formData.categories, newCategory]
       })
-
-      // Clear the draft after successful submission
-      const autoSaveKey = `competition-draft-${params.locale}`
-      localStorage.removeItem(autoSaveKey)
-
-      // Prepare complete tasting data for confirmation and input screens
-      const completionTastingData = {
-        id: result.id,
-        name: data.name,
-        mode: 'competition' as const,
-        product_type: selectedProductType,
-        categories: categories.map(cat => ({
-          id: cat.id,
-          name: cat.name,
-          parameterType: cat.parameterType,
-          options: cat.options,
-          minValue: cat.minValue,
-          maxValue: cat.maxValue,
-          containsText: cat.containsText,
-          rankOption: cat.rankOption
-        })),
-        items: items.map(item => ({
-          id: item.id,
-          name: item.name,
-          image: item.image,
-          preLoadedData: item.preLoadedData || {}
-        })),
-        subjectiveInputs: categories
-          .filter(cat => cat.parameterType === 'subjective_input')
-          .map(cat => cat.name + ': ' + (cat.options?.join(', ') || ''))
-          .concat(
-            items.flatMap(item =>
-              categories
-                .filter(cat => cat.parameterType === 'subjective_input')
-                .map(cat => item.preLoadedData?.subjectiveInput || '')
-                .filter(Boolean)
-            )
-          ),
-        preLoadedData: items.map(item => item.preLoadedData || {})
-      }
-
-      // Store tasting data temporarily for confirmation screen
-      sessionStorage.setItem('tasting-completion-data', JSON.stringify(completionTastingData))
-      router.push(`/${params.locale}/competition/${result.id}/confirm?tasting=${result.id}`)
-
-    } catch (error) {
-      console.error('Failed to create competition:', error)
-      toast({
-        title: 'Error',
-        description: 'Failed to create competition. Please try again.',
-        variant: 'destructive'
-      })
-    } finally {
-      setIsSubmitting(false)
     }
   }
-  return (
-    <DashboardAppShell activeNavItem="create" maxWidth="full">
-      <div className="space-y-4 sm:space-y-6 px-3 sm:px-0">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleBack}
+
+  const renderPreloadedAnswerField = (category: Category, item: Item) => {
+    const currentValue = item.preloaded_answers?.[category.id] || ''
+
+    switch (category.evaluation_type) {
+      case 'multiple_choice':
+        return (
+          <Select
+            value={currentValue}
+            onValueChange={(value) => {
+              const newAnswers = { ...item.preloaded_answers, [category.id]: value }
+              updateItem(item.id, { preloaded_answers: newAnswers })
+            }}
           >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back
-          </Button>
+            <SelectTrigger className="w-full rounded-lg border-[#D6D1C8] bg-white p-3 text-sm min-h-[44px]">
+              <SelectValue placeholder="Select correct answer" />
+            </SelectTrigger>
+            <SelectContent>
+              {category.mc_options?.map((option, idx) => (
+                <SelectItem key={idx} value={option}>
+                  {option}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )
+
+      case 'exact_answer':
+        return (
+          <Input
+            placeholder="Enter the correct answer"
+            value={currentValue}
+            onChange={(e) => {
+              const newAnswers = { ...item.preloaded_answers, [category.id]: e.target.value }
+              updateItem(item.id, { preloaded_answers: newAnswers })
+            }}
+            className="w-full rounded-lg border-[#D6D1C8] bg-white p-3 text-sm min-h-[44px]"
+          />
+        )
+
+      case 'sliding_scale':
+        return (
+          <Input
+            type="number"
+            placeholder={`Expected value (${category.scale_meta?.min || 0}-${category.scale_meta?.max || 100})`}
+            value={currentValue}
+            onChange={(e) => {
+              const newAnswers = { ...item.preloaded_answers, [category.id]: e.target.value }
+              updateItem(item.id, { preloaded_answers: newAnswers })
+            }}
+            min={category.scale_meta?.min || 0}
+            max={category.scale_meta?.max || 100}
+            className="w-full rounded-lg border-[#D6D1C8] bg-white p-3 text-sm min-h-[44px]"
+          />
+        )
+
+      case 'contains_x':
+        return (
+          <Input
+            placeholder={`Text must contain: ${category.contains_value || 'specific term'}`}
+            value={currentValue}
+            onChange={(e) => {
+              const newAnswers = { ...item.preloaded_answers, [category.id]: e.target.value }
+              updateItem(item.id, { preloaded_answers: newAnswers })
+            }}
+            className="w-full rounded-lg border-[#D6D1C8] bg-white p-3 text-sm min-h-[44px]"
+          />
+        )
+
+      case 'subjective_input':
+        return (
+          <Textarea
+            placeholder="Expected subjective response or key points"
+            value={currentValue}
+            onChange={(e) => {
+              const newAnswers = { ...item.preloaded_answers, [category.id]: e.target.value }
+              updateItem(item.id, { preloaded_answers: newAnswers })
+            }}
+            className="w-full rounded-lg border-[#D6D1C8] bg-white p-3 text-sm min-h-[88px]"
+          />
+        )
+
+      default:
+        return null
+    }
+  }
+
+  const isFormValid = () => {
+    const hasName = formData.competition_name.trim()
+    const hasProductType = formData.product_type
+    const hasValidCategories = formData.categories.every(cat => cat.category_name.trim())
+    const hasValidItems = formData.items.every(item => item.item_name.trim())
+
+    // Check if ranking categories have preloaded answers
+    const rankingCategories = formData.categories.filter(cat => cat.include_in_ranking)
+    const hasRankingAnswers = rankingCategories.every(category =>
+      formData.items.every(item => item.preloaded_answers?.[category.id])
+    )
+
+    return hasName && hasProductType && hasValidCategories && hasValidItems && hasRankingAnswers
+  }
+  return (
+    <div className="min-h-screen bg-[#FAF7F0]">
+      {/* Enhanced Header with Auto-save */}
+      <header className="sticky top-0 z-10 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-[#E6E1D9]">
+        <div className="px-3 sm:px-4 py-4 flex items-center justify-between">
+          <button
+            onClick={() => router.back()}
+            className="h-10 w-10 inline-flex items-center justify-center rounded-md hover:bg-[#f9fafb] transition-colors"
+            aria-label="Back to Create Tasting"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </button>
 
           <div className="text-center">
-            <h1 className="text-2xl font-bold">Create Competition</h1>
-            <p className="text-sm text-muted-foreground">Structured competition with scoring and ranking</p>
-            {lastSaved && (
-              <p className="text-xs text-muted-foreground mt-1">
-                Auto-saved {lastSaved.toLocaleTimeString()}
-              </p>
-            )}
+            <h1 className="text-3xl font-bold leading-9 tracking-tight"
+                style={{ fontFamily: "'Playfair Display', serif" }}>
+              Create Competition
+            </h1>
+            <p className="text-sm text-[#5A5A56]">Structured competition with scoring and ranking</p>
           </div>
 
-          <div className="w-16" /> {/* Spacer for balance */}
+          <div className="text-xs text-[#737373]" data-testid="text-auto-saved">
+            {lastSaved && `Auto-saved ${lastSaved}`}
+          </div>
         </div>
+      </header>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          {/* Basic Information Card */}
-          <Card className="w-full">
+      {/* Enhanced Main Content */}
+      <main className="mx-auto max-w-[768px] px-3 sm:px-4 space-y-6 sm:space-y-8 pb-24">
+        {/* Basic Information */}
+        <section>
+          <Card className="rounded-[16px] shadow-[0_1px_3px_rgba(0,0,0,0.05)] bg-white p-4 sm:p-5">
             <CardHeader>
-              <CardTitle>Basic Information</CardTitle>
-              <CardDescription>Set up your competition details</CardDescription>
+              <CardTitle className="text-lg font-bold text-[#333333]">Basic Information</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label htmlFor="name">Competition Name *</Label>
+                <Label htmlFor="competition-name" className="text-sm font-medium text-[#525252] mb-2 block">
+                  Competition Name *
+                </Label>
                 <Input
-                  id="name"
-                  {...register("name", { required: "Competition name is required" })}
+                  id="competition-name"
+                  data-testid="ti-competition-name"
                   placeholder="e.g., Wine Competition 2024"
-                  className="min-h-[48px]"
+                  value={formData.competition_name}
+                  onChange={(e) => updateFormData({ competition_name: e.target.value })}
+                  className="h-12 w-full rounded-md border border-[#e5e7eb] px-3 text-sm"
+                  required
                 />
-                {errors.name && (
-                  <p className="text-sm text-red-500 mt-1">{errors.name.message}</p>
-                )}
               </div>
 
               <div>
-                <Label htmlFor="description">Description</Label>
+                <Label htmlFor="description" className="text-sm font-medium text-[#525252] mb-2 block">
+                  Description
+                </Label>
                 <Textarea
                   id="description"
-                  {...register("description")}
+                  data-testid="ta-competition-description"
                   placeholder="Optional description of your competition"
-                  className="min-h-[80px]"
+                  value={formData.description}
+                  onChange={(e) => updateFormData({ description: e.target.value })}
+                  className="w-full rounded-md border border-[#e5e7eb] px-3 py-3 text-sm min-h-[88px]"
                 />
               </div>
 
               <div>
-                <Label htmlFor="product-type">Product Type *</Label>
-                <Select value={selectedProductType} onValueChange={handleProductTypeChange}>
-                  <SelectTrigger id="product-type" className="min-h-[48px]">
-                    <SelectValue placeholder="Select a product type" />
-                  </SelectTrigger>
-                  <SelectContent className="max-h-60">
-                    <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-b">
-                      🍷 Wine
-                    </div>
-                    {PRODUCT_TYPES.filter(pt => pt.category === "wine").map((type) => (
-                      <SelectItem key={type.value} value={type.value} className="flex items-center">
-                        <div className="flex items-center gap-2">
-                          {type.icon}
-                          <span>{type.label}</span>
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {selectedProductType && (
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Selected: <span className="font-medium">{selectedProductType}</span>
-                  </p>
-                )}
+                <Label htmlFor="product-type" className="text-sm font-medium text-[#525252] mb-2 block">
+                  Product Type *
+                </Label>
+                <ProductTypeSelect
+                  value={formData.product_type}
+                  onChange={(value) => updateFormData({ product_type: value })}
+                  data-testid="sel-product-type"
+                />
               </div>
 
-              {/* Template Selector */}
               <div>
-                <Label>Templates</Label>
-                <div className="mt-2">
-                  <Dialog open={showTemplateDialog} onOpenChange={setShowTemplateDialog}>
-                    <DialogTrigger asChild>
+                <Label htmlFor="template" className="text-sm font-medium text-[#525252] mb-2 block">
+                  Templates
+                </Label>
+                <Button
+                  type="button"
+                  id="template"
+                  data-testid="btn-template-picker"
+                  variant="outline"
+                  className="h-12 w-full justify-start rounded-md border border-[#e5e7eb] px-3 text-sm"
+                  onClick={() => alert('Template picker dialog would open here')}
+                >
+                  <Sparkles className="h-4 w-4 mr-2" />
+                  Choose Template
+                </Button>
+                <p className="text-xs text-[#737373] mt-1">Optional. Prefills categories.</p>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <Label htmlFor="blind-toggle" className="text-sm font-medium text-[#525252]">
+                  Blind Tasting
+                </Label>
+                <Switch
+                  id="blind-toggle"
+                  data-testid="sw-blind"
+                  checked={formData.blind_toggle}
+                  onCheckedChange={(checked) => updateFormData({ blind_toggle: checked })}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* Enhanced Evaluation Categories with Collapsible */}
+        <section>
+          <Card className="rounded-[16px] shadow-[0_1px_3px_rgba(0,0,0,0.05)] bg-white p-4 sm:p-5">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-lg font-bold text-[#333333]">Evaluation Categories</CardTitle>
+                <p className="text-sm text-[#525252]">Define categories for evaluation (max 10)</p>
+              </div>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => setCategoriesExpanded(!categoriesExpanded)}
+                className="p-2"
+                aria-label={categoriesExpanded ? "Collapse categories" : "Expand categories"}
+              >
+                <ChevronDown className={`h-4 w-4 transition-transform ${categoriesExpanded ? 'rotate-180' : ''}`} />
+              </Button>
+            </div>
+
+            {categoriesExpanded && (
+              <CardContent className="mt-4 space-y-4">
+                {/* Prefill Options */}
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium text-[#525252]">Quick Add:</Label>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      { name: 'Variety', type: 'multiple_choice' as const },
+                      { name: 'Region', type: 'exact_answer' as const },
+                      { name: 'Aroma', type: 'subjective_input' as const }
+                    ].map(({ name, type }) => (
                       <Button
+                        key={name}
                         type="button"
                         variant="outline"
-                        className="w-full min-h-[48px] justify-start"
+                        size="sm"
+                        onClick={() => addPrefillCategory(name, type)}
+                        className="text-xs h-8"
                       >
-                        <Sparkles className="h-4 w-4 mr-2" />
-                        {selectedTemplate ? `Using: ${selectedTemplate.name}` : "Choose Template"}
+                        {name} ({type.replace('_', ' ')})
                       </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-[calc(100vw-2rem)] sm:max-w-4xl max-h-[80vh] overflow-y-auto">
-                      <DialogHeader>
-                        <DialogTitle>Choose a Template</DialogTitle>
-                      </DialogHeader>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                        {loadingTemplates ? (
-                          <div className="col-span-full text-center py-8">
-                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-                            <p className="text-sm text-muted-foreground mt-2">Loading templates...</p>
-                          </div>
-                        ) : templates.length === 0 ? (
-                          <div className="col-span-full text-center py-8">
-                            <p className="text-muted-foreground">No templates available</p>
-                          </div>
-                        ) : (
-                          templates.map((template) => (
-                            <Card
-                              key={template.id}
-                              className="cursor-pointer hover:shadow-md transition-shadow"
-                              onClick={() => applyTemplate(template)}
-                            >
-                              <CardHeader className="pb-3">
-                                <div className="flex items-start justify-between">
-                                  <div>
-                                    <CardTitle className="text-base">{template.name}</CardTitle>
-                                    <CardDescription className="text-sm mt-1">
-                                      {template.description}
-                                    </CardDescription>
-                                  </div>
-                                  <Badge variant={
-                                    template.difficulty_level === "beginner" ? "secondary" :
-                                    template.difficulty_level === "intermediate" ? "default" : "destructive"
-                                  }>
-                                    {template.difficulty_level}
-                                  </Badge>
-                                </div>
-                              </CardHeader>
-                              <CardContent className="pt-0">
-                                <div className="space-y-2 text-sm">
-                                  <div className="flex items-center gap-2">
-                                    <span className="text-muted-foreground">Duration:</span>
-                                    <span>{template.duration} min</span>
-                                  </div>
-                                  <div className="flex items-center gap-2">
-                                    <span className="text-muted-foreground">Samples:</span>
-                                    <span>{template.num_samples}</span>
-                                  </div>
-                                  <div className="flex items-center gap-2">
-                                    <span className="text-muted-foreground">Categories:</span>
-                                    <span>{template.evaluation_criteria.length}</span>
-                                  </div>
-                                </div>
-                              </CardContent>
-                            </Card>
-                          ))
+                    ))}
+                  </div>
+                </div>
+
+                {/* Categories Repeater */}
+                <div data-testid="rep-categories" className="space-y-4">
+                  {formData.categories.map((category, index) => (
+                    <div key={category.id} className="border border-[#E6E1D9] rounded-lg p-4 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <Label className="text-sm font-semibold text-[#1B1B18]">
+                          Category {index + 1}
+                        </Label>
+                        {formData.categories.length > 1 && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => removeCategory(category.id)}
+                            aria-label="Remove category"
+                            className="h-8 w-8 p-0"
+                          >
+                            <Minus className="h-4 w-4" />
+                          </Button>
                         )}
                       </div>
-                    </DialogContent>
-                  </Dialog>
-                  {selectedTemplate && (
-                    <div className="mt-2 p-2 bg-muted rounded-md">
+
+                      <div>
+                        <Label className="text-sm font-semibold text-[#1B1B18] mb-2 block">
+                          Category Name *
+                        </Label>
+                        <Input
+                          placeholder="e.g., Aroma / Flavor / Texture"
+                          value={category.category_name}
+                          onChange={(e) => updateCategory(category.id, { category_name: e.target.value })}
+                          className="w-full rounded-lg border-[#D6D1C8] bg-white p-3 text-sm"
+                          required
+                        />
+                      </div>
+
+                      <div>
+                        <Label className="text-sm font-semibold text-[#1B1B18] mb-2 block">
+                          Evaluation Type
+                        </Label>
+                        <Select
+                          value={category.evaluation_type}
+                          onValueChange={(value: EvaluationType) => updateCategory(category.id, { evaluation_type: value })}
+                        >
+                          <SelectTrigger className="w-full rounded-lg border-[#D6D1C8] bg-white p-3 text-sm">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {EVALUATION_TYPE_OPTIONS.map(option => (
+                              <SelectItem key={option.value} value={option.value}>
+                                <div className="flex items-center gap-2">
+                                  <option.icon className="h-4 w-4" />
+                                  <span>{option.label}</span>
+                                </div>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {/* Dynamic subfields based on evaluation type */}
+                      {category.evaluation_type === 'multiple_choice' && (
+                        <div>
+                          <Label className="text-sm font-semibold text-[#1B1B18] mb-2 block">
+                            Options
+                          </Label>
+                          <Textarea
+                            placeholder="Add option and press enter"
+                            value={category.mc_options?.join('\n') || ''}
+                            onChange={(e) => updateCategory(category.id, {
+                              mc_options: e.target.value.split('\n').filter(option => option.trim())
+                            })}
+                            className="w-full rounded-lg border-[#D6D1C8] bg-white p-3 text-sm min-h-[88px]"
+                          />
+                        </div>
+                      )}
+
+                      {category.evaluation_type === 'sliding_scale' && (
+                        <div>
+                          <Label className="text-sm font-semibold text-[#1B1B18] mb-2 block">
+                            Scale Settings
+                          </Label>
+                          <div className="space-y-2">
+                            <div className="flex justify-between text-xs text-[#5A5A56]">
+                              <span>Min: {category.scale_meta?.min || 0}</span>
+                              <span>Max: {category.scale_meta?.max || 100}</span>
+                            </div>
+                            <Slider
+                              value={[category.scale_meta?.min || 0, category.scale_meta?.max || 100]}
+                              onValueChange={([min, max]) => updateCategory(category.id, {
+                                scale_meta: { min, max, step: 1 }
+                              })}
+                              max={100}
+                              min={0}
+                              step={1}
+                              className="w-full"
+                            />
+                          </div>
+                        </div>
+                      )}
+
+                      {category.evaluation_type === 'contains_x' && (
+                        <div>
+                          <Label className="text-sm font-semibold text-[#1B1B18] mb-2 block">
+                            Target substring
+                          </Label>
+                          <Input
+                            placeholder="e.g., cabernet"
+                            value={category.contains_value || ''}
+                            onChange={(e) => updateCategory(category.id, { contains_value: e.target.value })}
+                            className="w-full rounded-lg border-[#D6D1C8] bg-white p-3 text-sm"
+                          />
+                        </div>
+                      )}
+
                       <div className="flex items-center justify-between">
-                        <span className="text-sm">
-                          <strong>{selectedTemplate.name}</strong> • {selectedTemplate.difficulty_level} • {selectedTemplate.duration} min
-                        </span>
+                        <Label className="text-sm font-semibold text-[#1B1B18]">
+                          Include in ranking
+                        </Label>
+                        <Switch
+                          checked={category.include_in_ranking}
+                          onCheckedChange={(checked) => updateCategory(category.id, { include_in_ranking: checked })}
+                        />
+                      </div>
+
+                      <div>
+                        <Label className="text-sm font-semibold text-[#1B1B18] mb-2 block">
+                          Notes Helper (optional)
+                        </Label>
+                        <Textarea
+                          placeholder="Describe what to capture in this category"
+                          value={category.category_notes_placeholder || ''}
+                          onChange={(e) => updateCategory(category.id, { category_notes_placeholder: e.target.value })}
+                          className="w-full rounded-lg border-[#D6D1C8] bg-white p-3 text-sm min-h-[88px]"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {formData.categories.length < 10 && (
+                  <Button
+                    type="button"
+                    onClick={addCategory}
+                    data-testid="btn-add-category"
+                    className="w-full h-12 rounded-xl font-semibold bg-[#2E7D32] text-white hover:bg-[#7FB889]"
+                    aria-label="Add category"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Category
+                  </Button>
+                )}
+              </CardContent>
+            )}
+          </Card>
+        </section>
+
+        {/* Items to Taste */}
+        <section>
+          <Card className="rounded-xl bg-white shadow-md">
+            <CardHeader>
+              <CardTitle className="text-lg font-bold text-[#1B1B18]">Items to Taste</CardTitle>
+              <p className="text-sm text-[#5A5A56]">Pre-load items and correct answers</p>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div data-testid="rep-items" className="space-y-4">
+                {formData.items.map((item, index) => (
+                  <div key={item.id} className="border border-[#E6E1D9] rounded-lg p-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-sm font-semibold text-[#1B1B18]">
+                        Item {index + 1}
+                      </Label>
+                      {formData.items.length > 1 && (
                         <Button
                           type="button"
                           variant="ghost"
                           size="sm"
-                          onClick={() => setSelectedTemplate(null)}
+                          onClick={() => removeItem(item.id)}
+                          aria-label="Remove item"
+                          className="h-8 w-8 p-0"
                         >
                           <X className="h-4 w-4" />
                         </Button>
+                      )}
+                    </div>
+
+                    <div>
+                      <Label className="text-sm font-semibold text-[#1B1B18] mb-2 block">
+                        Item Name *
+                      </Label>
+                      <Input
+                        placeholder="Item 1"
+                        value={item.item_name}
+                        onChange={(e) => updateItem(item.id, { item_name: e.target.value })}
+                        className="w-full rounded-lg border-[#D6D1C8] bg-white p-3 text-sm"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <Label className="text-sm font-semibold text-[#1B1B18] mb-2 block">
+                        Description (Optional)
+                      </Label>
+                      <Textarea
+                        placeholder="Any additional details about this item..."
+                        value={item.item_description || ''}
+                        onChange={(e) => updateItem(item.id, { item_description: e.target.value })}
+                        className="w-full rounded-lg border-[#D6D1C8] bg-white p-3 text-sm min-h-[88px]"
+                      />
+                    </div>
+
+                    <div>
+                      <Label className="text-sm font-semibold text-[#1B1B18] mb-2 block">
+                        Image (Optional)
+                      </Label>
+                      <div className="flex gap-2">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="flex-1 h-12 rounded-xl border-[#D6D1C8]"
+                        >
+                          <Camera className="h-4 w-4 mr-2" />
+                          Take Photo
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="flex-1 h-12 rounded-xl border-[#D6D1C8]"
+                        >
+                          <Upload className="h-4 w-4 mr-2" />
+                          Upload Image
+                        </Button>
                       </div>
                     </div>
-                  )}
-                </div>
-              </div>
 
-              {/* Blind Tasting Toggle */}
-              <div className="flex items-center space-x-2">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="flex items-center space-x-2 cursor-help">
-                        <Switch
-                          id="blind-tasting"
-                          checked={isBlindTasting}
-                          onCheckedChange={setIsBlindTasting}
-                        />
-                        <Label htmlFor="blind-tasting">Blind Tasting</Label>
-                        <HelpCircle className="h-4 w-4 text-muted-foreground" />
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Hide item names from participants to enable blind evaluation</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Evaluation Categories */}
-          <Card className="w-full">
-            <CardHeader>
-              <CardTitle>Evaluation Categories</CardTitle>
-              <CardDescription>
-                Define categories for evaluation (max 10)
-                <Badge variant="secondary" className="ml-2">{categories.length} categories</Badge>
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Accordion type="single" collapsible className="w-full">
-                {categories.map((category, index) => (
-                  <AccordionItem key={category.id} value={category.id}>
-                    <AccordionTrigger className="text-left">
-                      <div className="flex items-center gap-2">
-                        <span>{category.name || `Category ${index + 1}`}</span>
-                        {category.parameterType === 'sliding_scale' && (
-                          <Badge variant="outline" className="text-xs">
-                            <Sliders className="h-3 w-3 mr-1" />
-                            Scale
-                          </Badge>
-                        )}
-                        {category.parameterType === 'multiple_choice' && (
-                          <Badge variant="outline" className="text-xs">
-                            <CheckSquare className="h-3 w-3 mr-1" />
-                            Multiple Choice
-                          </Badge>
-                        )}
-                        {category.parameterType === 'exact_answer' && (
-                          <Badge variant="outline" className="text-xs">
-                            <Type className="h-3 w-3 mr-1" />
-                            Exact Answer
-                          </Badge>
-                        )}
-                        {category.parameterType === 'contains_x' && (
-                          <Badge variant="outline" className="text-xs">
-                            <Search className="h-3 w-3 mr-1" />
-                            Contains X
-                          </Badge>
-                        )}
-                        {category.parameterType === 'subjective_input' && (
-                          <Badge variant="outline" className="text-xs">
-                            <FileText className="h-3 w-3 mr-1" />
-                            Subjective
-                          </Badge>
-                        )}
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent className="space-y-4 pt-4">
-                      <div className="space-y-4">
-                        <div>
-                          <Label>Category Name *</Label>
-                          <Input
-                            value={category.name}
-                            onChange={(e) => updateCategory(category.id, 'name', e.target.value)}
-                            placeholder="e.g., Variety, Aroma, Flavor"
-                            className="min-h-[48px]"
-                          />
-                        </div>
-
-                        <div>
-                          <Label>Parameter Type *</Label>
-                          <Select value={category.parameterType} onValueChange={(value) => updateCategory(category.id, 'parameterType', value)}>
-                            <SelectTrigger className="min-h-[48px]">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="subjective_input">
-                                <div className="flex items-center gap-2">
-                                  <FileText className="h-4 w-4" />
-                                  <div>
-                                    <div className="font-medium">Subjective Input</div>
-                                    <div className="text-xs text-muted-foreground">Free-form text responses</div>
-                                  </div>
-                                </div>
-                              </SelectItem>
-                              <SelectItem value="sliding_scale">
-                                <div className="flex items-center gap-2">
-                                  <Sliders className="h-4 w-4" />
-                                  <div>
-                                    <div className="font-medium">Sliding Scale</div>
-                                    <div className="text-xs text-muted-foreground">1-100 rating scale</div>
-                                  </div>
-                                </div>
-                              </SelectItem>
-                              <SelectItem value="multiple_choice">
-                                <div className="flex items-center gap-2">
-                                  <CheckSquare className="h-4 w-4" />
-                                  <div>
-                                    <div className="font-medium">Multiple Choice</div>
-                                    <div className="text-xs text-muted-foreground">Select from options</div>
-                                  </div>
-                                </div>
-                              </SelectItem>
-                              <SelectItem value="exact_answer">
-                                <div className="flex items-center gap-2">
-                                  <Type className="h-4 w-4" />
-                                  <div>
-                                    <div className="font-medium">Exact Answer</div>
-                                    <div className="text-xs text-muted-foreground">Precise text matching</div>
-                                  </div>
-                                </div>
-                              </SelectItem>
-                              <SelectItem value="contains_x">
-                                <div className="flex items-center gap-2">
-                                  <Search className="h-4 w-4" />
-                                  <div>
-                                    <div className="font-medium">Contains X</div>
-                                    <div className="text-xs text-muted-foreground">Text contains specific words</div>
-                                  </div>
-                                </div>
-                              </SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-
-                        {/* Parameter-specific options */}
-                        {category.parameterType === 'multiple_choice' && (
-                          <div>
-                            <Label>Options (comma-separated)</Label>
-                            <Textarea
-                              value={Array.isArray(category.options) ? category.options.join(', ') : ''}
-                              onChange={(e) => updateCategory(category.id, 'options', e.target.value.split(',').map(s => s.trim()))}
-                              placeholder="e.g., Cabernet Sauvignon, Merlot, Pinot Noir"
-                              className="min-h-[60px]"
-                            />
+                    {/* Pre-loaded Answers */}
+                    <div className="border-t border-[#E6E1D9] pt-4">
+                      <Label className="text-sm font-semibold text-[#1B1B18] mb-3 block">
+                        Pre-loaded Data
+                      </Label>
+                      <div className="space-y-3">
+                        {formData.categories.filter(cat => cat.include_in_ranking).map((category) => (
+                          <div key={category.id} className="p-3 bg-[#F4F1EC] rounded-lg">
+                            <Label className="text-sm font-medium text-[#1B1B18] mb-2 block">
+                              {category.category_name}
+                            </Label>
+                            {renderPreloadedAnswerField(category, item)}
                           </div>
-                        )}
-
-                        {category.parameterType === 'sliding_scale' && (
-                          <div className="grid grid-cols-2 gap-4">
-                            <div>
-                              <Label>Min Value</Label>
-                              <Input
-                                type="number"
-                                value={category.minValue || 1}
-                                onChange={(e) => updateCategory(category.id, 'minValue', parseInt(e.target.value) || 1)}
-                                min="0"
-                                className="min-h-[48px]"
-                              />
-                            </div>
-                            <div>
-                              <Label>Max Value</Label>
-                              <Input
-                                type="number"
-                                value={category.maxValue || 100}
-                                onChange={(e) => updateCategory(category.id, 'maxValue', parseInt(e.target.value) || 100)}
-                                min="1"
-                                className="min-h-[48px]"
-                              />
-                            </div>
-                          </div>
-                        )}
-
-                        {category.parameterType === 'contains_x' && (
-                          <div>
-                            <Label>Contains Text</Label>
-                            <Input
-                              value={category.containsText || ''}
-                              onChange={(e) => updateCategory(category.id, 'containsText', e.target.value)}
-                              placeholder="Text that must be contained in response"
-                              className="min-h-[48px]"
-                            />
-                          </div>
-                        )}
-
-                        <div className="flex items-center space-x-2">
-                          <Switch
-                            id={`rank-${category.id}`}
-                            checked={category.rankOption}
-                            onCheckedChange={(checked) => updateCategory(category.id, 'rankOption', checked)}
-                          />
-                          <Label htmlFor={`rank-${category.id}`}>Include in ranking</Label>
-                        </div>
+                        ))}
                       </div>
-                    </AccordionContent>
-                  </AccordionItem>
+                    </div>
+                  </div>
                 ))}
-              </Accordion>
-
-              <div className="mt-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={addCategory}
-                  disabled={categories.length >= 10}
-                  className="w-full min-h-[48px]"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Category
-                </Button>
               </div>
+
+              <Button
+                type="button"
+                onClick={addItem}
+                data-testid="btn-add-item"
+                className="w-full h-12 rounded-xl font-semibold bg-[#2E7D32] text-white hover:bg-[#7FB889]"
+                aria-label="Add item"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add Item
+              </Button>
             </CardContent>
           </Card>
+        </section>
+      </main>
 
-          {/* Items to Taste */}
-          <Card className="w-full">
-            <CardHeader>
-              <CardTitle>Items to Taste</CardTitle>
-              <CardDescription>Add the items participants will evaluate</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Accordion type="single" collapsible className="w-full">
-                {items.map((item, index) => (
-                  <AccordionItem key={item.id} value={item.id}>
-                    <AccordionTrigger className="text-left">
-                      <div className="flex items-center gap-2">
-                        <span>{item.name || `Item ${index + 1}`}</span>
-                        {item.image && (
-                          <Badge variant="outline" className="text-xs">
-                            📷 Photo
-                          </Badge>
-                        )}
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent className="space-y-4 pt-4">
-                      <div className="space-y-4">
-                        <div>
-                          <Label>Item Name *</Label>
-                          <Input
-                            value={item.name}
-                            onChange={(e) => updateItem(item.id, { name: e.target.value })}
-                            placeholder={`Item ${index + 1}`}
-                            className="min-h-[48px]"
-                          />
-                        </div>
-
-                        <div>
-                          <Label>Description (Optional)</Label>
-                          <Textarea
-                            value={item.description || ''}
-                            onChange={(e) => updateItem(item.id, { description: e.target.value })}
-                            placeholder="Add any additional details about this item..."
-                            className="min-h-[60px]"
-                          />
-                        </div>
-
-                        {/* Image Upload */}
-                        <div>
-                          <Label>Image (Optional)</Label>
-                          <div className="flex gap-2 mt-2">
-                            <Button
-                              type="button"
-                              variant="outline"
-                              onClick={() => document.getElementById(`image-upload-${item.id}`)?.click()}
-                              className="min-h-[48px]"
-                            >
-                              <Upload className="h-4 w-4 mr-2" />
-                              Upload Image
-                            </Button>
-                            <Button
-                              type="button"
-                              variant="outline"
-                              onClick={() => {/* Camera functionality */}}
-                              className="min-h-[48px]"
-                            >
-                              <Camera className="h-4 w-4 mr-2" />
-                              Take Photo
-                            </Button>
-                            <input
-                              id={`image-upload-${item.id}`}
-                              type="file"
-                              accept="image/*"
-                              onChange={(e) => {
-                                const file = e.target.files?.[0]
-                                if (file) {
-                                  updateItem(item.id, { image: file, imageUrl: URL.createObjectURL(file) })
-                                }
-                              }}
-                              className="hidden"
-                            />
-                          </div>
-                          {item.imageUrl && (
-                            <div className="mt-2">
-                              <img src={item.imageUrl} alt="Item" className="w-20 h-20 object-cover rounded" />
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Pre-loaded Data for each category */}
-                        <div className="border-t pt-4">
-                          <Label className="text-base font-medium mb-3 block">Pre-loaded Data</Label>
-                          <div className="space-y-3">
-                            {categories.map((category) => (
-                              <div key={category.id} className="p-3 bg-gray-50 rounded-lg">
-                                <Label className="text-sm font-medium">{category.name}</Label>
-                                {category.parameterType === 'exact_answer' && (
-                                  <Input
-                                    placeholder="Enter the correct answer"
-                                    value={item.preLoadedData?.exactAnswer || ''}
-                                    onChange={(e) => updateItem(item.id, {
-                                      preLoadedData: {
-                                        ...item.preLoadedData,
-                                        exactAnswer: e.target.value
-                                      }
-                                    })}
-                                    className="mt-1 min-h-[48px]"
-                                  />
-                                )}
-                                {category.parameterType === 'contains_x' && (
-                                  <Input
-                                    placeholder={`Text that should contain "${category.containsText || 'specific text'}"`}
-                                    value={item.preLoadedData?.containsX || ''}
-                                    onChange={(e) => updateItem(item.id, {
-                                      preLoadedData: {
-                                        ...item.preLoadedData,
-                                        containsX: e.target.value
-                                      }
-                                    })}
-                                    className="mt-1 min-h-[48px]"
-                                  />
-                                )}
-                                {category.parameterType === 'sliding_scale' && (
-                                  <div className="mt-1">
-                                    <Input
-                                      type="number"
-                                      placeholder={`Expected value (${category.minValue}-${category.maxValue})`}
-                                      value={item.preLoadedData?.slidingScaleValue || ''}
-                                      onChange={(e) => updateItem(item.id, {
-                                        preLoadedData: {
-                                          ...item.preLoadedData,
-                                          slidingScaleValue: parseInt(e.target.value) || 0
-                                        }
-                                      })}
-                                      min={category.minValue || 1}
-                                      max={category.maxValue || 100}
-                                      className="min-h-[48px]"
-                                    />
-                                  </div>
-                                )}
-                                {category.parameterType === 'multiple_choice' && (
-                                  <Select
-                                    value={item.preLoadedData?.correctAnswer || ''}
-                                    onValueChange={(value) => updateItem(item.id, {
-                                      preLoadedData: {
-                                        ...item.preLoadedData,
-                                        correctAnswer: value
-                                      }
-                                    })}
-                                  >
-                                    <SelectTrigger className="mt-1 min-h-[48px]">
-                                      <SelectValue placeholder="Select correct answer" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      {Array.isArray(category.options) && category.options.map((option, idx) => (
-                                        <SelectItem key={idx} value={option}>
-                                          {option}
-                                        </SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
-                                )}
-                                {category.parameterType === 'subjective_input' && (
-                                  <Textarea
-                                    placeholder="Expected subjective response or key points"
-                                    value={item.preLoadedData?.subjectiveInput || ''}
-                                    onChange={(e) => updateItem(item.id, {
-                                      preLoadedData: {
-                                        ...item.preLoadedData,
-                                        subjectiveInput: e.target.value
-                                      }
-                                    })}
-                                    className="mt-1 min-h-[60px]"
-                                  />
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-
-              <div className="mt-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={addItem}
-                  className="w-full min-h-[48px]"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Item
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-3 pt-4">
-            <Button type="button" onClick={handleBack} variant="outline" className="w-full sm:w-auto">
-              Cancel
-            </Button>
-            <Button type="button" onClick={clearDraft} variant="outline" className="w-full sm:w-auto">
-              <X className="h-4 w-4 mr-2" />
-              Clear Draft
-            </Button>
-            <div className="flex-1" />
-            <Button type="submit" disabled={isSubmitting} className="w-full sm:w-auto bg-green-500 hover:bg-green-600">
-              <Save className="h-4 w-4 mr-2" />
-              {isSubmitting ? "Creating..." : "Create Competition"}
-            </Button>
-          </div>
-        </form>
-      </div>
-    </DashboardAppShell>
+      {/* Sticky Footer */}
+      <footer className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t border-[#E6E1D9] p-4 pb-safe">
+        <div className="flex gap-3 max-w-md mx-auto">
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => router.back()}
+            data-testid="btn-cancel"
+            className="flex-1 h-12 rounded-xl border-[#E6E1D9] font-semibold"
+            disabled={isSubmitting}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="button"
+            onClick={clearDraft}
+            data-testid="btn-clear"
+            variant="outline"
+            className="flex-1 h-12 rounded-xl border-[#E6E1D9] font-semibold"
+            disabled={isSubmitting}
+          >
+            Clear Draft
+          </Button>
+          <Button
+            type="button"
+            onClick={handleCreateCompetition}
+            data-testid="btn-create-competition"
+            className="flex-1 h-12 rounded-xl font-semibold bg-[#2E7D32] text-white hover:bg-[#7FB889]"
+            disabled={isSubmitting || !isFormValid()}
+          >
+            {isSubmitting ? 'Creating...' : 'Create Competition'}
+          </Button>
+        </div>
+      </footer>
+    </div>
   )
 }
