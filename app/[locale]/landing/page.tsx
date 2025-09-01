@@ -14,8 +14,8 @@ export default function LandingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      <main id="landing" className="px-6 py-8 max-w-sm mx-auto">
+    <div className="bg-white overflow-x-hidden" style={{ WebkitOverflowScrolling: 'touch', overscrollBehavior: 'none' }}>
+      <main id="landing" className="px-6 py-8 max-w-sm mx-auto min-h-screen pb-32">
         {/* Hero Section */}
         <section className="hero mb-8">
           <div className="text-left">
@@ -119,7 +119,7 @@ export default function LandingPage() {
         </section>
 
         {/* Spacer for bottom navigation */}
-        <div className="h-24"></div>
+        <div className="h-32"></div>
       </main>
     </div>
   )
