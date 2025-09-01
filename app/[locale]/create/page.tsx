@@ -14,6 +14,10 @@ export default function CreatePage() {
   const handleModeSelect = (mode: TastingMode) => {
     if (mode === 'study') {
       router.push('/en/create/study')
+    } else if (mode === 'competition') {
+      router.push('/en/create/competition')
+    } else if (mode === 'quick') {
+      router.push('/en/quick-tasting')
     } else {
       setSelectedMode(mode)
     }

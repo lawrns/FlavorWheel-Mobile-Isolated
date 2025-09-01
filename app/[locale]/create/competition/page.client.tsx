@@ -69,7 +69,7 @@ export default function CreateCompetitionPage() {
   const router = useRouter()
   const [formData, setFormData] = useState<FormData>({
     competition_name: '',
-    description: '',
+      description: '',
     product_type: '',
     template: '',
     blind_toggle: false,
@@ -104,8 +104,8 @@ export default function CreateCompetitionPage() {
 
   const addCategory = () => {
     if (formData.categories.length < 10) {
-      const newCategory: Category = {
-        id: Date.now().toString(),
+    const newCategory: Category = {
+      id: Date.now().toString(),
         category_name: '',
         evaluation_type: 'subjective_input',
         include_in_ranking: true
@@ -150,7 +150,7 @@ export default function CreateCompetitionPage() {
   const updateItem = (id: string, updates: Partial<Item>) => {
     updateFormData({
       items: formData.items.map(item =>
-        item.id === id ? { ...item, ...updates } : item
+      item.id === id ? { ...item, ...updates } : item
       )
     })
   }
@@ -338,7 +338,7 @@ export default function CreateCompetitionPage() {
   }
   return (
     <div className="min-h-screen bg-[#FAF7F0]">
-      {/* Header */}
+        {/* Header */}
       <header className="sticky top-0 z-10 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-[#E6E1D9]">
         <div className="px-3 sm:px-4 py-4 flex items-center justify-between">
           <button
@@ -360,7 +360,7 @@ export default function CreateCompetitionPage() {
 
           <div className="text-xs text-[#737373]" data-testid="auto_save_indicator">
             {lastSaved && `Auto-saved ${lastSaved}`}
-          </div>
+        </div>
         </div>
       </header>
 
@@ -417,19 +417,19 @@ export default function CreateCompetitionPage() {
                 <Label htmlFor="template" className="text-sm font-medium text-[#525252] mb-2 block">
                   Templates
                 </Label>
-                <Button
-                  type="button"
+                      <Button
+                        type="button"
                   id="template_picker"
                   data-testid="button-template-picker"
-                  variant="outline"
+                        variant="outline"
                   className="h-12 w-full justify-start rounded-md border border-[#E6E1D9] px-3 text-sm"
                   onClick={() => alert('Template picker dialog would open here')}
-                >
-                  <Sparkles className="h-4 w-4 mr-2" />
+                      >
+                        <Sparkles className="h-4 w-4 mr-2" />
                   Choose Template
-                </Button>
+                      </Button>
                 <p className="text-xs text-[#5A5A56] mt-1">Optional. Prefills categories.</p>
-              </div>
+                          </div>
 
               <div className="flex items-center justify-between">
                 <Label htmlFor="blind_toggle" className="text-sm font-medium text-[#525252]">
@@ -442,30 +442,30 @@ export default function CreateCompetitionPage() {
                   onCheckedChange={(checked) => updateFormData({ blind_toggle: checked })}
                   className="h-6 w-11"
                 />
-              </div>
-            </CardContent>
-          </Card>
+                                </div>
+                              </CardContent>
+                            </Card>
         </section>
 
         {/* Evaluation Categories */}
         <section id="evaluation_categories">
           <Card className="rounded-[16px] bg-white shadow-md p-4 sm:p-5">
             <Collapsible defaultOpen={false}>
-              <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between">
                 <div>
                   <CardTitle className="text-lg font-bold text-[#1B1B18]">Evaluation Categories</CardTitle>
                   <p className="text-sm text-[#5A5A56]">Define categories for evaluation (max 10)</p>
                 </div>
                 <CollapsibleTrigger asChild>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
                     className="p-2"
                     aria-label="Toggle categories section"
-                  >
+                        >
                     <ChevronDown className="h-4 w-4 transition-transform data-[state=open]:rotate-180" />
-                  </Button>
+                        </Button>
                 </CollapsibleTrigger>
               </div>
 
@@ -491,8 +491,8 @@ export default function CreateCompetitionPage() {
                           {name} ({type.replace('_', ' ')})
                         </Button>
                       ))}
-                    </div>
-                  </div>
+                      </div>
+              </div>
 
                   {/* Categories Repeater */}
                   <div data-testid="repeater-categories" className="space-y-4">
@@ -516,20 +516,20 @@ export default function CreateCompetitionPage() {
                         )}
                       </div>
 
-                      <div>
+                        <div>
                         <Label className="text-sm font-semibold text-[#1B1B18] mb-2 block">
                           Category Name *
                         </Label>
-                        <Input
+                          <Input
                           placeholder="e.g., Aroma / Flavor / Texture"
                           value={category.category_name}
                           onChange={(e) => updateCategory(category.id, { category_name: e.target.value })}
                           className="w-full rounded-lg border-[#D6D1C8] bg-white p-3 text-sm"
                           required
-                        />
-                      </div>
+                          />
+                        </div>
 
-                      <div>
+                        <div>
                         <Label className="text-sm font-semibold text-[#1B1B18] mb-2 block">
                           Evaluation Type
                         </Label>
@@ -538,9 +538,9 @@ export default function CreateCompetitionPage() {
                           onValueChange={(value: EvaluationType) => updateCategory(category.id, { evaluation_type: value })}
                         >
                           <SelectTrigger className="w-full rounded-lg border-[#D6D1C8] bg-white p-3 text-sm">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
                             {EVALUATION_TYPE_OPTIONS.map(option => (
                               <SelectItem key={option.value} value={option.value}>
                                 <div className="flex items-center gap-2">
@@ -549,29 +549,29 @@ export default function CreateCompetitionPage() {
                                 </div>
                               </SelectItem>
                             ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
+                            </SelectContent>
+                          </Select>
+                        </div>
 
                       {/* Dynamic subfields based on evaluation type */}
                       {category.evaluation_type === 'multiple_choice' && (
-                        <div>
+                          <div>
                           <Label className="text-sm font-semibold text-[#1B1B18] mb-2 block">
                             Options
                           </Label>
-                          <Textarea
+                            <Textarea
                             placeholder="Add option and press enter"
                             value={category.mc_options?.join('\n') || ''}
                             onChange={(e) => updateCategory(category.id, {
                               mc_options: e.target.value.split('\n').filter(option => option.trim())
                             })}
                             className="w-full rounded-lg border-[#D6D1C8] bg-white p-3 text-sm min-h-[88px]"
-                          />
-                        </div>
-                      )}
+                            />
+                          </div>
+                        )}
 
                       {category.evaluation_type === 'sliding_scale' && (
-                        <div>
+                            <div>
                           <Label className="text-sm font-semibold text-[#1B1B18] mb-2 block">
                             Scale Settings
                           </Label>
@@ -589,34 +589,34 @@ export default function CreateCompetitionPage() {
                               min={0}
                               step={1}
                               className="w-full"
-                            />
+                              />
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        )}
 
                       {category.evaluation_type === 'contains_x' && (
-                        <div>
+                          <div>
                           <Label className="text-sm font-semibold text-[#1B1B18] mb-2 block">
                             Target substring
                           </Label>
-                          <Input
+                            <Input
                             placeholder="e.g., cabernet"
                             value={category.contains_value || ''}
                             onChange={(e) => updateCategory(category.id, { contains_value: e.target.value })}
                             className="w-full rounded-lg border-[#D6D1C8] bg-white p-3 text-sm"
-                          />
-                        </div>
-                      )}
+                            />
+                          </div>
+                        )}
 
                       <div className="flex items-center justify-between">
                         <Label className="text-sm font-semibold text-[#1B1B18]">
                           Include in ranking
                         </Label>
-                        <Switch
+                          <Switch
                           checked={category.include_in_ranking}
                           onCheckedChange={(checked) => updateCategory(category.id, { include_in_ranking: checked })}
-                        />
-                      </div>
+                          />
+                        </div>
 
                       <div>
                         <Label className="text-sm font-semibold text-[#1B1B18] mb-2 block">
@@ -630,29 +630,29 @@ export default function CreateCompetitionPage() {
                         />
                       </div>
                     </div>
-                  ))}
+                ))}
                 </div>
 
                   {formData.categories.length < 10 && (
-                    <Button
-                      type="button"
-                      onClick={addCategory}
+                <Button
+                  type="button"
+                  onClick={addCategory}
                       data-testid="button-add-category"
                       variant="outline"
                       className="w-full h-12 rounded-xl border border-[#E6E1D9] font-semibold"
                       disabled={formData.categories.length >= 10}
-                    >
-                      <Plus className="h-4 w-4 mr-2" />
-                      Add Category
-                    </Button>
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Category
+                </Button>
                   )}
-                </div>
+              </div>
               </CollapsibleContent>
             </Collapsible>
           </Card>
         </section>
 
-        {/* Items to Taste */}
+          {/* Items to Taste */}
         <section id="items_to_taste">
           <Card className="rounded-[16px] bg-white shadow-md p-4 sm:p-5">
             <Collapsible defaultOpen={false}>
@@ -694,89 +694,89 @@ export default function CreateCompetitionPage() {
                         >
                           <X className="h-4 w-4" />
                         </Button>
-                      )}
-                    </div>
+                        )}
+                      </div>
 
-                    <div>
+                        <div>
                       <Label className="text-sm font-semibold text-[#1B1B18] mb-2 block">
                         Item Name *
                       </Label>
-                      <Input
+                          <Input
                         placeholder="Item 1"
                         value={item.item_name}
                         onChange={(e) => updateItem(item.id, { item_name: e.target.value })}
                         className="w-full rounded-lg border-[#D6D1C8] bg-white p-3 text-sm"
                         required
-                      />
-                    </div>
+                          />
+                        </div>
 
-                    <div>
+                        <div>
                       <Label className="text-sm font-semibold text-[#1B1B18] mb-2 block">
                         Description (Optional)
                       </Label>
-                      <Textarea
+                          <Textarea
                         placeholder="Any additional details about this item..."
                         value={item.item_description || ''}
                         onChange={(e) => updateItem(item.id, { item_description: e.target.value })}
                         className="w-full rounded-lg border-[#D6D1C8] bg-white p-3 text-sm min-h-[88px]"
-                      />
-                    </div>
+                          />
+                        </div>
 
-                    <div>
+                        <div>
                       <Label className="text-sm font-semibold text-[#1B1B18] mb-2 block">
                         Image (Optional)
                       </Label>
                       <div className="flex gap-2">
-                        <Button
-                          type="button"
-                          variant="outline"
+                            <Button
+                              type="button"
+                              variant="outline"
                           className="flex-1 h-12 rounded-xl border-[#D6D1C8]"
-                        >
+                            >
                           <Camera className="h-4 w-4 mr-2" />
                           Take Photo
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="outline"
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="outline"
                           className="flex-1 h-12 rounded-xl border-[#D6D1C8]"
-                        >
+                            >
                           <Upload className="h-4 w-4 mr-2" />
                           Upload Image
-                        </Button>
-                      </div>
-                    </div>
+                            </Button>
+                          </div>
+                        </div>
 
                     {/* Pre-loaded Answers */}
                     <div className="border-t border-[#E6E1D9] pt-4">
                       <Label className="text-sm font-semibold text-[#1B1B18] mb-3 block">
                         Pre-loaded Data
                       </Label>
-                      <div className="space-y-3">
+                          <div className="space-y-3">
                         {formData.categories.filter(cat => cat.include_in_ranking).map((category) => (
                           <div key={category.id} className="p-3 bg-[#F4F1EC] rounded-lg">
                             <Label className="text-sm font-medium text-[#1B1B18] mb-2 block">
                               {category.category_name}
                             </Label>
                             {renderPreloadedAnswerField(category, item)}
-                          </div>
+                                  </div>
                         ))}
-                      </div>
-                    </div>
-                  </div>
+                              </div>
+                          </div>
+                        </div>
                 ))}
               </div>
 
-                  <Button
-                    type="button"
-                    onClick={addItem}
+                <Button
+                  type="button"
+                  onClick={addItem}
                     data-testid="button-add-item"
                     variant="outline"
                     className="w-full h-12 rounded-xl border border-[#E6E1D9] font-semibold"
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Item
-                  </Button>
-                </div>
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Item
+                </Button>
+              </div>
               </CollapsibleContent>
             </Collapsible>
           </Card>
@@ -819,7 +819,7 @@ export default function CreateCompetitionPage() {
               {isSubmitting ? 'Creating...' : 'Create Competition'}
             </Button>
           </div>
-        </div>
+      </div>
       </section>
     </div>
   )
