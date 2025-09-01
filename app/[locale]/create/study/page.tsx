@@ -9,8 +9,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Slider } from '@/components/ui/slider'
+import ProductTypeSelect from '@/components/ProductTypeSelect'
 
 
 // Enhanced types based on the updated JSON specification
@@ -42,13 +42,7 @@ interface FormData {
   items: Item[]
 }
 
-const PRODUCT_TYPE_GROUPS = {
-  wine: ['Red Wine', 'White Wine', 'Rosé Wine', 'Sparkling Wine', 'Dessert Wine'],
-  coffee: ['Espresso', 'Pour Over', 'French Press', 'Cold Brew', 'Turkish Coffee'],
-  beer: ['Lager', 'Ale', 'Stout', 'IPA', 'Pilsner'],
-  spirits: ['Whiskey', 'Vodka', 'Rum', 'Gin', 'Tequila'],
-  other: ['Tea', 'Juice', 'Soft Drink', 'Other']
-}
+
 
 const EVALUATION_TYPE_OPTIONS = [
   { value: 'subjective_input', label: 'Subjective Input', icon: FileText },
@@ -282,29 +276,11 @@ export default function CreateStudyPage() {
                 <Label htmlFor="product-type" className="text-sm font-medium text-[#525252] mb-2 block">
                   Product Type *
                 </Label>
-                <Select value={formData.product_type} onValueChange={(value) => updateFormData({ product_type: value })}>
-                  <SelectTrigger
-                    id="product-type"
-                    data-testid="select-product-type"
-                    className="h-12 w-full rounded-md border border-[#e5e7eb] px-3 text-sm"
-                  >
-                    <SelectValue placeholder="Select a product type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.entries(PRODUCT_TYPE_GROUPS).map(([group, items]) => (
-                      <div key={group}>
-                        <div className="px-2 py-1 text-xs font-semibold text-[#737373] uppercase tracking-wide">
-                          {group}
-                        </div>
-                        {items.map(item => (
-                          <SelectItem key={item} value={item.toLowerCase().replace(/\s+/g, '_')}>
-                            {item}
-                          </SelectItem>
-                        ))}
-                      </div>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <ProductTypeSelect
+                  value={formData.product_type}
+                  onChange={(value) => updateFormData({ product_type: value })}
+                  data-testid="select-product-type"
+                />
               </div>
 
               <div>
