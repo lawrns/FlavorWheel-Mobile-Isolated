@@ -22,8 +22,8 @@ export function MobileNavigation({
   const router = useRouter()
   const pathname = usePathname()
 
-  // Hide navigation on landing page - COMMENTED OUT to show navigation on landing
-  // if (pathname?.endsWith('/landing')) return null
+  // Hide navigation on landing page
+  if (pathname?.includes('/landing')) return null
 
   // Integrated Quick Actions into main navigation - Updated per client feedback
   const mainNavItems = [

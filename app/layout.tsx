@@ -6,6 +6,7 @@ import { MobileNavigation } from '@/components/ui/mobile-navigation'
 import { AuthProvider } from '@/components/auth-provider'
 import { SupabaseProvider } from '@/components/providers/supabase-provider'
 import { RealtimeProvider } from '@/components/providers/realtime-provider'
+import { headers } from 'next/headers'
 
 export const metadata = {
   title: 'Flavatix - Discover the Art of Spirits Tasting',
@@ -22,6 +23,10 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const headersList = headers()
+  const pathname = headersList.get('x-pathname') || headersList.get('referer') || ''
+  const isLandingPage = pathname.includes('/landing')
+
   return (
     <html lang="en">
       <head>
@@ -37,9 +42,11 @@ export default function RootLayout({
             <RealtimeProvider>
               <AuthProvider>
                 {children}
-                <MobileNavigation
-                  activeScreen="home"
-                />
+                {!isLandingPage && (
+                  <MobileNavigation
+                    activeScreen="home"
+                  />
+                )}
               </AuthProvider>
             </RealtimeProvider>
           </SupabaseProvider>
