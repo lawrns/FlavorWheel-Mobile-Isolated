@@ -21,9 +21,9 @@ const nextConfig = {
     formats: ['image/webp', 'image/avif'],
   },
 
-  // Mobile-first optimization
+  // Mobile-first optimization - DISABLED to prevent CSS purging issues
   experimental: {
-    optimizeCss: true,
+    optimizeCss: false,
   },
 
   // Compression and optimization
