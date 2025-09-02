@@ -17,7 +17,7 @@ export default function LandingPage() {
     <div className="relative min-h-screen overflow-hidden">
       {/* Background */}
       <img
-        src="/landing /fw-lounge-bg.svg"
+        src="/landing/fw-lounge-bg.svg"
         alt=""
         aria-hidden
         loading="eager"
@@ -61,7 +61,7 @@ export default function LandingPage() {
             aria-label="Explore Flavor Wheels"
           >
             <img
-              src="/landing /ic-wheel.svg"
+              src="/landing/ic-wheel.svg"
               alt=""
               aria-hidden
               className="w-12 h-12 fw-gold-glow"
@@ -75,7 +75,7 @@ export default function LandingPage() {
             aria-label="Start Quick Tasting"
           >
             <img
-              src="/landing /ic-glass.svg"
+              src="/landing/ic-glass.svg"
               alt=""
               aria-hidden
               className="w-12 h-12 fw-gold-glow"
@@ -89,7 +89,7 @@ export default function LandingPage() {
             aria-label="Write Reviews"
           >
             <img
-              src="/landing /ic-notebook.svg"
+              src="/landing/ic-notebook.svg"
               alt=""
               aria-hidden
               className="w-12 h-12 fw-gold-glow"
@@ -103,7 +103,7 @@ export default function LandingPage() {
             aria-label="Speed Tasting"
           >
             <img
-              src="/landing /ic-bolt.svg"
+              src="/landing/ic-bolt.svg"
               alt=""
               aria-hidden
               className="w-12 h-12 fw-gold-glow"
