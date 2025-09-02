@@ -9,6 +9,14 @@ const config: Config = {
     './src/**/*.{ts,tsx}',
     './stories/**/*.{ts,tsx,mdx}',
   ],
+  safelist: [
+    'fw-bg-overlay',
+    'fw-gradient-cream-gold',
+    'fw-text-shadow',
+    'fw-rot-word',
+    'font-poetic',
+    'fw-gold-glow',
+  ],
   prefix: '',
   theme: {
     container: {
@@ -30,6 +38,19 @@ const config: Config = {
           muted: 'var(--fx-text-muted)',
           primary: 'var(--fx-primary)',
           primaryHover: 'var(--fx-primary-hover)'
+        },
+
+        // FlavorWheel Design Tokens
+        fw: {
+          'burgundy-900': 'var(--fw-burgundy-900)',
+          'amber-700': 'var(--fw-amber-700)',
+          'olive-600': 'var(--fw-olive-600)',
+          'sand-100': 'var(--fw-sand-100)',
+          'gold-400': 'var(--fw-gold-400)',
+          'gold-500': 'var(--fw-gold-500)',
+          'gold-600': 'var(--fw-gold-600)',
+          text: 'var(--fw-text)',
+          'text-dim': 'var(--fw-text-dim)'
         },
 
         // Legacy colors (keeping for compatibility)
@@ -83,6 +104,9 @@ const config: Config = {
         accent: ['Crimson Text', 'serif'],
         display: ['Playfair Display', 'serif'],
         mono: ['JetBrains Mono', 'monospace'],
+        'fw-brand': ['Inter', 'ui-sans-serif', 'system-ui'],
+        'fw-poetic': ['Playfair Display', 'ui-serif', 'Georgia'],
+        'fw-display': ['Inter', 'ui-sans-serif', 'system-ui'],
       },
       spacing: {
         // Design Token Spacing
@@ -132,6 +156,7 @@ const config: Config = {
         floating: '0 6px 16px rgba(0,0,0,0.1)',
         brand: '0 4px 12px rgba(15, 91, 60, 0.15)',
         accent: '0 4px 12px rgba(196, 107, 30, 0.15)',
+        'fw-soft': 'var(--fw-shadow-soft)',
       },
       transitionTimingFunction: {
         spring: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',

@@ -172,6 +172,11 @@ button, input, textarea {
   filter: drop-shadow(0 0 18px rgba(215,183,110,.28));
 }
 
+/* Background overlay gradient - prevents Tailwind purging in production */
+.fw-bg-overlay {
+  background: linear-gradient(180deg, rgba(0,0,0,.28) 0%, rgba(0,0,0,.22) 45%, rgba(0,0,0,.35) 100%);
+}
+
 /* Cream→Gold gradient text like reference */
 .fw-gradient-cream-gold{
   background:linear-gradient(180deg,#F5EFE6 0%,#E4C983 55%,#D7B76E 100%);

@@ -26,7 +26,7 @@ export default function LandingPage() {
       />
 
       {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,.28)_0%,rgba(0,0,0,.22)_45%,rgba(0,0,0,.35)_100%)]" />
+      <div className="absolute inset-0 fw-bg-overlay" />
 
       {/* Header */}
       <header className="relative z-10 h-[var(--fw-header-h)] flex items-center justify-center">
