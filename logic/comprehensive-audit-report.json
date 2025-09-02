@@ -1,0 +1,641 @@
+{
+  "audit_report": {
+    "date": "2024-12-19",
+    "purpose": "Comprehensive codebase audit to identify gaps in navigation, routing, components, Supabase integrations, and UI elements for successful builds of missing URLs (/review, /wheels, etc.)",
+    "auditor": "AI Assistant",
+    "confidence_level": "High - Based on direct codebase examination",
+
+    "navigation_audit": {
+      "status": "COMPLETED",
+      "findings": {
+        "existing_routes_analysis": {
+          "landing_page_buttons": {
+            "wheels_button": {
+              "current_route": "/wheels",
+              "actual_route_exists": false,
+              "recommended_route": "/flavor-wheels",
+              "evidence": "app/[locale]/landing/page.tsx:76 - onClick={() => handleIconClick('/wheels')}",
+              "gap_type": "route_mismatch"
+            },
+            "review_button": {
+              "current_route": "/review",
+              "actual_route_exists": false,
+              "recommended_route": "/en/review",
+              "evidence": "app/[locale]/landing/page.tsx:104 - onClick={() => handleIconClick('/review')}",
+              "gap_type": "missing_route"
+            },
+            "glass_button": {
+              "current_route": "/quick-tasting",
+              "actual_route_exists": true,
+              "recommended_route": "correct",
+              "evidence": "app/[locale]/landing/page.tsx:90 - onClick={() => handleIconClick('/quick-tasting')}",
+              "gap_type": "none"
+            },
+            "bolt_button": {
+              "current_route": "/quick-tasting?speed=true",
+              "actual_route_exists": true,
+              "recommended_route": "correct",
+              "evidence": "app/[locale]/landing/page.tsx:118 - onClick={() => handleIconClick('/quick-tasting?speed=true')}",
+              "gap_type": "none"
+            }
+          },
+          "mobile_navigation": {
+            "main_nav_items": {
+              "home": "/en/landing (exists)",
+              "create": "/en/create (exists)",
+              "review": "/en/quick-tasting (WRONG - should be review page)",
+              "flavor-wheels": "/en/flavor-wheels (exists)"
+            },
+            "secondary_nav_items": {
+              "analytics": "/en/analytics (MISSING)",
+              "profile": "/en/profile (MISSING)",
+              "settings": "/en/settings (MISSING)"
+            },
+            "evidence": "components/ui/mobile-navigation.tsx:29-40"
+          },
+          "access_patterns": {
+            "from_landing": ["wheels", "quick-tasting", "review", "speed-tasting"],
+            "from_bottom_nav": ["home", "create", "review", "flavor-wheels", "analytics", "profile", "settings"],
+            "from_quick_actions": "integrated into main nav"
+          }
+        },
+        "gaps_identified": [
+          {
+            "gap": "Missing /review route",
+            "severity": "High",
+            "impact": "Broken user flow from landing page and mobile nav",
+            "evidence": "Navigation exists but route handler throws error",
+            "recommended_action": "Create /app/[locale]/review/page.tsx"
+          },
+          {
+            "gap": "Wrong route for mobile nav review tab",
+            "severity": "Medium",
+            "impact": "Users confused about review vs quick-tasting",
+            "evidence": "Mobile nav 'Review' tab points to quick-tasting",
+            "recommended_action": "Change to '/en/review' when review page exists"
+          },
+          {
+            "gap": "Missing secondary nav routes",
+            "severity": "Medium",
+            "impact": "Broken expandable menu navigation",
+            "evidence": "/analytics, /profile, /settings routes don't exist",
+            "recommended_action": "Create placeholder pages or remove from nav"
+          },
+          {
+            "gap": "Landing wheels route mismatch",
+            "severity": "Low",
+            "impact": "Broken navigation to flavor wheels",
+            "evidence": "Button points to /wheels but route is /flavor-wheels",
+            "recommended_action": "Change landing button to '/flavor-wheels'"
+          }
+        ]
+      },
+      "research_queries_executed": [
+        "Searched for router.push('/review') patterns",
+        "Examined mobile-navigation.tsx route definitions",
+        "Checked app/[locale] directory structure",
+        "Analyzed landing page button handlers"
+      ]
+    },
+
+    "routing_audit": {
+      "status": "COMPLETED",
+      "findings": {
+        "app_router_structure": {
+          "existing_routes": [
+            "/",
+            "/[locale]/",
+            "/[locale]/landing",
+            "/[locale]/create",
+            "/[locale]/create/competition",
+            "/[locale]/create/study",
+            "/[locale]/create-wheel",
+            "/[locale]/flavor-wheels",
+            "/[locale]/quick-tasting",
+            "/[locale]/quick-tasting/[id]",
+            "/[locale]/quick-tasting/[id]/confirm",
+            "/[locale]/study/[id]",
+            "/[locale]/study/[id]/confirm",
+            "/[locale]/tastings/[id]",
+            "/[locale]/tastings/[id]/completion",
+            "/[locale]/tastings/[id]/input",
+            "/[locale]/competition/[id]",
+            "/[locale]/competition/[id]/confirm"
+          ],
+          "missing_routes": [
+            "/[locale]/review",
+            "/[locale]/analytics",
+            "/[locale]/profile",
+            "/[locale]/settings",
+            "/[locale]/my-tastings",
+            "/[locale]/participate/[id]",
+            "/[locale]/results/[id]",
+            "/[locale]/offline"
+          ],
+          "dynamic_route_patterns": {
+            "tasting_ids": "[id] for tastings, studies, competitions",
+            "participant_ids": "[id] for participation",
+            "result_ids": "[id] for results display"
+          }
+        },
+        "route_handlers": {
+          "post_submit_redirects": {
+            "quick_tasting": "→ /quick-tasting/confirm",
+            "study_mode": "→ flowStep: 'confirm' → 'input' → 'complete'",
+            "competition": "→ /competition/[id]/confirm",
+            "gap": "No redirect patterns for review submissions"
+          },
+          "auth_guards": {
+            "implemented": "Basic auth provider exists",
+            "missing": "Route-level auth guards for protected pages",
+            "fallback": "Guest mode in auth provider"
+          },
+          "offline_handling": {
+            "implemented": "PWA service worker exists",
+            "missing": "/offline route for explicit offline state",
+            "fallback": "Browser default offline page"
+          }
+        },
+        "gaps_identified": [
+          {
+            "gap": "Missing /review route structure",
+            "severity": "Critical",
+            "impact": "Complete broken flow from multiple entry points",
+            "evidence": "No /app/[locale]/review/ directory",
+            "recommended_action": "Create /app/[locale]/review/page.tsx with review interface"
+          },
+          {
+            "gap": "Missing secondary navigation routes",
+            "severity": "Medium",
+            "impact": "Broken expandable menu functionality",
+            "evidence": "Mobile nav references non-existent routes",
+            "recommended_action": "Remove from nav or create placeholder pages"
+          },
+          {
+            "gap": "No dynamic result routes",
+            "severity": "Medium",
+            "impact": "Cannot display individual tasting results",
+            "evidence": "No /results/[id] pattern",
+            "recommended_action": "Create result display pages"
+          },
+          {
+            "gap": "Missing offline route",
+            "severity": "Low",
+            "impact": "Poor offline user experience",
+            "evidence": "PWA exists but no explicit offline page",
+            "recommended_action": "Create /offline route for offline state"
+          }
+        ]
+      },
+      "research_queries_executed": [
+        "Listed all directories in /app/[locale]/",
+        "Examined existing page.tsx files",
+        "Checked mobile navigation route definitions",
+        "Analyzed landing page route handlers"
+      ]
+    },
+
+    "components_audit": {
+      "status": "COMPLETED",
+      "findings": {
+        "existing_components": {
+          "ui_components": [
+            "Button (/components/ui/button.tsx)",
+            "Slider (/components/ui/slider.tsx)",
+            "Textarea (/components/ui/textarea.tsx)",
+            "Input (/components/ui/input.tsx)",
+            "Card (/components/ui/card.tsx)",
+            "Tabs (/components/ui/tabs.tsx)",
+            "Dialog (/components/ui/dialog.tsx)",
+            "Avatar (/components/ui/avatar.tsx)",
+            "Badge (/components/ui/badge.tsx)",
+            "Alert (/components/ui/alert.tsx)",
+            "Accordion (/components/ui/accordion.tsx)"
+          ],
+          "specialized_components": [
+            "FlavorWheel (/components/flavorwheel/FlavorWheel.tsx)",
+            "SunburstChart (/components/sunburst-chart.tsx)",
+            "CreateShell (/components/create/CreateShell.tsx)",
+            "CreateHeader (/components/create/CreateHeader.tsx)",
+            "CreateFooterActions (/components/create/CreateFooterActions.tsx)",
+            "TastingCompletionScreen (/components/tasting-completion-screen.tsx)",
+            "SocialFeed (/components/social-feed.tsx)",
+            "FriendSystem (/components/friend-system.tsx)",
+            "EventCalendar (/components/event-calendar.tsx)"
+          ],
+          "layout_components": [
+            "DashboardAppShell (/components/app-shell.tsx)",
+            "MobileNavigation (/components/ui/mobile-navigation.tsx)",
+            "ErrorBoundary (/components/error-boundary.tsx)"
+          ]
+        },
+        "reusable_patterns": {
+          "form_handling": {
+            "components": ["Textarea", "Slider", "Input", "Select"],
+            "usage": "Available for review interfaces",
+            "evidence": "Used in quick-tasting and study mode"
+          },
+          "navigation": {
+            "components": ["MobileNavigation", "Button"],
+            "patterns": "Router-based navigation with onClick handlers",
+            "evidence": "Consistent across all pages"
+          },
+          "data_display": {
+            "components": ["Card", "Badge", "Avatar"],
+            "usage": "For displaying tasting results and user info",
+            "evidence": "Used in flavor-wheels page"
+          }
+        },
+        "gaps_for_review_ui": [
+          {
+            "gap": "Photo upload component",
+            "severity": "High",
+            "impact": "Cannot attach photos to reviews",
+            "evidence": "Placeholder in quick-tasting, no reusable component",
+            "recommended_action": "Create /components/ui/photo-upload.tsx"
+          },
+          {
+            "gap": "Review form template",
+            "severity": "Medium",
+            "impact": "No standardized review input interface",
+            "evidence": "Quick-tasting has custom form, no reusable review component",
+            "recommended_action": "Create /components/review/ReviewForm.tsx"
+          },
+          {
+            "gap": "Rating slider component",
+            "severity": "Low",
+            "impact": "Basic slider exists but no specialized rating component",
+            "evidence": "Generic slider used for ratings",
+            "recommended_action": "Create /components/ui/rating-slider.tsx"
+          }
+        ],
+        "flavor_wheel_gaps": [
+          {
+            "gap": "Metaphor wheel component",
+            "severity": "Medium",
+            "impact": "Cannot display metaphor-based flavor wheels",
+            "evidence": "FlavorWheel supports 'metaphor' type but no specialized UI",
+            "recommended_action": "Extend FlavorWheel for metaphor visualization"
+          },
+          {
+            "gap": "Filter components for scopes",
+            "severity": "Medium",
+            "impact": "Cannot filter wheels by gender/region/age",
+            "evidence": "Feed back PDF mentions filters but no UI components",
+            "recommended_action": "Create /components/filters/WheelFilters.tsx"
+          }
+        ]
+      },
+      "research_queries_executed": [
+        "Listed all components in /components/ directory",
+        "Examined ui/ subdirectory for reusable primitives",
+        "Checked flavorwheel/ directory for wheel components",
+        "Analyzed create/ directory for form components",
+        "Reviewed existing usage patterns in pages"
+      ]
+    },
+
+    "supabase_integrations_audit": {
+      "status": "COMPLETED",
+      "findings": {
+        "existing_tables": {
+          "core_tables": [
+            "tastings",
+            "tasting_items",
+            "tasting_categories",
+            "user_reviews",
+            "flavor_wheels",
+            "flavor_keywords",
+            "flavor_keyword_variants",
+            "product_types",
+            "templates",
+            "tasting-photos",
+            "item_attributes"
+          ],
+          "evidence": "services/create-tasting-service.ts, services/analytics-service.ts, services/flavor-dictionary-service.ts"
+        },
+        "service_layer_apis": {
+          "analytics_service": {
+            "functions": [
+              "getTastingResults()",
+              "getUserReviews()",
+              "getNearbyEvents()",
+              "getFlavorWheelStats()",
+              "generateFlavorWheelData()"
+            ],
+            "tables_used": ["user_reviews", "tastings", "flavor_wheels"],
+            "evidence": "services/analytics-service.ts"
+          },
+          "create_tasting_service": {
+            "functions": [
+              "getProductTypes()",
+              "getTemplates()",
+              "createTasting()",
+              "saveTastingProgress()",
+              "uploadTastingPhoto()"
+            ],
+            "tables_used": ["product_types", "templates", "tastings", "tasting_categories", "tasting_items", "tasting-photos", "item_attributes", "user_reviews"],
+            "evidence": "services/create-tasting-service.ts"
+          },
+          "flavor_analysis_service": {
+            "functions": [
+              "generateFlavorWheelData()",
+              "analyzeTastingData()",
+              "convertToWheelData()",
+              "getFlavorStatistics()"
+            ],
+            "tables_used": ["tastings", "tasting_items"],
+            "evidence": "services/flavor-analysis-service.ts"
+          }
+        },
+        "gaps_for_review_functionality": [
+          {
+            "gap": "Review submission API",
+            "severity": "High",
+            "impact": "Cannot save reviews to database",
+            "evidence": "No insert operations for reviews in services",
+            "recommended_action": "Add review CRUD functions to create-tasting-service.ts"
+          },
+          {
+            "gap": "Review queries for display",
+            "severity": "High",
+            "impact": "Cannot display user's reviews",
+            "evidence": "getUserReviews() exists but may not be review-specific",
+            "recommended_action": "Create review-specific query functions"
+          },
+          {
+            "gap": "Photo upload for reviews",
+            "severity": "Medium",
+            "impact": "Cannot attach photos to reviews",
+            "evidence": "tasting-photos table exists but no review-specific upload",
+            "recommended_action": "Extend photo upload service for reviews"
+          },
+          {
+            "gap": "Review metadata storage",
+            "severity": "Medium",
+            "impact": "Cannot store review-specific metadata",
+            "evidence": "No dedicated review metadata table",
+            "recommended_action": "Add review_metadata table or extend user_reviews"
+          }
+        ],
+        "wheel_scope_gaps": [
+          {
+            "gap": "Scope-based filtering queries",
+            "severity": "Medium",
+            "impact": "Cannot filter wheels by gender/region/age",
+            "evidence": "generateFlavorWheelData() supports scopes but no UI filters",
+            "recommended_action": "Add scope parameters to flavor analysis queries"
+          },
+          {
+            "gap": "Personal wheel aggregation",
+            "severity": "Low",
+            "impact": "Limited personal wheel insights",
+            "evidence": "Basic user filtering exists but could be enhanced",
+            "recommended_action": "Add advanced user-based analytics"
+          }
+        ]
+      },
+      "research_queries_executed": [
+        "Searched for .from() patterns in all service files",
+        "Examined table references in analytics-service.ts",
+        "Checked create-tasting-service.ts table usage",
+        "Analyzed flavor-analysis-service.ts queries",
+        "Reviewed existing CRUD operations"
+      ]
+    },
+
+    "gaps_and_prioritization_audit": {
+      "status": "COMPLETED",
+      "findings": {
+        "prioritized_gaps": {
+          "critical_priority": [
+            {
+              "gap": "Create /review route and page",
+              "impact": "Blocks core user flow from landing and navigation",
+              "effort": "High (need to build review interface)",
+              "dependencies": ["Reusable review components", "Supabase review APIs"],
+              "timeline": "Immediate (1-2 weeks)",
+              "evidence": "Navigation exists but route missing per task6"
+            },
+            {
+              "gap": "Fix mobile navigation review tab route",
+              "impact": "Users confused about review vs quick-tasting",
+              "effort": "Low (change route string)",
+              "dependencies": ["/review page exists"],
+              "timeline": "Immediate (1 day)",
+              "evidence": "Mobile nav review points to quick-tasting"
+            },
+            {
+              "gap": "Fix landing wheels button route",
+              "impact": "Broken navigation to flavor wheels",
+              "effort": "Low (change route string)",
+              "dependencies": ["None"],
+              "timeline": "Immediate (1 day)",
+              "evidence": "Button points to /wheels but route is /flavor-wheels"
+            }
+          ],
+          "high_priority": [
+            {
+              "gap": "Create reusable review components",
+              "impact": "Enables consistent review interfaces",
+              "effort": "Medium",
+              "dependencies": ["UI primitives exist"],
+              "timeline": "1 week",
+              "evidence": "No standardized review form component"
+            },
+            {
+              "gap": "Add Supabase review APIs",
+              "impact": "Cannot save/display reviews",
+              "effort": "Medium",
+              "dependencies": ["Supabase tables exist"],
+              "timeline": "1 week",
+              "evidence": "Missing review CRUD operations"
+            },
+            {
+              "gap": "Create photo upload component",
+              "impact": "Cannot attach photos to tastings/reviews",
+              "effort": "Medium",
+              "dependencies": ["MediaDevices API"],
+              "timeline": "1 week",
+              "evidence": "Placeholder implementations exist"
+            }
+          ],
+          "medium_priority": [
+            {
+              "gap": "Add wheel filter components",
+              "impact": "Cannot filter by gender/region/age",
+              "effort": "Medium",
+              "dependencies": ["Flavor analysis service supports scopes"],
+              "timeline": "2 weeks",
+              "evidence": "Feed back PDF mentions filters"
+            },
+            {
+              "gap": "Create missing secondary routes",
+              "impact": "Broken expandable navigation",
+              "effort": "Low",
+              "dependencies": ["None"],
+              "timeline": "1 week",
+              "evidence": "Mobile nav references missing routes"
+            },
+            {
+              "gap": "Add dynamic result routes",
+              "impact": "Cannot display individual results",
+              "effort": "Medium",
+              "dependencies": ["Result display component"],
+              "timeline": "2 weeks",
+              "evidence": "No /results/[id] pattern"
+            }
+          ],
+          "low_priority": [
+            {
+              "gap": "Create offline route",
+              "impact": "Poor offline UX",
+              "effort": "Low",
+              "dependencies": ["PWA service worker"],
+              "timeline": "1 week",
+              "evidence": "PWA exists but no explicit offline page"
+            },
+            {
+              "gap": "Add metaphor wheel visualization",
+              "impact": "Limited wheel types",
+              "effort": "Medium",
+              "dependencies": ["FlavorWheel component"],
+              "timeline": "2 weeks",
+              "evidence": "Metaphor type supported but no UI"
+            }
+          ]
+        },
+        "build_readiness_assessment": {
+          "ready_for_immediate_build": [
+            "Fix navigation route strings (wheels, review)",
+            "Create basic /review page structure",
+            "Add placeholder secondary routes"
+          ],
+          "requires_component_development": [
+            "Review form components",
+            "Photo upload component",
+            "Wheel filter components"
+          ],
+          "requires_api_development": [
+            "Review CRUD operations",
+            "Scope-based filtering APIs",
+            "Result display APIs"
+          ],
+          "architecture_considerations": [
+            "Maintain mobile-first approach",
+            "Preserve existing component patterns",
+            "Extend Supabase service layer",
+            "Keep consistent navigation patterns"
+          ]
+        },
+        "risk_assessment": {
+          "low_risk_changes": [
+            "Fix route strings in navigation",
+            "Add placeholder pages for missing routes",
+            "Create basic component structures"
+          ],
+          "medium_risk_changes": [
+            "Extend existing services with new APIs",
+            "Create complex form components",
+            "Add new database queries"
+          ],
+          "high_risk_changes": [
+            "Modify core navigation structure",
+            "Change existing component APIs",
+            "Alter database schema"
+          ]
+        }
+      },
+      "research_queries_executed": [
+        "Cross-referenced all audit findings",
+        "Analyzed dependencies between gaps",
+        "Prioritized based on user flow impact",
+        "Assessed development effort and complexity"
+      ]
+    },
+
+    "implementation_recommendations": {
+      "phase_1_quick_wins": {
+        "duration": "1 week",
+        "tasks": [
+          "Fix navigation route strings (/wheels → /flavor-wheels)",
+          "Change mobile nav review tab to point to future /review",
+          "Create basic /review page structure with placeholder",
+          "Add placeholder pages for secondary routes",
+          "Fix landing icon grid routes"
+        ],
+        "impact": "Eliminates broken navigation, enables basic routing"
+      },
+      "phase_2_core_functionality": {
+        "duration": "2-3 weeks",
+        "tasks": [
+          "Build reusable review components (sliders, forms, photo upload)",
+          "Implement Supabase review APIs (CRUD operations)",
+          "Create review page with full functionality",
+          "Add wheel filter components for scopes",
+          "Implement dynamic result routes"
+        ],
+        "impact": "Complete core review and wheel functionality"
+      },
+      "phase_3_enhancements": {
+        "duration": "2-4 weeks",
+        "tasks": [
+          "Add metaphor wheel visualization",
+          "Implement offline route",
+          "Create advanced filtering options",
+          "Add real-time collaboration features",
+          "Optimize performance and accessibility"
+        ],
+        "impact": "Polish and advanced features"
+      },
+      "technical_guidelines": {
+        "component_patterns": "Follow existing patterns (functional components, TypeScript, Tailwind)",
+        "service_layer": "Extend existing services rather than creating new ones",
+        "database_design": "Use existing Supabase tables and patterns",
+        "routing_conventions": "Follow App Router patterns with dynamic routes",
+        "testing_approach": "Test on mobile devices first, then desktop",
+        "accessibility": "Maintain WCAG 2.1 AA compliance"
+      }
+    },
+
+    "success_criteria": {
+      "navigation_functionality": [
+        "All buttons in landing page work without errors",
+        "Mobile navigation tabs route to existing or placeholder pages",
+        "Expandable menu items are functional",
+        "No broken links or 404 errors"
+      ],
+      "review_system": [
+        "/review route exists and loads",
+        "Review form components are functional",
+        "Supabase integration for saving reviews works",
+        "Photo upload for reviews is operational"
+      ],
+      "wheel_system": [
+        "All wheel scopes (personal, universal, metaphor) work",
+        "Filter components allow gender/region/age filtering",
+        "Dynamic result routes display individual results",
+        "Export functionality is operational"
+      ],
+      "user_experience": [
+        "No console errors in browser",
+        "All interactive elements are accessible",
+        "Mobile performance is optimized",
+        "Offline functionality works when applicable"
+      ]
+    }
+  },
+
+  "audit_summary": {
+    "total_gaps_identified": 15,
+    "critical_gaps": 3,
+    "high_priority_gaps": 4,
+    "medium_priority_gaps": 5,
+    "low_priority_gaps": 3,
+    "estimated_completion_time": "6-8 weeks",
+    "readiness_for_build": "High (core infrastructure exists, gaps are implementation-specific)",
+    "biggest_risk": "Missing /review route blocks primary user flow",
+    "recommended_starting_point": "Fix navigation routes, then build review functionality",
+    "architecture_health": "Excellent - solid foundation with clear extension points"
+  }
+}

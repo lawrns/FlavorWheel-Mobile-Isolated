@@ -1,254 +1,134 @@
 'use client'
 
-import { Sparkles, Plus, MessageCircle, Target, ChevronRight, Star, Trophy, Zap, BarChart3 } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { motion } from 'framer-motion'
 
 export default function LandingPage() {
   const router = useRouter()
+  const _rotWords = ['coffee','spirits','wine','beer','tea'];
+  const [rotIdx,setRotIdx] = useState(0);
+  useEffect(()=>{ const el=document.getElementById('fw-rot-word'); if(el) el.textContent=_rotWords[0]; const t=setInterval(()=>{ setRotIdx(i=>{ const n=(i+1)%_rotWords.length; const node=document.getElementById('fw-rot-word'); if(node) node.textContent=_rotWords[n]; return n; }); },2200); return ()=>clearInterval(t); },[])
 
-  // Enhanced metrics for overview
-  const metrics = {
-    tastings: 127,
-    reviews: 89,
-    wheels: 23
-  }
-
-  // Animation variants
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-        delayChildren: 0.1
-      }
-    }
-  }
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, ease: 'easeOut' }
-    }
+  const handleIconClick = (route: string) => {
+    router.push(route)
   }
 
   return (
-    <div
-      className="overflow-x-hidden relative"
-      style={{
-        WebkitOverflowScrolling: 'touch',
-        overscrollBehavior: 'none',
-        backgroundImage: 'url(/images/JPEG BG TRY.jpeg)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        minHeight: '100vh'
-      }}
-    >
-      {/* Enhanced overlay for better readability */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/40"></div>
+    <div className="relative min-h-screen overflow-hidden">
+      {/* Background */}
+      <img
+        src="/landing /fw-lounge-bg.svg"
+        alt=""
+        aria-hidden
+        loading="eager"
+        decoding="async"
+        className="pointer-events-none select-none absolute inset-0 w-full h-full object-cover"
+      />
 
-      <motion.main
-        className="relative z-10 px-6 py-12 max-w-[768px] mx-auto min-h-screen"
-        initial="hidden"
-        animate="visible"
-        variants={containerVariants}
-      >
-        {/* Hero Section */}
-        <motion.section
-          className="text-center mb-16"
-          variants={itemVariants}
-        >
-          <motion.h1
-            className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 font-heading tracking-tight drop-shadow-lg"
-            style={{ fontFamily: "'Playfair Display', ui-serif, Georgia, serif" }}
-            initial={{ opacity: 0, y: -30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+      {/* Gradient overlay */}
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,.28)_0%,rgba(0,0,0,.22)_45%,rgba(0,0,0,.35)_100%)]" />
+
+      {/* Header */}
+      <header className="relative z-10 h-[var(--fw-header-h)] flex items-center justify-center">
+        <div className="px-4 py-2 rounded-xl backdrop-blur-md bg-white/5 shadow-[var(--fw-shadow-soft)]">
+          <h1 className="font-poetic text-[22px] tracking-wide fw-gradient-cream-gold fw-text-shadow">
+            FLAVATIX
+          </h1>
+        </div>
+        <span className="sr-only">FlavorWheel landing</span>
+      </header>
+
+      {/* Main Content */}
+      <main className="relative z-10 px-6 pt-10 pb-16 flex flex-col items-center text-center">
+        {/* Slogan */}
+        <h2 className="font-poetic text-[32px] leading-tight fw-gradient-cream-gold fw-text-shadow max-w-[16ch] mx-auto mb-6">
+          Discover the World in<br/>Every Sip
+        </h2>
+
+        {/* Rotating Subline */}
+        <p aria-live='polite' className='mt-2 text-[17px] text-[rgba(245,239,230,0.92)] fw-text-shadow'>
+          <span>Discover the art of </span>
+          <span id='fw-rot-word' className='fw-rot-word text-[19px] font-semibold align-baseline'></span>
+          <span> tasting</span>
+        </p>
+
+        {/* Icon Grid */}
+        <section aria-label="Primary actions" className="grid grid-cols-2 gap-6 w-full max-w-[400px] mx-auto mt-6">
+          {/* Flavor Wheels */}
+          <button
+            onClick={() => handleIconClick('/wheels')}
+            className="aspect-square rounded-3xl backdrop-blur-md bg-white/6 border border-white/15 shadow-[var(--fw-shadow-soft)] hover:shadow-2xl transition-transform active:scale-[.98] flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-[var(--fw-gold-500)]/50"
+            aria-label="Explore Flavor Wheels"
           >
-            Discover the Art of
-            <span className="block text-fx-primary">Flavor Exploration</span>
-          </motion.h1>
+            <img
+              src="/landing /ic-wheel.svg"
+              alt=""
+              aria-hidden
+              className="w-12 h-12 fw-gold-glow"
+            />
+          </button>
 
-          <motion.p
-            className="text-xl text-white/90 font-body max-w-2xl mx-auto leading-relaxed drop-shadow-md"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
+          {/* Quick Tasting */}
+          <button
+            onClick={() => handleIconClick('/quick-tasting')}
+            className="aspect-square rounded-3xl backdrop-blur-md bg-white/6 border border-white/15 shadow-[var(--fw-shadow-soft)] hover:shadow-2xl transition-transform active:scale-[.98] flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-[var(--fw-gold-500)]/50"
+            aria-label="Start Quick Tasting"
           >
-            The world's most user-friendly tasting experience. Create, explore, and share your flavor journey with confidence.
-          </motion.p>
-        </motion.section>
+            <img
+              src="/landing /ic-glass.svg"
+              alt=""
+              aria-hidden
+              className="w-12 h-12 fw-gold-glow"
+            />
+          </button>
 
-        {/* Feature Cards */}
-        <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16"
-          variants={containerVariants}
-        >
-          {[
-            {
-              icon: Zap,
-              title: 'Quick Taste',
-              description: 'Fast, intuitive flavor evaluation',
-              route: '/quick-tasting',
-              color: 'from-blue-500/20 to-blue-600/10',
-              iconBg: 'bg-gradient-to-br from-blue-100 to-blue-200',
-              iconColor: 'text-blue-700',
-              borderColor: 'border-blue-200/50'
-            },
-            {
-              icon: Plus,
-              title: 'Create Tasting',
-              description: 'Build comprehensive tasting sessions',
-              route: '/create',
-              color: 'from-purple-500/20 to-purple-600/10',
-              iconBg: 'bg-gradient-to-br from-purple-100 to-purple-200',
-              iconColor: 'text-purple-700',
-              borderColor: 'border-purple-200/50'
-            },
-            {
-              icon: Star,
-              title: 'Write Reviews',
-              description: 'Share your tasting experiences',
-              route: '/review',
-              color: 'from-yellow-500/20 to-yellow-600/10',
-              iconBg: 'bg-gradient-to-br from-yellow-100 to-yellow-200',
-              iconColor: 'text-yellow-700',
-              borderColor: 'border-yellow-200/50'
-            },
-            {
-              icon: Target,
-              title: 'Flavor Wheels',
-              description: 'Explore detailed flavor profiles',
-              route: '/wheels',
-              color: 'from-green-500/20 to-green-600/10',
-              iconBg: 'bg-gradient-to-br from-green-100 to-green-200',
-              iconColor: 'text-green-700',
-              borderColor: 'border-green-200/50'
-            }
-          ].map((feature, index) => (
-            <motion.button
-              key={feature.title}
-              onClick={() => router.push(feature.route)}
-              className={`bg-gradient-to-br ${feature.color} backdrop-blur-sm border ${feature.borderColor} rounded-xl p-6 text-left hover:shadow-xl hover:shadow-black/20 transition-all duration-300 group overflow-hidden`}
-              variants={itemVariants}
-              whileHover={{ scale: 1.05, y: -5 }}
-              whileTap={{ scale: 0.95 }}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 + index * 0.1 }}
-            >
-              {/* Background glow effect */}
-              <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
-
-              <div className="relative z-10">
-                {/* Icon */}
-                <motion.div
-                  className={`w-14 h-14 ${feature.iconBg} rounded-2xl flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300`}
-                  whileHover={{ rotate: 10 }}
-                >
-                  <feature.icon className={`h-7 w-7 ${feature.iconColor}`} />
-                </motion.div>
-
-                {/* Content */}
-                <h3 className="text-xl font-semibold text-white mb-2 font-heading group-hover:text-white transition-colors">
-                  {feature.title}
-                </h3>
-                <p className="text-white/80 font-body text-sm leading-relaxed">
-                  {feature.description}
-                </p>
-
-                {/* Subtle accent line */}
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              </div>
-            </motion.button>
-          ))}
-        </motion.div>
-
-        {/* Statistics Section */}
-        <motion.section
-          className="mb-16"
-          variants={itemVariants}
-        >
-          <motion.div
-            className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 shadow-2xl"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.8 }}
+          {/* Reviews */}
+          <button
+            onClick={() => handleIconClick('/review')}
+            className="aspect-square rounded-3xl backdrop-blur-md bg-white/6 border border-white/15 shadow-[var(--fw-shadow-soft)] hover:shadow-2xl transition-transform active:scale-[.98] flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-[var(--fw-gold-500)]/50"
+            aria-label="Write Reviews"
           >
-            <motion.h2
-              className="text-2xl font-semibold text-white text-center mb-8 font-heading"
-              style={{ fontFamily: "'Playfair Display', ui-serif, Georgia, serif" }}
-            >
-              Your Tasting Journey
-            </motion.h2>
+            <img
+              src="/landing /ic-notebook.svg"
+              alt=""
+              aria-hidden
+              className="w-12 h-12 fw-gold-glow"
+            />
+          </button>
 
-            <motion.div
-              className="grid grid-cols-3 gap-6"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.0 }}
-            >
-              {[
-                { value: metrics.tastings, label: 'Tastings', icon: BarChart3 },
-                { value: metrics.reviews, label: 'Reviews', icon: Star },
-                { value: metrics.wheels, label: 'Wheels', icon: Target }
-              ].map((stat, index) => (
-                <motion.div
-                  key={stat.label}
-                  className="text-center group"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1.1 + index * 0.1 }}
-                >
-                  <motion.div
-                    className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-white/30 transition-colors"
-                    whileHover={{ scale: 1.1 }}
-                  >
-                    <stat.icon className="h-6 w-6 text-white" />
-                  </motion.div>
-                  <div className="text-3xl font-bold text-white mb-1 font-heading">
-                    {stat.value}
-                  </div>
-                  <div className="text-white/80 font-body text-sm">
-                    {stat.label}
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
-          </motion.div>
-        </motion.section>
-
-        {/* Call to Action */}
-        <motion.section
-          className="text-center pb-24"
-          variants={itemVariants}
-        >
-          <motion.button
-            onClick={() => router.push('/create')}
-            className="px-12 py-4 bg-fx-primary text-white rounded-xl font-semibold text-xl hover:bg-fx-primaryHover disabled:opacity-50 transition-all duration-200 btn-primary shadow-xl hover:shadow-2xl"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.3 }}
+          {/* Quick Tasting (Speed Mode) */}
+          <button
+            onClick={() => handleIconClick('/quick-tasting?speed=true')}
+            className="aspect-square rounded-3xl backdrop-blur-md bg-white/6 border border-white/15 shadow-[var(--fw-shadow-soft)] hover:shadow-2xl transition-transform active:scale-[.98] flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-[var(--fw-gold-500)]/50"
+            aria-label="Speed Tasting"
           >
-            Start Your Tasting Journey
-          </motion.button>
+            <img
+              src="/landing /ic-bolt.svg"
+              alt=""
+              aria-hidden
+              className="w-12 h-12 fw-gold-glow"
+            />
+          </button>
+        </section>
 
-          <motion.p
-            className="text-white/70 font-body mt-4 max-w-md mx-auto"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.5 }}
+        {/* Auth Buttons */}
+        <div className="mt-10 flex items-center justify-center gap-3">
+          <button
+            onClick={() => router.push('/login')}
+            className="btn-ghost px-5 py-2.5 rounded-full text-white focus:outline-none focus:ring-2 focus:ring-[var(--fw-gold-500)]/50"
+            aria-label="Log in to your account"
           >
-            Join thousands of flavor enthusiasts in discovering the perfect taste experience
-          </motion.p>
-        </motion.section>
-      </motion.main>
+            Log in
+          </button>
+          <button
+            onClick={() => router.push('/register')}
+            className="btn-ghost px-5 py-2.5 rounded-full text-fw-gold-400 font-semibold focus:outline-none focus:ring-2 focus:ring-[var(--fw-gold-500)]/50"
+            aria-label="Create a new account"
+          >
+            Create account
+          </button>
+        </div>
+      </main>
     </div>
   )
 }

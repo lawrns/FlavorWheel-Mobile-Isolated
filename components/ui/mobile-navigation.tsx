@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Home, Plus, User, Settings, Sparkles, QrCode, Menu, X, Star, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -20,6 +20,10 @@ export function MobileNavigation({
 }: MobileNavigationProps) {
   const [isExpanded, setIsExpanded] = useState(false)
   const router = useRouter()
+  const pathname = usePathname()
+
+  // Hide navigation on landing page - COMMENTED OUT to show navigation on landing
+  // if (pathname?.endsWith('/landing')) return null
 
   // Integrated Quick Actions into main navigation - Updated per client feedback
   const mainNavItems = [
