@@ -48,21 +48,25 @@ export function BrandHeader({
         <div className="flex justify-center">
           <div
             className={cn(
-              'flex items-center justify-center rounded-full bg-primary-brand',
+              'flex items-center justify-center rounded-full bg-fx-primary',
               iconSizes[variant]
             )}
           >
-            <span>🌵</span>
+            <img
+              src="/images/flavatix_logo.png"
+              alt="FlavatiX Logo"
+              className="h-full w-full object-contain"
+            />
           </div>
         </div>
       )}
       
       <div className="space-y-1">
-        <h1 className={cn('font-bold text-text-primary font-heading', titleSizes[variant])}>
+        <h1 className={cn('font-bold text-fx-text-primary font-heading', titleSizes[variant])}>
           {BRAND_NAME}
         </h1>
         {showTagline && (
-          <p className={cn('text-text-secondary', taglineSizes[variant])}>
+          <p className={cn('text-fx-text-secondary', taglineSizes[variant])}>
             {variant === 'minimal' ? BRAND_TAGLINE_SHORT : BRAND_TAGLINE}
           </p>
         )}
@@ -98,7 +102,7 @@ export function BrandTitle({ className, size = 'md' }: BrandTitleProps) {
   }
 
   return (
-    <span className={cn('font-bold text-primary-brand font-heading', sizeClasses[size], className)}>
+    <span className={cn('font-bold text-fx-primary font-heading', sizeClasses[size], className)}>
       {BRAND_NAME}
     </span>
   )
@@ -120,12 +124,16 @@ export function BrandIcon({ size = 'md', className, animated = false }: BrandIco
   const icon = (
     <div
       className={cn(
-        'flex items-center justify-center rounded-full bg-primary-brand',
+        'flex items-center justify-center rounded-full bg-fx-primary',
         sizeClasses[size],
         className
       )}
     >
-      <span>🌵</span>
+      <img
+        src="/images/flavatix_logo.png"
+        alt="FlavatiX Logo"
+        className="h-full w-full object-contain"
+      />
     </div>
   )
 
@@ -147,5 +155,72 @@ export function BrandIcon({ size = 'md', className, animated = false }: BrandIco
     >
       {icon}
     </motion.div>
+  )
+}
+
+interface LogoOnlyProps {
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+  className?: string
+  animated?: boolean
+  onClick?: () => void
+}
+
+export function LogoOnly({ size = 'md', className, animated = false, onClick }: LogoOnlyProps) {
+  const sizeClasses = {
+    xs: 'h-6 w-6',
+    sm: 'h-8 w-8',
+    md: 'h-12 w-12',
+    lg: 'h-16 w-16',
+    xl: 'h-20 w-20',
+  }
+
+  const logo = (
+    <img
+      src="/images/flavatix_logo.png"
+      alt="FlavatiX Logo"
+      className={cn('object-contain', onClick && 'cursor-pointer', sizeClasses[size], className)}
+      onClick={onClick}
+    />
+  )
+
+  if (!animated) return logo
+
+  return (
+    <motion.div
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      transition={{ duration: 0.2 }}
+    >
+      {logo}
+    </motion.div>
+  )
+}
+
+interface ResponsiveBrandProps {
+  showIconOnMobile?: boolean
+  showTitleOnMobile?: boolean
+  className?: string
+  onClick?: () => void
+}
+
+export function ResponsiveBrand({
+  showIconOnMobile = true,
+  showTitleOnMobile = false,
+  className,
+  onClick
+}: ResponsiveBrandProps) {
+  return (
+    <div className={cn('flex items-center gap-2', onClick && 'cursor-pointer', className)} onClick={onClick}>
+      {/* Always show icon */}
+      {showIconOnMobile && <BrandIcon size="sm" />}
+
+      {/* Responsive title */}
+      <div className={cn(
+        'transition-all duration-200',
+        showTitleOnMobile ? 'block' : 'hidden sm:block'
+      )}>
+        <BrandTitle size="sm" />
+      </div>
+    </div>
   )
 }

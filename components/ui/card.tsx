@@ -1,20 +1,19 @@
 import * as React from 'react'
-// import { motion } from "framer-motion" // Temporarily disabled due to React RC compatibility
-
+import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { cva, type VariantProps } from 'class-variance-authority'
 
 const cardStyles = cva(
-  'rounded-lg border text-foreground transition-all duration-200',
+  'rounded-2xl border text-fx-text-primary transition-all duration-normal ease-standard',
   {
     variants: {
       variant: {
-        solid: 'border-gray-200 bg-card shadow-soft hover:-translate-y-0.5 hover:shadow-medium',
+        solid: 'border-fx-border-default bg-fx-card shadow-fx-sm hover:-translate-y-0.5 hover:shadow-fx-md',
         translucent:
-          'border-gray-200 bg-card/90 backdrop-blur-sm shadow-soft hover:-translate-y-0.5 hover:shadow-medium',
+          'border-fx-border-default bg-fx-card/90 backdrop-blur-sm shadow-fx-sm hover:-translate-y-0.5 hover:shadow-fx-md',
         elevated:
-          'border-gray-200 bg-white shadow-medium hover:-translate-y-0.5 hover:shadow-large',
-        subtle: 'border-gray-200 bg-muted/50',
+          'border-fx-border-default bg-fx-bg shadow-fx-md hover:-translate-y-0.5 hover:shadow-fx-lg',
+        subtle: 'border-fx-border-default bg-fx-bg-subtle',
       },
       padding: {
         none: 'p-0',
@@ -39,14 +38,37 @@ type CardProps = React.HTMLAttributes<HTMLDivElement> &
     animate?: boolean
   }
 
+const MotionCard = motion.div
+
 const Card = React.forwardRef<HTMLDivElement, CardProps>(
   ({ className, animate = true, variant, padding, interactive, ...props }, ref) => {
-    // Motion animations temporarily disabled due to React RC compatibility
+    const classes = cn(cardStyles({ variant, padding, interactive }), className)
+
+    if (!animate) {
+      return (
+        <div
+          ref={ref}
+          className={classes}
+          suppressHydrationWarning
+          {...props}
+        />
+      )
+    }
+
     return (
-      <div
+      <MotionCard
         ref={ref}
-        className={cn(cardStyles({ variant, padding, interactive }), className)}
+        className={classes}
         suppressHydrationWarning
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        whileHover={interactive ? { y: -4, scale: 1.02 } : {}}
+        transition={{
+          type: 'spring',
+          stiffness: 300,
+          damping: 25,
+          duration: 0.3
+        }}
         {...props}
       />
     )
@@ -65,7 +87,7 @@ const CardTitle = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivE
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn('text-2xl font-semibold leading-none tracking-tight', className)}
+      className={cn('text-fx-h3 font-semibold leading-none tracking-tight', className)}
       {...props}
     />
   )
@@ -74,7 +96,7 @@ CardTitle.displayName = 'CardTitle'
 
 const CardDescription = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn('text-sm text-muted-foreground', className)} {...props} />
+    <div ref={ref} className={cn('text-fx-body text-fx-text-secondary', className)} {...props} />
   )
 )
 CardDescription.displayName = 'CardDescription'
@@ -92,5 +114,7 @@ const CardFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDiv
   )
 )
 CardFooter.displayName = 'CardFooter'
+
+
 
 export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }

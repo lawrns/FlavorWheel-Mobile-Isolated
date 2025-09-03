@@ -56,19 +56,20 @@ import {
 // Dynamic import to avoid SSR issues
 const FlavorWheel = dynamic(() => import('@/components/flavorwheel/FlavorWheel'), { ssr: false })
 
-// Interface for user reviews
+// Interface for user reviews - matches social service interface
 interface UserReview {
   id: string
   tasting_id: string
   item_id: string
-  notes: string
-  overall_rating: number
+  title: string
+  content: string
+  rating: number
   submitted_at: string
-  tasting: {
+  tasting?: {
     name: string
     tasting_type: string
   }
-  item: {
+  item?: {
     name: string
   }
 }
@@ -326,68 +327,92 @@ export default function FlavorWheelsPage() {
     if (!user) return
 
     setLoadingSocial(true)
-    try {
-      // Load user reviews using social service
-      const reviews = await getUserReviews(user.id, 10)
-      const reviewsCount = await getUserReviewsCount(user.id)
-      setUserReviews(reviews as UserReview[])
-      setReviewsCount(reviewsCount)
+    let hasErrors = false
 
-      // Load nearby events using geolocation
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          async (position) => {
-            const { latitude, longitude } = position.coords
-            const events = await getNearbyEvents(latitude, longitude, 50, 10)
-            const eventsCount = await getNearbyEventsCount(latitude, longitude, 50)
-            setNearbyEvents(events as unknown as NearbyEvent[])
-            setEventsCount(eventsCount)
-          },
-          (error) => {
-            console.error('Geolocation error:', error)
-            // Fallback: load events without location filtering
-            setNearbyEvents([])
-            setEventsCount(0)
-          }
-        )
-      } else {
-        // Fallback for browsers without geolocation
+    try {
+      // Load user reviews using social service with individual error handling
+      try {
+        const reviews = await getUserReviews(user.id, 10)
+        const reviewsCount = await getUserReviewsCount(user.id)
+        setUserReviews(reviews as UserReview[])
+        setReviewsCount(reviewsCount)
+      } catch (reviewError) {
+        console.error('Error loading user reviews:', reviewError)
+        hasErrors = true
+        setUserReviews([])
+        setReviewsCount(0)
+      }
+
+      // Load nearby events using geolocation with error handling
+      try {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            async (position) => {
+              try {
+                const { latitude, longitude } = position.coords
+                const events = await getNearbyEvents(latitude, longitude, 50, 10)
+                const eventsCount = await getNearbyEventsCount(latitude, longitude, 50)
+                setNearbyEvents(events as unknown as NearbyEvent[])
+                setEventsCount(eventsCount)
+              } catch (eventError) {
+                console.error('Error loading nearby events:', eventError)
+                setNearbyEvents([])
+                setEventsCount(0)
+              }
+            },
+            (geoError) => {
+              console.error('Geolocation error:', geoError)
+              // Fallback: load events without location filtering
+              setNearbyEvents([])
+              setEventsCount(0)
+            }
+          )
+        } else {
+          // Fallback for browsers without geolocation
+          setNearbyEvents([])
+          setEventsCount(0)
+        }
+      } catch (eventError) {
+        console.error('Error in event loading process:', eventError)
         setNearbyEvents([])
         setEventsCount(0)
       }
 
-      // Load friends' tastings using social service
-      const friendsTastings = await getFriendsTastings(user.id, 10)
-      const friendsCount = await getFriendsTastingsCount(user.id)
-      setFriendsActivities(friendsTastings)
-      setFriendsCount(friendsCount)
+      // Load friends' tastings using social service with error handling
+      try {
+        const friendsTastings = await getFriendsTastings(user.id, 10)
+        const friendsCount = await getFriendsTastingsCount(user.id)
+        setFriendsActivities(friendsTastings)
+        setFriendsCount(friendsCount)
+      } catch (friendsError) {
+        console.error('Error loading friends tastings:', friendsError)
+        hasErrors = true
+        setFriendsActivities([])
+        setFriendsCount(0)
+      }
 
     } catch (error) {
-      console.error('Error loading social data:', error)
+      console.error('Critical error loading social data:', error)
+      hasErrors = true
 
-      // Show user-friendly error message
+      // Show user-friendly error message only for critical errors
       toast({
         title: 'Error de conexión',
-        description: 'No se pudieron cargar los datos sociales. Mostrando datos guardados.',
+        description: 'Algunos datos sociales no se pudieron cargar. La aplicación seguirá funcionando.',
         variant: 'destructive',
       })
-
-      // Load cached data as fallback
-      try {
-        const cachedReviews = localStorage.getItem(`user_reviews_${user.id}`)
-        const cachedEvents = localStorage.getItem('nearby_events')
-
-        if (cachedReviews) {
-          setUserReviews(JSON.parse(cachedReviews))
-        }
-        if (cachedEvents) {
-          setNearbyEvents(JSON.parse(cachedEvents))
-        }
-      } catch (cacheError) {
-        console.error('Error loading cached data:', cacheError)
-      }
     } finally {
       setLoadingSocial(false)
+
+      // Cache successful data for offline fallback
+      if (!hasErrors && user) {
+        try {
+          localStorage.setItem(`user_reviews_${user.id}`, JSON.stringify(userReviews))
+          localStorage.setItem('nearby_events', JSON.stringify(nearbyEvents))
+        } catch (cacheError) {
+          console.error('Error caching data:', cacheError)
+        }
+      }
     }
   }
 
@@ -408,8 +433,8 @@ export default function FlavorWheelsPage() {
         user_id: user?.id || '',
         tasting_id: review.tasting_id,
         item_id: review.item_id,
-        notes: review.notes,
-        overall_rating: review.overall_rating,
+        notes: review.content,
+        overall_rating: review.rating,
         submitted_at: review.submitted_at,
       }
 
@@ -507,11 +532,11 @@ export default function FlavorWheelsPage() {
         {/* Main Content - Mobile-First Responsive Design */}
         <div className="w-full px-2 sm:px-4 py-2 sm:py-4">
           {/* Top Pill Buttons - Mobile Optimized */}
-          <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-3 p-2 sm:p-4 mb-4">
+          <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-3 p-4 sm:p-4 mb-4">
             <Button
               variant={selectedSection === 'reviews' ? 'default' : 'outline'}
               size="sm"
-              className={`w-full sm:w-auto rounded-full px-3 sm:px-4 py-2 text-xs sm:text-sm transition-all duration-300 ${
+              className={`w-full sm:w-auto rounded-full px-3 sm:px-4 py-2 text-xs sm:text-sm transition-all duration-normal ease-standard ${
                 selectedSection === 'reviews'
                   ? 'bg-amber-500 text-white hover:bg-amber-600'
                   : 'bg-white border-amber-200 text-amber-800 hover:bg-amber-50'
@@ -532,7 +557,7 @@ export default function FlavorWheelsPage() {
             <Button
               variant={selectedSection === 'events' ? 'default' : 'outline'}
               size="sm"
-              className={`w-full sm:w-auto rounded-full px-3 sm:px-4 py-2 text-xs sm:text-sm transition-all duration-300 ${
+              className={`w-full sm:w-auto rounded-full px-3 sm:px-4 py-2 text-xs sm:text-sm transition-all duration-normal ease-standard ${
                 selectedSection === 'events'
                   ? 'bg-amber-500 text-white hover:bg-amber-600'
                   : 'bg-white border-amber-200 text-amber-800 hover:bg-amber-50'
@@ -553,7 +578,7 @@ export default function FlavorWheelsPage() {
             <Button
               variant={selectedSection === 'friends' ? 'default' : 'outline'}
               size="sm"
-              className={`w-full sm:w-auto rounded-full px-3 sm:px-4 py-2 text-xs sm:text-sm transition-all duration-300 ${
+              className={`w-full sm:w-auto rounded-full px-3 sm:px-4 py-2 text-xs sm:text-sm transition-all duration-normal ease-standard ${
                 selectedSection === 'friends'
                   ? 'bg-amber-500 text-white hover:bg-amber-600'
                   : 'bg-white border-amber-200 text-amber-800 hover:bg-amber-50'
@@ -574,7 +599,7 @@ export default function FlavorWheelsPage() {
             <Button
               variant={selectedSection === 'create' ? 'default' : 'outline'}
               size="sm"
-              className={`w-full sm:w-auto rounded-full px-3 sm:px-4 py-2 text-xs sm:text-sm transition-all duration-300 ${
+              className={`w-full sm:w-auto rounded-full px-3 sm:px-4 py-2 text-xs sm:text-sm transition-all duration-normal ease-standard ${
                 selectedSection === 'create'
                   ? 'bg-amber-500 text-white hover:bg-amber-600'
                   : 'bg-white border-amber-200 text-amber-800 hover:bg-amber-50'
@@ -589,9 +614,9 @@ export default function FlavorWheelsPage() {
 
           <div className="w-full space-y-3 sm:space-y-4">
             {/* Social Content Views - Mobile Optimized */}
-            <div className="w-full px-1 sm:px-0">
+            <div className="w-full px-0 sm:px-0">
               {selectedSection === 'reviews' && (
-                <Card className="shadow-sm hover:shadow-md transition-shadow duration-200">
+                <Card className="shadow-sm hover:shadow-md transition-shadow duration-fast ease-standard">
                   <CardHeader className="pb-3 sm:pb-4">
                     <CardTitle className="flex items-center space-x-2 text-base sm:text-lg">
                       <User className="h-4 w-4 sm:h-5 sm:w-5 text-amber-600" />
@@ -620,7 +645,7 @@ export default function FlavorWheelsPage() {
                                     <span
                                       key={i}
                                       className={`text-xs sm:text-sm ${
-                                        i < Math.floor(review.overall_rating / 2)
+                                        i < Math.floor(review.rating / 2)
                                           ? 'text-yellow-400'
                                           : 'text-gray-300'
                                       }`}
@@ -630,7 +655,7 @@ export default function FlavorWheelsPage() {
                                   ))}
                                 </div>
                                 <span className="text-xs text-muted-foreground ml-1">
-                                  {review.overall_rating}/10
+                                  {review.rating}/10
                                 </span>
                               </div>
                             </div>
@@ -664,7 +689,7 @@ export default function FlavorWheelsPage() {
               )}
 
               {selectedSection === 'events' && (
-                <Card className="shadow-sm hover:shadow-md transition-shadow duration-200">
+                <Card className="shadow-sm hover:shadow-md transition-shadow duration-fast ease-standard">
                   <CardHeader className="pb-3 sm:pb-4">
                     <CardTitle className="flex items-center space-x-2 text-base sm:text-lg">
                       <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-teal-600" />
@@ -731,7 +756,7 @@ export default function FlavorWheelsPage() {
               )}
 
               {selectedSection === 'friends' && (
-                <Card className="shadow-sm hover:shadow-md transition-shadow duration-200">
+                <Card className="shadow-sm hover:shadow-md transition-shadow duration-fast ease-standard">
                   <CardHeader className="pb-3 sm:pb-4">
                     <CardTitle className="flex items-center space-x-2 text-base sm:text-lg">
                       <Users className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
@@ -795,7 +820,7 @@ export default function FlavorWheelsPage() {
               )}
 
               {selectedSection === 'create' && (
-                <Card className="shadow-sm hover:shadow-md transition-shadow duration-200">
+                <Card className="shadow-sm hover:shadow-md transition-shadow duration-fast ease-standard">
                   <CardHeader className="pb-3 sm:pb-4">
                     <CardTitle className="flex items-center space-x-2 text-base sm:text-lg">
                       <Target className="h-4 w-4 sm:h-5 sm:w-5 text-amber-600" />
@@ -831,8 +856,8 @@ export default function FlavorWheelsPage() {
             </div>
 
             {/* Tasting Results Section */}
-            <div className="w-full px-1 sm:px-0 mt-3 sm:mt-6">
-              <Card className="shadow-sm hover:shadow-md transition-shadow duration-200">
+            <div className="w-full px-0 sm:px-0 mt-3 sm:mt-6">
+              <Card className="shadow-sm hover:shadow-md transition-shadow duration-fast ease-standard">
                 <CardHeader className="pb-3 sm:pb-4">
                   <CardTitle className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
@@ -1024,10 +1049,10 @@ export default function FlavorWheelsPage() {
             </div>
 
             {/* Flavor Wheel Section - Mobile Optimized */}
-            <div className="w-full px-1 sm:px-0 mt-3 sm:mt-6">
+            <div className="w-full px-0 sm:px-0 mt-3 sm:mt-6">
 
               {/* Enhanced Interactive Flavor Wheel - Mobile Optimized */}
-              <Card className="min-h-[60vh] sm:min-h-[70vh] md:min-h-[600px] shadow-sm hover:shadow-md transition-shadow duration-200">
+              <Card className="min-h-[60vh] sm:min-h-[70vh] md:min-h-[600px] shadow-sm hover:shadow-md transition-shadow duration-fast ease-standard">
                 <CardHeader className="pb-2 sm:pb-4 px-3 sm:px-6">
                   <CardTitle className="flex flex-col space-y-2 sm:space-y-0 sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex items-center space-x-2">
@@ -1129,14 +1154,16 @@ export default function FlavorWheelsPage() {
 
                   {/* Enhanced Flavor Wheel Display - Responsive & Mobile Optimized */}
                   {!loading && !error && wheelData && (
-                    <div className="w-full h-full flex items-center justify-center relative">
+                    <div className="w-full h-full flex items-center justify-center relative overflow-hidden">
                       {/* Mobile-optimized container with proper scaling */}
-                      <div className="w-full h-full max-w-[90vw] max-h-[70vh] md:max-w-full md:max-h-full flex items-center justify-center">
-                        <FlavorWheel
-                          data={wheelData}
-                          title="Rueda de Sabores"
-                          reduceMotion={false}
-                        />
+                      <div className="w-full h-full max-w-full max-h-full flex items-center justify-center px-2 sm:px-4">
+                        <div className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl aspect-square flex items-center justify-center">
+                          <FlavorWheel
+                            data={wheelData}
+                            title="Rueda de Sabores"
+                            reduceMotion={false}
+                          />
+                        </div>
                       </div>
 
                       {/* Data Quality Indicator */}
@@ -1190,7 +1217,7 @@ export default function FlavorWheelsPage() {
 
       {/* Flavor Wheel Modal */}
       <Dialog open={showWheelModal} onOpenChange={setShowWheelModal}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="w-[95vw] max-w-4xl max-h-[90vh] overflow-y-auto mx-2 sm:mx-4">
           <DialogHeader>
             <DialogTitle>
               Flavor Wheel - {selectedWheelData?.itemName || 'Tasting Item'}
@@ -1210,7 +1237,7 @@ export default function FlavorWheelsPage() {
                 </div>
 
                 {/* Additional wheel information */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
                   <Card>
                     <CardHeader>
                       <CardTitle className="text-sm">Wheel Statistics</CardTitle>

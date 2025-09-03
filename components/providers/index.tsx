@@ -4,6 +4,7 @@ import React from 'react'
 import { SupabaseProvider } from './supabase-provider'
 import { RealtimeProvider } from './realtime-provider'
 import { OnboardingProvider } from './onboarding-provider'
+import { ThemeProvider } from './theme-provider'
 import { AuthProvider } from '@/components/auth-provider'
 
 interface ProvidersProps {
@@ -12,14 +13,16 @@ interface ProvidersProps {
 
 export function Providers({ children }: ProvidersProps) {
   return (
-    <SupabaseProvider>
-      <AuthProvider>
-        <RealtimeProvider>
-          <OnboardingProvider>
-            {children}
-          </OnboardingProvider>
-        </RealtimeProvider>
-      </AuthProvider>
-    </SupabaseProvider>
+    <ThemeProvider>
+      <SupabaseProvider>
+        <AuthProvider>
+          <RealtimeProvider>
+            <OnboardingProvider>
+              {children}
+            </OnboardingProvider>
+          </RealtimeProvider>
+        </AuthProvider>
+      </SupabaseProvider>
+    </ThemeProvider>
   )
 }

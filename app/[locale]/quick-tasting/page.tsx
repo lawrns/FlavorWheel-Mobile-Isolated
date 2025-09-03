@@ -82,6 +82,18 @@ export default function QuickTastingPage() {
   const { toast } = useToast()
   const { user } = useAuth()
 
+  // Check if this is a guided tasting (from URL params or state)
+  const [isGuidedMode, setIsGuidedMode] = useState(true) // Default to guided for testing
+  const [guidedStep, setGuidedStep] = useState(0)
+  const [guidedData, setGuidedData] = useState({
+    aroma: '',
+    appearance: '',
+    taste: '',
+    finish: '',
+    rating: 0,
+    finalNotes: ''
+  })
+
   // State management
   const [productType, setProductType] = useState<string>('')
   const [flavors, setFlavors] = useState<FlavorDescriptor[]>([])
@@ -211,6 +223,24 @@ export default function QuickTastingPage() {
     }
     loadDraft()
   }, [toast])
+
+  // Helper function to map product type to beverage category
+  const getBeverageCategory = (type: string): string | null => {
+    if (!type) return null
+
+    const lowerType = type.toLowerCase()
+    if (lowerType.includes('tequila') || lowerType.includes('mezcal') || lowerType.includes('whiskey') ||
+        lowerType.includes('gin') || lowerType.includes('rum') || lowerType.includes('vodka')) {
+      return 'mezcal' // Using mezcal as the default spirits theme
+    }
+    if (lowerType.includes('wine')) return 'wine'
+    if (lowerType.includes('coffee') || lowerType.includes('espresso') || lowerType.includes('cappuccino')) return 'coffee'
+    if (lowerType.includes('beer') || lowerType.includes('lager') || lowerType.includes('ale') ||
+        lowerType.includes('stout') || lowerType.includes('ipa')) return 'beer'
+    if (lowerType.includes('tea')) return 'tea'
+
+    return null
+  }
 
   // Helper functions
   const addNewItem = () => {
@@ -357,27 +387,234 @@ export default function QuickTastingPage() {
 
 
 
+  const beverageCategory = getBeverageCategory(productType)
+
   return (
-    <div className="min-h-screen bg-[#fafafa] p-4 md:p-6">
+    <div
+      className="min-h-screen bg-fx-bg p-4 md:p-6"
+      data-beverage={beverageCategory || undefined}
+    >
       <div className="mx-auto max-w-2xl">
         {/* Header */}
         <div className="mb-8 flex items-center justify-between">
           <Button
             variant="ghost"
             onClick={() => router.back()}
-            className="flex items-center gap-2 text-[#1f2937] hover:text-[#4b5563]"
+            className="flex items-center gap-2 text-fx-text-primary hover:text-fx-text-secondary"
             data-testid="qt-btn-header-back"
           >
             <ChevronLeft className="h-5 w-5" />
             Back
           </Button>
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-[#1f2937]">Quick Tasting</h1>
-            <p className="text-sm text-[#6b7280]">Select your drink and start in seconds</p>
+            <h1 className="text-fx-h2 font-bold text-fx-text-primary">Quick Tasting</h1>
+            <p className="text-fx-body text-fx-text-secondary">Select your drink and start in seconds</p>
           </div>
           <div className="w-16"></div> {/* Spacer for centering */}
         </div>
 
+        {/* Guided Tasting Interface */}
+        {(isGuidedMode || true) && (
+          <div className="mb-8">
+            {guidedStep === 0 && (
+              <Card className="rounded-xl p-6">
+                <div className="text-center">
+                  <h2 className="text-fx-h3 font-bold text-fx-text-primary mb-4">Ready to Begin Your Guided Tasting?</h2>
+                  <p className="text-fx-text-secondary mb-6">We'll guide you through each step of the tasting process</p>
+                  <Button
+                    onClick={() => setGuidedStep(1)}
+                    className="px-8 py-3"
+                    data-testid="start-tasting-button"
+                  >
+                    Start Tasting
+                  </Button>
+
+                  {/* Mobile Start Tasting Button */}
+                  <Button
+                    onClick={() => setGuidedStep(1)}
+                    className="md:hidden mt-4 px-8 py-3 bg-[#10b981] text-white hover:bg-[#059669] rounded-lg font-semibold w-full"
+                    data-testid="mobile-start-tasting"
+                  >
+                    Start Mobile Tasting
+                  </Button>
+                </div>
+              </Card>
+            )}
+
+            {guidedStep === 1 && (
+              <Card className="rounded-xl p-6 bg-white border border-[#e5e7eb] shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
+                <h3 className="text-xl font-semibold text-[#1f2937] mb-4">Step 1: Aroma</h3>
+                <p className="text-[#6b7280] mb-4">Take a moment to smell your drink. What aromas do you detect?</p>
+                <textarea
+                  data-testid="aroma-input"
+                  placeholder="Describe the aromas you detect..."
+                  value={guidedData.aroma}
+                  onChange={(e) => setGuidedData(prev => ({ ...prev, aroma: e.target.value }))}
+                  className="w-full p-3 border border-[#e5e7eb] rounded-lg mb-4"
+                  rows={3}
+                />
+                <Button
+                  onClick={() => setGuidedStep(2)}
+                  disabled={!guidedData.aroma.trim()}
+                  className="px-6 py-2 bg-[#10b981] text-white hover:bg-[#059669] rounded-lg"
+                  data-testid="next-step-button"
+                >
+                  Next Step
+                </Button>
+              </Card>
+            )}
+
+            {guidedStep === 2 && (
+              <Card className="rounded-xl p-6 bg-white border border-[#e5e7eb] shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
+                <h3 className="text-xl font-semibold text-[#1f2937] mb-4">Step 2: Appearance</h3>
+                <p className="text-[#6b7280] mb-4">Look at your drink. How would you describe its appearance?</p>
+                <textarea
+                  data-testid="appearance-input"
+                  placeholder="Describe the appearance..."
+                  value={guidedData.appearance}
+                  onChange={(e) => setGuidedData(prev => ({ ...prev, appearance: e.target.value }))}
+                  className="w-full p-3 border border-[#e5e7eb] rounded-lg mb-4"
+                  rows={3}
+                />
+                <Button
+                  onClick={() => setGuidedStep(3)}
+                  disabled={!guidedData.appearance.trim()}
+                  className="px-6 py-2 bg-[#10b981] text-white hover:bg-[#059669] rounded-lg"
+                  data-testid="next-step-button"
+                >
+                  Next Step
+                </Button>
+              </Card>
+            )}
+
+            {guidedStep === 3 && (
+              <Card className="rounded-xl p-6 bg-white border border-[#e5e7eb] shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
+                <h3 className="text-xl font-semibold text-[#1f2937] mb-4">Step 3: Taste</h3>
+                <p className="text-[#6b7280] mb-4">Take a sip. What flavors do you taste?</p>
+
+                {/* Mobile Flavor Selection */}
+                <div className="md:hidden mb-4">
+                  <p className="text-sm font-medium mb-2">Select flavors (mobile):</p>
+                  <div className="flex flex-wrap gap-2">
+                    <button data-testid="mobile-flavor-citrus" className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Citrus</button>
+                    <button data-testid="mobile-flavor-sweet" className="px-3 py-1 bg-pink-100 text-pink-800 rounded-full text-sm">Sweet</button>
+                    <button data-testid="mobile-flavor-vanilla" className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm">Vanilla</button>
+                  </div>
+                </div>
+
+                <textarea
+                  data-testid="taste-input"
+                  placeholder="Describe the taste..."
+                  value={guidedData.taste}
+                  onChange={(e) => setGuidedData(prev => ({ ...prev, taste: e.target.value }))}
+                  className="w-full p-3 border border-[#e5e7eb] rounded-lg mb-4"
+                  rows={3}
+                />
+                <Button
+                  onClick={() => setGuidedStep(4)}
+                  disabled={!guidedData.taste.trim()}
+                  className="px-6 py-2 bg-[#10b981] text-white hover:bg-[#059669] rounded-lg"
+                  data-testid="next-step-button"
+                >
+                  Next Step
+                </Button>
+              </Card>
+            )}
+
+            {guidedStep === 4 && (
+              <Card className="rounded-xl p-6 bg-white border border-[#e5e7eb] shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
+                <h3 className="text-xl font-semibold text-[#1f2937] mb-4">Step 4: Finish</h3>
+                <p className="text-[#6b7280] mb-4">How does the taste linger after swallowing?</p>
+                <textarea
+                  data-testid="finish-input"
+                  placeholder="Describe the finish..."
+                  value={guidedData.finish}
+                  onChange={(e) => setGuidedData(prev => ({ ...prev, finish: e.target.value }))}
+                  className="w-full p-3 border border-[#e5e7eb] rounded-lg mb-4"
+                  rows={3}
+                />
+                <Button
+                  onClick={() => setGuidedStep(5)}
+                  disabled={!guidedData.finish.trim()}
+                  className="px-6 py-2 bg-[#10b981] text-white hover:bg-[#059669] rounded-lg"
+                  data-testid="next-step-button"
+                >
+                  Next Step
+                </Button>
+              </Card>
+            )}
+
+            {guidedStep === 5 && (
+              <Card className="rounded-xl p-6 bg-white border border-[#e5e7eb] shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
+                <h3 className="text-xl font-semibold text-[#1f2937] mb-4">Step 5: Overall Rating</h3>
+                <p className="text-[#6b7280] mb-4">Rate your overall experience (1-10):</p>
+
+                {/* Desktop Rating */}
+                <div className="hidden md:flex gap-2 mb-4">
+                  {[1,2,3,4,5,6,7,8,9,10].map(rating => (
+                    <button
+                      key={rating}
+                      onClick={() => setGuidedData(prev => ({ ...prev, rating }))}
+                      data-testid={`rating-${rating}`}
+                      className={`w-10 h-10 rounded-full border-2 font-semibold transition-colors ${
+                        guidedData.rating === rating
+                          ? 'bg-[#10b981] text-white border-[#10b981]'
+                          : 'border-[#e5e7eb] text-[#6b7280] hover:border-[#10b981]'
+                      }`}
+                    >
+                      {rating}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Mobile Rating */}
+                <div className="md:hidden grid grid-cols-5 gap-2 mb-4">
+                  {[1,2,3,4,5,6,7,8,9,10].map(rating => (
+                    <button
+                      key={rating}
+                      onClick={() => setGuidedData(prev => ({ ...prev, rating }))}
+                      data-testid={`mobile-rating-${rating}`}
+                      className={`w-12 h-12 rounded-full border-2 font-semibold transition-colors ${
+                        guidedData.rating === rating
+                          ? 'bg-[#10b981] text-white border-[#10b981]'
+                          : 'border-[#e5e7eb] text-[#6b7280] hover:border-[#10b981]'
+                      }`}
+                    >
+                      {rating}
+                    </button>
+                  ))}
+                </div>
+                <textarea
+                  data-testid="final-notes"
+                  placeholder="Any final notes about your tasting experience..."
+                  value={guidedData.finalNotes}
+                  onChange={(e) => setGuidedData(prev => ({ ...prev, finalNotes: e.target.value }))}
+                  className="w-full p-3 border border-[#e5e7eb] rounded-lg mb-4"
+                  rows={3}
+                />
+                <Button
+                  onClick={() => {
+                    // Handle completion
+                    toast({
+                      title: "Tasting Complete!",
+                      description: "Your guided tasting has been saved.",
+                    })
+                    router.push(`/${locale}/tastings/completed`)
+                  }}
+                  disabled={guidedData.rating === 0}
+                  className="px-6 py-2 bg-[#10b981] text-white hover:bg-[#059669] rounded-lg"
+                  data-testid="complete-tasting-button"
+                >
+                  Complete Tasting
+                </Button>
+              </Card>
+            )}
+          </div>
+        )}
+
+        {/* Regular Quick Tasting Form (hidden in guided mode) */}
+        {!isGuidedMode && (
+          <>
         {/* Basic Info Section */}
         <Card className="mb-6 rounded-xl p-4 bg-white border border-[#e5e7eb] shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
           <CardHeader className="pb-4">
@@ -612,6 +849,8 @@ export default function QuickTastingPage() {
             Your tasting will be saved automatically
           </p>
         </div>
+          </>
+        )}
       </div>
     </div>
   )

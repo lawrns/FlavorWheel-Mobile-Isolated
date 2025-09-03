@@ -26,7 +26,7 @@ export function CreateFooterActions({
 
   return (
     <div
-      className="bg-white border border-fx-border rounded-xl shadow-soft p-4 sm:p-5 mt-8"
+      className="bg-background border border-border rounded-2xl shadow-sm p-4 sm:p-5 mt-8"
       role="region"
       aria-live="polite"
       data-testid="create-footer"
@@ -38,7 +38,7 @@ export function CreateFooterActions({
             variant="ghost"
             onClick={onSecondary}
             disabled={disabled || busy}
-            className="flex-1 h-12 px-4 rounded-xl border border-fx-border bg-white text-fx-text hover:bg-fx-bg focus-enhanced transition-all duration-200"
+            className="flex-1 h-12 px-4 rounded-lg border border-border bg-background text-foreground hover:bg-muted focus-visible:ring-2 focus-visible:ring-primary transition-all duration-normal ease-standard"
             aria-label={`Secondary action: ${secondaryLabel}`}
           >
             {secondaryLabel}
@@ -49,7 +49,7 @@ export function CreateFooterActions({
         <Button
           onClick={onPrimary}
           disabled={disabled || busy}
-          className="flex-1 h-12 px-4 rounded-xl bg-fx-primary text-white hover:bg-fx-primaryHover disabled:opacity-50 focus-enhanced btn-primary"
+          className="flex-1 h-12 px-4 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-primary transition-all duration-normal ease-standard"
           id="create-primary-action"
           aria-label="Primary action: proceed"
           data-testid="create-primary-action"

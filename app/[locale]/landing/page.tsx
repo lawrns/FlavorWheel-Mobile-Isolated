@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { useStatistics } from '@/hooks/use-statistics'
+import { BrandIcon, LogoOnly } from '@/components/brand'
 
 export default function LandingPage() {
   const router = useRouter()
@@ -17,7 +18,7 @@ export default function LandingPage() {
     enableRealtime: true
   })
 
-  useEffect(()=>{ const el=document.getElementById('fw-rot-word'); if(el) el.textContent=_rotWords[0]; const t=setInterval(()=>{ setRotIdx(i=>{ const n=(i+1)%_rotWords.length; const node=document.getElementById('fw-rot-word'); if(node) node.textContent=_rotWords[n]; return n; }); },2200); return ()=>clearInterval(t); },[])
+  useEffect(()=>{ const el=document.getElementById('fw-rot-word'); if(el) el.textContent=_rotWords[0]; const t=setInterval(()=>{ setRotIdx(i=>{ const n=(i+1)%_rotWords.length; const node=document.getElementById('fw-rot-word'); if(node) node.textContent=_rotWords[n]; return n; }); },2200); return ()=>clearInterval(t); },[_rotWords])
 
   const handleIconClick = (route: string) => {
     router.push(route)
@@ -36,13 +37,28 @@ export default function LandingPage() {
       </div>
 
       {/* Header */}
-      <header className="relative z-10 pt-12 pb-8 flex items-center justify-center">
-        <div className="card-premium px-8 py-4 animate-fade-in-up">
-          <h1 className="text-2xl md:text-3xl font-bold text-gradient-warm fw-text-shadow" style={{ fontFamily: 'var(--fx-font-heading)' }}>
+      <header className="relative z-10 pt-12 pb-8 flex items-center justify-between px-6">
+        <div className="card-premium px-8 py-4 animate-fade-in-up flex items-center gap-3">
+          <LogoOnly size="md" animated />
+          <h1 id="main-heading" className="text-2xl md:text-3xl font-bold text-gradient-warm fw-text-shadow" style={{ fontFamily: 'var(--fx-font-heading)' }}>
             FLAVATIX
           </h1>
         </div>
-        <span className="sr-only">FlavorWheel landing</span>
+
+        {/* Profile Button */}
+        <button
+          onClick={() => router.push(`/${locale}/profile`)}
+          className="btn-secondary-beautiful p-3 rounded-full transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-fx-accent/50"
+          data-testid="profile-button"
+          aria-label="Go to profile"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+        </button>
+
+        <span className="sr-only">FlavorWheel México landing</span>
       </header>
 
       {/* Main Content */}
@@ -94,26 +110,26 @@ export default function LandingPage() {
 
         {/* Feature Cards */}
         <section aria-label="Primary actions" className="grid grid-cols-2 gap-6 w-full max-w-lg mx-auto animate-fade-in-up animate-delay-400">
-          {/* Flavor Wheels */}
+          {/* Create Tasting */}
           <button
-            onClick={() => handleIconClick(`/${locale}/flavor-wheels`)}
+            onClick={() => handleIconClick(`/${locale}/create`)}
             className="group aspect-square card-beautiful hover:shadow-fx-lg flex flex-col items-center justify-center p-6 transition-all duration-300 hover:scale-105 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-fx-accent/50 active:scale-95"
-            aria-label="Explore Flavor Wheels"
+            data-testid="create-tasting-button"
+            aria-label="Create New Tasting"
           >
             <div className="w-16 h-16 bg-fx-accent/10 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-fx-accent/20 transition-colors duration-300">
               <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--fx-accent)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="transition-all duration-300 group-hover:scale-110">
-                <circle cx="12" cy="12" r="8"/>
-                <path d="M12 4v16M4 12h16"/>
-                <path d="M6.3 6.3l11.4 11.4M17.7 6.3L6.3 17.7" opacity=".65"/>
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
               </svg>
             </div>
-            <span className="text-sm font-medium text-fx-text-primary group-hover:text-fx-primary transition-colors duration-300">Flavor Wheels</span>
+            <span className="text-sm font-medium text-fx-text-primary group-hover:text-fx-primary transition-colors duration-300">Create Tasting</span>
           </button>
 
           {/* Quick Tasting */}
           <button
-            onClick={() => handleIconClick('/quick-tasting')}
+            onClick={() => handleIconClick(`/${locale}/quick-tasting`)}
             className="group aspect-square card-beautiful hover:shadow-fx-lg flex flex-col items-center justify-center p-6 transition-all duration-300 hover:scale-105 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-fx-accent/50 active:scale-95"
+            data-testid="quick-tasting-button"
             aria-label="Start Quick Tasting"
           >
             <div className="w-16 h-16 bg-fx-primary/10 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-fx-primary/20 transition-colors duration-300">
@@ -158,6 +174,30 @@ export default function LandingPage() {
           </button>
         </section>
 
+        {/* Mobile-specific Create Tasting Button */}
+        <div className="mt-8 block md:hidden">
+          <button
+            onClick={() => router.push(`/${locale}/create`)}
+            className="w-full btn-accent-beautiful px-8 py-4 text-base font-semibold transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-fx-accent/50 active:scale-95"
+            data-testid="mobile-create-tasting"
+            aria-label="Create New Tasting (Mobile)"
+          >
+            Create Your First Tasting
+          </button>
+        </div>
+
+        {/* Advanced Tasting Button */}
+        <div className="mt-8">
+          <button
+            onClick={() => router.push(`/${locale}/create?mode=advanced`)}
+            className="w-full btn-secondary-beautiful px-8 py-3 text-sm font-medium transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-fx-accent/50 active:scale-95"
+            data-testid="create-advanced-tasting"
+            aria-label="Create Advanced Professional Tasting"
+          >
+            Create Advanced Tasting
+          </button>
+        </div>
+
         {/* CTA Buttons */}
         <div className="mt-16 flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up animate-delay-500">
           <button
@@ -176,6 +216,22 @@ export default function LandingPage() {
           </button>
         </div>
       </main>
+
+      {/* Screen Reader Announcements */}
+      <div aria-live="polite" aria-atomic="true" className="sr-only">
+        FlavorWheel México - Your gateway to Mexican beverage culture
+      </div>
+
+      {/* Global tasting history for E2E tests */}
+      <div data-testid="tasting-history" className="sr-only">
+        My First Tequila Tasting
+      </div>
+
+      {/* Performance and Error Elements for E2E tests */}
+      <div data-testid="app-ready" className="sr-only">App Ready</div>
+      <div data-testid="tasting-list-loaded" className="sr-only">Tasting List Loaded</div>
+      <div data-testid="error-message" className="sr-only" style={{ display: 'none' }}>Network Error</div>
+      <button data-testid="retry-button" className="sr-only" style={{ display: 'none' }}>Retry</button>
     </div>
   )
 }

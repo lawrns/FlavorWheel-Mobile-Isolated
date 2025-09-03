@@ -5,13 +5,13 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
 export interface SupabaseClient {
-  from: (table: string) => any
-  channel: (name: string) => any
+  from: (table: string) => unknown
+  channel: (name: string) => unknown
   auth: {
-    signInWithOtp: (params: { email: string }) => Promise<{ error: any }>
+    signInWithOtp: (params: { email: string }) => Promise<{ error: Error | null }>
     signOut: () => Promise<void>
-    getSession: () => Promise<{ data: { session: any } }>
-    onAuthStateChange: (callback: Function) => { data: { subscription: { unsubscribe: () => void } } }
+    getSession: () => Promise<{ data: { session: unknown } }>
+    onAuthStateChange: (callback: (event: string, session: unknown) => void) => { data: { subscription: { unsubscribe: () => void } } }
   }
 }
 

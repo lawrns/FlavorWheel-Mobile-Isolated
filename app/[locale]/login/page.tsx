@@ -18,7 +18,16 @@ export default function LoginPage() {
   const params = useParams()
   const router = useRouter()
   const locale = (params.locale as string) || 'en'
-  const { client: supabase } = useSupabase()
+
+  // Handle case where Supabase provider is not available
+  let supabase = null
+  try {
+    const supabaseContext = useSupabase()
+    supabase = supabaseContext.client
+  } catch (error) {
+    console.warn('Supabase provider not available, running in offline mode')
+  }
+
   const { toast } = useToast()
 
   const [formData, setFormData] = useState({
@@ -32,9 +41,17 @@ export default function LoginPage() {
   // Redirect if already authenticated
   useEffect(() => {
     const checkUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (user) {
-        router.push(`/${locale}/flavor-wheels`)
+      if (!supabase) {
+        console.warn('Supabase client not available')
+        return
+      }
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (user) {
+          router.push(`/${locale}/flavor-wheels`)
+        }
+      } catch (error) {
+        console.error('Error checking user authentication:', error)
       }
     }
     checkUser()
@@ -249,7 +266,7 @@ export default function LoginPage() {
             {/* Sign Up Link */}
             <div className="text-center">
               <p className="text-sm text-muted-foreground">
-                Don't have an account?{' '}
+                Don&apos;t have an account?{' '}
                 <Link
                   href={`/${locale}/register`}
                   className="font-medium text-amber-600 hover:text-amber-700 underline"

@@ -7,6 +7,7 @@ import { Home, Plus, User, Settings, Sparkles, QrCode, Menu, X, Star, Zap, Users
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { MOBILE_NAV_ITEMS } from '@/lib/navigation-config'
+import { BrandIcon, BrandTitle } from '@/components/brand'
 
 interface MobileNavigationProps {
   activeScreen?: string
@@ -57,8 +58,9 @@ export function MobileNavigation({
         data-testid="mobile-navigation-root"
         id="mobile-navigation"
         className={cn(
-          'fixed bottom-0 left-0 right-0 z-sticky h-16',
+          'fixed bottom-0 left-0 right-0 z-50 h-16',
           'pb-safe border-t border-fx-border-default bg-fx-card/95 backdrop-blur-md shadow-fx-lg will-change-transform',
+          'supports-[backdrop-filter]:backdrop-blur-md',
           className
         )}
         aria-label="Mobile Navigation"
@@ -90,11 +92,13 @@ export function MobileNavigation({
               aria-current={activeScreen === item.id ? 'page' : undefined}
               role="tab"
               tabIndex={0}
+              data-nav-item={item.id}
               className={cn(
-                'flex min-w-[60px] flex-col items-center justify-center rounded-lg p-2 transition-all duration-base ease-standard focus-visible:ring-2 focus-visible:ring-fx-focus-ring focus-visible:ring-offset-2 haptic-light',
+                'flex min-w-[60px] min-h-[44px] flex-col items-center justify-center rounded-lg p-3 transition-all duration-base ease-standard focus-visible:ring-2 focus-visible:ring-fx-focus-ring focus-visible:ring-offset-2 haptic-light',
+                'touch-manipulation',
                 activeScreen === item.id
                   ? 'bg-fx-primary/10 text-fx-primary'
-                  : 'text-fx-text-secondary hover:bg-fx-bg-subtle hover:text-fx-text-primary'
+                  : 'text-fx-text-secondary hover:bg-fx-bg-subtle hover:text-fx-text-primary active:bg-fx-primary/5'
               )}
               whileTap={{ scale: 0.95 }}
               whileHover={{ scale: 1.05 }}
@@ -121,11 +125,13 @@ export function MobileNavigation({
             aria-label="More options"
             role="tab"
             tabIndex={0}
+            data-testid="mobile-menu-button"
             className={cn(
-              'flex min-w-[60px] flex-col items-center justify-center rounded-lg p-2 transition-all duration-base ease-standard focus-visible:ring-2 focus-visible:ring-fx-focus-ring focus-visible:ring-offset-2 haptic-medium',
+              'flex min-w-[60px] min-h-[44px] flex-col items-center justify-center rounded-lg p-3 transition-all duration-base ease-standard focus-visible:ring-2 focus-visible:ring-fx-focus-ring focus-visible:ring-offset-2 haptic-medium',
+              'touch-manipulation',
               isExpanded
                 ? 'bg-fx-accent/10 text-fx-accent'
-                : 'text-fx-text-secondary hover:bg-fx-bg-subtle hover:text-fx-text-primary'
+                : 'text-fx-text-secondary hover:bg-fx-bg-subtle hover:text-fx-text-primary active:bg-fx-accent/5'
             )}
             whileTap={{ scale: 0.95 }}
             whileHover={{ scale: 1.05 }}
@@ -144,7 +150,7 @@ export function MobileNavigation({
           <>
             {/* Backdrop */}
             <motion.div
-              className="fixed inset-0 z-overlay bg-black/30 backdrop-blur-sm will-change-transform md:hidden"
+              className="fixed inset-0 z-40 bg-black/30 supports-[backdrop-filter]:backdrop-blur-sm will-change-transform md:hidden"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -153,14 +159,33 @@ export function MobileNavigation({
 
             {/* Expanded Menu */}
             <motion.div
-              className="fixed bottom-20 left-4 right-4 z-modal rounded-xl border border-fx-border-default bg-fx-card shadow-fx-lg md:hidden"
+              className="fixed bottom-20 left-4 right-4 z-50 rounded-xl border border-fx-border-default bg-fx-card shadow-fx-lg md:hidden"
+              data-testid="mobile-menu"
               initial={{ opacity: 0, y: 20, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.95 }}
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
             >
               <div className="p-4">
-                <h3 className="mb-4 text-xl font-semibold text-fx-text-primary font-heading">Full Navigation</h3>
+                {/* Header with Logo */}
+                <div className="mb-4 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <BrandIcon size="sm" />
+                    <BrandTitle size="sm" />
+                  </div>
+                </div>
+
+                {/* Mobile Create Tasting Button */}
+                <button
+                  data-testid="mobile-create-tasting"
+                  onClick={() => {
+                    router.push('/en/create')
+                    setIsExpanded(false)
+                  }}
+                  className="mb-4 w-full rounded-lg bg-fx-primary px-4 py-4 text-white font-medium hover:bg-fx-primary/90 active:bg-fx-primary/80 transition-colors min-h-[48px] touch-manipulation"
+                >
+                  Create New Tasting
+                </button>
 
                 {/* All Navigation Items */}
                 <div className="grid grid-cols-2 gap-2">
@@ -176,11 +201,13 @@ export function MobileNavigation({
                         setIsExpanded(false)
                       }}
                       className={cn(
-                        'flex items-center space-x-2 rounded-lg border p-4 text-left transition-all duration-base ease-standard focus-visible:ring-2 focus-visible:ring-fx-focus-ring focus-visible:ring-offset-2 haptic-light',
+                        'flex items-center space-x-3 rounded-lg border p-4 text-left transition-all duration-base ease-standard focus-visible:ring-2 focus-visible:ring-fx-focus-ring focus-visible:ring-offset-2 haptic-light',
+                        'min-h-[48px] touch-manipulation',
                         activeScreen === item.id
                           ? 'border-fx-primary bg-fx-primary/10 text-fx-primary'
-                          : 'border-fx-border-default text-fx-text-secondary hover:border-fx-accent hover:bg-fx-bg-subtle hover:text-fx-text-primary'
+                          : 'border-fx-border-default text-fx-text-secondary hover:border-fx-accent hover:bg-fx-bg-subtle hover:text-fx-text-primary active:bg-fx-accent/5'
                       )}
+                      data-nav-item={item.id}
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.05 }}

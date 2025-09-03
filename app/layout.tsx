@@ -1,13 +1,12 @@
 import './globals.css'
 import type React from 'react'
 import { Inter } from 'next/font/google'
+// Core Providers and Components - Restored for production
 import { ErrorBoundary } from '@/components/error-boundary'
-import { MobileNavigation } from '@/components/ui/mobile-navigation'
-import { AuthProvider } from '@/components/auth-provider'
-import { SupabaseProvider } from '@/components/providers/supabase-provider'
+import { Providers } from '@/components/providers'
 import { ServiceWorkerProvider } from '@/components/service-worker-provider'
 import { IconPreloader } from '@/components/icon-preloader'
-// import { RealtimeProvider } from '@/components/providers/realtime-provider'
+import { SkipNavigation } from '@/components/ui/skip-to-content'
 
 export const metadata = {
   title: 'Flavatix - Discover the Art of Spirits Tasting',
@@ -51,20 +50,20 @@ export default async function RootLayout({
         {/* DNS prefetch for Supabase */}
         <link rel="dns-prefetch" href="//kobuclkvlacdwvxmakvq.supabase.co" />
       </head>
-      <body className={`${inter.className} touch-manipulation`}>
-        <IconPreloader />
-        <ServiceWorkerProvider>
-          <ErrorBoundary>
-            <SupabaseProvider>
-              <AuthProvider>
-                <MobileNavigation />
-                <main className="min-h-screen">
-                  {children}
-                </main>
-              </AuthProvider>
-            </SupabaseProvider>
-          </ErrorBoundary>
-        </ServiceWorkerProvider>
+      <body className={`${inter.className} touch-manipulation antialiased`}>
+        <ErrorBoundary>
+          <Providers>
+            <ServiceWorkerProvider>
+              <IconPreloader>
+                <SkipNavigation>
+                  <main id="main-content" className="min-h-screen" data-testid="app-ready">
+                    {children}
+                  </main>
+                </SkipNavigation>
+              </IconPreloader>
+            </ServiceWorkerProvider>
+          </Providers>
+        </ErrorBoundary>
       </body>
     </html>
   )

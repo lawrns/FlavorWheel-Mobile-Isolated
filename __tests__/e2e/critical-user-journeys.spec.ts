@@ -51,7 +51,7 @@ test.describe('Critical User Journeys', () => {
     test('should complete full tasting workflow for beginner user', async ({ page }) => {
       // 1. Landing page discovery and registration
       await test.step('Landing page interaction', async () => {
-        await expect(page.locator('h1')).toContainText(/flavorwheel|méxico/i)
+        await expect(page.locator('h1')).toContainText(/flavatix/i)
 
         // Click create tasting button
         await page.click('[data-testid="create-tasting-button"]')

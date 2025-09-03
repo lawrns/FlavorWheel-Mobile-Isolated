@@ -1,0 +1,347 @@
+{
+  "metadata": {
+    "title": "FlavorWheel México - Comprehensive Styling & Error Analysis Context",
+    "version": "2.0.0",
+    "created": "2025-01-03",
+    "purpose": "Complete analysis of styling issues, spacing problems, visual inconsistencies, and error patterns for AI-assisted improvement",
+    "scope": "Full application styling system, error handling, and user experience issues",
+    "severity": "HIGH - Multiple critical styling and error issues affecting user experience"
+  },
+
+  "critical_issues_summary": {
+    "styling_problems": [
+      "Inconsistent color system with conflicting CSS variables",
+      "Poor mobile spacing and layout overflow issues", 
+      "Broken responsive design on flavor wheel page",
+      "Inconsistent typography scaling across components",
+      "Missing visual hierarchy and poor contrast ratios"
+    ],
+    "error_patterns": [
+      "Service layer throwing unhandled errors to console",
+      "Database connection errors not gracefully handled",
+      "Missing error boundaries causing component crashes",
+      "Poor error messaging and user feedback",
+      "Network errors causing application instability"
+    ],
+    "user_experience_issues": [
+      "Mobile navigation logo not displaying properly",
+      "Flavor wheel visualization has poor mobile responsiveness",
+      "Inconsistent button sizing and touch targets",
+      "Poor loading states and error recovery",
+      "Confusing navigation hierarchy"
+    ]
+  },
+
+  "design_system_analysis": {
+    "current_state": "FRAGMENTED",
+    "color_system": {
+      "status": "CONFLICTED",
+      "issues": [
+        "Multiple color systems competing (fx-*, --fw-*, Tailwind defaults)",
+        "CSS custom properties not consistently applied",
+        "Theme provider conflicts with global CSS variables",
+        "Poor color contrast ratios for accessibility"
+      ],
+      "current_variables": {
+        "fx_system": {
+          "primary": "#2E7D32",
+          "accent": "#22C55E", 
+          "background": "#FAF7F0",
+          "text": "#1B1B18"
+        },
+        "fw_system": {
+          "burgundy": "var(--fw-burgundy-900)",
+          "gold": "var(--fw-gold-500)",
+          "olive": "var(--fw-olive-600)"
+        },
+        "theme_provider": {
+          "primary": "#FF6B35",
+          "secondary": "#3366FF",
+          "background": "#FFFFFF"
+        }
+      },
+      "recommended_consolidation": {
+        "primary_brand": "#2E7D32",
+        "secondary_brand": "#D4AF37", 
+        "accent": "#FF6B35",
+        "neutral_50": "#FAFAFA",
+        "neutral_900": "#1A1A1A",
+        "semantic_success": "#22C55E",
+        "semantic_warning": "#F59E0B",
+        "semantic_error": "#EF4444"
+      }
+    },
+    "typography": {
+      "status": "INCONSISTENT",
+      "issues": [
+        "Multiple font loading systems (Google Fonts + local)",
+        "Inconsistent font-family declarations",
+        "Poor mobile typography scaling",
+        "Missing font-display optimizations"
+      ],
+      "current_fonts": {
+        "heading": "Playfair Display, serif",
+        "body": "Inter, sans-serif",
+        "fallbacks": "system-ui, arial"
+      }
+    },
+    "spacing": {
+      "status": "CHAOTIC",
+      "issues": [
+        "No consistent spacing scale",
+        "Mobile padding/margin inconsistencies",
+        "Poor component spacing relationships",
+        "Responsive breakpoint conflicts"
+      ]
+    }
+  },
+
+  "component_specific_issues": {
+    "mobile_navigation": {
+      "severity": "HIGH",
+      "issues": [
+        "Logo not displaying in expanded menu header",
+        "Inconsistent button sizing and spacing",
+        "Poor touch target sizes (<44px)",
+        "Conflicting z-index values",
+        "Animation performance issues"
+      ],
+      "css_problems": [
+        "z-sticky vs z-modal conflicts",
+        "backdrop-blur not working consistently",
+        "Fixed positioning issues on iOS Safari",
+        "Safe area insets not properly handled"
+      ]
+    },
+    "flavor_wheels_page": {
+      "severity": "CRITICAL", 
+      "issues": [
+        "Flavor wheel visualization breaks on mobile",
+        "Poor responsive card layouts",
+        "Inconsistent button styling across sections",
+        "Text overflow and truncation issues",
+        "Poor loading state presentations"
+      ],
+      "layout_problems": [
+        "Cards not properly sized for mobile viewports",
+        "Flex layout breaking on small screens",
+        "Poor grid system implementation",
+        "Inconsistent padding/margin across sections"
+      ]
+    },
+    "brand_components": {
+      "severity": "MEDIUM",
+      "issues": [
+        "Logo sizing inconsistencies",
+        "Brand colors not matching design system",
+        "Poor animation performance",
+        "Accessibility issues with logo alt text"
+      ]
+    }
+  },
+
+  "error_handling_analysis": {
+    "service_layer_errors": {
+      "social_service": {
+        "error_pattern": "Database table not found errors",
+        "frequency": "HIGH",
+        "impact": "Console spam and poor UX",
+        "example_errors": [
+          "Error fetching user reviews: {}",
+          "User reviews table not available",
+          "PGRST116 - relation does not exist"
+        ]
+      },
+      "analytics_service": {
+        "error_pattern": "Supabase connection failures",
+        "frequency": "MEDIUM", 
+        "impact": "Broken flavor wheel functionality"
+      }
+    },
+    "frontend_error_boundaries": {
+      "coverage": "PARTIAL",
+      "issues": [
+        "Not all components wrapped in error boundaries",
+        "Poor error recovery mechanisms",
+        "Inconsistent error messaging",
+        "No graceful degradation patterns"
+      ]
+    }
+  },
+
+  "mobile_responsiveness_issues": {
+    "viewport_problems": {
+      "flavor_wheel_page": {
+        "issues": [
+          "Flavor wheel SVG not scaling properly on mobile",
+          "Cards overflowing viewport width",
+          "Poor touch interaction areas",
+          "Horizontal scrolling on mobile devices"
+        ],
+        "css_fixes_needed": [
+          "Add proper viewport meta tag handling",
+          "Implement container queries for better responsiveness",
+          "Fix flex-wrap and grid-template-columns",
+          "Add touch-action: manipulation for better touch response"
+        ]
+      },
+      "navigation_issues": {
+        "mobile_header": "Logo positioning conflicts with back button",
+        "bottom_navigation": "Safe area insets not properly handled",
+        "expanded_menu": "Full-screen overlay positioning issues"
+      }
+    },
+    "breakpoint_inconsistencies": {
+      "current_breakpoints": {
+        "sm": "640px",
+        "md": "768px",
+        "lg": "1024px",
+        "xl": "1280px"
+      },
+      "problems": [
+        "Components using different breakpoint logic",
+        "Inconsistent responsive utility usage",
+        "Missing intermediate breakpoints for tablets"
+      ]
+    }
+  },
+
+  "performance_issues": {
+    "css_performance": {
+      "problems": [
+        "Large CSS bundle size due to unused Tailwind classes",
+        "Multiple font loading causing FOUT/FOIT",
+        "Inefficient CSS custom property usage",
+        "Missing critical CSS inlining"
+      ],
+      "bundle_analysis": {
+        "tailwind_css": "~200KB (too large)",
+        "custom_css": "~50KB (globals.css)",
+        "font_loading": "~100KB (Google Fonts)"
+      }
+    },
+    "animation_performance": {
+      "issues": [
+        "Framer Motion causing layout thrashing",
+        "CSS animations not using transform/opacity",
+        "Missing will-change optimizations",
+        "Poor 60fps performance on mobile"
+      ]
+    }
+  },
+
+  "accessibility_violations": {
+    "color_contrast": {
+      "failing_combinations": [
+        "Text on fx-bg (#FAF7F0) - insufficient contrast",
+        "Secondary text colors below WCAG AA standards",
+        "Button states not meeting contrast requirements"
+      ]
+    },
+    "keyboard_navigation": {
+      "issues": [
+        "Mobile navigation not fully keyboard accessible",
+        "Focus indicators missing or poorly visible",
+        "Tab order not logical in expanded menu"
+      ]
+    },
+    "screen_reader": {
+      "problems": [
+        "Logo alt text not descriptive",
+        "Navigation landmarks missing",
+        "Error messages not announced properly"
+      ]
+    }
+  },
+
+  "recommended_solutions": {
+    "immediate_fixes": {
+      "priority_1_critical": [
+        "Consolidate color system to single source of truth",
+        "Fix mobile navigation logo display issue",
+        "Implement proper error boundaries for all service calls",
+        "Fix flavor wheel mobile responsiveness"
+      ],
+      "priority_2_high": [
+        "Standardize spacing system using consistent scale",
+        "Improve button sizing and touch targets",
+        "Fix console error spam from service layer",
+        "Implement proper loading states"
+      ],
+      "priority_3_medium": [
+        "Optimize CSS bundle size and performance",
+        "Improve accessibility compliance",
+        "Standardize typography system",
+        "Add proper error recovery mechanisms"
+      ]
+    },
+    "design_system_rebuild": {
+      "color_tokens": {
+        "approach": "CSS custom properties with Tailwind integration",
+        "structure": "Semantic tokens built on primitive values",
+        "implementation": "Single source in globals.css, remove theme provider conflicts"
+      },
+      "spacing_system": {
+        "scale": "4px base unit (4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 80, 96)",
+        "responsive": "Consistent mobile/desktop scaling ratios",
+        "implementation": "Tailwind spacing scale customization"
+      },
+      "typography_system": {
+        "font_loading": "Self-hosted fonts with font-display: swap",
+        "scale": "Modular scale with consistent line-heights",
+        "responsive": "Fluid typography using clamp()"
+      }
+    }
+  },
+
+  "implementation_roadmap": {
+    "phase_1_foundation": {
+      "duration": "1-2 days",
+      "tasks": [
+        "Audit and consolidate CSS custom properties",
+        "Fix critical mobile navigation issues",
+        "Implement error boundaries for service calls",
+        "Fix flavor wheel mobile layout"
+      ]
+    },
+    "phase_2_consistency": {
+      "duration": "2-3 days",
+      "tasks": [
+        "Standardize component spacing and sizing",
+        "Implement consistent button and form styles",
+        "Fix responsive breakpoint inconsistencies",
+        "Improve error handling and user feedback"
+      ]
+    },
+    "phase_3_optimization": {
+      "duration": "1-2 days",
+      "tasks": [
+        "Optimize CSS bundle and performance",
+        "Improve accessibility compliance",
+        "Add proper loading and error states",
+        "Implement design system documentation"
+      ]
+    }
+  },
+
+  "testing_requirements": {
+    "visual_regression": [
+      "Mobile navigation on iOS Safari",
+      "Flavor wheel responsiveness across devices",
+      "Button and form component consistency",
+      "Color contrast compliance"
+    ],
+    "functionality": [
+      "Error boundary recovery mechanisms",
+      "Service layer error handling",
+      "Mobile touch interactions",
+      "Keyboard navigation flows"
+    ],
+    "performance": [
+      "CSS bundle size optimization",
+      "Font loading performance",
+      "Animation frame rates",
+      "Mobile scroll performance"
+    ]
+  }
+}

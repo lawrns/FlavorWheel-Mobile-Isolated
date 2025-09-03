@@ -20,7 +20,7 @@ export interface CreateDraftTastingPayload {
     name: string
     description?: string
     image?: File
-    preLoadedData?: Record<string, any>
+    preLoadedData?: Record<string, unknown>
   }>
   isBlind?: boolean
   description?: string

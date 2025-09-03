@@ -3,14 +3,16 @@
 import React from 'react'
 import { ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { BrandIcon } from '@/components/brand'
 
 interface CreateHeaderProps {
   title: string
   onBack?: () => void
   status?: 'saved' | 'saving' | 'error' | null
+  showLogo?: boolean
 }
 
-export function CreateHeader({ title, onBack, status }: CreateHeaderProps) {
+export function CreateHeader({ title, onBack, status, showLogo = false }: CreateHeaderProps) {
   const getStatusText = () => {
     switch (status) {
       case 'saving':
@@ -40,6 +42,13 @@ export function CreateHeader({ title, onBack, status }: CreateHeaderProps) {
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-fx-border shadow-soft">
       <div className="h-16 flex items-center gap-3 px-4 sm:px-6">
+        {/* Logo (optional) */}
+        {showLogo && (
+          <div className="flex items-center gap-2 mr-2">
+            <BrandIcon size="sm" />
+          </div>
+        )}
+
         {/* Back Button */}
         {onBack && (
           <Button

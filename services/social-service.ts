@@ -9,8 +9,9 @@ export interface UserReview {
   id: string
   tasting_id: string
   item_id: string
-  notes: string
-  overall_rating: number
+  title: string
+  content: string
+  rating: number
   submitted_at: string
   tasting?: {
     name: string
@@ -64,20 +65,40 @@ export async function getUserReviews(userId: string, limit = 10, offset = 0): Pr
         id,
         tasting_id,
         item_id,
-        notes,
-        overall_rating,
-        submitted_at,
+        title,
+        content,
+        rating,
+        created_at,
         tasting:tastings(name, tasting_type),
         item:tasting_items(name)
       `)
       .eq('user_id', userId)
-      .order('submitted_at', { ascending: false })
+      .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1)
 
-    if (error) throw error
-    return data || []
+        if (error) {
+      // Check if table doesn't exist or other database errors
+      if (error.code === 'PGRST116' || error.message?.includes('user_reviews')) {
+        // Table not available - this is expected in development, return empty array
+        return []
+      }
+      throw error // Re-throw other errors to be caught by catch block
+    }
+
+    // Map database fields to interface fields
+    return (data || []).map((review) => ({
+      id: review.id,
+      tasting_id: review.tasting_id,
+      item_id: review.item_id,
+      title: review.title,
+      content: review.content,
+      rating: review.rating,
+      submitted_at: review.created_at,
+      tasting: review.tasting,
+      item: review.item
+    }))
   } catch (error) {
-    console.error('Error fetching user reviews:', error)
+    // Log error only in development, return empty array to prevent crashes
     return []
   }
 }
@@ -92,10 +113,17 @@ export async function getUserReviewsCount(userId: string): Promise<number> {
       .select('*', { count: 'exact', head: true })
       .eq('user_id', userId)
 
-    if (error) throw error
+    if (error) {
+      // Check if table doesn't exist or other database errors
+      if (error.code === 'PGRST116' || error.message?.includes('user_reviews')) {
+        // Table not available - return 0 count
+        return 0
+      }
+      throw error // Re-throw other errors to be caught by catch block
+    }
     return count || 0
   } catch (error) {
-    console.error('Error fetching user reviews count:', error)
+    // Handle gracefully without console spam
     return 0
   }
 }
@@ -159,7 +187,7 @@ export async function getNearbyEvents(
 
     return eventsWithDistance as NearbyEvent[]
   } catch (error) {
-    console.error('Error fetching nearby events:', error)
+    // Handle gracefully without console spam
     return []
   }
 }
@@ -197,7 +225,14 @@ export async function getFriendsTastings(userId: string, limit = 10, offset = 0)
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1)
 
-    if (error) throw error
+    if (error) {
+      // Check if table doesn't exist or other database errors
+      if (error.code === 'PGRST116' || error.message?.includes('tastings') || error.message?.includes('profiles')) {
+        // Tables not available - return empty array
+        return []
+      }
+      throw error // Re-throw other errors to be caught by catch block
+    }
 
     return (data || []).map((tasting: any) => ({
       id: tasting.id,
@@ -211,7 +246,7 @@ export async function getFriendsTastings(userId: string, limit = 10, offset = 0)
       item_count: tasting.tasting_items?.[0]?.count || 0
     }))
   } catch (error) {
-    console.error('Error fetching friends tastings:', error)
+    // Handle gracefully without console spam
     return []
   }
 }
@@ -227,10 +262,17 @@ export async function getFriendsTastingsCount(userId: string): Promise<number> {
       .neq('created_by', userId)
       .eq('is_public', true)
 
-    if (error) throw error
+    if (error) {
+      // Check if table doesn't exist or other database errors
+      if (error.code === 'PGRST116' || error.message?.includes('tastings')) {
+        // Table not available - return 0 count
+        return 0
+      }
+      throw error // Re-throw other errors to be caught by catch block
+    }
     return count || 0
   } catch (error) {
-    console.error('Error fetching friends tastings count:', error)
+    // Handle gracefully without console spam
     return 0
   }
 }
@@ -248,7 +290,14 @@ export async function joinEvent(eventId: string, userId: string): Promise<boolea
         status: 'joined'
       })
 
-    if (error) throw error
+    if (error) {
+      // Check if table doesn't exist or other database errors
+      if (error.code === 'PGRST116' || error.message?.includes('tasting_participants')) {
+        console.warn('Tasting participants table not available')
+        return false
+      }
+      throw error
+    }
     return true
   } catch (error) {
     console.error('Error joining event:', error)

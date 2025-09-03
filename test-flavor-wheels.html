@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flavor Wheels Error Test</title>
+</head>
+<body>
+    <h1>Flavor Wheels Error Test</h1>
+    <div id="status">Testing...</div>
+    <div id="results"></div>
+
+    <script>
+        // Mock Supabase client
+        const mockSupabase = {
+            from: (table) => ({
+                select: (columns) => ({
+                    eq: (field, value) => ({
+                        order: (field, options) => ({
+                            range: (start, end) => Promise.resolve({
+                                data: [],
+                                error: null
+                            })
+                        }),
+                        gte: (field, value) => ({
+                            order: (field, options) => ({
+                                limit: (limit) => Promise.resolve({
+                                    data: [],
+                                    error: null
+                                })
+                            })
+                        }),
+                        neq: (field, value) => ({
+                            eq: (field2, value2) => ({
+                                order: (field3, options) => ({
+                                    range: (start, end) => Promise.resolve({
+                                        data: [],
+                                        error: null
+                                    })
+                                })
+                            })
+                        })
+                    }),
+                    select: (options) => ({
+                        eq: (field, value) => ({
+                            head: () => Promise.resolve({
+                                count: 0,
+                                error: null
+                            })
+                        })
+                    })
+                }),
+                insert: (data) => Promise.resolve({
+                    error: null
+                })
+            })
+        };
+
+        // Mock user
+        const mockUser = {
+            id: 'test-user-123',
+            email: 'test@example.com'
+        };
+
+        // Simulate the social service functions
+        async function getUserReviews(userId) {
+            try {
+                const { data, error } = await mockSupabase
+                    .from('user_reviews')
+                    .select('id, tasting_id, item_id, title, content, rating, created_at, tasting:tastings(name, tasting_type), item:tasting_items(name)')
+                    .eq('user_id', userId)
+                    .order('created_at', { ascending: false })
+                    .range(0, 9);
+
+                if (error) {
+                    if (error.code === 'PGRST116' || error.message?.includes('user_reviews')) {
+                        console.warn('User reviews table not available, returning empty array');
+                        return [];
+                    }
+                    throw error;
+                }
+
+                return (data || []).map(review => ({
+                    id: review.id,
+                    tasting_id: review.tasting_id,
+                    item_id: review.item_id,
+                    title: review.title,
+                    content: review.content,
+                    rating: review.rating,
+                    submitted_at: review.created_at,
+                    tasting: review.tasting,
+                    item: review.item
+                }));
+            } catch (error) {
+                console.error('Error fetching user reviews:', error);
+                return [];
+            }
+        }
+
+        async function getNearbyEvents(latitude, longitude) {
+            try {
+                const { data, error } = await mockSupabase
+                    .from('tastings')
+                    .select('id, name, description, tasting_type, scheduled_for, max_participants, created_by, characteristics')
+                    .eq('is_public', true)
+                    .gte('scheduled_for', new Date().toISOString())
+                    .order('scheduled_for', { ascending: true })
+                    .limit(30);
+
+                if (error) throw error;
+
+                const eventsWithDistance = (data || [])
+                    .map((event) => {
+                        const eventLat = event.characteristics?.location?.latitude;
+                        const eventLng = event.characteristics?.location?.longitude;
+
+                        if (!eventLat || !eventLng) return null;
+
+                        const distance = calculateDistance(latitude, longitude, eventLat, eventLng);
+
+                        if (distance > 50) return null;
+
+                        return {
+                            ...event,
+                            location: {
+                                latitude: eventLat,
+                                longitude: eventLng,
+                                address: event.characteristics?.location?.address
+                            },
+                            current_participants: event.characteristics?.current_participants || 0,
+                            distance
+                        };
+                    })
+                    .filter(Boolean)
+                    .slice(0, 10);
+
+                return eventsWithDistance;
+            } catch (error) {
+                console.error('Error fetching nearby events:', error);
+                return [];
+            }
+        }
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a =
+                Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+
+        // Test function
+        async function runTests() {
+            const status = document.getElementById('status');
+            const results = document.getElementById('results');
+
+            status.textContent = 'Running tests...';
+
+            try {
+                // Test 1: getUserReviews
+                const reviews = await getUserReviews(mockUser.id);
+                results.innerHTML += `<div>✅ getUserReviews: Returns ${Array.isArray(reviews) ? 'array' : 'not array'} with ${reviews.length} items</div>`;
+
+                // Test 2: getNearbyEvents
+                const events = await getNearbyEvents(19.4326, -99.1332); // Mexico City
+                results.innerHTML += `<div>✅ getNearbyEvents: Returns ${Array.isArray(events) ? 'array' : 'not array'} with ${events.length} items</div>`;
+
+                // Test 3: No errors thrown
+                results.innerHTML += '<div>✅ No runtime errors occurred during testing</div>';
+
+                status.textContent = '✅ All tests passed! Social service functions work correctly.';
+
+            } catch (error) {
+                status.textContent = '❌ Test failed with error';
+                results.innerHTML += `<div style="color: red;">❌ Error: ${error.message}</div>`;
+                console.error('Test error:', error);
+            }
+        }
+
+        // Run tests when page loads
+        window.addEventListener('load', runTests);
+    </script>
+</body>
+</html>

@@ -20,15 +20,40 @@ export function OnboardingTooltip() {
 
   useEffect(() => {
     if (showTooltip && currentTooltipStep?.target) {
-      // Position tooltip relative to target element using CSS
       const element = document.querySelector(currentTooltipStep.target)
       if (element && tooltipRef.current) {
         const rect = element.getBoundingClientRect()
         const tooltip = tooltipRef.current
 
-        // Position tooltip at target element's location
-        tooltip.style.left = `${rect.left + rect.width / 2}px`
-        tooltip.style.top = `${rect.top}px`
+        // Calculate optimal position with viewport boundary checking
+        const tooltipRect = tooltip.getBoundingClientRect()
+        const viewportWidth = window.innerWidth
+        const viewportHeight = window.innerHeight
+        const margin = 16
+
+        let left = rect.left + rect.width / 2
+        let top = rect.top - tooltipRect.height - margin
+
+        // Check if tooltip would go off-screen and adjust position
+        if (top < margin) {
+          // Position below if it would go off top
+          top = rect.bottom + margin
+        }
+
+        if (left - tooltipRect.width / 2 < margin) {
+          // Too far left, adjust to right edge
+          left = rect.left + margin
+        } else if (left + tooltipRect.width / 2 > viewportWidth - margin) {
+          // Too far right, adjust to left edge
+          left = rect.right - margin
+        }
+
+        // Apply positioning using CSS custom properties to avoid conflicts
+        tooltip.style.setProperty('--tooltip-x', `${left}px`)
+        tooltip.style.setProperty('--tooltip-y', `${top}px`)
+        tooltip.style.left = `var(--tooltip-x)`
+        tooltip.style.top = `var(--tooltip-y)`
+        tooltip.style.transform = 'translate(-50%, 0)'
       }
     }
   }, [showTooltip, currentTooltipStep])
@@ -50,7 +75,6 @@ export function OnboardingTooltip() {
         data-position={currentTooltipStep.position || 'center'}
         style={{
           position: 'fixed',
-          transform: 'translate(-50%, -100%)', // Center horizontally, position above
           pointerEvents: 'auto'
         }}
       >

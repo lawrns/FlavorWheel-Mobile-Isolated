@@ -51,28 +51,28 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
     id: 'quick-tasting',
     title: 'Start Your First Tasting',
     description: 'Begin with a quick tasting to experience the art of flavor analysis.',
-    target: '[href*="/quick-tasting"]',
+    target: '[data-nav-item="create"]',
     position: 'top'
   },
   {
     id: 'social-community',
     title: 'Join the Community',
     description: 'Connect with fellow enthusiasts, share reviews, and learn from experts.',
-    target: '[href*="/social"]',
+    target: '[data-nav-item="social"]',
     position: 'top'
   },
   {
     id: 'flavor-wheels',
     title: 'Explore Flavor Wheels',
     description: 'Dive deep into flavor analysis with interactive wheel visualizations.',
-    target: '[href*="/flavor-wheels"]',
+    target: '[data-nav-item="flavor-wheels"]',
     position: 'top'
   },
   {
     id: 'reviews',
     title: 'Read Expert Reviews',
     description: 'Learn from detailed tasting notes and professional reviews.',
-    target: '[href*="/review"]',
+    target: '[data-nav-item="review"]',
     position: 'top'
   },
   {

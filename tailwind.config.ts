@@ -28,7 +28,54 @@ const config: Config = {
     },
     extend: {
       colors: {
-        // fx Design Tokens - Complete System
+        // Unified Design System Colors
+        primary: '#FF6B35',
+        'primary-foreground': '#FFFFFF',
+        secondary: '#3366FF',
+        'secondary-foreground': '#FFFFFF',
+        accent: '#22C55E',
+        'accent-foreground': '#FFFFFF',
+        background: '#FFFFFF',
+        foreground: '#1A1A1A',
+        muted: '#F5F5F5',
+        'muted-foreground': '#737373',
+        border: '#E5E7EB',
+        surface: '#FAFAFA',
+
+        // Dark mode colors
+        'dark-primary': '#FF6B35',
+        'dark-primary-foreground': '#1A1A1A',
+        'dark-secondary': '#6699FF',
+        'dark-secondary-foreground': '#1A1A1A',
+        'dark-accent': '#4ADE80',
+        'dark-accent-foreground': '#1A1A1A',
+        'dark-background': '#0B0B0B',
+        'dark-foreground': '#F9FAFB',
+        'dark-muted': '#1F2937',
+        'dark-muted-foreground': '#9CA3AF',
+        'dark-border': '#2D2D2D',
+        'dark-surface': '#111111',
+
+        // High contrast colors
+        'hc-primary': '#FF0000',
+        'hc-secondary': '#0000FF',
+        'hc-accent': '#00FF00',
+        'hc-background': '#000000',
+        'hc-foreground': '#FFFFFF',
+
+        // Dark mode semantic surfaces
+        'dark-surface-50': '#16161a',
+        'dark-surface-100': '#1e1e22',
+        'dark-surface-200': '#2a2a2e',
+        'dark-surface-300': '#3a3a3e',
+        'dark-surface-400': '#4a4a4e',
+        'dark-surface-500': '#5a5a5e',
+        'dark-surface-600': '#6a6a6e',
+        'dark-surface-700': '#7a7a7e',
+        'dark-surface-800': '#8a8a8e',
+        'dark-surface-900': '#9a9a9e',
+
+        // fx Design Tokens - Complete System (legacy support)
         fx: {
           // Surface & Background
           bg: 'var(--fx-bg)',
@@ -130,16 +177,24 @@ const config: Config = {
         },
       },
       borderRadius: {
-        // fx Design Token Border Radius
-        'xs': 'var(--fx-radius-xs)',
-        'sm': 'var(--fx-radius-sm)',
-        'md': 'var(--fx-radius-md)',
-        'lg': 'var(--fx-radius-lg)',
-        'xl': 'var(--fx-radius-xl)',
-        'pill': 'var(--fx-radius-pill)',
+        // Unified Border Radius from Design Tokens
+        'sm': '0.375rem',
+        'md': '0.5rem',
+        'lg': '0.75rem',
+        'xl': '1rem',
+        '2xl': '1.5rem',
+        'full': '9999px',
+
+        // fx Design Token Border Radius (legacy support)
+        'fx-xs': 'var(--fx-radius-xs)',
+        'fx-sm': 'var(--fx-radius-sm)',
+        'fx-md': 'var(--fx-radius-md)',
+        'fx-lg': 'var(--fx-radius-lg)',
+        'fx-xl': 'var(--fx-radius-xl)',
+        'fx-pill': 'var(--fx-radius-pill)',
 
         // Legacy border radius (keeping for compatibility)
-        card: '16px',
+        'legacy-card': '16px',
       },
       fontFamily: {
         // fx Design Token Typography
@@ -153,38 +208,51 @@ const config: Config = {
         accent: ['Crimson Text', 'serif'],
       },
       fontSize: {
-        // fx Design Token Fluid Typography
-        'h1': ['var(--fx-text-h1)', {
+        // Unified Typography Scale from Design Tokens
+        display: ['4.5rem', { lineHeight: '1.1', fontWeight: '700', fontFamily: 'Inter, sans-serif' }],
+        h1: ['3.75rem', { lineHeight: '1.1', fontWeight: '700', fontFamily: 'Inter, sans-serif' }],
+        h2: ['3rem', { lineHeight: '1.15', fontWeight: '600', fontFamily: 'Inter, sans-serif' }],
+        h3: ['2.25rem', { lineHeight: '1.2', fontWeight: '600', fontFamily: 'Inter, sans-serif' }],
+        h4: ['1.875rem', { lineHeight: '1.25', fontWeight: '600', fontFamily: 'Inter, sans-serif' }],
+        h5: ['1.5rem', { lineHeight: '1.3', fontWeight: '600', fontFamily: 'Inter, sans-serif' }],
+        h6: ['1.25rem', { lineHeight: '1.4', fontWeight: '600', fontFamily: 'Inter, sans-serif' }],
+        'body-lg': ['1.125rem', { lineHeight: '1.5', fontWeight: '400', fontFamily: 'Inter, sans-serif' }],
+        'body-md': ['1rem', { lineHeight: '1.6', fontWeight: '400', fontFamily: 'Inter, sans-serif' }],
+        'body-sm': ['0.875rem', { lineHeight: '1.6', fontWeight: '400', fontFamily: 'Inter, sans-serif' }],
+        caption: ['0.75rem', { lineHeight: '1.4', fontWeight: '500', fontFamily: 'Inter, sans-serif' }],
+
+        // fx Design Token Fluid Typography (legacy support)
+        'fx-h1': ['var(--fx-text-h1)', {
           lineHeight: 'var(--fx-line-height-tight)',
           fontWeight: 'var(--fx-weight-bold)',
           fontFamily: 'var(--fx-font-heading)'
         }],
-        'h2': ['var(--fx-text-h2)', {
+        'fx-h2': ['var(--fx-text-h2)', {
           lineHeight: 'var(--fx-line-height-tight)',
           fontWeight: 'var(--fx-weight-semibold)',
           fontFamily: 'var(--fx-font-heading)'
         }],
-        'h3': ['var(--fx-text-h3)', {
+        'fx-h3': ['var(--fx-text-h3)', {
           lineHeight: 'var(--fx-line-height-snug)',
           fontWeight: 'var(--fx-weight-semibold)',
           fontFamily: 'var(--fx-font-heading)'
         }],
-        'body': ['var(--fx-text-body)', {
+        'fx-body': ['var(--fx-text-body)', {
           lineHeight: 'var(--fx-line-height-normal)',
           fontWeight: 'var(--fx-weight-regular)',
           fontFamily: 'var(--fx-font-body)'
         }],
-        'label': ['var(--fx-text-label)', {
+        'fx-label': ['var(--fx-text-label)', {
           lineHeight: 'var(--fx-line-height-normal)',
           fontWeight: 'var(--fx-weight-medium)',
           fontFamily: 'var(--fx-font-body)'
         }],
-        'caption': ['var(--fx-text-caption)', {
+        'fx-caption': ['var(--fx-text-caption)', {
           lineHeight: 'var(--fx-line-height-snug)',
           fontWeight: 'var(--fx-weight-regular)',
           fontFamily: 'var(--fx-font-body)'
         }],
-        'wheel-label': ['var(--fx-text-wheel-label)', {
+        'fx-wheel-label': ['var(--fx-text-wheel-label)', {
           lineHeight: 'var(--fx-line-height-tight)',
           fontWeight: 'var(--fx-weight-medium)',
           fontFamily: 'var(--fx-font-body)'
@@ -202,65 +270,112 @@ const config: Config = {
         '5xl': ['3rem', { lineHeight: '1' }],
       },
       spacing: {
-        // fx Design Token Spacing
-        '0': 'var(--fx-spacing-0)',
-        '1': 'var(--fx-spacing-1)',
-        '2': 'var(--fx-spacing-2)',
-        '3': 'var(--fx-spacing-3)',
-        '4': 'var(--fx-spacing-4)',
-        '5': 'var(--fx-spacing-5)',
-        '6': 'var(--fx-spacing-6)',
-        '7': 'var(--fx-spacing-7)',
-        '8': 'var(--fx-spacing-8)',
-        '9': 'var(--fx-spacing-9)',
-        '10': 'var(--fx-spacing-10)',
+        // Unified Spacing Scale from Design Tokens
+        'xs': '0.25rem',
+        'sm': '0.5rem',
+        'md': '1rem',
+        'lg': '1.5rem',
+        'xl': '2rem',
+        '2xl': '3rem',
+        '3xl': '4rem',
+        'section-y': '6rem',
+        'container-max': '1200px',
+
+        // fx Design Token Spacing (legacy support)
+        'fx-0': 'var(--fx-spacing-0)',
+        'fx-1': 'var(--fx-spacing-1)',
+        'fx-2': 'var(--fx-spacing-2)',
+        'fx-3': 'var(--fx-spacing-3)',
+        'fx-4': 'var(--fx-spacing-4)',
+        'fx-5': 'var(--fx-spacing-5)',
+        'fx-6': 'var(--fx-spacing-6)',
+        'fx-7': 'var(--fx-spacing-7)',
+        'fx-8': 'var(--fx-spacing-8)',
+        'fx-9': 'var(--fx-spacing-9)',
+        'fx-10': 'var(--fx-spacing-10)',
 
         // Legacy spacing (keeping for compatibility)
-        xs: '0.25rem',
-        sm: '0.5rem',
-        md: '1rem',
-        lg: '1.5rem',
-        xl: '2rem',
-        '2xl': '3rem',
+        'legacy-xs': '0.25rem',
+        'legacy-sm': '0.5rem',
+        'legacy-md': '1rem',
+        'legacy-lg': '1.5rem',
+        'legacy-xl': '2rem',
+        'legacy-2xl': '3rem',
       },
       boxShadow: {
-        // fx Design Token Shadows
-        'xs': 'var(--fx-shadow-xs)',
-        'sm': 'var(--fx-shadow-sm)',
-        'md': 'var(--fx-shadow-md)',
-        'lg': 'var(--fx-shadow-lg)',
+        // Unified Shadow System from Design Tokens
+        'xs': '0 1px 2px rgba(0,0,0,0.05)',
+        'sm': '0 1px 3px rgba(0,0,0,0.1)',
+        'md': '0 4px 6px rgba(0,0,0,0.1)',
+        'lg': '0 10px 15px rgba(0,0,0,0.15)',
+        'xl': '0 20px 25px rgba(0,0,0,0.2)',
+        '2xl': '0 25px 50px rgba(0,0,0,0.25)',
+
+        // fx Design Token Shadows (legacy support)
+        'fx-xs': 'var(--fx-shadow-xs)',
+        'fx-sm': 'var(--fx-shadow-sm)',
+        'fx-md': 'var(--fx-shadow-md)',
+        'fx-lg': 'var(--fx-shadow-lg)',
 
         // Legacy shadows (keeping for compatibility)
-        fx: '0 1px 3px rgba(0,0,0,0.05)',
-        subtle: '0 1px 3px rgba(0,0,0,0.05)',
-        soft: '0 2px 6px rgba(0,0,0,0.05)',
-        medium: '0 4px 12px rgba(0,0,0,0.08)',
-        large: '0 8px 24px rgba(0,0,0,0.12)',
-        floating: '0 6px 16px rgba(0,0,0,0.1)',
-        brand: '0 4px 12px rgba(15, 91, 60, 0.15)',
-        accent: '0 4px 12px rgba(196, 107, 30, 0.15)',
+        'legacy-fx': '0 1px 3px rgba(0,0,0,0.05)',
+        'legacy-subtle': '0 1px 3px rgba(0,0,0,0.05)',
+        'legacy-soft': '0 2px 6px rgba(0,0,0,0.05)',
+        'legacy-medium': '0 4px 12px rgba(0,0,0,0.08)',
+        'legacy-large': '0 8px 24px rgba(0,0,0,0.12)',
+        'legacy-floating': '0 6px 16px rgba(0,0,0,0.1)',
+        'legacy-brand': '0 4px 12px rgba(15, 91, 60, 0.15)',
+        'legacy-accent': '0 4px 12px rgba(196, 107, 30, 0.15)',
       },
       transitionTimingFunction: {
-        // fx Design Token Easings
-        'standard': 'var(--fx-easing-standard)',
-        'emphasized': 'var(--fx-easing-emphasized)',
-        'entrance': 'var(--fx-easing-entrance)',
-        'exit': 'var(--fx-easing-exit)',
+        // Unified Motion Easings from Design Tokens
+        'standard': 'ease-in-out',
+        'spring': 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+
+        // fx Design Token Easings (legacy support)
+        'fx-standard': 'var(--fx-easing-standard)',
+        'fx-emphasized': 'var(--fx-easing-emphasized)',
+        'fx-entrance': 'var(--fx-easing-entrance)',
+        'fx-exit': 'var(--fx-easing-exit)',
 
         // Legacy (keeping for compatibility)
-        spring: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+        'legacy-spring': 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+      },
+      transitionDuration: {
+        // Unified Motion Durations from Design Tokens
+        'fast': '150ms',
+        'normal': '300ms',
+        'slow': '500ms',
       },
       keyframes: {
-        // fx Design Token Animation Keyframes
+        // Unified Motion Keyframes from Design Tokens
         fadeInUp: {
-          from: { opacity: '0', transform: 'translateY(var(--fx-spacing-5))' },
+          from: { opacity: '0', transform: 'translateY(20px)' },
           to: { opacity: '1', transform: 'translateY(0)' }
         },
         slideInLeft: {
-          from: { opacity: '0', transform: 'translateX(calc(-1 * var(--fx-spacing-5)))' },
+          from: { opacity: '0', transform: 'translateX(-20px)' },
           to: { opacity: '1', transform: 'translateX(0)' }
         },
         slideInRight: {
+          from: { opacity: '0', transform: 'translateX(20px)' },
+          to: { opacity: '1', transform: 'translateX(0)' }
+        },
+        scaleIn: {
+          from: { opacity: '0', transform: 'scale(0.95)' },
+          to: { opacity: '1', transform: 'scale(1)' }
+        },
+
+        // fx Design Token Animation Keyframes (legacy support)
+        'fx-fadeInUp': {
+          from: { opacity: '0', transform: 'translateY(var(--fx-spacing-5))' },
+          to: { opacity: '1', transform: 'translateY(0)' }
+        },
+        'fx-slideInLeft': {
+          from: { opacity: '0', transform: 'translateX(calc(-1 * var(--fx-spacing-5)))' },
+          to: { opacity: '1', transform: 'translateX(0)' }
+        },
+        'fx-slideInRight': {
           from: { opacity: '0', transform: 'translateX(var(--fx-spacing-5))' },
           to: { opacity: '1', transform: 'translateX(0)' }
         },

@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
-import { getServerSession } from 'next-auth'
 
 export async function GET(request: NextRequest) {
   try {
@@ -79,3 +78,4 @@ export async function POST(request: NextRequest) {
     )
   }
 }
+

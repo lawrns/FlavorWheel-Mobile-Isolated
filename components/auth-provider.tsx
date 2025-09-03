@@ -23,7 +23,7 @@ interface AuthContextType {
     name: string,
     email: string,
     password: string
-  ) => Promise<{ success: boolean; user?: any; needsConfirmation?: boolean } | void>
+  ) => Promise<{ success: boolean; user?: User; needsConfirmation?: boolean } | void>
   logout: () => void
   updateUser: (userData: Partial<User>) => Promise<void>
 }

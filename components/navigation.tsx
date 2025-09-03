@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { NAVIGATION_ITEMS, getNavigationItem } from '@/lib/navigation-config'
 import { useAuth } from '@/components/auth-provider'
+import { BrandIcon, BrandTitle } from '@/components/brand'
 
 // Navigation types
 export interface NavigationProps {
@@ -77,7 +78,7 @@ export function Navigation({
       <nav
         className={cn(
           'fixed bottom-0 left-0 right-0 z-sticky border-t-2',
-          'border-fx-border-default bg-fx-card/95 shadow-fx-lg backdrop-blur-md',
+          'border-border bg-background/95 shadow-lg backdrop-blur-md',
           className
         )}
       >
@@ -91,7 +92,7 @@ export function Navigation({
                 <button
                   key={item.id}
                   className={cn(
-                    'relative flex min-h-[48px] min-w-[48px] flex-1 flex-col items-center justify-center rounded-lg px-3 py-3 transition-all duration-200 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                    'relative flex min-h-[48px] min-w-[48px] flex-1 flex-col items-center justify-center rounded-lg px-3 py-3 transition-all duration-normal ease-standard focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
                     isActive && 'bg-primary text-primary-foreground',
                     !isActive && 'text-muted-foreground hover:bg-muted hover:text-foreground',
                     item.disabled && 'cursor-not-allowed opacity-50'
@@ -140,7 +141,13 @@ export function Navigation({
           role="navigation"
           aria-label="Navegación principal"
         >
-          <div className="flex items-center justify-center gap-2 overflow-x-auto rounded-full border border-fx-border-default bg-fx-card/90 px-4 py-2 shadow-fx-md backdrop-blur-md">
+          <div className="flex items-center justify-center gap-2 overflow-x-auto rounded-full border border-border bg-background/90 px-4 py-2 shadow-md backdrop-blur-md">
+            {/* Brand Logo */}
+            <div className="flex items-center gap-2 pr-4 mr-4 border-r border-border">
+              <BrandIcon size="sm" />
+              <BrandTitle size="sm" className="hidden lg:block" />
+            </div>
+
             {getVisibleItems().map((item, index) => {
               const Icon = item.icon
               const isActive = currentSection === item.id
@@ -159,12 +166,12 @@ export function Navigation({
                     aria-current={isActive ? 'page' : undefined}
                     data-testid={`nav-${item.id}-link`}
                     className={cn(
-                      'inline-flex h-10 items-center gap-2 rounded-full px-4 leading-none transition-all duration-base ease-standard haptic-light',
+                      'inline-flex h-10 items-center gap-2 rounded-full px-4 leading-none transition-all duration-normal ease-standard',
                       isActive
-                        ? 'bg-fx-primary text-fx-text-inverse shadow-fx-sm'
-                        : 'text-fx-text-primary hover:bg-fx-bg-subtle hover:text-fx-text-primary',
+                        ? 'bg-primary text-primary-foreground shadow-sm'
+                        : 'text-foreground hover:bg-muted hover:text-foreground',
                       item.disabled && 'cursor-not-allowed opacity-50',
-                      item.premium && 'bg-gradient-to-r from-fx-accent to-fx-accent-hover text-fx-text-inverse'
+                      item.premium && 'bg-gradient-to-r from-accent to-accent/80 text-accent-foreground'
                     )}
                   >
                     <Icon className="h-4 w-4" />

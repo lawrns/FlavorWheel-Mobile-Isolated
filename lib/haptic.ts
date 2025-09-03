@@ -129,3 +129,4 @@ export function useHaptic() {
 
 // React import for the hook
 import React from 'react'
+
