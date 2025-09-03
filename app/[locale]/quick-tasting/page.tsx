@@ -17,10 +17,11 @@ import {
   SelectGroup,
   SelectLabel,
 } from '@/components/ui/select'
-import { useRouter } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '@/components/auth-provider'
 import { supabase } from '@/lib/supabase'
+import { PhotoUpload } from '@/components/ui/photo-upload'
 
 interface TastingItem {
   id: string
@@ -76,6 +77,8 @@ const PRODUCT_TYPE_OPTIONS = createProductTypeOptions()
 
 export default function QuickTastingPage() {
   const router = useRouter()
+  const params = useParams()
+  const locale = (params.locale as string) || 'en'
   const { toast } = useToast()
   const { user } = useAuth()
 
@@ -339,7 +342,7 @@ export default function QuickTastingPage() {
       })
 
       // Navigate to confirmation page with tasting ID
-      router.push(`/quick-tasting/${data.id}/confirm`)
+      router.push(`/${locale}/quick-tasting/${data.id}/confirm`)
     } catch (error: any) {
       console.error('Error saving tasting:', error)
       toast({
@@ -509,19 +512,14 @@ export default function QuickTastingPage() {
                 {/* Photo */}
                 <div>
                   <Label className="text-sm font-medium text-[#374151] mb-2 block">Photo (Optional)</Label>
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      toast({
-                        title: "Photo Upload",
-                        description: "Photo upload feature coming soon!",
-                      })
-                    }}
-                    className="w-full h-12 justify-start rounded-md border border-[#e5e7eb] text-sm"
-                  >
-                    <Camera className="mr-2 h-4 w-4" />
-                    Add Photo
-                  </Button>
+                  <PhotoUpload
+                    userId={user?.id || ''}
+                    onPhotoUploaded={(url) => updateItem(item.id, 'image', url)}
+                    currentPhotoUrl={item.image}
+                    onPhotoRemoved={() => updateItem(item.id, 'image', '')}
+                    disabled={!user}
+                    className="w-full"
+                  />
                 </div>
 
                 {/* Aroma */}

@@ -275,16 +275,6 @@ const config: Config = {
           '50%': { backgroundColor: '#D4942D' }
         }
       },
-      keyframes: {
-        float: {
-          '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-10px)' },
-        },
-        'pulse-marigold': {
-          '0%, 100%': { backgroundColor: '#E6A533' },
-          '50%': { backgroundColor: '#D4942D' },
-        },
-      },
     },
   },
   plugins: [

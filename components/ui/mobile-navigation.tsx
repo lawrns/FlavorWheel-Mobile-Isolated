@@ -23,9 +23,6 @@ export function MobileNavigation({
   const router = useRouter()
   const pathname = usePathname()
 
-  // Hide navigation on landing page
-  if (pathname?.includes('/landing')) return null
-
   // Use centralized navigation config - Updated per client feedback
   const mainNavItems = MOBILE_NAV_ITEMS.map(item => ({
     id: item.id,
@@ -44,6 +41,14 @@ export function MobileNavigation({
   useEffect(() => {
     setIsExpanded(false)
   }, [activeScreen])
+
+  // Hide navigation on landing page
+  const shouldShowNavigation = !pathname?.includes('/landing')
+
+  // Instead of returning null, render an empty div to maintain hooks consistency
+  if (!shouldShowNavigation) {
+    return <div style={{ display: 'none' }} aria-hidden="true" />
+  }
 
   return (
     <>

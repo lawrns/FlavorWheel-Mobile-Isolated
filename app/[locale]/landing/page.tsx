@@ -25,16 +25,20 @@ export default function LandingPage() {
 
   return (
     <div className="relative min-h-screen overflow-hidden page-bg-primary">
-      {/* Background */}
-      <svg aria-hidden='true' className='pointer-events-none select-none absolute inset-0 w-full h-full' viewBox='0 0 1440 3120' xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0%' stop-color='#4A1F1A'/><stop offset='55%' stop-color='#6C3B2A'/><stop offset='85%' stop-color='#2C3A31'/><stop offset='100%' stop-color='#1C1F1C'/></linearGradient><filter id='b' x='-20%' y='-20%' width='140%' height='140%'><feGaussianBlur stdDeviation='40'/></filter><linearGradient id='gold' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='#D7B76E' stop-opacity='.20'/><stop offset='1' stop-color='#C6A456' stop-opacity='.05'/></linearGradient></defs><rect width='100%' height='100%' fill='url(#g)'/><g filter='url(#b)' opacity='.45'><path d='M200 2800 C 400 2400, 1040 2500, 1240 2100' fill='none' stroke='url(#gold)' stroke-width='140' stroke-linecap='round'/><path d='M-60 2200 C 240 1850, 900 1900, 1160 1500' fill='none' stroke='url(#gold)' stroke-width='110' stroke-linecap='round'/><path d='M80 1400 C 360 1180, 1080 1120, 1320 840' fill='none' stroke='url(#gold)' stroke-width='120' stroke-linecap='round'/></g><g filter='url(#b)' opacity='.22' fill='#F5EFE6'><path d='M990 980 c0 70 -60 120 -140 120 -80 0 -140 -50 -140 -120 0 -30 10 -60 30 -80 h220 c20 20 30 50 30 80z'/><rect x='840' y='1090' width='60' height='110' rx='30'/><rect x='820' y='1200' width='100' height='18' rx='9'/><ellipse cx='310' cy='1960' rx='70' ry='44'/><ellipse cx='370' cy='2010' rx='62' ry='40'/><path d='M520 2420 q120 -120 220 -10 q100 110 -40 220' fill='none' stroke='#F5EFE6' stroke-width='26' stroke-linecap='round'/></g></svg>
+      {/* Modern gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-fx-bg via-fx-bg-subtle to-fx-primary/5" />
 
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 fw-bg-overlay" />
+      {/* Subtle animated elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-20 left-10 w-32 h-32 bg-fx-accent/10 rounded-full blur-xl animate-pulse" />
+        <div className="absolute top-40 right-20 w-24 h-24 bg-fx-primary/8 rounded-full blur-lg animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute bottom-32 left-1/3 w-40 h-40 bg-fx-accent/5 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '4s' }} />
+      </div>
 
       {/* Header */}
-      <header className="relative z-10 h-[var(--fw-header-h)] flex items-center justify-center">
-        <div className="card-premium px-6 py-3 animate-fade-in-up">
-          <h1 className="text-display text-gradient-warm fw-text-shadow">
+      <header className="relative z-10 pt-12 pb-8 flex items-center justify-center">
+        <div className="card-premium px-8 py-4 animate-fade-in-up">
+          <h1 className="text-2xl md:text-3xl font-bold text-gradient-warm fw-text-shadow" style={{ fontFamily: 'var(--fx-font-heading)' }}>
             FLAVATIX
           </h1>
         </div>
@@ -42,91 +46,133 @@ export default function LandingPage() {
       </header>
 
       {/* Main Content */}
-      <main className="relative z-10 px-6 pt-10 pb-16 flex flex-col items-center text-center">
+      <main className="relative z-10 px-6 pt-8 pb-16 flex flex-col items-center text-center max-w-4xl mx-auto">
         {/* Hero Section */}
         <div className="animate-fade-in-up animate-delay-200">
-          <h2 className="text-hero fw-text-shadow max-w-[18ch] mx-auto mb-8">
-            Discover the World in<br/>
+          <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-8 leading-tight" style={{ fontFamily: 'var(--fx-font-heading)' }}>
+            <span className="text-fx-text-primary">Discover the World in</span>
+            <br/>
             <span className="text-gradient-accent">Every Sip</span>
           </h2>
 
           {/* Rotating Subline */}
-          <p aria-live='polite' className='text-body-large text-[rgba(245,239,230,0.92)] fw-text-shadow mb-12'>
-            <span>Discover the art of </span>
-            <span id='fw-rot-word' className='text-gradient-accent text-title font-semibold align-baseline'>coffee</span>
-            <span> tasting</span>
+          <p aria-live='polite' className='text-lg md:text-xl text-fx-text-secondary mb-12 leading-relaxed max-w-2xl mx-auto'>
+            <span>Transform your tasting experience with AI-powered flavor analysis and </span>
+            <span id='fw-rot-word' className='text-gradient-accent font-semibold'>coffee</span>
+            <span> tasting expertise</span>
           </p>
         </div>
 
-        {/* Icon Grid */}
-        <section aria-label="Primary actions" className="grid grid-cols-2 gap-6 w-full max-w-[420px] mx-auto animate-fade-in-up animate-delay-400">
+        {/* Statistics Section */}
+        <div className="mt-16 animate-fade-in-up animate-delay-300">
+          <p className="text-sm text-fx-text-secondary mb-8 max-w-md mx-auto px-4">
+            Join thousands of tasters exploring flavors worldwide
+          </p>
+          <div className="flex justify-center items-center gap-6 sm:gap-8 text-center px-4">
+            <div className="min-w-[70px] sm:min-w-[80px]">
+              <div className="text-xl sm:text-2xl font-bold text-fx-primary">
+                {statistics ? (statistics.totalUsers || 0).toLocaleString() : '...'}
+              </div>
+              <div className="text-xs text-fx-text-secondary">Tasters</div>
+            </div>
+            <div className="w-px h-6 sm:h-8 bg-fx-border-default hidden sm:block" />
+            <div className="min-w-[70px] sm:min-w-[80px]">
+              <div className="text-xl sm:text-2xl font-bold text-fx-accent">
+                {statistics ? (statistics.totalTastings || 0).toLocaleString() : '...'}
+              </div>
+              <div className="text-xs text-fx-text-secondary">Tastings</div>
+            </div>
+            <div className="w-px h-6 sm:h-8 bg-fx-border-default hidden sm:block" />
+            <div className="min-w-[70px] sm:min-w-[80px]">
+              <div className="text-xl sm:text-2xl font-bold text-fx-primary">
+                {statistics ? (statistics.totalReviews || 0).toLocaleString() : '...'}
+              </div>
+              <div className="text-xs text-fx-text-secondary">Reviews</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Feature Cards */}
+        <section aria-label="Primary actions" className="grid grid-cols-2 gap-6 w-full max-w-lg mx-auto animate-fade-in-up animate-delay-400">
           {/* Flavor Wheels */}
           <button
             onClick={() => handleIconClick(`/${locale}/flavor-wheels`)}
-            className="group aspect-square card-beautiful hover:card-premium flex items-center justify-center transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-accent/50"
+            className="group aspect-square card-beautiful hover:shadow-fx-lg flex flex-col items-center justify-center p-6 transition-all duration-300 hover:scale-105 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-fx-accent/50 active:scale-95"
             aria-label="Explore Flavor Wheels"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--fx-accent)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" className="transition-all duration-300 group-hover:stroke-[var(--fx-accent-hover)] drop-shadow-[0_0_14px_rgba(212,175,55,0.22)]">
-              <circle cx="12" cy="12" r="8"/>
-              <path d="M12 4v16M4 12h16"/>
-              <path d="M6.3 6.3l11.4 11.4M17.7 6.3L6.3 17.7" opacity=".65"/>
-            </svg>
+            <div className="w-16 h-16 bg-fx-accent/10 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-fx-accent/20 transition-colors duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--fx-accent)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="transition-all duration-300 group-hover:scale-110">
+                <circle cx="12" cy="12" r="8"/>
+                <path d="M12 4v16M4 12h16"/>
+                <path d="M6.3 6.3l11.4 11.4M17.7 6.3L6.3 17.7" opacity=".65"/>
+              </svg>
+            </div>
+            <span className="text-sm font-medium text-fx-text-primary group-hover:text-fx-primary transition-colors duration-300">Flavor Wheels</span>
           </button>
 
           {/* Quick Tasting */}
           <button
             onClick={() => handleIconClick('/quick-tasting')}
-            className="group aspect-square card-beautiful hover:card-premium flex items-center justify-center transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-accent/50"
+            className="group aspect-square card-beautiful hover:shadow-fx-lg flex flex-col items-center justify-center p-6 transition-all duration-300 hover:scale-105 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-fx-accent/50 active:scale-95"
             aria-label="Start Quick Tasting"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--fx-primary)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" className="transition-all duration-300 group-hover:stroke-[var(--fx-primary-hover)] drop-shadow-[0_0_14px_rgba(74,107,74,0.22)]">
-              <path d="M7 3h10l-1 7a6 6 0 0 1-8 0L7 3z"/>
-              <path d="M12 14v5"/>
-              <path d="M8 21h8"/>
-            </svg>
+            <div className="w-16 h-16 bg-fx-primary/10 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-fx-primary/20 transition-colors duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--fx-primary)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="transition-all duration-300 group-hover:scale-110">
+                <path d="M7 3h10l-1 7a6 6 0 0 1-8 0L7 3z"/>
+                <path d="M12 14v5"/>
+                <path d="M8 21h8"/>
+              </svg>
+            </div>
+            <span className="text-sm font-medium text-fx-text-primary group-hover:text-fx-primary transition-colors duration-300">Quick Tasting</span>
           </button>
 
           {/* Social Community */}
           <button
             onClick={() => handleIconClick(`/${locale}/social`)}
-            className="group aspect-square card-beautiful hover:card-premium flex items-center justify-center transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-accent/50"
+            className="group aspect-square card-beautiful hover:shadow-fx-lg flex flex-col items-center justify-center p-6 transition-all duration-300 hover:scale-105 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-fx-accent/50 active:scale-95"
             aria-label="Join Social Community"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--fx-accent)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" className="transition-all duration-300 group-hover:stroke-[var(--fx-accent-hover)] drop-shadow-[0_0_14px_rgba(212,175,55,0.22)]">
-              <path d="M16 4h.01M16 20h.01M8 8l8 8M8 16l8-8"/>
-              <circle cx="12" cy="12" r="10"/>
-            </svg>
+            <div className="w-16 h-16 bg-fx-accent/10 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-fx-accent/20 transition-colors duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--fx-accent)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="transition-all duration-300 group-hover:scale-110">
+                <path d="M16 4h.01M16 20h.01M8 8l8 8M8 16l8-8"/>
+                <circle cx="12" cy="12" r="10"/>
+              </svg>
+            </div>
+            <span className="text-sm font-medium text-fx-text-primary group-hover:text-fx-primary transition-colors duration-300">Community</span>
           </button>
 
           {/* Reviews */}
           <button
             onClick={() => handleIconClick(`/${locale}/review`)}
-            className="group aspect-square card-beautiful hover:card-premium flex items-center justify-center transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-accent/50"
+            className="group aspect-square card-beautiful hover:shadow-fx-lg flex flex-col items-center justify-center p-6 transition-all duration-300 hover:scale-105 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-fx-accent/50 active:scale-95"
             aria-label="Read Reviews"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--fx-primary)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" className="transition-all duration-300 group-hover:stroke-[var(--fx-primary-hover)] drop-shadow-[0_0_14px_rgba(74,107,74,0.22)]">
-              <rect x="5" y="3" width="12" height="18" rx="2"/>
-              <path d="M9 7h6M9 11h6M9 15h4"/>
-              <path d="M5 8h-1M5 12h-1M5 16h-1"/>
-            </svg>
+            <div className="w-16 h-16 bg-fx-primary/10 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-fx-primary/20 transition-colors duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--fx-primary)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="transition-all duration-300 group-hover:scale-110">
+                <rect x="5" y="3" width="12" height="18" rx="2"/>
+                <path d="M9 7h6M9 11h6M9 15h4"/>
+                <path d="M5 8h-1M5 12h-1M5 16h-1"/>
+              </svg>
+            </div>
+            <span className="text-sm font-medium text-fx-text-primary group-hover:text-fx-primary transition-colors duration-300">Reviews</span>
           </button>
         </section>
 
-        {/* Auth Buttons */}
-        <div className="mt-12 flex items-center justify-center gap-4 animate-fade-in-up animate-delay-500">
+        {/* CTA Buttons */}
+        <div className="mt-16 flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up animate-delay-500">
           <button
             onClick={() => router.push(`/${locale}/login`)}
-            className="btn-secondary-beautiful px-6 py-3 text-body font-medium transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-accent/50"
+            className="btn-secondary-beautiful px-8 py-4 text-base font-medium transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-fx-accent/50 active:scale-95"
             aria-label="Log in to your account"
           >
             Log in
           </button>
           <button
             onClick={() => router.push(`/${locale}/register`)}
-            className="btn-accent-beautiful px-6 py-3 text-body font-semibold transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-accent/50"
+            className="btn-accent-beautiful px-8 py-4 text-base font-semibold transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-fx-accent/50 active:scale-95"
             aria-label="Create a new account"
           >
-            Create account
+            Get Started
           </button>
         </div>
       </main>

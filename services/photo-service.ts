@@ -104,7 +104,7 @@ export class PhotoService {
       // Upload to Supabase
       const { error: uploadError } = await this.supabase.storage
         .from('tasting-photos')
-        .upload(filePath, uploadFile, {
+        .upload(filePath, uploadFile as any, {
           cacheControl: '3600',
           upsert: false
         })
@@ -270,7 +270,7 @@ export class PhotoService {
 
       if (error) throw error
 
-      return data?.[0] || null
+      return (data && 'files' in data && Array.isArray(data.files) && data.files.length > 0) ? data.files[0] : null
     } catch (error) {
       console.error('Get metadata error:', error)
       return null

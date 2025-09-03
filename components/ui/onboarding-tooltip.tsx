@@ -35,39 +35,37 @@ export function OnboardingTooltip() {
     const offset = 16
     const viewportWidth = window.innerWidth
     const viewportHeight = window.innerHeight
-    const scrollX = window.scrollX
-    const scrollY = window.scrollY
 
     let top: number, left: number
 
     switch (position) {
       case 'top':
-        top = targetRect.top + scrollY - tooltipHeight - offset
-        left = targetRect.left + scrollX + (targetRect.width / 2) - (tooltipWidth / 2)
+        top = targetRect.top - tooltipHeight - offset
+        left = targetRect.left + (targetRect.width / 2) - (tooltipWidth / 2)
         break
       case 'bottom':
-        top = targetRect.bottom + scrollY + offset
-        left = targetRect.left + scrollX + (targetRect.width / 2) - (tooltipWidth / 2)
+        top = targetRect.bottom + offset
+        left = targetRect.left + (targetRect.width / 2) - (tooltipWidth / 2)
         break
       case 'left':
-        top = targetRect.top + scrollY + (targetRect.height / 2) - (tooltipHeight / 2)
-        left = targetRect.left + scrollX - tooltipWidth - offset
+        top = targetRect.top + (targetRect.height / 2) - (tooltipHeight / 2)
+        left = targetRect.left - tooltipWidth - offset
         break
       case 'right':
-        top = targetRect.top + scrollY + (targetRect.height / 2) - (tooltipHeight / 2)
-        left = targetRect.right + scrollX + offset
+        top = targetRect.top + (targetRect.height / 2) - (tooltipHeight / 2)
+        left = targetRect.right + offset
         break
       case 'center':
       default:
-        top = scrollY + (viewportHeight / 2) - tooltipHeight / 2
-        left = scrollX + (viewportWidth / 2) - tooltipWidth / 2
+        top = (viewportHeight / 2) - (tooltipHeight / 2)
+        left = (viewportWidth / 2) - (tooltipWidth / 2)
         break
     }
 
     // Adjust for viewport boundaries with proper fallback positioning
     const adjustedPosition = adjustTooltipForViewport(
       { top, left, width: tooltipWidth, height: tooltipHeight },
-      { width: viewportWidth, height: viewportHeight, scrollX, scrollY },
+      { width: viewportWidth, height: viewportHeight, scrollX: 0, scrollY: 0 },
       targetRect,
       position
     )
@@ -83,35 +81,35 @@ export function OnboardingTooltip() {
     preferredPosition: string
   ) => {
     const { top, left, width, height } = tooltipRect
-    const { width: viewportWidth, height: viewportHeight, scrollX, scrollY } = viewport
+    const { width: viewportWidth, height: viewportHeight } = viewport
 
-    // Check boundaries
-    const overflowsRight = left + width > scrollX + viewportWidth
-    const overflowsLeft = left < scrollX
-    const overflowsBottom = top + height > scrollY + viewportHeight
-    const overflowsTop = top < scrollY
+    // Check boundaries (no scroll offsets needed for fixed positioning)
+    const overflowsRight = left + width > viewportWidth
+    const overflowsLeft = left < 0
+    const overflowsBottom = top + height > viewportHeight
+    const overflowsTop = top < 0
 
     let adjustedTop = top
     let adjustedLeft = left
 
     // Horizontal adjustments
     if (overflowsRight) {
-      adjustedLeft = scrollX + viewportWidth - width - 8
+      adjustedLeft = viewportWidth - width - 8
     } else if (overflowsLeft) {
-      adjustedLeft = scrollX + 8
+      adjustedLeft = 8
     }
 
     // Vertical adjustments with position flipping when necessary
     if (overflowsBottom && preferredPosition === 'top') {
       // If preferred top position overflows bottom, flip to bottom
-      adjustedTop = targetRect.bottom + scrollY + 16
+      adjustedTop = targetRect.bottom + 16
     } else if (overflowsTop && preferredPosition === 'bottom') {
       // If preferred bottom position overflows top, flip to top
-      adjustedTop = targetRect.top + scrollY - height - 16
+      adjustedTop = targetRect.top - height - 16
     } else if (overflowsBottom) {
-      adjustedTop = scrollY + viewportHeight - height - 8
+      adjustedTop = viewportHeight - height - 8
     } else if (overflowsTop) {
-      adjustedTop = scrollY + 8
+      adjustedTop = 8
     }
 
     return { top: adjustedTop, left: adjustedLeft }

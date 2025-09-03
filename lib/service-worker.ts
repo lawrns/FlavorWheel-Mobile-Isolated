@@ -95,7 +95,7 @@ export class ServiceWorkerManager {
   async requestSync(tag: string): Promise<void> {
     if ('serviceWorker' in navigator && 'sync' in window.ServiceWorkerRegistration.prototype) {
       try {
-        await this.registration?.sync.register(tag)
+        await (this.registration as any)?.sync.register(tag)
       } catch (error) {
         console.error('Background sync registration failed:', error)
       }

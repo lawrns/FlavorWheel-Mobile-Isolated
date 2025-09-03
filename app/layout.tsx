@@ -8,7 +8,6 @@ import { SupabaseProvider } from '@/components/providers/supabase-provider'
 import { ServiceWorkerProvider } from '@/components/service-worker-provider'
 import { IconPreloader } from '@/components/icon-preloader'
 // import { RealtimeProvider } from '@/components/providers/realtime-provider'
-import { headers } from 'next/headers'
 
 export const metadata = {
   title: 'Flavatix - Discover the Art of Spirits Tasting',
@@ -25,9 +24,6 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const headersList = await headers()
-  const pathname = headersList.get('x-pathname') || headersList.get('referer') || ''
-  const isLandingPage = pathname.includes('/landing')
 
   return (
     <html lang="en">
@@ -61,7 +57,7 @@ export default async function RootLayout({
           <ErrorBoundary>
             <SupabaseProvider>
               <AuthProvider>
-                {!isLandingPage && <MobileNavigation />}
+                <MobileNavigation />
                 <main className="min-h-screen">
                   {children}
                 </main>

@@ -11,14 +11,16 @@ export default function CreatePage() {
   const [selectedMode, setSelectedMode] = useState<TastingMode>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
+  const params = useParams()
+  const locale = (params.locale as string) || 'en'
 
   const handleModeSelect = (mode: TastingMode) => {
     if (mode === 'study') {
-      router.push('/create/study')
+      router.push(`/${locale}/create/study`)
     } else if (mode === 'competition') {
-      router.push('/create/competition')
+      router.push(`/${locale}/create/competition`)
     } else if (mode === 'quick') {
-      router.push('/quick-tasting')
+      router.push(`/${locale}/quick-tasting`)
     } else {
       setSelectedMode(mode)
     }
@@ -36,14 +38,14 @@ export default function CreatePage() {
 
       // Navigate to appropriate mode creation page
       if (selectedMode === 'study') {
-        router.push('/create/study')
+        router.push(`/${locale}/create/study`)
       } else if (selectedMode === 'competition') {
-        router.push('/create/competition')
+        router.push(`/${locale}/create/competition`)
       } else if (selectedMode === 'quick') {
-        router.push('/quick-tasting')
+        router.push(`/${locale}/quick-tasting`)
       } else {
         // Fallback to landing page
-        router.push('/landing')
+        router.push(`/${locale}/landing`)
       }
     } catch (error) {
       console.error('Error creating tasting:', error)

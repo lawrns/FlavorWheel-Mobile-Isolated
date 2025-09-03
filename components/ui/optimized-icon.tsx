@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { OptimizedIcon as BaseOptimizedIcon, SVGOptimizer, svgUtils } from '@/lib/svg-optimizer'
+import { SVGOptimizer, svgUtils } from '@/lib/svg-optimizer'
 
 interface OptimizedIconProps {
   name: string
@@ -223,13 +223,20 @@ export function OptimizedIcon({
 
   // Fallback to inline SVG
   return (
-    <BaseOptimizedIcon
-      svg={svgContent}
+    <svg
       className={className}
-      size={size}
-      color={color}
-      title={title}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       onClick={onClick}
+      role="img"
+      aria-label={title || `${name} icon`}
+      dangerouslySetInnerHTML={{ __html: svgContent }}
     />
   )
 }

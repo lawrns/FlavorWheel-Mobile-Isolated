@@ -257,6 +257,7 @@ button, a, [role="button"] {
 /* Disable text selection on interactive elements */
 button, input, textarea {
   -webkit-user-select: text;
+  user-select: text;
 }
 
 /* Improve tap targets on mobile */
@@ -305,25 +306,6 @@ button, input, textarea {
   }
 
   /* FlavorWheel specific haptic feedback */
-  .haptic-wheel-category:hover {
-    /* Light feedback for category hover */
-  }
-
-  .haptic-wheel-descriptor:active {
-    /* Medium feedback for descriptor selection */
-  }
-
-  .haptic-slider-drag {
-    /* Selection feedback for slider dragging */
-  }
-
-  .haptic-slider-mark {
-    /* Light feedback when hitting slider marks */
-  }
-
-  .haptic-tasting-complete {
-    /* Heavy feedback for tasting completion */
-  }
 }
 
 /* iOS Safari font zoom fix inside popper */
