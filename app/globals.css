@@ -306,9 +306,7 @@ button, input, textarea {
   }
 
   /* FlavorWheel specific haptic feedback */
-}
-
-/* iOS Safari font zoom fix inside popper */
+}/* iOS Safari font zoom fix inside popper */
 @supports (-webkit-touch-callout: none) {
   .select-mobile-text {
     font-size: 16px;
@@ -968,9 +966,8 @@ button, input, textarea {
 }
 
 .onboarding-tooltip[data-position="top"] {
-  bottom: calc(100% + 16px);
-  left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -100%) !important;
+  margin-top: -16px;
 }
 
 .onboarding-tooltip[data-position="top"]::before {
@@ -982,9 +979,7 @@ button, input, textarea {
 }
 
 .onboarding-tooltip[data-position="bottom"] {
-  top: calc(100% + 16px);
-  left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, 16px) !important;
 }
 
 .onboarding-tooltip[data-position="bottom"]::before {
@@ -996,9 +991,8 @@ button, input, textarea {
 }
 
 .onboarding-tooltip[data-position="left"] {
-  right: calc(100% + 16px);
-  top: 50%;
-  transform: translateY(-50%);
+  transform: translate(-100%, -50%) !important;
+  margin-left: -16px;
 }
 
 .onboarding-tooltip[data-position="left"]::before {
@@ -1010,9 +1004,7 @@ button, input, textarea {
 }
 
 .onboarding-tooltip[data-position="right"] {
-  left: calc(100% + 16px);
-  top: 50%;
-  transform: translateY(-50%);
+  transform: translate(16px, -50%) !important;
 }
 
 .onboarding-tooltip[data-position="right"]::before {
