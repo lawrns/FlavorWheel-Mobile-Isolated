@@ -1,4 +1,7 @@
 import type React from 'react'
+import { Providers } from '@/components/providers'
+import { OnboardingWrapper } from '@/components/ui/onboarding-wrapper'
+import { ToastProvider } from '@/hooks/use-toast'
 
 export default function LocaleLayout({
   children,
@@ -6,24 +9,28 @@ export default function LocaleLayout({
   children: React.ReactNode
 }>) {
   return (
-    <>
-      {/* Skip Links for Accessibility */}
-      <a
-        href="#main-content"
-        className="sr-only z-50 rounded-md bg-primary px-4 py-2 text-primary-foreground focus:not-sr-only focus:absolute focus:left-4 focus:top-4"
-      >
-        Saltar al contenido principal
-      </a>
-      <a
-        href="#navigation"
-        className="sr-only z-50 rounded-md bg-primary px-4 py-2 text-primary-foreground focus:not-sr-only focus:absolute focus:left-40 focus:top-4"
-      >
-        Saltar a navegación
-      </a>
+    <Providers>
+      <ToastProvider>
+        <OnboardingWrapper>
+          {/* Skip Links for Accessibility */}
+          <a
+            href="#main-content"
+            className="sr-only z-50 rounded-md bg-primary px-4 py-2 text-primary-foreground focus:not-sr-only focus:absolute focus:left-4 focus:top-4"
+          >
+            Saltar al contenido principal
+          </a>
+          <a
+            href="#navigation"
+            className="sr-only z-50 rounded-md bg-primary px-4 py-2 text-primary-foreground focus:not-sr-only focus:absolute focus:left-40 focus:top-4"
+          >
+            Saltar a navegación
+          </a>
 
-      <main id="main-content" role="main">
-        {children}
-      </main>
-    </>
+          <main id="main-content" role="main">
+            {children}
+          </main>
+        </OnboardingWrapper>
+      </ToastProvider>
+    </Providers>
   )
 }

@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import dynamic from 'next/dynamic'
 import { useRouter, useParams } from 'next/navigation'
 import { DashboardAppShell } from '@/components/app-shell'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 
 import { Button } from '@/components/ui/button'
@@ -99,7 +99,7 @@ export default function FlavorWheelsPage() {
   const [wheelData, setWheelData] = useState<FlavorNode | null>(null)
 
   // State for social features and pill button selection
-  const [selectedSection, setSelectedSection] = useState<'reviews' | 'events' | 'friends'>('reviews')
+  const [selectedSection, setSelectedSection] = useState<'reviews' | 'events' | 'friends' | 'create'>('reviews')
   const [userReviews, setUserReviews] = useState<UserReview[]>([])
   const [nearbyEvents, setNearbyEvents] = useState<NearbyEvent[]>([])
   const [friendsActivities, setFriendsActivities] = useState<any[]>([])
@@ -158,7 +158,7 @@ export default function FlavorWheelsPage() {
   useEffect(() => {
     // Adjust scope based on selected section
     let adjustedScope = scope
-    if (selectedSection === 'reviews' || selectedSection === 'friends') {
+    if (selectedSection === 'reviews' || selectedSection === 'friends' || selectedSection === 'create') {
       adjustedScope = 'personal'
     } else if (selectedSection === 'events') {
       adjustedScope = 'universal'
@@ -423,7 +423,7 @@ export default function FlavorWheelsPage() {
       if (navigator.share) {
         try {
           await navigator.share({
-            title: `Mi Reseña: ${review.tasting?.name} - FlavorWheel México`,
+            title: `My Review: ${review.tasting?.name} - FlavorWheel`,
             text: `Descubre mi reseña de ${review.item?.name}`,
             url: `${window.location.origin}/${locale}/flavor-wheels?shared=${review.id}`,
           })
@@ -569,6 +569,21 @@ export default function FlavorWheelsPage() {
               >
                 {friendsCount}
               </Badge>
+            </Button>
+
+            <Button
+              variant={selectedSection === 'create' ? 'default' : 'outline'}
+              size="sm"
+              className={`w-full sm:w-auto rounded-full px-3 sm:px-4 py-2 text-xs sm:text-sm transition-all duration-300 ${
+                selectedSection === 'create'
+                  ? 'bg-amber-500 text-white hover:bg-amber-600'
+                  : 'bg-white border-amber-200 text-amber-800 hover:bg-amber-50'
+              }`}
+              onClick={() => setSelectedSection('create')}
+            >
+              <Target className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Create Wheel</span>
+              <span className="sm:hidden">Create</span>
             </Button>
           </div>
 
@@ -774,6 +789,41 @@ export default function FlavorWheelsPage() {
                           </Button>
                         </div>
                       )}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {selectedSection === 'create' && (
+                <Card className="shadow-sm hover:shadow-md transition-shadow duration-200">
+                  <CardHeader className="pb-3 sm:pb-4">
+                    <CardTitle className="flex items-center space-x-2 text-base sm:text-lg">
+                      <Target className="h-4 w-4 sm:h-5 sm:w-5 text-amber-600" />
+                      <span>Create Flavor Wheel</span>
+                    </CardTitle>
+                    <CardDescription className="text-sm">
+                      Generate a personalized flavor wheel from your tasting notes
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <div className="space-y-4">
+                      <div className="text-center py-8">
+                        <Target className="h-12 w-12 text-amber-400 mx-auto mb-3" />
+                        <h3 className="text-sm font-medium text-gray-900 mb-1">
+                          Flavor Wheel Creation
+                        </h3>
+                        <p className="text-xs text-muted-foreground mb-4">
+                          This feature is available in the mobile app for optimal experience
+                        </p>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => router.push(`/${locale}/create-wheel`)}
+                          className="w-full sm:w-auto"
+                        >
+                          Open Mobile Creator
+                        </Button>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>

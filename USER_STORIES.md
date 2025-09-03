@@ -1,0 +1,635 @@
+{
+  "database_schema_updates": {
+    "new_tables": {
+      "user_reviews": {
+        "description": "User-generated reviews and ratings for tastings",
+        "columns": {
+          "id": "uuid PRIMARY KEY DEFAULT gen_random_uuid()",
+          "user_id": "uuid REFERENCES auth.users(id) ON DELETE CASCADE",
+          "tasting_id": "uuid REFERENCES tastings(id) ON DELETE CASCADE",
+          "item_id": "uuid REFERENCES tasting_items(id) ON DELETE CASCADE",
+          "rating": "integer CHECK (rating >= 1 AND rating <= 10)",
+          "title": "text NOT NULL",
+          "content": "text NOT NULL",
+          "helpful_count": "integer DEFAULT 0",
+          "created_at": "timestamp with time zone DEFAULT timezone('utc'::text, now())",
+          "updated_at": "timestamp with time zone DEFAULT timezone('utc'::text, now())"
+        },
+        "indexes": [
+          "CREATE INDEX idx_user_reviews_user_id ON user_reviews(user_id)",
+          "CREATE INDEX idx_user_reviews_tasting_id ON user_reviews(tasting_id)",
+          "CREATE INDEX idx_user_reviews_created_at ON user_reviews(created_at DESC)"
+        ],
+        "policies": [
+          "ALTER TABLE user_reviews ENABLE ROW LEVEL SECURITY",
+          "CREATE POLICY \"Users can view all reviews\" ON user_reviews FOR SELECT USING (true)",
+          "CREATE POLICY \"Users can create their own reviews\" ON user_reviews FOR INSERT WITH CHECK (auth.uid() = user_id)",
+          "CREATE POLICY \"Users can update their own reviews\" ON user_reviews FOR UPDATE USING (auth.uid() = user_id)"
+        ]
+      },
+      "competitions": {
+        "description": "Competition management for tasting events",
+        "columns": {
+          "id": "uuid PRIMARY KEY DEFAULT gen_random_uuid()",
+          "name": "text NOT NULL",
+          "description": "text",
+          "type": "text CHECK (type IN ('professional', 'casual', 'educational'))",
+          "status": "text CHECK (status IN ('upcoming', 'active', 'completed')) DEFAULT 'upcoming'",
+          "start_date": "timestamp with time zone",
+          "end_date": "timestamp with time zone",
+          "max_participants": "integer",
+          "current_participants": "integer DEFAULT 0",
+          "organizer_id": "uuid REFERENCES auth.users(id)",
+          "location": "text",
+          "prize": "text",
+          "rules": "text",
+          "created_at": "timestamp with time zone DEFAULT timezone('utc'::text, now())",
+          "updated_at": "timestamp with time zone DEFAULT timezone('utc'::text, now())"
+        },
+        "indexes": [
+          "CREATE INDEX idx_competitions_status ON competitions(status)",
+          "CREATE INDEX idx_competitions_start_date ON competitions(start_date)",
+          "CREATE INDEX idx_competitions_organizer_id ON competitions(organizer_id)"
+        ],
+        "policies": [
+          "ALTER TABLE competitions ENABLE ROW LEVEL SECURITY",
+          "CREATE POLICY \"Anyone can view competitions\" ON competitions FOR SELECT USING (true)",
+          "CREATE POLICY \"Authenticated users can create competitions\" ON competitions FOR INSERT WITH CHECK (auth.role() = 'authenticated')",
+          "CREATE POLICY \"Organizers can update their competitions\" ON competitions FOR UPDATE USING (auth.uid() = organizer_id)"
+        ]
+      },
+      "competition_participants": {
+        "description": "Links users to competitions they're participating in",
+        "columns": {
+          "id": "uuid PRIMARY KEY DEFAULT gen_random_uuid()",
+          "competition_id": "uuid REFERENCES competitions(id) ON DELETE CASCADE",
+          "user_id": "uuid REFERENCES auth.users(id) ON DELETE CASCADE",
+          "status": "text CHECK (status IN ('joined', 'completed', 'disqualified')) DEFAULT 'joined'",
+          "score": "decimal(5,2)",
+          "ranking": "integer",
+          "joined_at": "timestamp with time zone DEFAULT timezone('utc'::text, now())"
+        },
+        "indexes": [
+          "CREATE UNIQUE INDEX idx_competition_participants_unique ON competition_participants(competition_id, user_id)",
+          "CREATE INDEX idx_competition_participants_user_id ON competition_participants(user_id)"
+        ],
+        "policies": [
+          "ALTER TABLE competition_participants ENABLE ROW LEVEL SECURITY",
+          "CREATE POLICY \"Users can view participants in their competitions\" ON competition_participants FOR SELECT USING (auth.uid() = user_id OR EXISTS (SELECT 1 FROM competitions WHERE id = competition_id AND organizer_id = auth.uid()))",
+          "CREATE POLICY \"Users can join competitions\" ON competition_participants FOR INSERT WITH CHECK (auth.uid() = user_id)",
+          "CREATE POLICY \"Users can update their own participation\" ON competition_participants FOR UPDATE USING (auth.uid() = user_id)"
+        ]
+      },
+      "friendships": {
+        "description": "Social connections between users",
+        "columns": {
+          "id": "uuid PRIMARY KEY DEFAULT gen_random_uuid()",
+          "requester_id": "uuid REFERENCES auth.users(id) ON DELETE CASCADE",
+          "addressee_id": "uuid REFERENCES auth.users(id) ON DELETE CASCADE",
+          "status": "text CHECK (status IN ('pending', 'accepted', 'blocked')) DEFAULT 'pending'",
+          "created_at": "timestamp with time zone DEFAULT timezone('utc'::text, now())",
+          "updated_at": "timestamp with time zone DEFAULT timezone('utc'::text, now())"
+        },
+        "indexes": [
+          "CREATE UNIQUE INDEX idx_friendships_unique ON friendships(LEAST(requester_id, addressee_id), GREATEST(requester_id, addressee_id))",
+          "CREATE INDEX idx_friendships_requester_id ON friendships(requester_id)",
+          "CREATE INDEX idx_friendships_addressee_id ON friendships(addressee_id)",
+          "CREATE INDEX idx_friendships_status ON friendships(status)"
+        ],
+        "policies": [
+          "ALTER TABLE friendships ENABLE ROW LEVEL SECURITY",
+          "CREATE POLICY \"Users can view their own friendships\" ON friendships FOR SELECT USING (auth.uid() = requester_id OR auth.uid() = addressee_id)",
+          "CREATE POLICY \"Users can create friendship requests\" ON friendships FOR INSERT WITH CHECK (auth.uid() = requester_id)",
+          "CREATE POLICY \"Users can update friendships they're involved in\" ON friendships FOR UPDATE USING (auth.uid() = requester_id OR auth.uid() = addressee_id)"
+        ]
+      },
+      "activities": {
+        "description": "User activity feed for social features",
+        "columns": {
+          "id": "uuid PRIMARY KEY DEFAULT gen_random_uuid()",
+          "user_id": "uuid REFERENCES auth.users(id) ON DELETE CASCADE",
+          "activity_type": "text CHECK (activity_type IN ('tasting_completed', 'review_created', 'competition_joined', 'achievement_earned'))",
+          "title": "text NOT NULL",
+          "description": "text",
+          "metadata": "jsonb DEFAULT '{}'",
+          "is_public": "boolean DEFAULT true",
+          "created_at": "timestamp with time zone DEFAULT timezone('utc'::text, now())"
+        },
+        "indexes": [
+          "CREATE INDEX idx_activities_user_id ON activities(user_id)",
+          "CREATE INDEX idx_activities_activity_type ON activities(activity_type)",
+          "CREATE INDEX idx_activities_created_at ON activities(created_at DESC)",
+          "CREATE INDEX idx_activities_public ON activities(is_public) WHERE is_public = true"
+        ],
+        "policies": [
+          "ALTER TABLE activities ENABLE ROW LEVEL SECURITY",
+          "CREATE POLICY \"Users can view public activities and their own\" ON activities FOR SELECT USING (is_public = true OR auth.uid() = user_id)",
+          "CREATE POLICY \"Users can create their own activities\" ON activities FOR INSERT WITH CHECK (auth.uid() = user_id)",
+          "CREATE POLICY \"Users can update their own activities\" ON activities FOR UPDATE USING (auth.uid() = user_id)"
+        ]
+      },
+      "activity_likes": {
+        "description": "Likes on user activities",
+        "columns": {
+          "id": "uuid PRIMARY KEY DEFAULT gen_random_uuid()",
+          "activity_id": "uuid REFERENCES activities(id) ON DELETE CASCADE",
+          "user_id": "uuid REFERENCES auth.users(id) ON DELETE CASCADE",
+          "created_at": "timestamp with time zone DEFAULT timezone('utc'::text, now())"
+        },
+        "indexes": [
+          "CREATE UNIQUE INDEX idx_activity_likes_unique ON activity_likes(activity_id, user_id)",
+          "CREATE INDEX idx_activity_likes_activity_id ON activity_likes(activity_id)",
+          "CREATE INDEX idx_activity_likes_user_id ON activity_likes(user_id)"
+        ],
+        "policies": [
+          "ALTER TABLE activity_likes ENABLE ROW LEVEL SECURITY",
+          "CREATE POLICY \"Users can view likes on activities they can see\" ON activity_likes FOR SELECT USING (EXISTS (SELECT 1 FROM activities WHERE id = activity_id AND (is_public = true OR user_id = auth.uid())))",
+          "CREATE POLICY \"Users can like activities they can see\" ON activity_likes FOR INSERT WITH CHECK (EXISTS (SELECT 1 FROM activities WHERE id = activity_id AND (is_public = true OR user_id = auth.uid())))",
+          "CREATE POLICY \"Users can unlike their own likes\" ON activity_likes FOR DELETE USING (auth.uid() = user_id)"
+        ]
+      },
+      "activity_comments": {
+        "description": "Comments on user activities",
+        "columns": {
+          "id": "uuid PRIMARY KEY DEFAULT gen_random_uuid()",
+          "activity_id": "uuid REFERENCES activities(id) ON DELETE CASCADE",
+          "user_id": "uuid REFERENCES auth.users(id) ON DELETE CASCADE",
+          "content": "text NOT NULL",
+          "created_at": "timestamp with time zone DEFAULT timezone('utc'::text, now())",
+          "updated_at": "timestamp with time zone DEFAULT timezone('utc'::text, now())"
+        },
+        "indexes": [
+          "CREATE INDEX idx_activity_comments_activity_id ON activity_comments(activity_id)",
+          "CREATE INDEX idx_activity_comments_user_id ON activity_comments(user_id)",
+          "CREATE INDEX idx_activity_comments_created_at ON activity_comments(created_at DESC)"
+        ],
+        "policies": [
+          "ALTER TABLE activity_comments ENABLE ROW LEVEL SECURITY",
+          "CREATE POLICY \"Users can view comments on activities they can see\" ON activity_comments FOR SELECT USING (EXISTS (SELECT 1 FROM activities WHERE id = activity_id AND (is_public = true OR user_id = auth.uid())))",
+          "CREATE POLICY \"Users can comment on activities they can see\" ON activity_comments FOR INSERT WITH CHECK (EXISTS (SELECT 1 FROM activities WHERE id = activity_id AND (is_public = true OR user_id = auth.uid())) AND auth.uid() = user_id)",
+          "CREATE POLICY \"Users can update their own comments\" ON activity_comments FOR UPDATE USING (auth.uid() = user_id)",
+          "CREATE POLICY \"Users can delete their own comments\" ON activity_comments FOR DELETE USING (auth.uid() = user_id)"
+        ]
+      },
+      "achievements": {
+        "description": "User achievements and badges",
+        "columns": {
+          "id": "uuid PRIMARY KEY DEFAULT gen_random_uuid()",
+          "user_id": "uuid REFERENCES auth.users(id) ON DELETE CASCADE",
+          "achievement_type": "text NOT NULL",
+          "title": "text NOT NULL",
+          "description": "text NOT NULL",
+          "icon": "text",
+          "rarity": "text CHECK (rarity IN ('common', 'rare', 'epic', 'legendary')) DEFAULT 'common'",
+          "points": "integer DEFAULT 0",
+          "unlocked_at": "timestamp with time zone DEFAULT timezone('utc'::text, now())",
+          "metadata": "jsonb DEFAULT '{}'"
+        },
+        "indexes": [
+          "CREATE INDEX idx_achievements_user_id ON achievements(user_id)",
+          "CREATE INDEX idx_achievements_achievement_type ON achievements(achievement_type)",
+          "CREATE UNIQUE INDEX idx_achievements_unique ON achievements(user_id, achievement_type)"
+        ],
+        "policies": [
+          "ALTER TABLE achievements ENABLE ROW LEVEL SECURITY",
+          "CREATE POLICY \"Users can view all achievements\" ON achievements FOR SELECT USING (true)",
+          "CREATE POLICY \"System can create achievements\" ON achievements FOR INSERT WITH CHECK (true)",
+          "CREATE POLICY \"Users can view their own achievements\" ON achievements FOR SELECT USING (auth.uid() = user_id)"
+        ]
+      },
+      "user_streaks": {
+        "description": "User engagement streaks",
+        "columns": {
+          "id": "uuid PRIMARY KEY DEFAULT gen_random_uuid()",
+          "user_id": "uuid REFERENCES auth.users(id) ON DELETE CASCADE",
+          "current_streak": "integer DEFAULT 0",
+          "longest_streak": "integer DEFAULT 0",
+          "last_activity_date": "date",
+          "streak_type": "text CHECK (streak_type IN ('daily_tasting', 'weekly_review', 'monthly_completion')) DEFAULT 'daily_tasting'",
+          "created_at": "timestamp with time zone DEFAULT timezone('utc'::text, now())",
+          "updated_at": "timestamp with time zone DEFAULT timezone('utc'::text, now())"
+        },
+        "indexes": [
+          "CREATE UNIQUE INDEX idx_user_streaks_unique ON user_streaks(user_id, streak_type)",
+          "CREATE INDEX idx_user_streaks_user_id ON user_streaks(user_id)"
+        ],
+        "policies": [
+          "ALTER TABLE user_streaks ENABLE ROW LEVEL SECURITY",
+          "CREATE POLICY \"Users can view their own streaks\" ON user_streaks FOR SELECT USING (auth.uid() = user_id)",
+          "CREATE POLICY \"System can manage streaks\" ON user_streaks FOR ALL USING (true)"
+        ]
+      },
+      "daily_challenges": {
+        "description": "Daily challenges for user engagement",
+        "columns": {
+          "id": "uuid PRIMARY KEY DEFAULT gen_random_uuid()",
+          "title": "text NOT NULL",
+          "description": "text NOT NULL",
+          "challenge_type": "text CHECK (challenge_type IN ('tasting', 'review', 'social', 'learning'))",
+          "difficulty": "text CHECK (difficulty IN ('easy', 'medium', 'hard')) DEFAULT 'easy'",
+          "points": "integer DEFAULT 10",
+          "requirements": "jsonb DEFAULT '{}'",
+          "is_active": "boolean DEFAULT true",
+          "date": "date DEFAULT CURRENT_DATE",
+          "created_at": "timestamp with time zone DEFAULT timezone('utc'::text, now())"
+        },
+        "indexes": [
+          "CREATE INDEX idx_daily_challenges_date ON daily_challenges(date)",
+          "CREATE INDEX idx_daily_challenges_active ON daily_challenges(is_active)",
+          "CREATE UNIQUE INDEX idx_daily_challenges_unique ON daily_challenges(date, challenge_type)"
+        ],
+        "policies": [
+          "ALTER TABLE daily_challenges ENABLE ROW LEVEL SECURITY",
+          "CREATE POLICY \"Anyone can view active challenges\" ON daily_challenges FOR SELECT USING (is_active = true)"
+        ]
+      },
+      "user_challenge_progress": {
+        "description": "User progress on daily challenges",
+        "columns": {
+          "id": "uuid PRIMARY KEY DEFAULT gen_random_uuid()",
+          "user_id": "uuid REFERENCES auth.users(id) ON DELETE CASCADE",
+          "challenge_id": "uuid REFERENCES daily_challenges(id) ON DELETE CASCADE",
+          "progress": "integer DEFAULT 0",
+          "completed": "boolean DEFAULT false",
+          "completed_at": "timestamp with time zone",
+          "created_at": "timestamp with time zone DEFAULT timezone('utc'::text, now())",
+          "updated_at": "timestamp with time zone DEFAULT timezone('utc'::text, now())"
+        },
+        "indexes": [
+          "CREATE UNIQUE INDEX idx_user_challenge_progress_unique ON user_challenge_progress(user_id, challenge_id)",
+          "CREATE INDEX idx_user_challenge_progress_user_id ON user_challenge_progress(user_id)",
+          "CREATE INDEX idx_user_challenge_progress_completed ON user_challenge_progress(completed)"
+        ],
+        "policies": [
+          "ALTER TABLE user_challenge_progress ENABLE ROW LEVEL SECURITY",
+          "CREATE POLICY \"Users can view their own challenge progress\" ON user_challenge_progress FOR SELECT USING (auth.uid() = user_id)",
+          "CREATE POLICY \"Users can update their own challenge progress\" ON user_challenge_progress FOR INSERT WITH CHECK (auth.uid() = user_id)",
+          "CREATE POLICY \"Users can update their own challenge progress\" ON user_challenge_progress FOR UPDATE USING (auth.uid() = user_id)"
+        ]
+      }
+    },
+    "existing_table_modifications": {
+      "profiles": {
+        "new_columns": {
+          "bio": "text",
+          "location": "text",
+          "website": "text",
+          "experience_level": "text CHECK (experience_level IN ('beginner', 'intermediate', 'professional')) DEFAULT 'beginner'",
+          "beverage_preferences": "text[] DEFAULT '{}'",
+          "language": "text DEFAULT 'es'",
+          "preferences": "jsonb DEFAULT '{\"theme\": \"system\", \"notifications\": {\"email\": true, \"push\": true, \"tastingReminders\": true, \"socialActivity\": true, \"weeklyDigest\": true}, \"privacy\": {\"profileVisibility\": \"public\", \"showActivity\": true, \"allowFriendRequests\": true}, \"defaultTastingMode\": \"quick\", \"autoSave\": true, \"hapticFeedback\": true}'",
+          "last_login": "timestamp with time zone",
+          "account_status": "text CHECK (account_status IN ('active', 'suspended', 'banned')) DEFAULT 'active'"
+        },
+        "updated_policies": [
+          "CREATE POLICY \"Users can update their own profile\" ON profiles FOR UPDATE USING (auth.uid() = id)"
+        ]
+      },
+      "tastings": {
+        "new_columns": {
+          "max_participants": "integer",
+          "current_participants": "integer DEFAULT 1",
+          "is_public": "boolean DEFAULT false",
+          "location": "text",
+          "meeting_link": "text",
+          "tasting_data": "jsonb DEFAULT '{}'"
+        },
+        "updated_indexes": [
+          "CREATE INDEX idx_tastings_is_public ON tastings(is_public)",
+          "CREATE INDEX idx_tastings_created_by ON tastings(created_by)"
+        ]
+      },
+      "tasting_items": {
+        "new_columns": {
+          "photo_url": "text",
+          "nom_number": "text",
+          "producer_id": "uuid REFERENCES producers(id)",
+          "agave_variety": "text",
+          "production_method": "text",
+          "alcohol_content": "decimal(4,1)",
+          "certifications": "text[] DEFAULT '{}'"
+        }
+      },
+      "producers": {
+        "description": "Comprehensive producer database",
+        "columns": {
+          "id": "uuid PRIMARY KEY DEFAULT gen_random_uuid()",
+          "nom_number": "text UNIQUE",
+          "name": "text NOT NULL",
+          "type": "text[] DEFAULT '{}'",
+          "region": "text",
+          "municipality": "text",
+          "state": "text",
+          "certifications": "text[] DEFAULT '{}'",
+          "facility_info": "jsonb DEFAULT '{}'",
+          "brands": "text[] DEFAULT '{}'",
+          "agave_varieties": "text[] DEFAULT '{}'",
+          "sustainability_data": "jsonb DEFAULT '{}'",
+          "contact_info": "jsonb DEFAULT '{}'",
+          "ownership_type": "text",
+          "founded_year": "integer",
+          "created_at": "timestamp with time zone DEFAULT timezone('utc'::text, now())",
+          "updated_at": "timestamp with time zone DEFAULT timezone('utc'::text, now())"
+        },
+        "indexes": [
+          "CREATE INDEX idx_producers_region ON producers(region)",
+          "CREATE INDEX idx_producers_type ON producers USING GIN(type)",
+          "CREATE UNIQUE INDEX idx_producers_nom_number ON producers(nom_number)"
+        ],
+        "policies": [
+          "ALTER TABLE producers ENABLE ROW LEVEL SECURITY",
+          "CREATE POLICY \"Anyone can view producers\" ON producers FOR SELECT USING (true)"
+        ]
+      },
+      "mexican_beverages": {
+        "new_columns": {
+          "nom_number": "text",
+          "producer_id": "uuid REFERENCES producers(id)",
+          "agave_variety": "text",
+          "production_method": "text",
+          "alcohol_content": "decimal(4,1)",
+          "tasting_notes": "jsonb DEFAULT '{}'",
+          "certifications": "text[] DEFAULT '{}'",
+          "stock_quantity": "integer DEFAULT 0",
+          "price_range": "text",
+          "availability": "text CHECK (availability IN ('available', 'limited', 'out_of_stock')) DEFAULT 'available'",
+          "sustainability_score": "integer CHECK (sustainability_score >= 0 AND sustainability_score <= 100)"
+        }
+      }
+    },
+    "database_functions": {
+      "update_updated_at_column": {
+        "description": "Function to automatically update updated_at timestamp",
+        "sql": "CREATE OR REPLACE FUNCTION update_updated_at_column() RETURNS TRIGGER AS $$ BEGIN NEW.updated_at = timezone('utc'::text, now()); RETURN NEW; END; $$ language 'plpgsql';"
+      },
+      "calculate_user_streak": {
+        "description": "Function to calculate and update user streaks",
+        "sql": "CREATE OR REPLACE FUNCTION calculate_user_streak(p_user_id uuid, p_streak_type text) RETURNS void AS $$ BEGIN UPDATE user_streaks SET current_streak = current_streak + 1, longest_streak = GREATEST(longest_streak, current_streak + 1), last_activity_date = CURRENT_DATE, updated_at = now() WHERE user_id = p_user_id AND streak_type = p_streak_type; IF NOT FOUND THEN INSERT INTO user_streaks (user_id, streak_type, current_streak, longest_streak, last_activity_date) VALUES (p_user_id, p_streak_type, 1, 1, CURRENT_DATE); END IF; END; $$ LANGUAGE plpgsql;"
+      },
+      "award_achievement": {
+        "description": "Function to award achievements to users",
+        "sql": "CREATE OR REPLACE FUNCTION award_achievement(p_user_id uuid, p_achievement_type text, p_title text, p_description text, p_points integer DEFAULT 0) RETURNS void AS $$ BEGIN INSERT INTO achievements (user_id, achievement_type, title, description, points) VALUES (p_user_id, p_achievement_type, p_title, p_description, p_points) ON CONFLICT (user_id, achievement_type) DO NOTHING; END; $$ LANGUAGE plpgsql;"
+      }
+    },
+    "triggers": {
+      "auto_update_updated_at": {
+        "tables": ["profiles", "tastings", "user_reviews", "competitions", "friendships", "activities", "activity_comments", "user_streaks", "user_challenge_progress", "producers"],
+        "sql": "CREATE TRIGGER update_updated_at BEFORE UPDATE ON {table_name} FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();"
+      },
+      "auto_update_participants_count": {
+        "description": "Automatically update current_participants count in tastings",
+        "sql": "CREATE OR REPLACE FUNCTION update_tasting_participants_count() RETURNS TRIGGER AS $$ BEGIN IF TG_OP = 'INSERT' THEN UPDATE tastings SET current_participants = current_participants + 1 WHERE id = NEW.tasting_id; RETURN NEW; ELSIF TG_OP = 'DELETE' THEN UPDATE tastings SET current_participants = current_participants - 1 WHERE id = OLD.tasting_id; RETURN OLD; END IF; END; $$ LANGUAGE plpgsql; CREATE TRIGGER update_tasting_participants_trigger AFTER INSERT OR DELETE ON tasting_participants FOR EACH ROW EXECUTE FUNCTION update_tasting_participants_count();"
+      }
+    }
+  },
+  "environment_variables": {
+    "required_variables": {
+      "NEXT_PUBLIC_SUPABASE_URL": "Your Supabase project URL",
+      "NEXT_PUBLIC_SUPABASE_ANON_KEY": "Your Supabase anonymous key",
+      "SUPABASE_SERVICE_ROLE_KEY": "Your Supabase service role key (server-side only)",
+      "NEXT_PUBLIC_APP_URL": "Your application URL (e.g., https://yourapp.com)",
+      "DATABASE_URL": "PostgreSQL connection string (for migrations)",
+      "NEXTAUTH_SECRET": "Random secret for NextAuth.js",
+      "NEXTAUTH_URL": "Your application URL for NextAuth.js"
+    },
+    "optional_variables": {
+      "NODE_ENV": "development|production",
+      "NEXT_PUBLIC_GOOGLE_ANALYTICS_ID": "Google Analytics tracking ID",
+      "SMTP_HOST": "SMTP server for email notifications",
+      "SMTP_PORT": "SMTP port (usually 587)",
+      "SMTP_USER": "SMTP username",
+      "SMTP_PASS": "SMTP password",
+      "REDIS_URL": "Redis URL for caching (optional)",
+      "CLOUDINARY_CLOUD_NAME": "Cloudinary cloud name for image uploads",
+      "CLOUDINARY_API_KEY": "Cloudinary API key",
+      "CLOUDINARY_API_SECRET": "Cloudinary API secret"
+    },
+    "feature_flags": {
+      "NEXT_PUBLIC_ENABLE_SOCIAL_FEATURES": "true",
+      "NEXT_PUBLIC_ENABLE_COMPETITIONS": "true",
+      "NEXT_PUBLIC_ENABLE_ANALYTICS": "true",
+      "NEXT_PUBLIC_ENABLE_ACHIEVEMENTS": "true",
+      "NEXT_PUBLIC_ENABLE_CHALLENGES": "true"
+    },
+    "third_party_integrations": {
+      "GOOGLE_CLIENT_ID": "Google OAuth client ID",
+      "GOOGLE_CLIENT_SECRET": "Google OAuth client secret",
+      "APPLE_CLIENT_ID": "Apple OAuth client ID",
+      "APPLE_CLIENT_SECRET": "Apple OAuth client secret",
+      "STRIPE_PUBLISHABLE_KEY": "Stripe publishable key (for future monetization)",
+      "STRIPE_SECRET_KEY": "Stripe secret key",
+      "STRIPE_WEBHOOK_SECRET": "Stripe webhook secret"
+    }
+  },
+  "supabase_configuration": {
+    "auth_settings": {
+      "site_url": "https://yourapp.com",
+      "additional_redirect_urls": ["http://localhost:3000", "https://yourapp.com"],
+      "enable_signup": true,
+      "enable_confirmations": true,
+      "enable_email_confirmations": true,
+      "enable_phone_confirmations": false,
+      "enable_anonymous_sign_ins": false,
+      "password_min_length": 8
+    },
+    "storage_buckets": {
+      "tasting-photos": {
+        "public": true,
+        "file_size_limit": "10MB",
+        "allowed_mime_types": ["image/jpeg", "image/png", "image/webp"],
+        "cache_control": "3600"
+      },
+      "profile-avatars": {
+        "public": true,
+        "file_size_limit": "5MB",
+        "allowed_mime_types": ["image/jpeg", "image/png", "image/webp"],
+        "cache_control": "3600"
+      },
+      "tasting-exports": {
+        "public": false,
+        "file_size_limit": "50MB",
+        "allowed_mime_types": ["application/pdf", "application/json", "image/png", "image/svg+xml"],
+        "cache_control": "3600"
+      }
+    },
+    "edge_functions": {
+      "generate-flavor-wheel": {
+        "description": "Server-side flavor wheel generation",
+        "runtime": "deno",
+        "entry_point": "generate-flavor-wheel.ts"
+      },
+      "process-tasting-data": {
+        "description": "Process and analyze tasting data",
+        "runtime": "deno",
+        "entry_point": "process-tasting-data.ts"
+      },
+      "send-notifications": {
+        "description": "Send push notifications",
+        "runtime": "deno",
+        "entry_point": "send-notifications.ts"
+      }
+    },
+    "realtime_subscriptions": {
+      "enabled_tables": [
+        "tastings",
+        "user_reviews",
+        "activities",
+        "activity_comments",
+        "activity_likes",
+        "competitions",
+        "competition_participants",
+        "friendships",
+        "flavor_wheels"
+      ],
+      "policies": {
+        "tastings": "Users can subscribe to tastings they're participating in",
+        "activities": "Users can subscribe to activities from their friends",
+        "user_reviews": "Users can subscribe to reviews on their tastings"
+      }
+    }
+  },
+  "migration_strategy": {
+    "order_of_operations": [
+      "Create new tables (producers, competitions, etc.)",
+      "Add new columns to existing tables",
+      "Create indexes for performance",
+      "Set up Row Level Security policies",
+      "Create database functions",
+      "Set up triggers",
+      "Populate initial data (if needed)",
+      "Update existing data to match new schema"
+    ],
+    "data_migration_scripts": {
+      "migrate_existing_profiles": "UPDATE profiles SET experience_level = 'beginner', beverage_preferences = '{}', language = 'es' WHERE experience_level IS NULL;",
+      "migrate_existing_tastings": "UPDATE tastings SET tasting_data = '{}' WHERE tasting_data IS NULL;",
+      "populate_producers_table": "INSERT INTO producers (nom_number, name, region, type) SELECT DISTINCT nom_number, producer_name, region, '{mezcal}' FROM existing_producer_data;",
+      "create_initial_achievements": "INSERT INTO achievements (user_id, achievement_type, title, description, points) SELECT id, 'first_tasting', 'First Sip', 'Completed your first tasting', 10 FROM profiles WHERE id IN (SELECT DISTINCT created_by FROM tastings);"
+    },
+    "rollback_strategy": {
+      "backup_tables": ["profiles", "tastings", "tasting_items", "flavor_wheels"],
+      "rollback_scripts": {
+        "remove_new_columns": "ALTER TABLE profiles DROP COLUMN IF EXISTS bio, DROP COLUMN IF EXISTS location, etc;",
+        "drop_new_tables": "DROP TABLE IF EXISTS user_reviews, competitions, friendships, etc;",
+        "restore_policies": "Recreate original RLS policies"
+      }
+    }
+  },
+  "performance_optimizations": {
+    "database_indexes": {
+      "critical_indexes": [
+        "CREATE INDEX CONCURRENTLY idx_tastings_created_by_date ON tastings(created_by, date DESC);",
+        "CREATE INDEX CONCURRENTLY idx_user_reviews_tasting_rating ON user_reviews(tasting_id, rating DESC);",
+        "CREATE INDEX CONCURRENTLY idx_activities_user_created ON activities(user_id, created_at DESC);",
+        "CREATE INDEX CONCURRENTLY idx_flavor_wheels_user_tasting ON flavor_wheels(user_id, tasting_id);"
+      ],
+      "composite_indexes": [
+        "CREATE INDEX CONCURRENTLY idx_tastings_status_participants ON tastings(status, current_participants) WHERE status = 'active';",
+        "CREATE INDEX CONCURRENTLY idx_activities_public_recent ON activities(is_public, created_at DESC) WHERE is_public = true;"
+      ]
+    },
+    "query_optimizations": {
+      "analytics_queries": {
+        "user_stats": "CREATE MATERIALIZED VIEW user_stats AS SELECT p.id, p.name, COUNT(t.id) as tasting_count, AVG(ur.rating) as avg_rating FROM profiles p LEFT JOIN tastings t ON p.id = t.created_by LEFT JOIN user_reviews ur ON ur.user_id = p.id GROUP BY p.id, p.name;",
+        "popular_beverages": "CREATE MATERIALIZED VIEW popular_beverages AS SELECT type, COUNT(*) as count FROM mexican_beverages GROUP BY type ORDER BY count DESC;"
+      },
+      "cached_queries": {
+        "recent_reviews": "SELECT * FROM user_reviews ORDER BY created_at DESC LIMIT 50;",
+        "active_tastings": "SELECT * FROM tastings WHERE status = 'active' ORDER BY created_at DESC;"
+      }
+    },
+    "connection_pooling": {
+      "supabase_connection_limits": {
+        "max_connections": 100,
+        "idle_timeout": "5 minutes",
+        "connection_timeout": "10 seconds"
+      }
+    }
+  },
+  "monitoring_and_alerts": {
+    "database_monitoring": {
+      "table_sizes": "Monitor growth of large tables (user_reviews, activities, flavor_wheels)",
+      "query_performance": "Track slow queries (>100ms)",
+      "connection_usage": "Monitor connection pool usage",
+      "replication_lag": "If using read replicas"
+    },
+    "error_tracking": {
+      "error_logs": "CREATE TABLE error_logs (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), error_type text, error_message text, user_id uuid, metadata jsonb, created_at timestamp with time zone DEFAULT now());",
+      "performance_logs": "CREATE TABLE performance_logs (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), endpoint text, response_time integer, user_id uuid, created_at timestamp with time zone DEFAULT now());"
+    },
+    "alerts": {
+      "high_error_rate": "Alert when error rate exceeds 5% in 5 minutes",
+      "slow_queries": "Alert when average query time exceeds 500ms",
+      "storage_usage": "Alert when storage usage exceeds 80%",
+      "user_signup_drop": "Alert when daily signups drop by 50%"
+    }
+  },
+  "backup_and_recovery": {
+    "backup_strategy": {
+      "frequency": "Daily full backup, hourly incremental",
+      "retention": "30 days for daily, 7 days for hourly",
+      "backup_tables": ["profiles", "tastings", "user_reviews", "flavor_wheels", "competitions"],
+      "encrypted_backups": true
+    },
+    "disaster_recovery": {
+      "point_in_time_recovery": true,
+      "cross_region_replication": true,
+      "automated_failover": true,
+      "recovery_time_objective": "4 hours",
+      "recovery_point_objective": "1 hour"
+    }
+  },
+  "security_hardening": {
+    "additional_policies": {
+      "data_deletion": "CREATE POLICY \"Users can delete their own data\" ON profiles FOR DELETE USING (auth.uid() = id);",
+      "audit_trail": "CREATE TABLE audit_log (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), table_name text, operation text, old_values jsonb, new_values jsonb, user_id uuid, performed_at timestamp with time zone DEFAULT now());"
+    },
+    "rate_limiting": {
+      "api_rate_limits": {
+        "create_tasting": "10 requests per minute per user",
+        "create_review": "5 requests per minute per user",
+        "upload_photo": "3 requests per minute per user"
+      }
+    },
+    "data_privacy": {
+      "gdpr_compliance": {
+        "data_portability": "Implement user data export functionality",
+        "right_to_be_forgotten": "Implement account deletion with data cleanup",
+        "consent_management": "Track user consents for data processing"
+      },
+      "data_retention": {
+        "user_data": "Retain until account deletion",
+        "analytics_data": "Retain for 2 years",
+        "logs": "Retain for 1 year"
+      }
+    }
+  },
+  "deployment_configuration": {
+    "environment_setup": {
+      "staging_environment": {
+        "database_url": "Separate staging database",
+        "feature_flags": "Enable all features for testing",
+        "analytics": "Disabled for staging"
+      },
+      "production_environment": {
+        "database_url": "Production Supabase instance",
+        "feature_flags": "Controlled rollout",
+        "analytics": "Enabled with monitoring"
+      }
+    },
+    "ci_cd_pipeline": {
+      "pre_deployment_checks": [
+        "Database schema validation",
+        "Data migration testing",
+        "Performance regression tests",
+        "Security vulnerability scanning"
+      ],
+      "deployment_steps": [
+        "Create database backup",
+        "Run schema migrations",
+        "Deploy application code",
+        "Run smoke tests",
+        "Enable traffic to new version"
+      ]
+    }
+  }
+}

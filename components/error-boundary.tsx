@@ -1,241 +1,288 @@
 'use client'
 
 import React from 'react'
+import { AlertTriangle, RefreshCw, Home, Bug } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { errorHandler } from '@/lib/error-handling'
 
 interface ErrorBoundaryState {
   hasError: boolean
   error?: Error
   errorInfo?: React.ErrorInfo
+  retryCount: number
 }
 
 interface ErrorBoundaryProps {
   children: React.ReactNode
   fallback?: React.ComponentType<{ error: Error; retry: () => void }>
+  onError?: (error: Error, errorInfo: React.ErrorInfo) => void
+  showReportButton?: boolean
+  maxRetries?: number
 }
 
 export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  private maxRetries: number
+
   constructor(props: ErrorBoundaryProps) {
     super(props)
-    this.state = { hasError: false }
+    this.maxRetries = props.maxRetries || 3
+    this.state = {
+      hasError: false,
+      retryCount: 0
+    }
   }
 
-  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
-    // Update state so the next render will show the fallback UI
+  static getDerivedStateFromError(error: Error): Partial<ErrorBoundaryState> {
     return { hasError: true, error }
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    // Enhanced error logging with mobile-specific context
-    const errorContext = {
-      error: {
-        name: error.name,
-        message: error.message,
-        stack: error.stack
-      },
-      errorInfo: {
-        componentStack: errorInfo.componentStack
-      },
-      context: {
-        timestamp: new Date().toISOString(),
-        userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'unknown',
-        url: typeof window !== 'undefined' ? window.location.href : 'unknown',
-        viewport: typeof window !== 'undefined' ? {
-          width: window.innerWidth,
-          height: window.innerHeight,
-          devicePixelRatio: window.devicePixelRatio
-        } : null,
-        isMobile: typeof window !== 'undefined' ? window.innerWidth < 768 : false,
-        networkStatus: typeof navigator !== 'undefined' ? navigator.onLine : 'unknown'
-      }
-    }
+    // Log error
+    errorHandler.logError(error, {
+      componentStack: errorInfo.componentStack,
+      errorBoundary: true
+    })
 
-    console.error('🚨 Enhanced ErrorBoundary caught an error:', errorContext)
-
-    // Log to localStorage for debugging
-    try {
-      const existingLogs = JSON.parse(localStorage.getItem('flavorwheel-errors') || '[]')
-      existingLogs.push(errorContext)
-      // Keep only last 10 errors to prevent storage bloat
-      if (existingLogs.length > 10) {
-        existingLogs.shift()
-      }
-      localStorage.setItem('flavorwheel-errors', JSON.stringify(existingLogs))
-
-      // Also log mobile-specific debugging info
-      if (errorContext.context.isMobile) {
-        console.warn('📱 MOBILE ERROR DETECTED:', {
-          error: errorContext.error.message,
-          viewport: errorContext.context.viewport,
-          userAgent: errorContext.context.userAgent,
-          url: errorContext.context.url,
-          timestamp: errorContext.context.timestamp
-        })
-      }
-    } catch (storageError) {
-      console.warn('Failed to store error log:', storageError)
-    }
-
-    // Send to remote logging service
-    if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
-      try {
-        fetch('/api/log-error', {
-          method: 'POST',
-          body: JSON.stringify(errorContext),
-          headers: { 'Content-Type': 'application/json' }
-        }).then(response => {
-          if (!response.ok) {
-            console.warn('Remote logging failed with status:', response.status)
-          } else {
-            console.log('🚀 ERROR LOG SENT TO REMOTE SERVICE')
-          }
-        }).catch(remoteError => {
-          console.warn('Remote logging failed:', remoteError)
-        })
-      } catch (remoteError) {
-        console.warn('Remote logging setup failed:', remoteError)
-      }
-    }
-
-    // Detect mobile browsers
-    const isMobile =
-      typeof window !== 'undefined' &&
-      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-
-    // Filter out fetch-related errors that are non-critical
-    if (
-      error.message.includes('Failed to fetch') ||
-      error.message.includes('fetch-server-response') ||
-      error.message.includes('prefetch-cache-utils')
-    ) {
-      console.warn('Non-critical fetch error caught and handled:', error.message)
-      // Don't show error UI for fetch errors, just log them
-      this.setState({ hasError: false })
-      return
-    }
-
-    // Filter out hydration mismatch errors (often noisy on mobile Safari)
-    if (
-      error.message.includes('Hydration failed') ||
-      error.message.includes('hydration mismatch') ||
-      error.message.includes('server rendered text') ||
-      error.message.toLowerCase().includes('hydration')
-    ) {
-      console.warn('Non-critical hydration error handled:', error.message)
-      // Do not render the global error UI for hydration warnings
-      this.setState({ hasError: false })
-      return
-    }
-
-    // Handle localStorage/hydration errors on mobile
-    if (
-      isMobile &&
-      (error.message.includes('localStorage') ||
-        error.message.includes('sessionStorage') ||
-        error.message.includes('Hydration') ||
-        error.message.includes('hydration'))
-    ) {
-      console.warn('Mobile hydration/storage error caught:', error.message)
-      // Try to recover by clearing localStorage and reloading
-      try {
-        if (typeof localStorage !== 'undefined') {
-          localStorage.clear()
-        }
-        setTimeout(() => {
-          window.location.reload()
-        }, 1000)
-      } catch (e) {
-        console.error('Failed to clear storage:', e)
-      }
-      return
-    }
+    // Call custom error handler
+    this.props.onError?.(error, errorInfo)
 
     this.setState({ errorInfo })
   }
 
-  retry = () => {
-    this.setState({ hasError: false, error: undefined, errorInfo: undefined })
-  }
+  handleRetry = () => {
+    const { retryCount } = this.state
 
-  // Static method to retrieve error logs for debugging
-  static getErrorLogs() {
-    try {
-      return JSON.parse(localStorage.getItem('flavorwheel-errors') || '[]')
-    } catch {
-      return []
+    if (retryCount < this.maxRetries) {
+      this.setState({
+        hasError: false,
+        error: undefined,
+        errorInfo: undefined,
+        retryCount: retryCount + 1
+      })
     }
   }
 
-  // Static method to clear error logs
-  static clearErrorLogs() {
-    try {
-      localStorage.removeItem('flavorwheel-errors')
-      return true
-    } catch {
-      return false
+  handleReportError = () => {
+    const { error } = this.state
+
+    // Report error to monitoring service
+    if (error) {
+      errorHandler.logError(error, {
+        userReported: true,
+        userAgent: navigator.userAgent,
+        url: window.location.href
+      })
     }
+
+    // Show user feedback
+    alert('Thank you for reporting this error. Our team has been notified.')
+  }
+
+  handleGoHome = () => {
+    window.location.href = '/en/landing'
   }
 
   render() {
-    if (this.state.hasError && this.state.error) {
-      // Custom fallback component
+    if (this.state.hasError) {
+      // Use custom fallback if provided
       if (this.props.fallback) {
         const FallbackComponent = this.props.fallback
-        return <FallbackComponent error={this.state.error} retry={this.retry} />
+        return <FallbackComponent error={this.state.error!} retry={this.handleRetry} />
       }
 
       // Default error UI
-      return (
-        <div className="flex min-h-screen items-center justify-center bg-background">
-          <div className="mx-auto max-w-md p-6 text-center">
-            <div className="mb-4 text-6xl">🌵</div>
-            <h2 className="mb-4 text-2xl font-bold text-foreground">¡Oops! Algo salió mal</h2>
-            <p className="mb-6 text-muted-foreground">
-              Ocurrió un error inesperado. Por favor, intenta de nuevo.
-            </p>
-            <div className="space-y-4">
-              <Button onClick={this.retry} className="w-full">
-                Intentar de nuevo
-              </Button>
-              <Button variant="outline" onClick={() => window.location.reload()} className="w-full">
-                Recargar página
-              </Button>
-            </div>
-            {process.env.NODE_ENV === 'development' && (
-              <details className="mt-6 text-left">
-                <summary className="cursor-pointer text-sm text-muted-foreground">
-                  Detalles del error (desarrollo)
-                </summary>
-                <pre className="mt-2 overflow-auto rounded border bg-card p-4 text-xs">
-                  {this.state.error.stack}
-                </pre>
-              </details>
-            )}
-          </div>
-        </div>
-      )
+      return <ErrorFallback
+        error={this.state.error}
+        retryCount={this.state.retryCount}
+        maxRetries={this.maxRetries}
+        onRetry={this.handleRetry}
+        onReport={this.handleReportError}
+        onGoHome={this.handleGoHome}
+        showReportButton={this.props.showReportButton}
+      />
     }
 
     return this.props.children
   }
 }
 
-// Hook for functional components to handle errors
-export function useErrorHandler() {
-  return (error: Error, errorInfo?: React.ErrorInfo) => {
-    console.error('Error caught by useErrorHandler:', error, errorInfo)
+// Default error fallback component
+interface ErrorFallbackProps {
+  error?: Error
+  retryCount: number
+  maxRetries: number
+  onRetry: () => void
+  onReport: () => void
+  onGoHome: () => void
+  showReportButton?: boolean
+}
 
-    // Filter out non-critical fetch errors
-    if (
-      error.message.includes('Failed to fetch') ||
-      error.message.includes('fetch-server-response') ||
-      error.message.includes('prefetch-cache-utils')
-    ) {
-      console.warn('Non-critical fetch error handled:', error.message)
-      return // Don't throw for fetch errors
-    }
+function ErrorFallback({
+  error,
+  retryCount,
+  maxRetries,
+  onRetry,
+  onReport,
+  onGoHome,
+  showReportButton = true
+}: ErrorFallbackProps) {
+  const canRetry = retryCount < maxRetries
 
-    // For other errors, you might want to report them or show a toast
-    throw error
-  }
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 flex items-center justify-center p-4">
+      <Card className="w-full max-w-md">
+        <CardHeader className="text-center">
+          <div className="mx-auto mb-4 w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
+            <AlertTriangle className="w-8 h-8 text-red-600" />
+          </div>
+          <CardTitle className="text-xl text-gray-900">
+            Oops! Something went wrong
+          </CardTitle>
+        </CardHeader>
+
+        <CardContent className="space-y-4">
+          <p className="text-center text-gray-600">
+            We encountered an unexpected error. Don't worry, our team has been notified.
+          </p>
+
+          {error && process.env.NODE_ENV === 'development' && (
+            <details className="bg-gray-100 p-3 rounded-lg text-sm">
+              <summary className="cursor-pointer font-medium text-gray-700">
+                Error Details (Development)
+              </summary>
+              <pre className="mt-2 text-xs text-gray-600 overflow-auto">
+                {error.message}
+                {error.stack && '\n\n' + error.stack}
+              </pre>
+            </details>
+          )}
+
+          <div className="flex flex-col gap-3">
+            {canRetry && (
+              <Button
+                onClick={onRetry}
+                className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
+              >
+                <RefreshCw className="w-4 h-4 mr-2" />
+                Try Again ({retryCount}/{maxRetries})
+              </Button>
+            )}
+
+            <Button
+              onClick={onGoHome}
+              variant="outline"
+              className="w-full"
+            >
+              <Home className="w-4 h-4 mr-2" />
+              Go to Home
+            </Button>
+
+            {showReportButton && (
+              <Button
+                onClick={onReport}
+                variant="ghost"
+                className="w-full text-gray-600"
+              >
+                <Bug className="w-4 h-4 mr-2" />
+                Report This Error
+              </Button>
+            )}
+          </div>
+
+          <div className="text-center text-xs text-gray-500">
+            Error ID: {Date.now().toString(36)}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
+// Specialized error boundaries for different contexts
+export function PageErrorBoundary({ children }: { children: React.ReactNode }) {
+  return (
+    <ErrorBoundary
+      showReportButton={true}
+      maxRetries={2}
+      onError={(error, errorInfo) => {
+        console.error('Page Error:', error, errorInfo)
+      }}
+    >
+      {children}
+    </ErrorBoundary>
+  )
+}
+
+export function ComponentErrorBoundary({ children }: { children: React.ReactNode }) {
+  return (
+    <ErrorBoundary
+      showReportButton={false}
+      maxRetries={1}
+      fallback={({ error, retry }) => (
+        <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+          <div className="flex items-center space-x-2">
+            <AlertTriangle className="w-5 h-5 text-red-600" />
+            <span className="text-sm text-red-800">Component error occurred</span>
+          </div>
+          <Button
+            onClick={retry}
+            size="sm"
+            variant="outline"
+            className="mt-2"
+          >
+            <RefreshCw className="w-4 h-4 mr-1" />
+            Retry
+          </Button>
+        </div>
+      )}
+    >
+      {children}
+    </ErrorBoundary>
+  )
+}
+
+// Hook for handling async errors in components
+export function useAsyncError() {
+  const [, setError] = React.useState()
+
+  return React.useCallback((error: Error) => {
+    setError(() => {
+      throw error
+    })
+  }, [])
+}
+
+// Utility component for displaying error messages
+interface ErrorMessageProps {
+  error: any
+  onRetry?: () => void
+  className?: string
+}
+
+export function ErrorMessage({ error, onRetry, className = '' }: ErrorMessageProps) {
+  const config = errorHandler.getUserFriendlyError(error)
+
+  return (
+    <div className={`p-4 bg-red-50 border border-red-200 rounded-lg ${className}`}>
+      <div className="flex items-start space-x-3">
+        <AlertTriangle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+        <div className="flex-1">
+          <p className="text-sm font-medium text-red-800">
+            {config.userMessage}
+          </p>
+          {config.actionMessage && onRetry && config.retryable && (
+            <Button
+              onClick={onRetry}
+              size="sm"
+              variant="outline"
+              className="mt-2"
+            >
+              {config.actionMessage}
+            </Button>
+          )}
+        </div>
+      </div>
+    </div>
+  )
 }

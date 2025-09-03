@@ -1,3 +1,6 @@
+// Import required types
+import type { MexicanBeverageType } from './mexican-types'
+
 export interface FlavorDescriptorWithMetadata {
   name: string
   description?: string
@@ -32,6 +35,8 @@ export interface TastingNote {
   value: string | number
   created_at: string
   updated_at: string
+  notes?: string | Record<string, any>
+  extractedDescriptors?: string[]
 }
 
 export interface Tasting {
@@ -45,6 +50,12 @@ export interface Tasting {
   participants: TastingParticipant[]
   created_at: string
   updated_at: string
+  date?: string
+  type?: string
+  isBlind?: boolean
+  tasting_items?: TastingItem[]
+  tasting_type?: string
+  tasting_participants?: TastingParticipant[]
 }
 
 export interface TastingItem {
@@ -52,6 +63,10 @@ export interface TastingItem {
   name: string
   description?: string
   order: number
+  details?: string
+  producer?: string
+  region?: string
+  picture_url?: string
 }
 
 export interface TastingCategory {
@@ -70,7 +85,8 @@ export interface TastingParticipant {
   userId: string
   tastingId: string
   joined_at: string
+  name?: string
+  notes?: string
 }
 
-// Re-export from mexican-types for convenience
-export type { MexicanBeverageType } from './mexican-types'
+// MexicanBeverageType is now imported directly above

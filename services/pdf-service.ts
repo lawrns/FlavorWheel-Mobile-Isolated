@@ -6,6 +6,14 @@ import { jsPDF } from 'jspdf'
 import autoTable from 'jspdf-autotable'
 import type { TastingNote, Tasting } from '@/types/flavor-types'
 // import { TemplateQRService } from './template-qr-service'
+
+// Temporary placeholder for QR functionality
+class TemplateQRService {
+  static async generateTemplateQR(template: any): Promise<string> {
+    // Placeholder implementation - returns a simple text QR representation
+    return `QR:${template.id}:${template.name}`
+  }
+}
 import { Template } from '@/components/templates'
 
 interface PDFGenerationOptions {
@@ -295,7 +303,7 @@ export async function generateTemplatePDF(
     doc.setFontSize(10)
     doc.setFont('helvetica', 'normal')
 
-    template.evaluation_criteria.forEach((criteria, index) => {
+    template.evaluation_criteria.forEach((criteria: any, index: number) => {
       doc.text(`${index + 1}. ${criteria.name} (${criteria.type})`, 25, yPosition)
       yPosition += 6
       if (criteria.options && criteria.options.length > 0) {

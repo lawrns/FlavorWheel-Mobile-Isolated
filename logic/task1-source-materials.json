@@ -1,0 +1,178 @@
+{
+  "sources": [
+    {
+      "type": "landing_page",
+      "file": "app/[locale]/landing/page.tsx",
+      "description": "Main landing page with hero section, feature cards (Quick Taste, Create Tasting, Write Reviews, Flavor Wheels), statistics display, and call-to-action",
+      "key_components": [
+        "Hero section with animated title and description",
+        "4 feature cards with navigation routes",
+        "Statistics section showing tastings, reviews, and wheels metrics",
+        "Responsive design with mobile-first approach",
+        "Background image overlay and gradient effects"
+      ]
+    },
+    {
+      "type": "navigation",
+      "file": "components/ui/mobile-navigation.tsx",
+      "description": "Mobile-first navigation component with main nav (Home, Create, Review, Wheels) and expandable secondary navigation",
+      "key_components": [
+        "Bottom navigation bar with 4 main items",
+        "Expandable menu with additional options",
+        "Touch-friendly design with haptic feedback",
+        "Accessibility features with proper ARIA labels",
+        "Active state indicators and smooth transitions"
+      ]
+    },
+    {
+      "type": "create_flow",
+      "file": "app/[locale]/create/page.client.tsx",
+      "description": "Tasting creation hub with three modes: Competition, Study, Quick Tasting",
+      "key_components": [
+        "Mode selection cards for different tasting types",
+        "Navigation to specialized creation flows",
+        "Clean card-based UI with icons and descriptions"
+      ]
+    },
+    {
+      "type": "study_mode",
+      "file": "app/[locale]/create/study/page.client.tsx",
+      "description": "Comprehensive study mode for structured tastings with customizable categories and items",
+      "key_components": [
+        "Product type selection with grouped categories",
+        "Customizable evaluation categories (subjective input, sliding scale, multiple choice, etc.)",
+        "Item management with image upload and descriptions",
+        "Template system for quick setup",
+        "Blind tasting toggle",
+        "Auto-save functionality",
+        "Multi-step flow (create → confirm → input → complete)"
+      ]
+    },
+    {
+      "type": "quick_tasting",
+      "file": "app/quick-tasting/page.tsx",
+      "description": "Simplified 4-category tasting experience with flavor selection and ratings",
+      "key_components": [
+        "Product type selection with flavor auto-population",
+        "Flavor selection with intensity sliders",
+        "Custom flavor addition",
+        "Multiple items support with photo upload",
+        "Aroma, flavor, texture, and other notes sections",
+        "Overall rating slider (0-100)",
+        "Auto-save to localStorage",
+        "Draft recovery system"
+      ]
+    },
+    {
+      "type": "flavor_wheel_component",
+      "file": "components/flavorwheel/FlavorWheel.tsx",
+      "description": "Interactive sunburst chart visualization for flavor data with hierarchical display",
+      "key_components": [
+        "D3.js based sunburst visualization",
+        "Hierarchical data structure with categories and subcategories",
+        "Color-coded segments with intensity-based opacity",
+        "Tooltip system with breadcrumb navigation",
+        "Export functionality (SVG, PNG, JSON)",
+        "Responsive scaling and mobile optimization",
+        "Animation support with reduced motion detection"
+      ]
+    },
+    {
+      "type": "flavor_analysis_service",
+      "file": "services/flavor-analysis-service.ts",
+      "description": "Core service for analyzing tasting data and generating flavor wheel visualizations",
+      "key_components": [
+        "Multi-source flavor extraction (aroma, taste, metaphors)",
+        "Hierarchical flavor categorization system",
+        "Mexican beverage flavor categories with cultural context",
+        "Supabase integration for data persistence",
+        "Multilingual flavor extraction support",
+        "Statistics generation for user insights"
+      ]
+    },
+    {
+      "type": "flavor_dictionary_service",
+      "file": "services/flavor-dictionary-service.ts",
+      "description": "Comprehensive flavor keyword lookup system with fuzzy matching and multilingual support",
+      "key_components": [
+        "Exact and fuzzy keyword matching",
+        "Jaro-Winkler similarity algorithm",
+        "Lemma-based matching for morphological variants",
+        "N-gram phrase matching for compound terms",
+        "Product-type specific filtering",
+        "Mexican beverage flavor dictionary",
+        "Multilingual support (Spanish/English)"
+      ]
+    },
+    {
+      "type": "auth_provider",
+      "file": "components/auth-provider.tsx",
+      "description": "Authentication context provider for user management",
+      "key_components": [
+        "Supabase authentication integration",
+        "User context management",
+        "Authentication state handling"
+      ]
+    },
+    {
+      "type": "types_definitions",
+      "file": "types/flavor-types.ts",
+      "description": "TypeScript type definitions for flavor data structures",
+      "key_components": [
+        "Tasting and TastingItem interfaces",
+        "Flavor descriptor metadata types",
+        "Mexican flavor dictionary types",
+        "Tasting category and participant types"
+      ]
+    },
+    {
+      "type": "app_shell",
+      "file": "components/app-shell.tsx",
+      "description": "Main application shell component providing consistent layout",
+      "key_components": [
+        "Layout wrapper with navigation",
+        "Responsive design patterns",
+        "Consistent spacing and theming"
+      ]
+    },
+    {
+      "type": "root_layout",
+      "file": "app/layout.tsx",
+      "description": "Root layout with providers and global configuration",
+      "key_components": [
+        "Supabase and Realtime providers",
+        "Auth provider integration",
+        "Error boundary setup",
+        "Mobile optimization meta tags",
+        "PWA configuration"
+      ]
+    },
+    {
+      "type": "package_json",
+      "file": "package.json",
+      "description": "Project dependencies and configuration",
+      "key_components": [
+        "Next.js 15 framework",
+        "React 18 with TypeScript",
+        "Supabase client integration",
+        "D3.js for data visualization",
+        "Framer Motion for animations",
+        "Tailwind CSS for styling",
+        "Radix UI component library",
+        "Lucide React icons",
+        "PDF and chart generation libraries"
+      ]
+    },
+    {
+      "type": "nlp_processing",
+      "file": "lib/nlp/match.ts",
+      "description": "Natural language processing utilities for text matching",
+      "key_components": [
+        "Jaro-Winkler similarity algorithm",
+        "Text normalization utilities",
+        "Token span management"
+      ]
+    }
+  ],
+  "summary": "# FlavorWheel Project Source Materials Analysis\n\n## Overview\nFlavorWheel is a comprehensive mobile-first tasting experience application built with Next.js 15, designed to be the world's most user-friendly platform for coffee and drinks tasting. The project emphasizes intuitive design, advanced flavor analysis, and seamless user experiences.\n\n## Core Architecture\n- **Frontend**: Next.js 15 with React 18, TypeScript, and mobile-first responsive design\n- **Styling**: Tailwind CSS with custom design system and Framer Motion animations\n- **Data Visualization**: D3.js for interactive flavor wheel charts\n- **Backend**: Supabase for authentication, database, and real-time features\n- **UI Components**: Radix UI primitives with custom implementations\n\n## Key User Flows\n1. **Landing Experience**: Hero section with feature overview and navigation\n2. **Quick Tasting**: Simplified 4-category evaluation with flavor selection\n3. **Study Mode**: Comprehensive structured tastings with customizable categories\n4. **Flavor Analysis**: Interactive sunburst charts with hierarchical data visualization\n\n## Technical Highlights\n- **Multilingual Support**: Spanish/English flavor dictionaries with fuzzy matching\n- **Advanced NLP**: Jaro-Winkler similarity, lemma matching, and n-gram processing\n- **Mobile Optimization**: Touch-friendly interfaces with haptic feedback\n- **Real-time Features**: Live data synchronization and collaborative tasting\n- **Export Capabilities**: SVG, PNG, and JSON export for flavor wheels\n- **Auto-save**: Draft recovery system preventing data loss\n\n## Cultural Context\nThe application specifically incorporates Mexican beverage culture with dedicated flavor categories for mezcal, tequila, sotol, and traditional Mexican food flavors, reflecting authentic regional tasting experiences.\n\n## User Experience Focus\nEvery component is designed with user-friendliness as the primary goal, featuring progressive disclosure, contextual help, accessibility features, and intuitive navigation patterns optimized for mobile tasting scenarios."
+}

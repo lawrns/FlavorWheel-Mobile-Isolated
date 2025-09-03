@@ -399,15 +399,59 @@ function extractMetaphorFlavors(tasting: any): string[] {
 function categorizeFlavorDescriptor(descriptor: string): string {
   const lowerDescriptor = descriptor.toLowerCase()
 
-  // Mexican-specific categorization
-  if (lowerDescriptor.includes('agave') || lowerDescriptor.includes('maguey')) return 'Agave'
-  if (lowerDescriptor.includes('humo') || lowerDescriptor.includes('ahumado')) return 'Ahumado'
-  if (lowerDescriptor.includes('tierra') || lowerDescriptor.includes('mineral')) return 'Mineral'
-  if (lowerDescriptor.includes('flor') || lowerDescriptor.includes('rosa')) return 'Floral'
-  if (lowerDescriptor.includes('hierba') || lowerDescriptor.includes('especias')) return 'Herbal'
-  if (lowerDescriptor.includes('fruta') || lowerDescriptor.includes('cítrico')) return 'Frutal'
-  if (lowerDescriptor.includes('dulce') || lowerDescriptor.includes('miel')) return 'Dulce'
-  if (lowerDescriptor.includes('canela') || lowerDescriptor.includes('vainilla')) return 'Especiado'
+  // Consolidated categorization to eliminate redundancies
+  // Check for most specific matches first to avoid conflicts
+
+  // Fruit-related (consolidate fruity/fruit variations)
+  if (lowerDescriptor.includes('fruta') || lowerDescriptor.includes('cítrico') ||
+      lowerDescriptor.includes('fruity') || lowerDescriptor.includes('fruit') ||
+      lowerDescriptor.includes('citrus') || lowerDescriptor.includes('citric')) {
+    return 'Frutal'
+  }
+
+  // Floral
+  if (lowerDescriptor.includes('flor') || lowerDescriptor.includes('floral') ||
+      lowerDescriptor.includes('rosa') || lowerDescriptor.includes('flower')) {
+    return 'Floral'
+  }
+
+  // Herbal/Spicy
+  if (lowerDescriptor.includes('hierba') || lowerDescriptor.includes('herbal') ||
+      lowerDescriptor.includes('especia') || lowerDescriptor.includes('spicy') ||
+      lowerDescriptor.includes('spice') || lowerDescriptor.includes('mint')) {
+    return 'Herbal'
+  }
+
+  // Smoky/Earthy
+  if (lowerDescriptor.includes('humo') || lowerDescriptor.includes('ahumado') ||
+      lowerDescriptor.includes('smoky') || lowerDescriptor.includes('smoke')) {
+    return 'Ahumado'
+  }
+
+  // Mineral/Earthy
+  if (lowerDescriptor.includes('tierra') || lowerDescriptor.includes('mineral') ||
+      lowerDescriptor.includes('earthy') || lowerDescriptor.includes('earth')) {
+    return 'Mineral'
+  }
+
+  // Sweet
+  if (lowerDescriptor.includes('dulce') || lowerDescriptor.includes('sweet') ||
+      lowerDescriptor.includes('miel') || lowerDescriptor.includes('honey') ||
+      lowerDescriptor.includes('caramel')) {
+    return 'Dulce'
+  }
+
+  // Spiced
+  if (lowerDescriptor.includes('canela') || lowerDescriptor.includes('vainilla') ||
+      lowerDescriptor.includes('cinnamon') || lowerDescriptor.includes('vanilla') ||
+      lowerDescriptor.includes('clove') || lowerDescriptor.includes('nutmeg')) {
+    return 'Especiado'
+  }
+
+  // Agave
+  if (lowerDescriptor.includes('agave') || lowerDescriptor.includes('maguey')) {
+    return 'Agave'
+  }
 
   return 'Otros'
 }
@@ -536,15 +580,16 @@ export function buildFlavorHierarchy(keywords: string[], productType: string = '
   }
 
   // Define explicit category mappings for better hierarchy building
+  // Consolidated to match categorizeFlavorDescriptor function
   const categoryMappings = {
-    'Dairy': ['milky', 'creamy', 'buttery'],
-    'Spice': ['cinnamon', 'spicy', 'peppery', 'cardamom', 'clove', 'ginger', 'nutmeg'],
-    'Herbal': ['herbal', 'green tea', 'minty', 'eucalyptus', 'leafy', 'fresh'],
-    'Fruit': ['lemon', 'citrus', 'lime', 'orange', 'apple', 'berry', 'cherry', 'pome fruits'],
-    'Texture': ['rough', 'smooth', 'syrupy', 'oily', 'viscous', 'thin', 'full-bodied'],
-    'Sweet': ['sweet', 'honey', 'caramel', 'vanilla', 'vainilla', 'chocolate'],
-    'Earthy': ['earth', 'woody', 'cedar', 'forest', 'leather'],
-    'Floral': ['floral', 'jasmine', 'rose', 'lilac', 'chamomile']
+    'Frutal': ['lemon', 'citrus', 'lime', 'orange', 'apple', 'berry', 'cherry', 'pome fruits', 'fruity', 'fruit'],
+    'Floral': ['floral', 'jasmine', 'rose', 'lilac', 'chamomile', 'flower'],
+    'Herbal': ['herbal', 'green tea', 'minty', 'eucalyptus', 'leafy', 'fresh', 'mint'],
+    'Ahumado': ['smoky', 'smoke', 'earthy', 'earth', 'woody', 'cedar', 'forest', 'leather'],
+    'Mineral': ['mineral', 'earthy', 'earth', 'stone', 'rock'],
+    'Dulce': ['sweet', 'honey', 'caramel', 'vanilla', 'vainilla', 'chocolate', 'sugar'],
+    'Especiado': ['cinnamon', 'spicy', 'peppery', 'cardamom', 'clove', 'ginger', 'nutmeg', 'spice'],
+    'Agave': ['agave', 'maguey', 'mezcal', 'tequila']
   }
 
   // Group keywords by flavor categories using explicit mappings
@@ -567,8 +612,8 @@ export function buildFlavorHierarchy(keywords: string[], productType: string = '
       Object.entries(flavorDictionary).forEach(([category, data]) => {
         if (data.subcategories) {
           Object.values(data.subcategories).forEach(subcategory => {
-            if (subcategory.descriptors && Array.isArray(subcategory.descriptors)) {
-              if (subcategory.descriptors.some(desc =>
+            if ((subcategory as any).descriptors && Array.isArray((subcategory as any).descriptors)) {
+              if ((subcategory as any).descriptors.some((desc: any) =>
                 typeof desc === 'string' ? desc.toLowerCase().includes(keyword.toLowerCase()) :
                 desc.name?.toLowerCase().includes(keyword.toLowerCase())
               )) {

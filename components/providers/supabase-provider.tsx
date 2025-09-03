@@ -1,7 +1,8 @@
 'use client'
 
 import * as React from 'react'
-import { createClient, type SupabaseClient, type Session } from '@supabase/supabase-js'
+import { type SupabaseClient, type Session } from '@supabase/supabase-js'
+import { supabaseClient } from '@/lib/supabase-client'
 
 type Ctx = {
   client: SupabaseClient | null
@@ -15,23 +16,13 @@ type Ctx = {
 const SupabaseContext = React.createContext<Ctx | null>(null)
 
 export function SupabaseProvider({ children }: { children: React.ReactNode }) {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
   const [client, setClient] = React.useState<SupabaseClient | null>(null)
   const [session, setSession] = React.useState<Session | null>(null)
   const [initialized, setInitialized] = React.useState(false)
 
   React.useEffect(() => {
-    // If env vars are missing, expose a benign, initialized context
-    if (!url || !anon) {
-      setClient(null)
-      setSession(null)
-      setInitialized(true)
-      return
-    }
-
-    const c = createClient(url, anon)
+    // Use the pre-configured client
+    const c = supabaseClient
     setClient(c)
 
     // initial session
@@ -48,7 +39,7 @@ export function SupabaseProvider({ children }: { children: React.ReactNode }) {
     return () => {
       sub.subscription.unsubscribe()
     }
-  }, [url, anon])
+  }, [])
 
   const value = React.useMemo<Ctx>(() => {
     async function signInWithOtp(email: string) {

@@ -12,6 +12,7 @@ import { DashboardAppShell } from '@/components/app-shell'
 import { SunburstChart, MobileSunburstChart, useResponsiveSunburst } from '@/components/sunburst-chart'
 import { processTastingForFlavorWheel, FlavorWheelViews, SunburstData } from '@/services/keyword-extraction-service'
 import { buildFlavorHierarchy } from '@/services/flavor-analysis-service'
+import { supabase } from '@/lib/supabase'
 import {
   ArrowLeft, Trophy, Share, Download, Eye, Users,
   Sparkles, Loader2, CheckCircle, AlertCircle
@@ -302,8 +303,26 @@ export function TastingCompletionScreen({
           localStorage.setItem(`flavor-wheel-${tastingData.id}`, JSON.stringify(wheelData))
           console.log('💾 FLAVOR WHEEL PERSISTED TO LOCALSTORAGE:', `flavor-wheel-${tastingData.id}`)
 
-          // TODO: Also sync to Supabase for cross-device access
-          // This would involve creating a flavor_wheels table and API endpoints
+          // Sync to Supabase for cross-device access
+          try {
+            const { error: supabaseError } = await supabase
+              .from('flavor_wheels')
+              .upsert({
+                tasting_id: tastingData.id,
+                user_id: tastingData.created_by,
+                wheel_data: wheelData,
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+              })
+
+            if (supabaseError) {
+              console.warn('⚠️ Failed to sync flavor wheel to Supabase:', supabaseError)
+            } else {
+              console.log('✅ FLAVOR WHEEL SYNCED TO SUPABASE')
+            }
+          } catch (syncError) {
+            console.warn('⚠️ Failed to sync flavor wheel to Supabase:', syncError)
+          }
 
         } catch (storageError) {
           console.warn('⚠️ Failed to persist flavor wheel data:', storageError)

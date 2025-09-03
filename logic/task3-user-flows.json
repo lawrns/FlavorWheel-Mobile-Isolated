@@ -1,0 +1,301 @@
+[
+  {
+    "name": "Quick Tasting Flow",
+    "description": "Simplified 4-category tasting experience for rapid flavor evaluation",
+    "steps": [
+      {
+        "step": 1,
+        "action": "Navigate to Quick Tasting",
+        "location": "/quick-tasting",
+        "description": "User clicks 'Quick Taste' card from landing page or navigates directly",
+        "ui_elements": ["Product type selector", "Category dropdown with grouped options"],
+        "data_requirements": [],
+        "user_decision": "Select product type (Wine, Coffee, Beer, Spirits, Non-Alcoholic)"
+      },
+      {
+        "step": 2,
+        "action": "Flavor Selection",
+        "location": "/quick-tasting",
+        "description": "System auto-populates flavor options based on product type",
+        "ui_elements": ["Flavor grid with toggle buttons", "Custom flavor input", "Intensity sliders"],
+        "data_requirements": ["Product type selection"],
+        "user_decision": "Select relevant flavors and set intensity levels (0-10)"
+      },
+      {
+        "step": 3,
+        "action": "Add Tasting Items",
+        "location": "/quick-tasting",
+        "description": "Add one or more items to taste with details",
+        "ui_elements": ["Item cards with name input", "Photo upload button", "Aroma/Flavor/Other textareas", "Overall rating slider"],
+        "data_requirements": ["Selected flavors"],
+        "user_decision": "Add items with names and optional photos"
+      },
+      {
+        "step": 4,
+        "action": "Complete Tasting Notes",
+        "location": "/quick-tasting",
+        "description": "Fill in tasting details for each item",
+        "ui_elements": ["Per-item forms with aroma/flavor/other sections", "Flavor intensity hints"],
+        "data_requirements": ["Item names"],
+        "user_decision": "Rate each item across categories and provide notes"
+      },
+      {
+        "step": 5,
+        "action": "Submit Tasting",
+        "location": "/quick-tasting → /quick-tasting/confirm",
+        "description": "Save tasting data and navigate to confirmation",
+        "ui_elements": ["Submit button with validation", "Auto-save indicators"],
+        "data_requirements": ["At least one item with name"],
+        "user_decision": "Click 'End Tasting' to save"
+      }
+    ],
+    "entry_points": ["/quick-tasting", "Landing page → Quick Taste card"],
+    "decision_branches": [
+      "Product type selection affects flavor options",
+      "Optional photo upload vs text-only",
+      "Multiple items vs single item",
+      "Custom flavor addition"
+    ],
+    "exit_points": ["/quick-tasting/confirm", "Navigation back to create menu"],
+    "error_handling": ["Required field validation", "Authentication checks", "Network error handling"],
+    "auto_save": true,
+    "draft_recovery": true
+  },
+  {
+    "name": "Study Mode Creation Flow",
+    "description": "Comprehensive structured tasting setup with customizable categories",
+    "steps": [
+      {
+        "step": 1,
+        "action": "Access Study Mode",
+        "location": "/en/create/study",
+        "description": "Navigate to study mode from create menu",
+        "ui_elements": ["Study mode selection", "Back navigation"],
+        "data_requirements": [],
+        "user_decision": "Choose Study Mode from create options"
+      },
+      {
+        "step": 2,
+        "action": "Basic Setup",
+        "location": "/en/create/study",
+        "description": "Configure tasting name, product type, and templates",
+        "ui_elements": ["Tasting name input", "Product type selector", "Template selector", "Blind tasting toggle"],
+        "data_requirements": [],
+        "user_decision": "Enter tasting name, select product type, optionally choose template"
+      },
+      {
+        "step": 3,
+        "action": "Configure Categories",
+        "location": "/en/create/study",
+        "description": "Set up evaluation categories and parameters",
+        "ui_elements": ["Category list with add/remove", "Parameter type selectors", "Options configuration", "Scale ranges"],
+        "data_requirements": ["Product type"],
+        "user_decision": "Add/edit evaluation categories (up to 10)"
+      },
+      {
+        "step": 4,
+        "action": "Add Tasting Items",
+        "location": "/en/create/study",
+        "description": "Define items to be tasted",
+        "ui_elements": ["Item list with add/remove", "Name and description inputs", "Photo upload", "Camera capture"],
+        "data_requirements": ["Categories defined"],
+        "user_decision": "Add items with details and optional photos"
+      },
+      {
+        "step": 5,
+        "action": "Confirm Setup",
+        "location": "/en/create/study → flowStep: 'confirm'",
+        "description": "Review tasting configuration before starting",
+        "ui_elements": ["Configuration summary", "Invite friends", "Schedule input"],
+        "data_requirements": ["Name, product type, categories, items"],
+        "user_decision": "Review and confirm setup or go back to edit"
+      },
+      {
+        "step": 6,
+        "action": "Input Phase",
+        "location": "flowStep: 'input'",
+        "description": "Conduct the actual tasting evaluation",
+        "ui_elements": ["Item-by-item forms", "Category-specific inputs", "Progress indicators"],
+        "data_requirements": ["Confirmed setup"],
+        "user_decision": "Complete evaluation for each item"
+      },
+      {
+        "step": 7,
+        "action": "Completion & Results",
+        "location": "flowStep: 'complete'",
+        "description": "View tasting results and flavor wheel",
+        "ui_elements": ["Results summary", "Flavor wheel visualization", "Save/share options"],
+        "data_requirements": ["Completed evaluations"],
+        "user_decision": "Save results or share tasting"
+      }
+    ],
+    "entry_points": ["/en/create → Study Mode button"],
+    "decision_branches": [
+      "Template selection vs custom setup",
+      "Blind tasting toggle",
+      "Category parameter types (subjective, scale, multiple choice, etc.)",
+      "Photo vs no-photo items",
+      "Single vs multiple participants"
+    ],
+    "exit_points": ["Completion screen", "Navigation back to create menu", "Save draft"],
+    "error_handling": ["Form validation", "Template loading errors", "Photo upload failures"],
+    "auto_save": true,
+    "draft_recovery": true
+  },
+  {
+    "name": "Landing to Feature Discovery Flow",
+    "description": "User journey from landing page to discovering and using features",
+    "steps": [
+      {
+        "step": 1,
+        "action": "Landing Page Discovery",
+        "location": "/en/landing",
+        "description": "User arrives at landing page and explores options",
+        "ui_elements": ["Hero section", "Feature cards", "Statistics", "CTA button"],
+        "data_requirements": [],
+        "user_decision": "Choose between Quick Taste, Create Tasting, Reviews, or Wheels"
+      },
+      {
+        "step": 2,
+        "action": "Feature Selection",
+        "location": "Dynamic routing",
+        "description": "Navigate to selected feature",
+        "ui_elements": ["Animated feature cards with hover effects"],
+        "data_requirements": [],
+        "user_decision": "Click on desired feature card"
+      },
+      {
+        "step": 3,
+        "action": "Feature Onboarding",
+        "location": "Feature-specific routes",
+        "description": "Experience feature-specific interface and onboarding",
+        "ui_elements": ["Contextual help", "Progressive disclosure", "Auto-save indicators"],
+        "data_requirements": [],
+        "user_decision": "Explore feature or return to landing"
+      }
+    ],
+    "entry_points": ["/en/landing"],
+    "decision_branches": ["4 feature choices + CTA button"],
+    "exit_points": ["Any feature page", "Navigation menu"],
+    "error_handling": ["Route fallback", "Loading states"],
+    "auto_save": false,
+    "draft_recovery": false
+  },
+  {
+    "name": "Flavor Wheel Exploration Flow",
+    "description": "Interactive exploration of flavor wheel visualizations",
+    "steps": [
+      {
+        "step": 1,
+        "action": "Access Flavor Wheels",
+        "location": "/en/flavor-wheels",
+        "description": "Navigate to flavor wheel section",
+        "ui_elements": ["Wheels navigation", "Wheel selection interface"],
+        "data_requirements": [],
+        "user_decision": "Choose to explore existing wheels or create new"
+      },
+      {
+        "step": 2,
+        "action": "Wheel Selection",
+        "location": "/en/flavor-wheels",
+        "description": "Browse available flavor wheels",
+        "ui_elements": ["Wheel gallery", "Filter options", "Search functionality"],
+        "data_requirements": [],
+        "user_decision": "Select wheel to explore or create new"
+      },
+      {
+        "step": 3,
+        "action": "Interactive Exploration",
+        "location": "Flavor wheel component",
+        "description": "Interact with sunburst visualization",
+        "ui_elements": ["D3 sunburst chart", "Zoom controls", "Export options", "Breadcrumb navigation"],
+        "data_requirements": ["Flavor wheel data"],
+        "user_decision": "Explore different segments, zoom, export"
+      },
+      {
+        "step": 4,
+        "action": "Data Export",
+        "location": "Flavor wheel component",
+        "description": "Export wheel data in various formats",
+        "ui_elements": ["Export buttons (SVG, PNG, JSON)", "Download handling"],
+        "data_requirements": ["Interactive wheel state"],
+        "user_decision": "Choose export format and download"
+      }
+    ],
+    "entry_points": ["/en/flavor-wheels", "Landing page → Flavor Wheels card"],
+    "decision_branches": ["Browse existing vs create new", "Export format selection"],
+    "exit_points": ["Navigation back", "Download completion"],
+    "error_handling": ["Data loading errors", "Export failures"],
+    "auto_save": false,
+    "draft_recovery": false
+  },
+  {
+    "name": "Authentication & User Management Flow",
+    "description": "User registration, login, and profile management",
+    "steps": [
+      {
+        "step": 1,
+        "action": "Authentication Trigger",
+        "location": "Any protected route",
+        "description": "System detects need for authentication",
+        "ui_elements": ["Sign-in modal", "Auth provider components"],
+        "data_requirements": [],
+        "user_decision": "Sign in or continue as guest"
+      },
+      {
+        "step": 2,
+        "action": "Authentication Process",
+        "location": "Auth modal/component",
+        "description": "Complete sign-in or registration",
+        "ui_elements": ["Email/password forms", "Social auth options", "Registration flow"],
+        "data_requirements": [],
+        "user_decision": "Choose authentication method"
+      },
+      {
+        "step": 3,
+        "action": "Profile Setup",
+        "location": "/en/profile",
+        "description": "Configure user profile and preferences",
+        "ui_elements": ["Profile form", "Tasting preferences", "Privacy settings"],
+        "data_requirements": ["Authenticated user"],
+        "user_decision": "Set up profile or skip"
+      }
+    ],
+    "entry_points": ["Any feature requiring auth", "Profile navigation"],
+    "decision_branches": ["Sign in vs guest", "Email vs social auth"],
+    "exit_points": ["Authenticated state", "Guest mode"],
+    "error_handling": ["Auth failures", "Network errors"],
+    "auto_save": false,
+    "draft_recovery": false
+  },
+  {
+    "name": "Mobile Navigation Flow",
+    "description": "Primary navigation through mobile interface",
+    "steps": [
+      {
+        "step": 1,
+        "action": "Bottom Navigation",
+        "location": "Fixed bottom bar",
+        "description": "Use main navigation tabs",
+        "ui_elements": ["4 main nav buttons", "Active indicators", "Touch feedback"],
+        "data_requirements": [],
+        "user_decision": "Select Home, Create, Review, or Wheels"
+      },
+      {
+        "step": 2,
+        "action": "Expanded Menu",
+        "location": "Overlay menu",
+        "description": "Access additional navigation options",
+        "ui_elements": ["Menu button", "Expanded overlay", "Secondary nav items"],
+        "data_requirements": [],
+        "user_decision": "Tap Menu for more options or use main nav"
+      }
+    ],
+    "entry_points": ["Any page with navigation"],
+    "decision_branches": ["Main nav vs expanded menu"],
+    "exit_points": ["Any destination page"],
+    "error_handling": ["Route errors"],
+    "auto_save": false,
+    "draft_recovery": false
+  }
+]

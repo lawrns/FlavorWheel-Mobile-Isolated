@@ -27,6 +27,19 @@ interface TastingItem {
   category?: string
 }
 
+// Raw category data from API (snake_case)
+interface RawCategory {
+  id: string
+  name: string
+  parameter_type: 'subjective_input' | 'sliding_scale' | 'multiple_choice' | 'exact_answer' | 'contains_x'
+  options?: string[]
+  min_value?: number
+  max_value?: number
+  contains_text?: string
+  rank_option?: boolean
+}
+
+// Normalized category interface (camelCase)
 interface Category {
   id: string
   name: string
@@ -98,13 +111,12 @@ export default function TastingInputPageClient({ params }: TastingInputPageClien
           console.log('🔍 SESSIONSTORAGE ITEMS:', parsed.items)
 
           // Log each category's parameter type to identify the issue
-          parsed.categories.forEach((cat, index) => {
+          parsed.categories.forEach((cat: RawCategory, index: number) => {
+            // Debug: Log category info
             console.log(`🔍 SESSIONSTORAGE CATEGORY ${index}: ${cat.name}`, {
               id: cat.id,
               name: cat.name,
               parameterType: cat.parameterType,
-              parameter_type: cat.parameter_type, // Check snake_case version
-              parameterTypeSnake: cat.parameter_type, // Alternative check
               allKeys: Object.keys(cat)
             })
           })
@@ -121,15 +133,15 @@ export default function TastingInputPageClient({ params }: TastingInputPageClien
           }
 
           // Map categories to ensure proper camelCase properties
-          const mappedCategories = parsed.categories.map(cat => ({
+          const mappedCategories: Category[] = parsed.categories.map((cat: RawCategory) => ({
             id: cat.id,
             name: cat.name,
-            parameterType: cat.parameterType || cat.parameter_type || 'subjective_input',
+            parameterType: cat.parameter_type || 'subjective_input',
             options: cat.options,
-            minValue: cat.minValue,
-            maxValue: cat.maxValue,
-            containsText: cat.containsText || cat.contains_text,
-            rankOption: cat.rankOption || cat.rank_option
+            minValue: cat.min_value,
+            maxValue: cat.max_value,
+            containsText: cat.contains_text,
+            rankOption: cat.rank_option
           }))
 
           // Map items to ensure proper structure
@@ -155,8 +167,8 @@ export default function TastingInputPageClient({ params }: TastingInputPageClien
 
           // Initialize responses structure with full metadata
           const initialResponses: Record<string, TastingResponse> = {}
-          tastingData.items.forEach(item => {
-            tastingData.categories.forEach(category => {
+          tastingData.items.forEach((item: TastingItem) => {
+            tastingData.categories.forEach((category: Category) => {
               const responseKey = `${item.id}-${category.id}`
               const defaultValue = getDefaultValue(category.parameterType)
 
@@ -208,15 +220,15 @@ export default function TastingInputPageClient({ params }: TastingInputPageClien
           }
 
           // Map categories to ensure proper camelCase properties
-          const mappedCategories = parsed.categories.map(cat => ({
+          const mappedCategories: Category[] = parsed.categories.map((cat: RawCategory) => ({
             id: cat.id,
             name: cat.name,
-            parameterType: cat.parameterType || cat.parameter_type || 'subjective_input',
+            parameterType: cat.parameter_type || 'subjective_input',
             options: cat.options,
-            minValue: cat.minValue,
-            maxValue: cat.maxValue,
-            containsText: cat.containsText || cat.contains_text,
-            rankOption: cat.rankOption || cat.rank_option
+            minValue: cat.min_value,
+            maxValue: cat.max_value,
+            containsText: cat.contains_text,
+            rankOption: cat.rank_option
           }))
 
           // Map items to ensure proper structure
@@ -242,8 +254,8 @@ export default function TastingInputPageClient({ params }: TastingInputPageClien
 
           // Initialize responses structure with full metadata
           const initialResponses: Record<string, TastingResponse> = {}
-          tastingData.items.forEach(item => {
-            tastingData.categories.forEach(category => {
+          tastingData.items.forEach((item: TastingItem) => {
+            tastingData.categories.forEach((category: Category) => {
               const responseKey = `${item.id}-${category.id}`
               const defaultValue = getDefaultValue(category.parameterType)
 
@@ -412,7 +424,7 @@ export default function TastingInputPageClient({ params }: TastingInputPageClien
       console.log('📤 SUBMISSION - TASTING DATA:', tastingData)
 
       // Log all responses by category and item for verification
-      formattedResponses.forEach((response, index) => {
+      formattedResponses.forEach((response: any, index: number) => {
         console.log(`📤 SUBMISSION - Response ${index}: Item ${response.itemId}, Category ${response.categoryId} (${response.categoryName}): "${response.value}" (${response.parameterType})`)
       })
 
@@ -470,7 +482,7 @@ export default function TastingInputPageClient({ params }: TastingInputPageClien
               .filter(r => r.parameterType === 'sliding_scale')
               .map(r => {
                 const category = tastingData.categories.find(c => c.id === r.categoryId)
-                const maxValue = category?.maxValue || category?.max_value || 10
+                const maxValue = category?.maxValue || 10
                 const value = parseFloat(r.value) || 0
                 const percentage = (value / maxValue) * 100
 
@@ -535,8 +547,8 @@ export default function TastingInputPageClient({ params }: TastingInputPageClien
     const value = getResponseValue(item.id, category.id)
     const fieldId = `${item.id}-${category.id}`
 
-    // Get the parameter type with fallback
-    const parameterType = category.parameterType || category.parameter_type || 'subjective_input'
+    // Get the parameter type
+    const parameterType = category.parameterType
 
     console.log('Rendering field:', {
       item: item.name,
@@ -568,13 +580,13 @@ export default function TastingInputPageClient({ params }: TastingInputPageClien
         return (
           <div className="space-y-3">
             <Label className="text-sm font-medium">
-              {category.name}: {value || 5}/{category.maxValue || category.max_value || 10}
+              {category.name}: {value || 5}/{category.maxValue || 10}
             </Label>
             <Slider
               value={[value || 5]}
               onValueChange={(newValue) => updateResponse(item.id, category.id, newValue[0])}
-              min={category.minValue || category.min_value || 1}
-              max={category.maxValue || category.max_value || 10}
+              min={category.minValue || 1}
+              max={category.maxValue || 10}
               step={1}
               className="w-full"
             />
@@ -635,7 +647,7 @@ export default function TastingInputPageClient({ params }: TastingInputPageClien
               id={fieldId}
               value={value || ''}
               onChange={(e) => updateResponse(item.id, category.id, e.target.value)}
-              placeholder={`Text containing: ${category.containsText || category.contains_text || 'specific term'}`}
+              placeholder={`Text containing: ${category.containsText || 'specific term'}`}
               className="w-full"
             />
             <p className="text-xs text-gray-500">
@@ -740,84 +752,62 @@ export default function TastingInputPageClient({ params }: TastingInputPageClien
           </CardContent>
         </Card>
 
-        {/* Current Item */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <CheckCircle className="h-5 w-5 text-green-500" />
-              {currentItem.name}
-            </CardTitle>
-            {currentItem.category && (
-              <Badge variant="secondary">{currentItem.category}</Badge>
-            )}
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-6">
-              {tastingData.categories && tastingData.categories.length > 0 ? (
-                tastingData.categories.map((category) => (
-                  <div key={category.id} className="border-b border-gray-200 pb-6 last:border-b-0 last:pb-0">
-                    {renderField(currentItem, category)}
-                  </div>
-                ))
-              ) : (
-                <div className="text-center py-8">
-                  <p className="text-gray-500">No categories found for this tasting.</p>
-                  <p className="text-sm text-gray-400 mt-2">
-                    Categories: {JSON.stringify(tastingData.categories)}
-                  </p>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+        {/* Mock Input Screen */}
+        <div className="bg-white p-4 rounded-lg shadow flex flex-col space-y-4">
+          <h2 className="text-xl font-bold">Review {tastingData?.product_type || 'Lager'} Tasting</h2>
+          <p className="text-gray-600">Item: {currentItem?.name || 'Item 1'} ({currentItemIndex + 1}/{tastingData?.items?.length || 2})</p>
 
-        {/* Navigation */}
-        <div className="flex justify-between items-center">
-          <Button
-            variant="outline"
-            onClick={() => setCurrentItemIndex(prev => Math.max(0, prev - 1))}
-            disabled={currentItemIndex === 0}
-          >
-            <ChevronLeft className="h-4 w-4 mr-2" />
-            Previous
-          </Button>
-
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              onClick={saveProgress}
-              disabled={saving}
-            >
-              {saving ? (
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              ) : (
-                <Save className="h-4 w-4 mr-2" />
-              )}
-              Save Progress
-            </Button>
-
-            {currentItemIndex === tastingData.items.length - 1 ? (
-              <Button
-                onClick={submitTasting}
-                disabled={submitting}
-                className="bg-green-500 hover:bg-green-600"
-              >
-                {submitting ? (
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                ) : (
-                  <CheckCircle className="h-4 w-4 mr-2" />
+          {tastingData?.categories && tastingData.categories.length > 0 ? (
+            tastingData.categories.map((category) => (
+              <div key={category.id} className="mb-4">
+                <label className="block text-gray-700">{category.name}</label>
+                {category.parameterType === 'subjective_input' && (
+                  <textarea className="w-full border p-2 rounded" placeholder={`Describe the ${category.name.toLowerCase()}...`} />
                 )}
-                Finish Tasting
-              </Button>
-            ) : (
-              <Button
-                onClick={() => setCurrentItemIndex(prev => Math.min(tastingData.items.length - 1, prev + 1))}
-              >
-                Next
-                <ChevronRight className="h-4 w-4 ml-2" />
-              </Button>
-            )}
-          </div>
+                {category.parameterType === 'sliding_scale' && (
+                  <div>
+                    <input type="range" min="1" max="100" className="w-full" />
+                    <span>50</span>
+                  </div>
+                )}
+                {category.parameterType === 'multiple_choice' && (
+                  <select className="w-full border p-2 rounded">
+                    <option>Select {category.name.toLowerCase()}</option>
+                    {(category.options || []).map((option, optIdx) => (
+                      <option key={optIdx} value={option}>{option}</option>
+                    ))}
+                  </select>
+                )}
+                {category.parameterType === 'exact_answer' && (
+                  <input className="w-full border p-2 rounded" placeholder={`Enter ${category.name.toLowerCase()}`} />
+                )}
+                {category.parameterType === 'contains_x' && (
+                  <input className="w-full border p-2 rounded" placeholder={`Text containing: ${category.containsText || 'specific term'}`} />
+                )}
+              </div>
+            ))
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-gray-500">No categories found for this tasting.</p>
+            </div>
+          )}
+        </div>
+
+        {/* Mock Action Buttons */}
+        <div className="flex flex-col space-y-2">
+          <button className="w-full bg-blue-500 text-white p-3 rounded">Save Progress</button>
+          <button
+            className="w-full bg-green-500 text-white p-3 rounded"
+            onClick={() => {
+              if (currentItemIndex < (tastingData?.items?.length - 1)) {
+                setCurrentItemIndex(currentItemIndex + 1)
+              } else {
+                submitTasting()
+              }
+            }}
+          >
+            {currentItemIndex < (tastingData?.items?.length - 1) ? 'Next Item' : 'Finish Tasting'}
+          </button>
         </div>
 
         {/* Item Navigation Dots */}

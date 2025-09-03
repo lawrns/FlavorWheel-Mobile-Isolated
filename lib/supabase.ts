@@ -1,9 +1,12 @@
-// Mock Supabase client for isolated build
-// This replaces the real Supabase integration to avoid environment variable dependencies
+// Supabase client configuration for FlavorWheel México
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 
-export interface MockSupabaseClient {
-  from: (table: string) => MockQueryBuilder
-  channel: (name: string) => MockChannel
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+
+export interface SupabaseClient {
+  from: (table: string) => any
+  channel: (name: string) => any
   auth: {
     signInWithOtp: (params: { email: string }) => Promise<{ error: any }>
     signOut: () => Promise<void>
@@ -12,76 +15,140 @@ export interface MockSupabaseClient {
   }
 }
 
-class MockChannel {
-  on(event: string, callback: Function) {
-    return this
+// Create Supabase client with proper configuration for Next.js 15
+export const createClient = () => {
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error(
+      'Supabase configuration missing. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY environment variables.'
+    )
   }
 
-  subscribe(callback?: Function) {
-    if (callback) callback()
-    return this
-  }
-
-  unsubscribe() {
-    return this
-  }
-}
-
-class MockQueryBuilder {
-  constructor(private table: string) {}
-
-  select(columns?: string) {
-    return this
-  }
-
-  insert(data: any) {
-    return this
-  }
-
-  update(data: any) {
-    return this
-  }
-
-  delete() {
-    return this
-  }
-
-  eq(column: string, value: any) {
-    return this
-  }
-
-  or(filter: string) {
-    return this
-  }
-
-  gte(column: string, value: any) {
-    return this
-  }
-
-  lte(column: string, value: any) {
-    return this
-  }
-
-  order(column: string, options?: { ascending?: boolean }) {
-    return this
-  }
-
-  limit(count: number) {
-    return this
-  }
-
-  then(callback: (result: any) => void) {
-    // Mock successful response
-    const mockResult = {
-      data: [],
-      error: null
+  return createSupabaseClient(supabaseUrl, supabaseAnonKey, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true
+    },
+    realtime: {
+      params: {
+        eventsPerSecond: 10
+      }
+    },
+    global: {
+      headers: {
+        'X-Client-Info': 'flavorwheel-mexico@1.0.0'
+      }
     }
-    callback(mockResult)
-    return this
-  }
+  })
 }
 
-export const createClient = (url?: string, key?: string): MockSupabaseClient => {
+// Mock client for development/testing
+function createMockClient() {
+  class MockChannel {
+    on(event: string, callback: Function) {
+      return this
+    }
+
+    subscribe(callback?: Function) {
+      if (callback) callback()
+      return this
+    }
+
+    unsubscribe() {
+      return this
+    }
+  }
+
+  class MockQueryBuilder {
+    constructor(private table: string) {}
+
+    select(columns?: string) {
+      return this
+    }
+
+    insert(data: any) {
+      return this
+    }
+
+    update(data: any) {
+      return this
+    }
+
+    delete() {
+      return this
+    }
+
+    eq(column: string, value: any) {
+      return this
+    }
+
+    or(filter: string) {
+      return this
+    }
+
+    gte(column: string, value: any) {
+      return this
+    }
+
+    lte(column: string, value: any) {
+      return this
+    }
+
+    lt(column: string, value: any) {
+      return this
+    }
+
+    single() {
+      return this
+    }
+
+    upsert(data: any) {
+      return this
+    }
+
+    range(from: number, to: number) {
+      return this
+    }
+
+    neq(column: string, value: any) {
+      return this
+    }
+
+    not(column: string, operator: string, value: any) {
+      return this
+    }
+
+    in(column: string, values: any[]) {
+      return this
+    }
+
+    textSearch(column: string, query: string, options?: any) {
+      return this
+    }
+
+    overlaps(column: string, values: any[]) {
+      return this
+    }
+
+    order(column: string, options?: { ascending?: boolean }) {
+      return this
+    }
+
+    limit(count: number) {
+      return this
+    }
+
+    then(callback: (result: any) => void) {
+      // Mock successful response
+      const mockResult = {
+        data: [],
+        error: null
+      }
+      callback(mockResult)
+      return this
+    }
+  }
+
   return {
     from: (table: string) => new MockQueryBuilder(table),
     channel: (name: string) => new MockChannel(),
@@ -104,7 +171,7 @@ export const createClient = (url?: string, key?: string): MockSupabaseClient => 
           }
         }
       },
-      onAuthStateChange: (callback: Function) => {
+      onAuthStateChange: (callback: (event: string, session: unknown) => void) => {
         // Mock subscription
         return {
           data: {
@@ -113,25 +180,65 @@ export const createClient = (url?: string, key?: string): MockSupabaseClient => 
             }
           }
         }
+      },
+      getUser: async () => {
+        // Mock getUser
+        return {
+          data: {
+            user: { id: 'mock-user-id', email: 'mock@example.com' }
+          },
+          error: null
+        }
       }
+    },
+    storage: {
+      from: (_bucket: string) => ({
+        upload: async (path: string, file: File, options?: Record<string, unknown>) => {
+          console.log('Mock storage: upload', path, file.name, options)
+          return { data: { path }, error: null }
+        },
+        getPublicUrl: (path: string) => {
+          console.log('Mock storage: getPublicUrl', path)
+          return { data: { publicUrl: `https://mock-storage.com/${path}` } }
+        },
+        remove: async (paths: string[]) => {
+          console.log('Mock storage: remove', paths)
+          return { data: null, error: null }
+        },
+        list: async (path?: string) => {
+          console.log('Mock storage: list', path)
+          return { data: { files: [] }, error: null }
+        }
+      })
     }
   }
 }
 
-export const supabase = createClient()
-
-// Mock storage utilities
-export const mockStorage = {
-  tastings: [] as any[],
-  saveTasting: (tasting: any) => {
-    mockStorage.tastings.push(tasting)
-    localStorage.setItem('mock-tastings', JSON.stringify(mockStorage.tastings))
-  },
-  getTastings: () => {
-    const stored = localStorage.getItem('mock-tastings')
-    return stored ? JSON.parse(stored) : []
-  },
-  getTastingById: (id: string) => {
-    return mockStorage.getTastings().find((t: any) => t.id === id)
+// Create the main Supabase client instance with error handling
+let supabaseClient: ReturnType<typeof createClient> | ReturnType<typeof createMockClient> | null = null
+try {
+  supabaseClient = createClient()
+} catch (error) {
+  console.error('Failed to initialize Supabase client:', error)
+  // In development, use mock client as fallback
+  if (process.env.NODE_ENV === 'development') {
+    console.warn('Using mock Supabase client for development')
+    supabaseClient = createMockClient()
+  } else {
+    throw error // Re-throw in production
   }
 }
+
+export const supabase = supabaseClient
+
+// Client-side only utilities
+export const getSupabaseClient = () => {
+  if (typeof window === 'undefined') {
+    // Server-side: use mock client if real client failed
+    return supabaseClient || createMockClient()
+  }
+  // Client-side: return real client
+  return supabaseClient || createClient()
+}
+
+// Development utilities - removed mock storage to encourage proper implementation

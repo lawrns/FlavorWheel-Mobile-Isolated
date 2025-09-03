@@ -17,6 +17,7 @@ import {
   FileText, Sliders, CheckSquare, Type, Search
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { PhotoUpload } from '@/components/ui/photo-upload'
 import { CreateShell, CreateHeader, CreateFooterActions } from '@/components/create'
 
 // Types matching the specification
@@ -43,6 +44,12 @@ interface Item {
   }
 }
 
+interface Participant {
+  id: string
+  name: string
+  email: string
+}
+
 interface FormData {
   competition_name: string
   description: string
@@ -51,6 +58,9 @@ interface FormData {
   blind_toggle: boolean
   categories: Category[]
   items: Item[]
+  tasting_photo?: string
+  participants: Participant[]
+  max_participants?: number
 }
 
 
@@ -70,7 +80,7 @@ export default function CreateCompetitionPage() {
   const router = useRouter()
   const [formData, setFormData] = useState<FormData>({
     competition_name: '',
-      description: '',
+    description: '',
     product_type: '',
     template: '',
     blind_toggle: false,
@@ -84,11 +94,25 @@ export default function CreateCompetitionPage() {
       id: '1',
       item_name: '',
       item_description: ''
-    }]
+    }],
+    participants: [],
+    max_participants: 10
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [lastSaved, setLastSaved] = useState<string | null>(null)
   const [categoriesExpanded, setCategoriesExpanded] = useState(false)
+
+  // Flow state management
+  const [flowStep, setFlowStep] = useState<'create' | 'confirm' | 'input' | 'complete'>('create')
+  const [currentItemIndex, setCurrentItemIndex] = useState(0)
+
+  // Debug state changes
+  useEffect(() => {
+    console.log('🎯🎯🎯 COMPETITION FLOW STATE CHANGED:', {
+      flowStep,
+      currentItemIndex
+    })
+  }, [flowStep, currentItemIndex])
 
   // Auto-save functionality
   useEffect(() => {
@@ -148,10 +172,37 @@ export default function CreateCompetitionPage() {
     })
   }
 
-  const updateItem = (id: string, updates: Partial<Item>) => {
+    const updateItem = (id: string, updates: Partial<Item>) => {
     updateFormData({
       items: formData.items.map(item =>
-      item.id === id ? { ...item, ...updates } : item
+        item.id === id ? { ...item, ...updates } : item
+      )
+    })
+  }
+
+  const addParticipant = () => {
+    if (formData.participants.length < (formData.max_participants || 50)) {
+      const newParticipant: Participant = {
+        id: Date.now().toString(),
+        name: '',
+        email: ''
+      }
+      updateFormData({
+        participants: [...formData.participants, newParticipant]
+      })
+    }
+  }
+
+  const removeParticipant = (id: string) => {
+    updateFormData({
+      participants: formData.participants.filter(p => p.id !== id)
+    })
+  }
+
+  const updateParticipant = (id: string, updates: Partial<Participant>) => {
+    updateFormData({
+      participants: formData.participants.map(p =>
+        p.id === id ? { ...p, ...updates } : p
       )
     })
   }
@@ -181,7 +232,7 @@ export default function CreateCompetitionPage() {
   const validateAndFocusFirstError = () => {
     // Check competition name
     if (!formData.competition_name.trim()) {
-      const nameInput = document.getElementById('competition_name')
+      const nameInput = document.getElementById('competition_name') as HTMLInputElement
       if (nameInput) {
         nameInput.focus()
         nameInput.scrollIntoView({ behavior: 'smooth', block: 'center' })
@@ -191,7 +242,7 @@ export default function CreateCompetitionPage() {
 
     // Check product type
     if (!formData.product_type) {
-      const productSelect = document.querySelector('[data-testid="select-product-type"]')
+      const productSelect = document.querySelector('[data-testid="select-product-type"]') as HTMLElement
       if (productSelect) {
         productSelect.focus()
         productSelect.scrollIntoView({ behavior: 'smooth', block: 'center' })
@@ -202,8 +253,8 @@ export default function CreateCompetitionPage() {
     // Check category names
     for (let i = 0; i < formData.categories.length; i++) {
       if (!formData.categories[i].category_name.trim()) {
-        const categoryInput = document.querySelector(`input[placeholder*="Category ${i + 1}"]`) ||
-                             document.querySelector(`input[placeholder*="Aroma"]`)
+        const categoryInput = (document.querySelector(`input[placeholder*="Category ${i + 1}"]`) ||
+                             document.querySelector(`input[placeholder*="Aroma"]`)) as HTMLInputElement
         if (categoryInput) {
           categoryInput.focus()
           categoryInput.scrollIntoView({ behavior: 'smooth', block: 'center' })
@@ -215,7 +266,7 @@ export default function CreateCompetitionPage() {
     // Check item names
     for (let i = 0; i < formData.items.length; i++) {
       if (!formData.items[i].item_name.trim()) {
-        const itemInput = document.querySelector(`input[placeholder*="Item ${i + 1}"]`)
+        const itemInput = document.querySelector(`input[placeholder*="Item ${i + 1}"]`) as HTMLInputElement
         if (itemInput) {
           itemInput.focus()
           itemInput.scrollIntoView({ behavior: 'smooth', block: 'center' })
@@ -231,7 +282,7 @@ export default function CreateCompetitionPage() {
         const preloadedAnswer = item.preloaded_answers?.[category.id]
         if (!preloadedAnswer) {
           // Find the preloaded answer input for this item and category
-          const answerInput = document.querySelector(`[data-category-id="${category.id}"][data-item-id="${item.id}"]`)
+          const answerInput = document.querySelector(`[data-category-id="${category.id}"][data-item-id="${item.id}"]`) as HTMLElement
           if (answerInput) {
             answerInput.focus()
             answerInput.scrollIntoView({ behavior: 'smooth', block: 'center' })
@@ -244,28 +295,7 @@ export default function CreateCompetitionPage() {
     return null
   }
 
-  const handleCreateCompetition = async () => {
-    const validationError = validateAndFocusFirstError()
-    if (validationError) {
-      // Could set a status message here if needed
-      return
-    }
-
-    setIsSubmitting(true)
-
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-
-      // Create draft tasting using existing logic
-      router.push('/en/landing')
-    } catch (error) {
-      console.error('Failed to create competition:', error)
-      // Could set error status message here
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
+  // Removed handleCreateCompetition - now handled directly in button onClick
 
   const addPrefillCategory = (name: string, type: EvaluationType) => {
     if (formData.categories.length < 10) {
@@ -379,9 +409,156 @@ export default function CreateCompetitionPage() {
       formData.items.every(item => item.preloaded_answers?.[category.id])
     )
 
-    return hasName && hasProductType && hasValidCategories && hasValidItems && hasRankingAnswers
+    // Validate participants (name and email required)
+    const hasValidParticipants = formData.participants.length === 0 ||
+      formData.participants.every(p => p.name.trim() && p.email.trim() && p.email.includes('@'))
+
+    return hasName && hasProductType && hasValidCategories && hasValidItems && hasRankingAnswers && hasValidParticipants
   }
 
+
+
+
+
+
+
+
+  // Handle different flow steps
+  if (flowStep === 'confirm') {
+    return (
+      <CreateShell
+        header={
+          <CreateHeader
+            title="Confirm Competition"
+            onBack={() => setFlowStep('create')}
+            status={null}
+          />
+        }
+        footer={<div />}
+      >
+        <div className="bg-white p-4 rounded-lg shadow flex flex-col space-y-4">
+          <h2 className="text-xl font-bold">Confirm Competition</h2>
+          <div>
+            <p><strong>Mode:</strong> Competition</p>
+            <p><strong>Product:</strong> {formData.product_type || 'Lager'}</p>
+            <p><strong>Items:</strong> {formData.items.map((item) => item.item_name).join(', ') || 'Item 1, Item 2'}</p>
+            <p><strong>Categories:</strong> {formData.categories.map((cat) => cat.category_name).join(', ') || 'Aroma, Flavor'}</p>
+          </div>
+          <div>
+            <label className="block text-gray-700">Invite Participants</label>
+            <input className="w-full border p-2 rounded" placeholder="Enter emails" />
+          </div>
+          <div>
+            <label className="block text-gray-700">Competition Date</label>
+            <input type="date" className="w-full border p-2 rounded" />
+          </div>
+          <button
+            className="w-full bg-blue-500 text-white p-3 rounded"
+            onClick={() => setFlowStep('input')}
+          >
+            Start Competition
+          </button>
+        </div>
+      </CreateShell>
+    )
+  }
+
+  if (flowStep === 'input') {
+    const currentItem = formData.items[currentItemIndex] || { item_name: 'Item 1' }
+    return (
+      <CreateShell
+        header={
+          <CreateHeader
+            title="Competition Input"
+            onBack={() => setFlowStep('confirm')}
+            status={null}
+          />
+        }
+        footer={<div />}
+      >
+        <div className="bg-white p-4 rounded-lg shadow flex flex-col space-y-4">
+          <h2 className="text-xl font-bold">Review {formData.product_type || 'Lager'} Competition</h2>
+          <p className="text-gray-600">Item: {currentItem.item_name} ({currentItemIndex + 1}/{formData.items.length || 2})</p>
+          {formData.categories.map((cat, idx) => (
+            <div key={idx} className="mb-4">
+              <label className="block text-gray-700">{cat.category_name}</label>
+              {cat.evaluation_type === 'subjective_input' && (
+                <textarea className="w-full border p-2 rounded" placeholder={`Describe the ${cat.category_name.toLowerCase()}...`} />
+              )}
+              {cat.evaluation_type === 'sliding_scale' && (
+                <div>
+                  <input type="range" min="1" max="100" className="w-full" />
+                  <span>50</span>
+                </div>
+              )}
+              {cat.evaluation_type === 'multiple_choice' && (
+                <select className="w-full border p-2 rounded">
+                  <option>Select {cat.category_name.toLowerCase()}</option>
+                  {(cat.mc_options || []).map((option, optIdx) => (
+                    <option key={optIdx} value={option}>{option}</option>
+                  ))}
+                </select>
+              )}
+              {cat.evaluation_type === 'exact_answer' && (
+                <input className="w-full border p-2 rounded" placeholder={`Enter ${cat.category_name.toLowerCase()}`} />
+              )}
+              {cat.evaluation_type === 'contains_x' && (
+                <input className="w-full border p-2 rounded" placeholder={`Text containing: ${cat.contains_value || 'specific term'}`} />
+              )}
+            </div>
+          ))}
+          <button className="w-full bg-blue-500 text-white p-3 rounded">Save Progress</button>
+          <button
+            className="w-full bg-green-500 text-white p-3 mt-2 rounded"
+            onClick={() => {
+              if (currentItemIndex < (formData.items.length - 1)) {
+                setCurrentItemIndex(currentItemIndex + 1)
+              } else {
+                setFlowStep('complete')
+              }
+            }}
+          >
+            {currentItemIndex < (formData.items.length - 1) ? 'Next Item' : 'Finish Competition'}
+          </button>
+        </div>
+      </CreateShell>
+    )
+  }
+
+  if (flowStep === 'complete') {
+    const currentItem = formData.items[currentItemIndex] || { item_name: 'Item 1' }
+    return (
+      <CreateShell
+        header={
+          <CreateHeader
+            title="Competition Complete"
+            onBack={() => setFlowStep('input')}
+            status={null}
+          />
+        }
+        footer={<div />}
+      >
+        <div className="bg-white p-4 rounded-lg shadow flex flex-col space-y-4">
+          <h2 className="text-xl font-bold">Competition Complete</h2>
+          <p><strong>Mode:</strong> Competition</p>
+          <p><strong>Item:</strong> {currentItem.item_name}</p>
+          {formData.categories.map((cat, idx) => (
+            <p key={idx}><strong>{cat.category_name}:</strong> [Mock {cat.evaluation_type === 'sliding_scale' ? '75' : 'Text'}]</p>
+          ))}
+          <div className="mt-4 h-40 bg-gray-300 rounded flex items-center justify-center">Sunburst Wheel Mock</div>
+          <button className="w-full bg-blue-500 text-white p-3 rounded">Save Results</button>
+          <button
+            className="w-full bg-green-500 text-white p-3 mt-2 rounded"
+            onClick={() => setFlowStep('create')}
+          >
+            Share Results
+          </button>
+        </div>
+      </CreateShell>
+    )
+  }
+
+  // Default: Create screen
   return (
     <CreateShell
       header={
@@ -391,10 +568,11 @@ export default function CreateCompetitionPage() {
           status={lastSaved ? 'saved' : null}
         />
       }
+      footer={<div />}
     >
 
       {/* Main Content */}
-      <div className="space-y-6">
+      <div className="space-y-6 pb-24">
         {/* Basic Information */}
         <section id="basic_info">
           <Card className="rounded-xl bg-white shadow-soft border border-fx-border p-4 sm:p-5 hover-lift card-enter">
@@ -471,9 +649,30 @@ export default function CreateCompetitionPage() {
                   onCheckedChange={(checked) => updateFormData({ blind_toggle: checked })}
                   className="h-6 w-11"
                 />
-                                </div>
-                              </CardContent>
-                            </Card>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* Competition Photo */}
+        <section id="competition_photo">
+          <Card className="rounded-xl bg-white shadow-soft border border-fx-border p-4 sm:p-5 hover-lift card-enter">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-xl font-semibold text-fx-text font-heading">Competition Photo</CardTitle>
+              <p className="text-sm text-fx-text2 mt-1">Add a photo for your competition</p>
+            </CardHeader>
+            <CardContent>
+              <PhotoUpload
+                onPhotoUploaded={(url) => updateFormData({ tasting_photo: url })}
+                onPhotoRemoved={() => updateFormData({ tasting_photo: undefined })}
+                currentPhotoUrl={formData.tasting_photo}
+                userId="mock-user-id" // Replace with actual user ID from auth
+                folder="competitions"
+                maxPhotos={1}
+                className="w-full"
+              />
+            </CardContent>
+          </Card>
         </section>
 
         {/* Evaluation Categories */}
@@ -755,24 +954,15 @@ export default function CreateCompetitionPage() {
                       <Label className="text-sm font-semibold text-[#1B1B18] mb-2 block">
                         Image (Optional)
                       </Label>
-                      <div className="flex gap-2">
-                            <Button
-                              type="button"
-                              variant="outline"
-                          className="flex-1 h-12 rounded-xl border-[#D6D1C8]"
-                            >
-                          <Camera className="h-4 w-4 mr-2" />
-                          Take Photo
-                            </Button>
-                            <Button
-                              type="button"
-                              variant="outline"
-                          className="flex-1 h-12 rounded-xl border-[#D6D1C8]"
-                            >
-                          <Upload className="h-4 w-4 mr-2" />
-                          Upload Image
-                            </Button>
-                          </div>
+                      <PhotoUpload
+                        onPhotoUploaded={(url) => updateItem(item.id, { item_image: url })}
+                        onPhotoRemoved={() => updateItem(item.id, { item_image: undefined })}
+                        currentPhotoUrl={item.item_image}
+                        userId="mock-user-id" // Replace with actual user ID from auth
+                        folder="competition-items"
+                        maxPhotos={1}
+                        className="w-full"
+                      />
                         </div>
 
                     {/* Pre-loaded Answers */}
@@ -811,16 +1001,187 @@ export default function CreateCompetitionPage() {
           </Card>
         </section>
 
-        {/* Footer Actions - Static */}
-        <CreateFooterActions
-          primaryLabel="Create Competition"
-          onPrimary={handleCreateCompetition}
-          secondaryLabel="Cancel"
-          onSecondary={() => router.back()}
-          disabled={!isFormValid()}
-          busy={isSubmitting}
-          statusMessage={isSubmitting ? 'Creating competition...' : undefined}
-        />
+        {/* Participants */}
+        <section id="participants">
+          <Card className="rounded-xl bg-white shadow-fx border border-fx-border p-4 sm:p-5">
+            <Collapsible defaultOpen={false}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-lg font-bold text-fx-text">Participants</CardTitle>
+                  <p className="text-sm text-fx-text2">Invite participants to join the competition</p>
+                </div>
+                <CollapsibleTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="p-2"
+                    aria-label="Toggle participants section"
+                  >
+                    <ChevronDown className="h-4 w-4 transition-transform data-[state=open]:rotate-180" />
+                  </Button>
+                </CollapsibleTrigger>
+              </div>
+
+              <CollapsibleContent>
+                <div className="mt-4 space-y-4">
+                  {/* Max Participants Setting */}
+                  <div>
+                    <Label className="text-sm font-semibold text-fx-text mb-2 block">
+                      Maximum Participants
+                    </Label>
+                    <Select
+                      value={formData.max_participants?.toString()}
+                      onValueChange={(value) => updateFormData({ max_participants: parseInt(value) })}
+                    >
+                      <SelectTrigger className="w-full min-h-[48px] rounded-lg border-[#D6D1C8] bg-white p-3 text-sm">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="5">5 participants</SelectItem>
+                        <SelectItem value="10">10 participants</SelectItem>
+                        <SelectItem value="15">15 participants</SelectItem>
+                        <SelectItem value="20">20 participants</SelectItem>
+                        <SelectItem value="50">50 participants</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Participants List */}
+                  <div data-testid="repeater-participants" className="space-y-4">
+                    {formData.participants.map((participant, index) => (
+                      <div key={participant.id} className="border border-fx-border rounded-lg p-4 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <Label className="text-sm font-semibold text-fx-text">
+                            Participant {index + 1}
+                          </Label>
+                          {formData.participants.length > 0 && (
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => removeParticipant(participant.id)}
+                              aria-label="Remove participant"
+                              className="h-8 w-8 p-0"
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          )}
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          <div>
+                            <Label className="text-sm font-semibold text-fx-text mb-2 block">
+                              Name *
+                            </Label>
+                            <Input
+                              placeholder="Participant name"
+                              value={participant.name}
+                              onChange={(e) => updateParticipant(participant.id, { name: e.target.value })}
+                              className="w-full min-h-[48px] rounded-lg border-[#D6D1C8] bg-white p-3 text-sm"
+                              required
+                            />
+                          </div>
+
+                          <div>
+                            <Label className="text-sm font-semibold text-fx-text mb-2 block">
+                              Email *
+                            </Label>
+                            <Input
+                              type="email"
+                              placeholder="participant@email.com"
+                              value={participant.email}
+                              onChange={(e) => updateParticipant(participant.id, { email: e.target.value })}
+                              className="w-full min-h-[48px] rounded-lg border-[#D6D1C8] bg-white p-3 text-sm"
+                              required
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <Button
+                    type="button"
+                    onClick={addParticipant}
+                    data-testid="button-add-participant"
+                    variant="outline"
+                    className="w-full h-12 rounded-xl border border-[#E6E1D9] font-semibold"
+                    disabled={formData.participants.length >= (formData.max_participants || 50)}
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Participant
+                  </Button>
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
+          </Card>
+        </section>
+
+        {/* Create Button - Enhanced for Competition */}
+        <div className="flex flex-col sm:flex-row gap-3 pt-4">
+          <div className="flex-1" />
+
+          <button
+            disabled={!isFormValid()}
+            className="min-h-[48px] bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed justify-center border-4 border-yellow-400 shadow-2xl animate-pulse font-medium text-base"
+            style={{
+              backgroundColor: (!isFormValid()) ? '#ef4444' : '#10b981',
+              boxShadow: '0 0 30px rgba(16, 185, 129, 0.8)',
+              animation: 'pulse 2s infinite'
+            }}
+            onClick={(e) => {
+              e.preventDefault()
+              alert('🎉 COMPETITION BUTTON WORKS! FLOW STARTING!')
+              console.log('🚀🚀🚀 COMPETITION FLOW TRIGGER: Create Competition clicked')
+
+              const validationError = validateAndFocusFirstError()
+              if (validationError) {
+                console.log('❌ Validation error:', validationError)
+                return
+              }
+
+              // Store form data for the flow
+              const competitionData = {
+                id: `mock-competition-${Date.now()}`,
+                name: formData.competition_name,
+                mode: 'competition' as const,
+                product_type: formData.product_type,
+                categories: formData.categories.map(cat => ({
+                  id: cat.id,
+                  name: cat.category_name,
+                  parameterType: cat.evaluation_type,
+                  parameter_type: cat.evaluation_type,
+                  options: cat.mc_options,
+                  minValue: cat.scale_meta?.min || 0,
+                  maxValue: cat.scale_meta?.max || 100,
+                  containsText: cat.contains_value,
+                  rankOption: cat.include_in_ranking
+                })),
+                items: formData.items.map(item => ({
+                  id: item.id,
+                  name: item.item_name,
+                  description: item.item_description,
+                  image: item.item_image,
+                  preLoadedData: item.preloaded_answers || {}
+                }))
+              }
+
+              sessionStorage.setItem('tasting-completion-data', JSON.stringify(competitionData))
+              sessionStorage.setItem('tasting-input-data', JSON.stringify(competitionData))
+
+              // Start the flow
+              setFlowStep('confirm')
+              console.log('✅ Competition flow started: create → confirm')
+            }}
+          >
+            <svg className="h-6 w-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            <span className="whitespace-nowrap text-lg font-bold">🚀 CREATE COMPETITION - CLICK ME! 🚀</span>
+          </button>
+        </div>
+
       </div>
     </CreateShell>
   )

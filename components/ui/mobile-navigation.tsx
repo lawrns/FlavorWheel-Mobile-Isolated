@@ -3,9 +3,10 @@
 import { useState, useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Home, Plus, User, Settings, Sparkles, QrCode, Menu, X, Star, Zap } from 'lucide-react'
+import { Home, Plus, User, Settings, Sparkles, QrCode, Menu, X, Star, Zap, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { MOBILE_NAV_ITEMS } from '@/lib/navigation-config'
 
 interface MobileNavigationProps {
   activeScreen?: string
@@ -25,13 +26,13 @@ export function MobileNavigation({
   // Hide navigation on landing page
   if (pathname?.includes('/landing')) return null
 
-  // Integrated Quick Actions into main navigation - Updated per client feedback
-  const mainNavItems = [
-    { id: 'home', icon: Home, label: 'Home', path: '/en/landing' },
-    { id: 'create', icon: Plus, label: 'Create', path: '/en/create' },
-    { id: 'review', icon: Star, label: 'Review', path: '/en/quick-tasting' },
-    { id: 'flavor-wheels', icon: Sparkles, label: 'Wheels', path: '/en/flavor-wheels' },
-  ]
+  // Use centralized navigation config - Updated per client feedback
+  const mainNavItems = MOBILE_NAV_ITEMS.map(item => ({
+    id: item.id,
+    icon: item.icon,
+    label: item.label,
+    path: `/en${item.href}`
+  }))
 
   const secondaryNavItems = [
     { id: 'analytics', icon: Settings, label: 'Analytics', path: '/en/analytics' },
@@ -49,6 +50,7 @@ export function MobileNavigation({
       {/* Mobile Bottom Navigation - Always Visible */}
       <nav
         data-testid="mobile-navigation-root"
+        id="mobile-navigation"
         className={cn(
           'fixed bottom-0 left-0 right-0 z-50 h-16',
           'pb-safe border-t border-gray-200 bg-white/95 backdrop-blur-md shadow-lg will-change-transform',

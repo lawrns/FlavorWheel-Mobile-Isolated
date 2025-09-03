@@ -12,6 +12,7 @@ import { Switch } from '@/components/ui/switch'
 import { Slider } from '@/components/ui/slider'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import ProductTypeSelect from '@/components/ProductTypeSelect'
+import { PhotoUpload } from '@/components/ui/photo-upload'
 import { CreateShell, CreateHeader, CreateFooterActions } from '@/components/create'
 
 
@@ -42,6 +43,7 @@ interface FormData {
   blind_toggle: boolean
   categories: Category[]
   items: Item[]
+  tasting_photo?: string
 }
 
 
@@ -83,6 +85,13 @@ export default function CreateStudyPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [lastSaved, setLastSaved] = useState<string | null>(null)
   const [categoriesExpanded, setCategoriesExpanded] = useState(false)
+
+  // Enhanced screen states for tasting flow
+  const [currentScreen, setCurrentScreen] = useState<'create' | 'confirm' | 'input' | 'complete'>('create')
+  const [currentItemIndex, setCurrentItemIndex] = useState(0)
+  const [inviteEmails, setInviteEmails] = useState('')
+  const [scheduleDate, setScheduleDate] = useState('')
+  const [isAddAsYouGoMode, setIsAddAsYouGoMode] = useState(false)
 
   // Auto-save functionality
   useEffect(() => {
@@ -197,7 +206,7 @@ export default function CreateStudyPage() {
     if (!formData.product_type) {
       const productSelect = document.querySelector('[data-testid="select-product-type"]')
       if (productSelect) {
-        productSelect.focus()
+        (productSelect as HTMLElement).focus()
         productSelect.scrollIntoView({ behavior: 'smooth', block: 'center' })
       }
       return 'Product type is required'
@@ -209,22 +218,24 @@ export default function CreateStudyPage() {
         const categoryInput = document.querySelector(`input[placeholder*="Category ${i + 1}"]`) ||
                              document.querySelector(`input[placeholder*="Aroma"]`)
         if (categoryInput) {
-          categoryInput.focus()
+          (categoryInput as HTMLInputElement).focus()
           categoryInput.scrollIntoView({ behavior: 'smooth', block: 'center' })
         }
         return `Category ${i + 1} name is required`
       }
     }
 
-    // Check item names
-    for (let i = 0; i < formData.items.length; i++) {
-      if (!formData.items[i].item_name.trim()) {
-        const itemInput = document.querySelector(`input[placeholder*="Item ${i + 1}"]`)
-        if (itemInput) {
-          itemInput.focus()
-          itemInput.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    // Check item names (only if not in add-as-you-go mode)
+    if (!isAddAsYouGoMode) {
+      for (let i = 0; i < formData.items.length; i++) {
+        if (!formData.items[i].item_name.trim()) {
+          const itemInput = document.querySelector(`input[placeholder*="Item ${i + 1}"]`)
+          if (itemInput) {
+            (itemInput as HTMLInputElement).focus()
+            itemInput.scrollIntoView({ behavior: 'smooth', block: 'center' })
+          }
+          return `Item ${i + 1} name is required`
         }
-        return `Item ${i + 1} name is required`
       }
     }
 
@@ -244,8 +255,8 @@ export default function CreateStudyPage() {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000))
 
-      // Create draft tasting using existing logic
-      router.push('/en/landing')
+      // Navigate to confirmation screen
+      setCurrentScreen('confirm')
     } catch (error) {
       console.error('Failed to create tasting:', error)
       // Could set error status message here
@@ -255,12 +266,13 @@ export default function CreateStudyPage() {
   }
 
   const isFormValid = () => {
-    return (
-      formData.tasting_name.trim() &&
-      formData.product_type &&
-      formData.categories.every(cat => cat.category_name.trim()) &&
-      formData.items.every(item => item.item_name.trim())
-    )
+    const hasBasicInfo = formData.tasting_name.trim() && formData.product_type
+    const hasValidCategories = formData.categories.every(cat => cat.category_name.trim())
+
+    // Items are optional in add-as-you-go mode
+    const hasValidItems = isAddAsYouGoMode || formData.items.every(item => item.item_name.trim())
+
+    return hasBasicInfo && hasValidCategories && hasValidItems
   }
 
   return (
@@ -270,6 +282,17 @@ export default function CreateStudyPage() {
           title="Study Session"
           onBack={() => router.back()}
           status={lastSaved ? 'saved' : null}
+        />
+      }
+      footer={
+        <CreateFooterActions
+          primaryLabel="Create Study"
+          onPrimary={handleCreateTasting}
+          secondaryLabel="Cancel"
+          onSecondary={() => router.back()}
+          disabled={!isFormValid()}
+          busy={isSubmitting}
+          statusMessage={isSubmitting ? 'Creating tasting...' : undefined}
         />
       }
     >
@@ -338,6 +361,42 @@ export default function CreateStudyPage() {
                   onCheckedChange={(checked) => updateFormData({ blind_toggle: checked })}
                 />
               </div>
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label htmlFor="add-as-you-go-toggle" className="text-sm font-medium text-fx-text2">
+                    Add Items As You Go
+                  </Label>
+                  <p className="text-xs text-fx-muted mt-1">Allow participants to add tasting items during the session</p>
+                </div>
+                <Switch
+                  id="add-as-you-go-toggle"
+                  data-testid="switch-add-as-you-go"
+                  checked={isAddAsYouGoMode}
+                  onCheckedChange={setIsAddAsYouGoMode}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* Tasting Photo */}
+        <section>
+          <Card className="rounded-xl bg-white shadow-fx border border-fx-border p-4 sm:p-5">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-xl font-semibold text-fx-text font-heading">Tasting Photo</CardTitle>
+              <p className="text-sm text-fx-text2 mt-1">Add a photo for your tasting session</p>
+            </CardHeader>
+            <CardContent>
+              <PhotoUpload
+                onPhotoUploaded={(url) => updateFormData({ tasting_photo: url })}
+                onPhotoRemoved={() => updateFormData({ tasting_photo: undefined })}
+                currentPhotoUrl={formData.tasting_photo}
+                userId="mock-user-id" // Replace with actual user ID from auth
+                folder="tastings"
+                maxPhotos={1}
+                className="w-full"
+              />
             </CardContent>
           </Card>
         </section>
@@ -529,8 +588,20 @@ export default function CreateStudyPage() {
         <section>
           <Card className="rounded-xl bg-white shadow-soft border border-fx-border p-4 sm:p-5 hover-lift card-enter">
             <CardHeader className="pb-4">
-              <CardTitle className="text-xl font-semibold text-fx-text font-heading">Items to Taste</CardTitle>
-              <p className="text-sm text-fx-text2 mt-1">Add the items participants will evaluate</p>
+              <CardTitle className="text-xl font-semibold text-fx-text font-heading">
+                Items to Taste
+                {isAddAsYouGoMode && (
+                  <span className="ml-2 px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">
+                    Add-as-you-go enabled
+                  </span>
+                )}
+              </CardTitle>
+              <p className="text-sm text-fx-text2 mt-1">
+                {isAddAsYouGoMode
+                  ? "Pre-add items or leave empty to add them during the tasting session"
+                  : "Add the items participants will evaluate"
+                }
+              </p>
             </CardHeader>
             <CardContent className="space-y-4">
               <div data-testid="rep-items" className="space-y-4">
@@ -583,24 +654,15 @@ export default function CreateStudyPage() {
                       <Label className="text-sm font-semibold text-fx-text mb-2 block">
                         Image (Optional)
                       </Label>
-                      <div className="flex gap-2">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          className="flex-1 min-h-[48px] rounded-xl border-[#D6D1C8] bg-white"
-                        >
-                          <Camera className="h-4 w-4 mr-2" />
-                          Take Photo
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          className="flex-1 min-h-[48px] rounded-xl border-[#D6D1C8] bg-white"
-                        >
-                          <Upload className="h-4 w-4 mr-2" />
-                          Upload Image
-                        </Button>
-                      </div>
+                      <PhotoUpload
+                        onPhotoUploaded={(url) => updateItem(item.id, { item_image: url })}
+                        onPhotoRemoved={() => updateItem(item.id, { item_image: undefined })}
+                        currentPhotoUrl={item.item_image}
+                        userId="mock-user-id" // Replace with actual user ID from auth
+                        folder="tasting-items"
+                        maxPhotos={1}
+                        className="w-full"
+                      />
                     </div>
                   </div>
                 ))}
@@ -620,16 +682,7 @@ export default function CreateStudyPage() {
           </Card>
         </section>
 
-        {/* Footer Actions - Static */}
-        <CreateFooterActions
-          primaryLabel="Create Study"
-          onPrimary={handleCreateTasting}
-          secondaryLabel="Cancel"
-          onSecondary={() => router.back()}
-          disabled={!isFormValid()}
-          busy={isSubmitting}
-          statusMessage={isSubmitting ? 'Creating tasting...' : undefined}
-        />
+        {/* Footer Actions - Moved to footer prop */}
       </div>
     </CreateShell>
   )

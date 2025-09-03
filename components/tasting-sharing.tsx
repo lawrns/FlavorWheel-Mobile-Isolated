@@ -2,16 +2,19 @@ import { useState } from 'react'
 import { Share2, Copy, Mail, MessageSquare } from 'lucide-react'
 import { Button } from './ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
+import { useTranslations } from '@/lib/utils'
 
 interface TastingSharingProps {
   tastingId: string
   tastingName: string
   onClose?: () => void
+  locale?: string
 }
 
-export function TastingSharing({ tastingId, tastingName, onClose }: TastingSharingProps) {
+export function TastingSharing({ tastingId, tastingName, onClose, locale = 'en' }: TastingSharingProps) {
   const [copied, setCopied] = useState(false)
-  const shareUrl = `${window.location.origin}/en/tastings/${tastingId}`
+  const { t } = useTranslations(locale)
+  const shareUrl = `${window.location.origin}/${locale}/tastings/${tastingId}`
 
   const handleCopyLink = async () => {
     try {
@@ -55,7 +58,7 @@ export function TastingSharing({ tastingId, tastingName, onClose }: TastingShari
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Share2 className="h-5 w-5" />
-          Share Tasting
+          {t('shareTasting')}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -73,7 +76,7 @@ export function TastingSharing({ tastingId, tastingName, onClose }: TastingShari
             variant="default"
           >
             <Share2 className="h-4 w-4 mr-2" />
-            Share Link
+            {t('share')}
           </Button>
 
           <Button
@@ -82,7 +85,7 @@ export function TastingSharing({ tastingId, tastingName, onClose }: TastingShari
             variant="outline"
           >
             <Copy className="h-4 w-4 mr-2" />
-            {copied ? 'Copied!' : 'Copy Link'}
+            {copied ? 'Copied!' : t('copyLink')}
           </Button>
 
           <div className="flex gap-2">

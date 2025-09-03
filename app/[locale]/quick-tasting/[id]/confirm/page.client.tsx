@@ -7,8 +7,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { useToast } from '@/hooks/use-toast'
 import { DashboardAppShell } from '@/components/app-shell'
+import { TastingSharing } from '@/components/tasting-sharing'
+import { Dialog, DialogContent } from '@/components/ui/dialog'
 import {
-  ArrowLeft, Zap, Target, CheckCircle
+  ArrowLeft, Zap, Target, CheckCircle, Share2
 } from 'lucide-react'
 
 interface QuickTastingConfirmPageClientProps {
@@ -35,6 +37,7 @@ export default function QuickTastingConfirmPageClient({ params }: QuickTastingCo
   const { toast } = useToast()
   const [tasting, setTasting] = useState<QuickTastingData | null>(null)
   const [loading, setLoading] = useState(true)
+  const [showSharingDialog, setShowSharingDialog] = useState(false)
 
   useEffect(() => {
     loadTastingData()
@@ -92,7 +95,7 @@ export default function QuickTastingConfirmPageClient({ params }: QuickTastingCo
       ...tasting,
       // Ensure proper data structure for input screen
       categories: tasting.categories || [],
-      items: tasting.items.map(item => ({
+      items: tasting.items.map((item: any) => ({
         id: item.id,
         name: item.name,
         image: item.image,
@@ -158,68 +161,74 @@ export default function QuickTastingConfirmPageClient({ params }: QuickTastingCo
           <div className="w-16" /> {/* Spacer */}
         </div>
 
-        {/* Tasting Overview */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Zap className="h-5 w-5" />
-              {tasting.name}
-            </CardTitle>
-            <CardDescription>Lightning-fast tasting experience</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Product Type</p>
-                <p className="text-sm">{tasting.product_type}</p>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-600">Mode</p>
-                <Badge variant="secondary">Quick</Badge>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        {/* Mock Confirmation Screen */}
+        <div className="bg-white p-4 rounded-lg shadow flex flex-col space-y-4">
+          <h2 className="text-xl font-bold">Confirm Quick Tasting</h2>
+          <div>
+            <p><strong>Mode:</strong> Quick</p>
+            <p><strong>Product:</strong> {tasting.product_type || 'Coffee'}</p>
+            <p><strong>Items:</strong> Quick Tasting Session</p>
+            <p><strong>Categories:</strong> Aroma, Flavor, Texture</p>
+          </div>
 
-        {/* Flavor Preview */}
-        {tasting.quickNotes.selectedFlavors && tasting.quickNotes.selectedFlavors.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Detected Flavors</CardTitle>
-              <CardDescription>
-                Flavors you'll be evaluating
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-wrap gap-2">
+          {/* Flavor Preview */}
+          {tasting.quickNotes.selectedFlavors && tasting.quickNotes.selectedFlavors.length > 0 && (
+            <div>
+              <p><strong>Detected Flavors:</strong></p>
+              <div className="flex flex-wrap gap-2 mt-2">
                 {tasting.quickNotes.selectedFlavors.map((flavor, index) => (
                   <Badge key={index} variant="outline" className="text-xs">
                     {flavor.name} ({flavor.intensity}/10)
                   </Badge>
                 ))}
               </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Action Card */}
-        <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={handleStartNow}>
-          <CardContent className="pt-6">
-            <div className="text-center">
-              <Target className="h-8 w-8 mx-auto mb-3 text-green-600" />
-              <h3 className="font-semibold mb-1">Start Tasting</h3>
-              <p className="text-sm text-muted-foreground">Begin your quick evaluation</p>
             </div>
-          </CardContent>
-        </Card>
+          )}
 
-        {/* Main Action Button */}
-        <div className="pt-4">
-          <Button onClick={handleStartNow} className="w-full bg-green-600 hover:bg-green-700">
-            <Zap className="h-4 w-4 mr-2" />
-            Start Quick Tasting
-          </Button>
+          <div>
+            <label className="block text-gray-700">Invite Friends</label>
+            <input className="w-full border p-2 rounded" placeholder="Enter emails" />
+          </div>
+          <div>
+            <label className="block text-gray-700">Schedule</label>
+            <input type="date" className="w-full border p-2 rounded" />
+          </div>
+          <button
+            className="w-full bg-blue-500 text-white p-3 rounded"
+            onClick={handleStartNow}
+          >
+            Start Now
+          </button>
+          <div className="flex gap-2">
+            <button
+              className="flex-1 bg-green-500 text-white p-3 rounded"
+              onClick={() => setShowSharingDialog(true)}
+            >
+              <Share2 className="h-4 w-4 inline mr-2" />
+              Share
+            </button>
+            <button
+              className="flex-1 bg-gray-500 text-white p-3 rounded"
+              onClick={handleBack}
+            >
+              Back to Edit
+            </button>
+          </div>
         </div>
+
+        {/* Sharing Dialog */}
+        <Dialog open={showSharingDialog} onOpenChange={setShowSharingDialog}>
+          <DialogContent className="max-w-md">
+            {tasting && (
+              <TastingSharing
+                tastingId={tasting.id}
+                tastingName={tasting.name}
+                locale={params.locale}
+                onClose={() => setShowSharingDialog(false)}
+              />
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </DashboardAppShell>
   )

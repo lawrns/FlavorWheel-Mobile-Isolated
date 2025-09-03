@@ -1,0 +1,222 @@
+# FlavorWheel México - Prometheus Alert Rules
+# Alert rules for monitoring the application
+
+groups:
+  - name: flavorwheel.application
+    rules:
+      # High error rate
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: critical
+          service: flavorwheel-app
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is {{ $value | humanizePercentage }} for the last 5 minutes"
+
+      # High response time
+      - alert: HighResponseTime
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 2
+        for: 5m
+        labels:
+          severity: warning
+          service: flavorwheel-app
+        annotations:
+          summary: "High response time detected"
+          description: "95th percentile response time is {{ $value }}s"
+
+      # Application down
+      - alert: ApplicationDown
+        expr: up{job="flavorwheel-app"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: flavorwheel-app
+        annotations:
+          summary: "FlavorWheel application is down"
+          description: "The FlavorWheel application has been down for more than 1 minute"
+
+      # High memory usage
+      - alert: HighMemoryUsage
+        expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes > 0.85
+        for: 5m
+        labels:
+          severity: warning
+          service: system
+        annotations:
+          summary: "High memory usage"
+          description: "Memory usage is {{ $value | humanizePercentage }}"
+
+      # High CPU usage
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+          service: system
+        annotations:
+          summary: "High CPU usage"
+          description: "CPU usage is {{ $value }}%"
+
+      # Disk space low
+      - alert: DiskSpaceLow
+        expr: (node_filesystem_avail_bytes / node_filesystem_size_bytes) < 0.1
+        for: 5m
+        labels:
+          severity: critical
+          service: system
+        annotations:
+          summary: "Disk space low"
+          description: "Disk space is {{ $value | humanizePercentage }} full"
+
+  - name: flavorwheel.database
+    rules:
+      # Database connection issues
+      - alert: DatabaseConnectionHigh
+        expr: pg_stat_activity_count > 80
+        for: 5m
+        labels:
+          severity: warning
+          service: database
+        annotations:
+          summary: "High database connections"
+          description: "Database has {{ $value }} active connections"
+
+      # Slow queries
+      - alert: SlowQueries
+        expr: rate(pg_stat_statements_mean_time_ms[5m]) > 1000
+        for: 5m
+        labels:
+          severity: warning
+          service: database
+        annotations:
+          summary: "Slow database queries detected"
+          description: "Average query time is {{ $value }}ms"
+
+      # Database down
+      - alert: DatabaseDown
+        expr: up{job="postgres"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: database
+        annotations:
+          summary: "Database is down"
+          description: "PostgreSQL database has been down for more than 1 minute"
+
+      # Replication lag (if using replicas)
+      - alert: ReplicationLag
+        expr: pg_replication_lag_seconds > 60
+        for: 5m
+        labels:
+          severity: warning
+          service: database
+        annotations:
+          summary: "Database replication lag"
+          description: "Replication lag is {{ $value }} seconds"
+
+  - name: flavorwheel.business
+    rules:
+      # Low user signups
+      - alert: LowUserSignups
+        expr: rate(user_registrations_total[1h]) < 0.1
+        for: 1h
+        labels:
+          severity: warning
+          service: business
+        annotations:
+          summary: "Low user signup rate"
+          description: "User signup rate is {{ $value }} per hour"
+
+      # High tasting failure rate
+      - alert: HighTastingFailureRate
+        expr: rate(tastings_failed_total[5m]) / rate(tastings_started_total[5m]) > 0.2
+        for: 10m
+        labels:
+          severity: warning
+          service: business
+        annotations:
+          summary: "High tasting failure rate"
+          description: "Tasting failure rate is {{ $value | humanizePercentage }}"
+
+      # Flavor wheel generation failures
+      - alert: FlavorWheelGenerationFailures
+        expr: rate(flavor_wheel_generation_failures_total[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+          service: business
+        annotations:
+          summary: "Flavor wheel generation failures"
+          description: "Flavor wheel generation failure rate is {{ $value }} per second"
+
+  - name: flavorwheel.security
+    rules:
+      # High failed login attempts
+      - alert: HighFailedLogins
+        expr: rate(auth_failed_attempts_total[5m]) > 10
+        for: 5m
+        labels:
+          severity: warning
+          service: security
+        annotations:
+          summary: "High failed login attempts"
+          description: "Failed login rate is {{ $value }} per second"
+
+      # Suspicious API usage
+      - alert: SuspiciousAPIUsage
+        expr: rate(http_requests_total{status="429"}[5m]) > 5
+        for: 5m
+        labels:
+          severity: warning
+          service: security
+        annotations:
+          summary: "High rate limiting triggers"
+          description: "Rate limiting triggered {{ $value }} times per second"
+
+      # SSL certificate expiry
+      - alert: SSLCertificateExpiry
+        expr: ssl_certificate_expiry_days < 30
+        for: 1h
+        labels:
+          severity: warning
+          service: security
+        annotations:
+          summary: "SSL certificate expiring soon"
+          description: "SSL certificate expires in {{ $value }} days"
+
+  - name: flavorwheel.external
+    rules:
+      # Supabase API issues
+      - alert: SupabaseAPIErrors
+        expr: rate(supabase_api_errors_total[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+          service: external
+        annotations:
+          summary: "Supabase API errors"
+          description: "Supabase API error rate is {{ $value }} per second"
+
+      # Email delivery failures
+      - alert: EmailDeliveryFailures
+        expr: rate(email_delivery_failures_total[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+          service: external
+        annotations:
+          summary: "Email delivery failures"
+          description: "Email delivery failure rate is {{ $value }} per second"
+
+      # Push notification failures
+      - alert: PushNotificationFailures
+        expr: rate(push_notification_failures_total[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+          service: external
+        annotations:
+          summary: "Push notification failures"
+          description: "Push notification failure rate is {{ $value }} per second"

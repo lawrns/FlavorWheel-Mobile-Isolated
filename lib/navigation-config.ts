@@ -12,6 +12,7 @@ import {
   Zap as HiLightningBolt,
 } from 'lucide-react'
 import type { ComponentType } from 'react'
+import { useTranslations } from './utils'
 
 export interface NavigationItem {
   id: string
@@ -27,11 +28,12 @@ export interface NavigationItem {
 }
 
 /**
- * Unified navigation configuration for FlavorWheel México
+ * Simplified 4-button navigation configuration for FlavorWheel
  * Single source of truth for all navigation items across desktop and mobile
+ * Exactly 4 core buttons as requested in client feedback
  */
 export const NAVIGATION_ITEMS: NavigationItem[] = [
-  // Core navigation items (always visible) - Updated per client feedback
+  // Core 4-button navigation (simplified per client feedback)
   {
     id: 'home',
     label: 'Home',
@@ -42,10 +44,18 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
   },
   {
     id: 'create',
-    label: 'Create Tasting',
+    label: 'Create',
     icon: HiPlus,
     emoji: '➕',
     href: '/create',
+    color: 'wine-green',
+  },
+  {
+    id: 'social',
+    label: 'Social',
+    icon: HiUsers,
+    emoji: '👥',
+    href: '/social',
     color: 'wine-green',
   },
   {
@@ -53,9 +63,11 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     label: 'Review',
     icon: HiStar,
     emoji: '⭐',
-    href: '/create-wheel',
+    href: '/review',
     color: 'elegant-brown',
   },
+
+  // Legacy items for backward compatibility (not shown in main navigation)
   {
     id: 'flavor-wheels',
     label: 'Flavor Wheels',
@@ -73,8 +85,6 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     href: '/menu',
     color: 'neutral-gray',
   },
-
-  // Legacy items for backward compatibility
   {
     id: 'join',
     label: 'Join Event',
@@ -128,6 +138,8 @@ export const ROUTE_TO_NAV_MAPPING: Record<string, string> = {
   '/': 'home',
   '/landing': 'home',
   '/create': 'create',
+  '/social': 'social',
+  '/review': 'review',
   '/create-wheel': 'review',
   '/test-sunburst-wheel': 'review',
   '/flavor-wheels': 'flavor-wheels',
@@ -148,11 +160,11 @@ export const ROUTE_TO_NAV_MAPPING: Record<string, string> = {
 }
 
 /**
- * Mobile navigation items (subset of main navigation)
- * Optimized for mobile bottom navigation (max 4 items) - Updated per client feedback
+ * Mobile navigation items (exactly 4 core buttons per client feedback)
+ * Optimized for mobile bottom navigation - Simplified to core 4 buttons only
  */
 export const MOBILE_NAV_ITEMS = NAVIGATION_ITEMS.filter(item =>
-  ['home', 'create', 'review', 'flavor-wheels'].includes(item.id)
+  ['home', 'create', 'social', 'review'].includes(item.id)
 )
 
 /**

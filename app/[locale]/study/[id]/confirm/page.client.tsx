@@ -32,8 +32,8 @@ interface TastingData {
   categories: Array<{
     id: string
     name: string
-    parameter_type: string
-    rank_option: boolean
+    parameterType: string
+    rankOption: boolean
   }>
   items: Array<{
     id: string
@@ -68,7 +68,7 @@ export default function StudyConfirmPageClient({ params }: StudyConfirmPageClien
           console.log('🔍 STUDY CONFIRM - CATEGORIES FROM COMPLETION DATA:', parsed.categories)
 
           // Log each category's parameter type
-          parsed.categories.forEach((cat, index) => {
+          parsed.categories.forEach((cat: any, index: number) => {
             console.log(`🔍 STUDY CONFIRM CATEGORY ${index}: ${cat.name}`, {
               id: cat.id,
               name: cat.name,
@@ -136,25 +136,17 @@ export default function StudyConfirmPageClient({ params }: StudyConfirmPageClien
     // Store the complete tasting data for the input screen
     const inputData = {
       ...tasting,
-      // Ensure proper data structure for input screen - FIX THE PARAMETER TYPE MAPPING
-      categories: tasting.categories.map(cat => {
-        console.log(`🚀 STUDY CONFIRM MAPPING CATEGORY ${cat.name}:`, {
-          original: cat,
-          parameterType: cat.parameterType || cat.parameter_type, // Try both
-          allKeys: Object.keys(cat)
-        })
-
-        return {
-          id: cat.id,
-          name: cat.name,
-          parameterType: cat.parameterType || cat.parameter_type, // Fix: use correct property
-          options: cat.options,
-          minValue: cat.minValue,
-          maxValue: cat.maxValue,
-          containsText: cat.containsText,
-          rankOption: cat.rankOption || cat.rank_option // Fix: use correct property
-        }
-      }),
+      // Ensure proper data structure for input screen - convert snake_case to camelCase
+      categories: tasting.categories.map(cat => ({
+        id: cat.id,
+        name: cat.name,
+        parameterType: cat.parameterType || cat.parameter_type || 'subjective_input',
+        options: cat.options,
+        minValue: cat.minValue || cat.min_value,
+        maxValue: cat.maxValue || cat.max_value,
+        containsText: cat.containsText || cat.contains_text,
+        rankOption: cat.rankOption || cat.rank_option
+      })),
       items: tasting.items.map(item => ({
         id: item.id,
         name: item.name,
@@ -312,17 +304,17 @@ export default function StudyConfirmPageClient({ params }: StudyConfirmPageClien
               {tasting.categories.map((category) => (
                 <div key={category.id} className="flex items-center justify-between p-3 border rounded-lg">
                   <div className="flex items-center gap-3">
-                    <span className="text-lg">{getParameterTypeIcon(category.parameterType || category.parameter_type)}</span>
+                    <span className="text-lg">{getParameterTypeIcon(category.parameterType)}</span>
                     <div>
                       <p className="font-medium">{category.name}</p>
                       <p className="text-sm text-gray-600">
-                        {(category.parameterType || category.parameter_type || 'subjective_input').replace('_', ' ').toUpperCase()}
-                        {(category.rankOption || category.rank_option) && ' (Ranked)'}
+                        {category.parameterType.replace('_', ' ').toUpperCase()}
+                        {category.rankOption && ' (Ranked)'}
                       </p>
                     </div>
                   </div>
                   <Badge variant="outline" className="text-xs">
-                    {category.parameterType || category.parameter_type || 'subjective_input'}
+                    {category.parameterType}
                   </Badge>
                 </div>
               ))}

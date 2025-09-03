@@ -14,11 +14,11 @@ export default function CreatePage() {
 
   const handleModeSelect = (mode: TastingMode) => {
     if (mode === 'study') {
-      router.push('/en/create/study')
+      router.push('/create/study')
     } else if (mode === 'competition') {
-      router.push('/en/create/competition')
+      router.push('/create/competition')
     } else if (mode === 'quick') {
-      router.push('/en/quick-tasting')
+      router.push('/quick-tasting')
     } else {
       setSelectedMode(mode)
     }
@@ -30,11 +30,27 @@ export default function CreatePage() {
 
   const handleCreateTasting = async () => {
     setIsSubmitting(true)
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    alert(`Tasting created successfully! Mode: ${selectedMode}`)
-    router.push('/en/landing')
-    setIsSubmitting(false)
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000))
+
+      // Navigate to appropriate mode creation page
+      if (selectedMode === 'study') {
+        router.push('/create/study')
+      } else if (selectedMode === 'competition') {
+        router.push('/create/competition')
+      } else if (selectedMode === 'quick') {
+        router.push('/quick-tasting')
+      } else {
+        // Fallback to landing page
+        router.push('/landing')
+      }
+    } catch (error) {
+      console.error('Error creating tasting:', error)
+      // Could add error toast here
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   // Animation variants for staggered entrance

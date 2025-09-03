@@ -3,6 +3,9 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { TastingCompletionScreen } from '@/components/tasting-completion-screen'
+import { ReviewPrompt } from '@/components/ui/review-prompt'
+import { TastingSharing } from '@/components/tasting-sharing'
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
 
 interface TastingData {
   id: string
@@ -28,6 +31,8 @@ export default function TastingCompletionPageClient({ params }: TastingCompletio
   const router = useRouter()
   const [tastingData, setTastingData] = useState<TastingData | null>(null)
   const [loading, setLoading] = useState(true)
+  const [showReviewPrompt, setShowReviewPrompt] = useState(false)
+  const [showSharingDialog, setShowSharingDialog] = useState(false)
 
   useEffect(() => {
     loadTastingData()
@@ -216,13 +221,148 @@ export default function TastingCompletionPageClient({ params }: TastingCompletio
     )
   }
 
+  const handleSaveTasting = () => {
+    // TODO: Implement save functionality
+    console.log('Saving tasting results...')
+  }
+
+  const handleShareTasting = () => {
+    setShowSharingDialog(true)
+  }
+
+  const handleWriteReview = () => {
+    setShowReviewPrompt(true)
+  }
+
+  const handleReviewCreated = () => {
+    setShowReviewPrompt(false)
+    // Could show a success message or redirect to reviews
+  }
+
+  if (showReviewPrompt && tastingData) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 flex items-center justify-center p-4">
+        <ReviewPrompt
+          tastingId={tastingData.id}
+          itemId={tastingData.id} // Using tasting ID as item ID for simplicity
+          itemName={tastingData.name}
+          tastingName={tastingData.name}
+          onReviewCreated={handleReviewCreated}
+          onClose={() => setShowReviewPrompt(false)}
+        />
+      </div>
+    )
+  }
+
   return (
-    <TastingCompletionScreen
-      tastingData={{
-        ...tastingData,
-        detailedResponses: tastingData.detailedResponses
-      }}
-      onBack={() => router.push(`/${params.locale}/create`)}
-    />
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100">
+      <div className="max-w-2xl mx-auto p-4 space-y-6">
+        {/* Header */}
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-foreground mb-2">Tasting Complete!</h1>
+          <p className="text-muted-foreground">
+            Your tasting session has been successfully completed.
+          </p>
+        </div>
+
+        {/* Completion Summary */}
+        <div className="bg-white rounded-lg shadow-sm border p-6">
+          <h2 className="text-xl font-semibold mb-4">Tasting Summary</h2>
+
+          <div className="space-y-3">
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Mode:</span>
+              <span className="font-medium capitalize">{tastingData?.mode || 'Study'}</span>
+            </div>
+
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Product Type:</span>
+              <span className="font-medium capitalize">{tastingData?.product_type || 'General'}</span>
+            </div>
+
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Session:</span>
+              <span className="font-medium">{tastingData?.name || 'Tasting Session'}</span>
+            </div>
+          </div>
+
+          {/* Flavor Analysis Preview */}
+          <div className="mt-6">
+            <h3 className="text-lg font-medium mb-3">Flavor Analysis</h3>
+            <div className="bg-gray-50 rounded-lg p-4 text-center">
+              <p className="text-sm text-muted-foreground mb-2">Flavor wheel will be generated here</p>
+              <div className="w-32 h-32 bg-gray-200 rounded-full mx-auto flex items-center justify-center">
+                <span className="text-xs text-gray-500">Preview</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <button
+            onClick={handleSaveTasting}
+            className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+          >
+            Save Results
+          </button>
+
+          <button
+            onClick={handleWriteReview}
+            className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+          >
+            Write Review
+          </button>
+
+          <button
+            onClick={handleShareTasting}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+          >
+            Share Experience
+          </button>
+        </div>
+
+        {/* Additional Options */}
+        <div className="bg-white rounded-lg shadow-sm border p-6">
+          <h3 className="text-lg font-medium mb-4">What would you like to do next?</h3>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <button
+              onClick={() => router.push(`/${params.locale}/create`)}
+              className="p-4 border border-gray-200 rounded-lg hover:border-amber-300 hover:bg-amber-50 transition-colors text-left"
+            >
+              <h4 className="font-medium">Create New Tasting</h4>
+              <p className="text-sm text-muted-foreground mt-1">
+                Start another tasting session
+              </p>
+            </button>
+
+            <button
+              onClick={() => router.push(`/${params.locale}/review`)}
+              className="p-4 border border-gray-200 rounded-lg hover:border-amber-300 hover:bg-amber-50 transition-colors text-left"
+            >
+              <h4 className="font-medium">Browse Reviews</h4>
+              <p className="text-sm text-muted-foreground mt-1">
+                See what others are saying
+              </p>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Sharing Dialog */}
+      <Dialog open={showSharingDialog} onOpenChange={setShowSharingDialog}>
+        <DialogContent className="max-w-md">
+          {tastingData && (
+            <TastingSharing
+              tastingId={tastingData.id}
+              tastingName={tastingData.name}
+              locale={params.locale}
+              onClose={() => setShowSharingDialog(false)}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+    </div>
   )
 }

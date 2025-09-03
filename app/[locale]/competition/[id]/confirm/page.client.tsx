@@ -110,12 +110,12 @@ export default function CompetitionConfirmPageClient({ params, searchParams }: C
       categories: tasting.categories.map(cat => ({
         id: cat.id,
         name: cat.name,
-        parameterType: cat.parameterType || cat.parameter_type,
+        parameterType: cat.parameterType,
         options: cat.options,
         minValue: cat.minValue,
         maxValue: cat.maxValue,
         containsText: cat.containsText,
-        rankOption: cat.rankOption || cat.rank_option
+        rankOption: cat.rankOption
       })),
       items: tasting.items.map(item => ({
         id: item.id,
@@ -283,11 +283,11 @@ export default function CompetitionConfirmPageClient({ params, searchParams }: C
               <div className="flex flex-wrap gap-2">
                 {tasting.categories.map((category) => (
                   <Badge key={category.id} variant="outline" className="flex items-center gap-1">
-                    {(category.parameterType || category.parameter_type) === 'sliding_scale' && <Target className="h-3 w-3" />}
-                    {(category.parameterType || category.parameter_type) === 'multiple_choice' && <CheckCircle className="h-3 w-3" />}
-                    {(category.parameterType || category.parameter_type) === 'exact_answer' && <Trophy className="h-3 w-3" />}
+                    {category.parameterType === 'sliding_scale' && <Target className="h-3 w-3" />}
+                    {category.parameterType === 'multiple_choice' && <CheckCircle className="h-3 w-3" />}
+                    {category.parameterType === 'exact_answer' && <Trophy className="h-3 w-3" />}
                     {category.name}
-                    {(category.rankOption || category.rank_option) && <span className="text-xs">(Ranked)</span>}
+                    {category.rankOption && <span className="text-xs">(Ranked)</span>}
                   </Badge>
                 ))}
               </div>

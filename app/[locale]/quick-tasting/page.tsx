@@ -20,6 +20,7 @@ import {
 import { useRouter } from 'next/navigation'
 import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '@/components/auth-provider'
+import { supabase } from '@/lib/supabase'
 
 interface TastingItem {
   id: string
@@ -51,7 +52,7 @@ const PRODUCT_TYPES = {
 }
 
 // Flavor defaults based on product type
-const FLAVOR_DEFAULTS = {
+const FLAVOR_DEFAULTS: Record<string, string[]> = {
   "Wine": ["Berry","Citrus","Oak","Vanilla","Spice","Mineral"],
   "Coffee": ["Chocolate","Nutty","Citrus","Floral","Caramel","Spice"],
   "Beer": ["Hoppy","Malty","Citrus","Roasted","Fruity","Spice"],
@@ -100,7 +101,7 @@ export default function QuickTastingPage() {
     if (productType) {
       const categoryName = PRODUCT_TYPE_OPTIONS.find(opt => opt.value === productType)?.label
       if (categoryName && FLAVOR_DEFAULTS[categoryName]) {
-        const defaultFlavors = FLAVOR_DEFAULTS[categoryName].map((flavorName, index) => ({
+        const defaultFlavors = FLAVOR_DEFAULTS[categoryName].map((flavorName: string, index: number) => ({
           id: `flavor-${index}`,
           name: flavorName,
           intensity: 5,
@@ -298,14 +299,47 @@ export default function QuickTastingPage() {
     setIsSubmitting(true)
 
     try {
-      // TODO: Implement the actual API call for saving the tasting
+      // Save tasting data to Supabase
+      const tastingData = {
+        name: `Quick Tasting - ${productType} (${new Date().toLocaleDateString()})`,
+        description: `Quick tasting session for ${productType}`,
+        created_by: user?.id,
+        status: 'completed',
+        product_type: productType.toLowerCase(),
+        items: validItems.map(item => ({
+          name: item.name,
+          description: item.aroma || item.flavor || item.other || '',
+          overall_rating: item.overall,
+          flavor_notes: {
+            aroma: item.aroma,
+            flavor: item.flavor,
+            other: item.other
+          }
+        })),
+        flavor_profile: flavors.filter(f => f.selected).map(f => ({
+          name: f.name,
+          intensity: f.intensity,
+          is_custom: f.isCustom || false
+        }))
+      }
+
+      const { data, error } = await supabase
+        .from('tastings')
+        .insert([tastingData])
+        .select()
+        .single()
+
+      if (error) {
+        throw error
+      }
+
       toast({
         title: "Tasting Saved!",
         description: "Your quick tasting has been recorded successfully.",
       })
 
-      // Navigate to confirmation page
-      router.push('/quick-tasting/confirm')
+      // Navigate to confirmation page with tasting ID
+      router.push(`/quick-tasting/${data.id}/confirm`)
     } catch (error: any) {
       console.error('Error saving tasting:', error)
       toast({

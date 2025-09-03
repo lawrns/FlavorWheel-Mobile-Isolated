@@ -81,6 +81,7 @@ export default function QuickTastingPage() {
 
   // State management
   const [productType, setProductType] = useState<string>('')
+  const [selectedCategory, setSelectedCategory] = useState<string>('')
   const [flavors, setFlavors] = useState<FlavorDescriptor[]>([])
   const [items, setItems] = useState<TastingItem[]>([
     {
@@ -100,8 +101,8 @@ export default function QuickTastingPage() {
   useEffect(() => {
     if (productType) {
       const categoryName = PRODUCT_TYPE_OPTIONS.find(opt => opt.value === productType)?.label
-      if (categoryName && FLAVOR_DEFAULTS[categoryName]) {
-        const defaultFlavors = FLAVOR_DEFAULTS[categoryName].map((flavorName, index) => ({
+      if (categoryName && FLAVOR_DEFAULTS[categoryName as keyof typeof FLAVOR_DEFAULTS]) {
+        const defaultFlavors = FLAVOR_DEFAULTS[categoryName as keyof typeof FLAVOR_DEFAULTS].map((flavorName, index) => ({
           id: `flavor-${index}`,
           name: flavorName,
           intensity: 5,

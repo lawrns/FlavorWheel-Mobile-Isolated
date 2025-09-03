@@ -131,7 +131,11 @@ export default function FlavorWheel({ data, title = 'Flavor Wheel', reduceMotion
     const ro = new ResizeObserver(entries => {
       for (const e of entries) {
         const w = e.contentRect.width
-        setRadius(Math.max(180, Math.min(420, Math.floor(w / 2.05))))
+        // Better mobile scaling: smaller minimum radius for mobile, larger for desktop
+        const isMobile = w < 768
+        const minRadius = isMobile ? 120 : 180
+        const maxRadius = isMobile ? 300 : 420
+        setRadius(Math.max(minRadius, Math.min(maxRadius, Math.floor(w / 2.2))))
       }
     })
     if (containerRef.current) ro.observe(containerRef.current)
@@ -238,8 +242,9 @@ export default function FlavorWheel({ data, title = 'Flavor Wheel', reduceMotion
       arcVisible: y(d.y1) <= radius
     }))
   })
-  // TASK 2: Increase SVG size to accommodate larger radius
-  const side = radius * 2 + 120 // More padding for labels
+  // TASK 2: Responsive SVG size with mobile optimization
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
+  const side = isMobile ? radius * 2 + 80 : radius * 2 + 120 // Less padding on mobile for better fit
 
   const onExportSvg = () => {
     if (!svgRef.current) return
@@ -410,10 +415,9 @@ export default function FlavorWheel({ data, title = 'Flavor Wheel', reduceMotion
                   </path>
 
                   {(() => {
-                    // TASK 3 & 4: Show all labels with dynamic font sizing
+                    // TASK 3 & 4: Show all labels with responsive font sizing for mobile
                     const arcLength = (x(d.x1) - x(d.x0)) * labelRadius
-                    const fontSize = Math.max(8, Math.min(14, arcLength / d.data.name.length * 1.5))
-                    const minArc = 0.01 // Much smaller threshold to show more labels
+                    const minArc = isMobile ? 0.015 : 0.01 // Slightly higher threshold on mobile to reduce clutter
 
                     return x(d.x1) - x(d.x0) > minArc && d.depth > 0
                   })() && (
@@ -422,11 +426,14 @@ export default function FlavorWheel({ data, title = 'Flavor Wheel', reduceMotion
                       dy="0.32em"
                       fontSize={(() => {
                         const arcLength = (x(d.x1) - x(d.x0)) * labelRadius
-                        return Math.max(8, Math.min(14, arcLength / d.data.name.length * 1.5))
+                        return isMobile ? Math.max(6, Math.min(10, arcLength / d.data.name.length * 1.2)) : Math.max(8, Math.min(14, arcLength / d.data.name.length * 1.5))
                       })()}
                       textAnchor={rotate > 90 ? 'end' : 'start'}
                       className="pointer-events-none fill-foreground font-medium"
-                      style={{ textShadow: '0 0 3px rgba(255,255,255,0.8)' }}
+                      style={{
+                        textShadow: isMobile ? '0 0 2px rgba(255,255,255,0.9)' : '0 0 3px rgba(255,255,255,0.8)',
+                        fontFamily: isMobile ? 'system-ui, -apple-system, sans-serif' : undefined
+                      }}
                     >
                       {d.data.name}
                     </text>

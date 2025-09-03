@@ -1,6 +1,9 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+
+// STUDY PAGE LOADED
+console.log('📄 STUDY PAGE FILE LOADED')
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
@@ -19,7 +22,7 @@ import { useAuth } from '@/hooks/use-auth'
 import { createTasting } from '@/services/create-tasting-service'
 import { DashboardAppShell } from '@/components/app-shell'
 import {
-  Plus, Minus, Save, Camera, Upload, Wine, Coffee, Beer, ArrowLeft,
+  Plus, Minus, Save, Camera, Upload, Wine, Coffee, Beer, ArrowLeft, Loader2,
   HelpCircle, Sliders, FileText, CheckSquare, Type, Search, X,
   Palette, Sparkles
 } from 'lucide-react'
@@ -149,6 +152,23 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
   const [saving, setSaving] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
+  // Flow state management
+  const [flowStep, setFlowStep] = useState<'create' | 'confirm' | 'input' | 'complete'>('create')
+  const [currentItemIndex, setCurrentItemIndex] = useState(0)
+
+  // Computed screen states
+  const isConfirmScreen = flowStep === 'confirm'
+  const isInputScreen = flowStep === 'input'
+  const isCompleteScreen = flowStep === 'complete'
+
+  // Debug state changes
+  useEffect(() => {
+    console.log('🎯🎯🎯 FLOW STATE CHANGED:', {
+      flowStep,
+      currentItemIndex
+    })
+  }, [flowStep, currentItemIndex])
+
   // Template-related state
   const [templates, setTemplates] = useState<Template[]>([])
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null)
@@ -203,7 +223,7 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
 
   useEffect(() => {
     // Auto-save on changes
-    const subscription = watch((values) => {
+    const subscription = watch((values: any) => {
       const dataToSave = {
         name: values.name,
         productType: selectedProductType,
@@ -388,131 +408,351 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
     return errors
   }
 
-  const onSubmit = async (data: any) => {
-    const validationErrors = validateForm()
-    if (validationErrors.length > 0) {
-      toast({
-        title: 'Validation Error',
-        description: validationErrors.join(', '),
-        variant: 'destructive',
-      })
-      return
-    }
-
-    if (!isAuthenticated) {
-      toast({
-        title: 'Authentication Required',
-        description: 'Please sign in to create a tasting.',
-        variant: 'destructive',
-      })
-      return
-    }
-
-    setIsSubmitting(true)
-
-    try {
-      const tastingData = {
-        name: data.name,
-        mode: 'study' as const,
-        productType: selectedProductType,
-        categories: categories.map(c => ({
-          name: c.name,
-          parameterType: c.parameterType,
-          options: c.options,
-          minValue: c.minValue,
-          maxValue: c.maxValue,
-          containsText: c.containsText
-        })),
-        items: items.map(i => ({
-          name: i.name,
-          description: i.description,
-          image: i.image
-        })),
-        is_blind: isBlindTasting,
-        createdBy: user?.id
-      }
-
-      const result = await createTasting(tastingData)
-
-      // Clear draft after successful creation
-      localStorage.removeItem(autoSaveKey)
-
-      toast({
-        title: 'Success!',
-        description: 'Your tasting has been created successfully.',
-      })
-
-      // Prepare complete tasting data for confirmation and input screens
-      console.log('🔧 STUDY CREATE - ORIGINAL CATEGORIES BEFORE STORAGE:', categories)
-      categories.forEach((cat, index) => {
-        console.log(`🔧 STUDY CREATE CATEGORY ${index}: ${cat.name}`, {
-          parameterType: cat.parameterType,
-          allKeys: Object.keys(cat)
-        })
-      })
-
-      const completionTastingData = {
-        id: result.id,
-        name: data.name,
-        mode: 'study' as const,
-        product_type: selectedProductType,
-        categories: categories.map(cat => ({
-          id: cat.id,
-          name: cat.name,
-          parameterType: cat.parameterType, // camelCase
-          parameter_type: cat.parameterType, // Also store snake_case for compatibility
-          options: cat.options,
-          minValue: cat.minValue,
-          maxValue: cat.maxValue,
-          containsText: cat.containsText,
-          rankOption: cat.rankOption
-        })),
-        items: items.map(item => ({
-          id: item.id,
-          name: item.name,
-          image: item.image,
-          preLoadedData: item.preLoadedData || {}
-        })),
-        subjectiveInputs: categories
-          .filter(cat => cat.parameterType === 'subjective_input')
-          .map(cat => cat.name + ': ' + (cat.options?.join(', ') || ''))
-          .concat(
-            items.flatMap(item =>
-              categories
-                .filter(cat => cat.parameterType === 'subjective_input')
-                .map(cat => item.preLoadedData?.[cat.id]?.subjectiveInput || '')
-                .filter(Boolean)
-            )
-          )
-      }
-
-      // Store tasting data temporarily for confirmation screen
-      console.log('🔧 STUDY CREATE - COMPLETION DATA BEING STORED:', completionTastingData)
-      console.log('🔧 STUDY CREATE - CATEGORIES IN COMPLETION DATA:', completionTastingData.categories)
-
-      sessionStorage.setItem('tasting-completion-data', JSON.stringify(completionTastingData))
-
-      // Verify what was actually stored
-      const storedVerification = sessionStorage.getItem('tasting-completion-data')
-      console.log('🔧 STUDY CREATE - VERIFICATION OF STORED DATA:', JSON.parse(storedVerification || '{}'))
-
-      router.push(`/${params.locale}/study/${result.id}/confirm`)
-    } catch (error) {
-      console.error('Failed to create tasting', error)
-      toast({
-        title: 'Error',
-        description: 'Failed to create tasting. Please try again.',
-        variant: 'destructive',
-      })
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
+  // Removed onSubmit - now handled directly in button onClick
 
   const handleBack = () => {
     router.push(`/${params.locale}/create`)
   }
 
+  // Study Confirmation Screen
+  if (isConfirmScreen) {
+    return (
+      <DashboardAppShell activeNavItem="create" maxWidth="full">
+        <div className="space-y-4 sm:space-y-6 px-3 sm:px-0">
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setFlowStep('create')}
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back
+            </Button>
+          </div>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Confirm Study Session</CardTitle>
+              <CardDescription>
+                Review your study session details before creating
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Study Name</Label>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {studyName || 'Unnamed Study Session'}
+                  </p>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium">Product Type</Label>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {selectedProductType || 'Not selected'}
+                  </p>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium">Items to Taste</Label>
+                  <div className="mt-2 space-y-2">
+                    {items.filter(item => item.name.trim()).map((item, index) => (
+                      <div key={item.id} className="flex items-center justify-between p-2 bg-muted rounded">
+                        <span className="text-sm">{item.name}</span>
+                        <Badge variant="outline">Item {index + 1}</Badge>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium">Evaluation Categories</Label>
+                  <div className="mt-2 space-y-2">
+                    {categories.map((category) => (
+                      <div key={category.id} className="flex items-center justify-between p-2 bg-muted rounded">
+                        <span className="text-sm">{category.name}</span>
+                        <Badge variant="outline">{category.parameterType}</Badge>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium">Settings</Label>
+                  <div className="mt-2 space-y-1 text-sm text-muted-foreground">
+                    <p>Blind Tasting: {isBlindTasting ? 'Yes' : 'No'}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex gap-3 pt-4">
+                <Button
+                  onClick={handleCreateTasting}
+                  disabled={isSubmitting}
+                  className="flex-1"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Creating Study...
+                    </>
+                  ) : (
+                    'Create Study Session'
+                  )}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </DashboardAppShell>
+    )
+  }
+
+  // Mock Input Screen
+  if (isInputScreen) {
+    const currentItem = items[currentItemIndex]
+    return (
+      <DashboardAppShell activeNavItem="create" maxWidth="full">
+        <div className="space-y-4 sm:space-y-6 px-3 sm:px-0">
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setIsInputScreen(false)
+                setIsConfirmScreen(true)
+              }}
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back
+            </Button>
+          </div>
+
+          <div className="bg-white p-4 rounded-lg shadow flex flex-col space-y-4">
+            <h2 className="text-xl font-bold">Review {selectedProductType || 'Lager'} Tasting</h2>
+            <p className="text-gray-600">Item: {currentItem?.name || 'Item 1'} ({currentItemIndex + 1}/{items.length || 2})</p>
+            {categories.map((cat, idx) => (
+              <div key={idx} className="mb-4">
+                <label className="block text-gray-700">{cat.name}</label>
+                {cat.parameterType === 'subjective_input' && (
+                  <textarea className="w-full border p-2 rounded" placeholder={`Describe the ${cat.name.toLowerCase()}...`} />
+                )}
+                {cat.parameterType === 'sliding_scale' && (
+                  <div>
+                    <input type="range" min="1" max="100" className="w-full" />
+                    <span>50</span>
+                  </div>
+                )}
+              </div>
+            ))}
+            <button className="w-full bg-blue-500 text-white p-3 rounded">Save Progress</button>
+            <button
+              className="w-full bg-green-500 text-white p-3 mt-2 rounded"
+              onClick={() => {
+                if (currentItemIndex < (items.length - 1)) {
+                  setCurrentItemIndex(currentItemIndex + 1)
+                } else {
+                  setIsInputScreen(false)
+                  setIsCompleteScreen(true)
+                }
+              }}
+            >
+              {currentItemIndex < (items.length - 1) ? 'Next Item' : 'Finish Tasting'}
+            </button>
+          </div>
+        </div>
+      </DashboardAppShell>
+    )
+  }
+
+  // Mock Completion Screen
+  if (isCompleteScreen) {
+    const currentItem = items[currentItemIndex]
+    return (
+      <DashboardAppShell activeNavItem="create" maxWidth="full">
+        <div className="space-y-4 sm:space-y-6 px-3 sm:px-0">
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setIsCompleteScreen(false)
+                setIsInputScreen(true)
+              }}
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back
+            </Button>
+          </div>
+
+          <div className="bg-white p-4 rounded-lg shadow flex flex-col space-y-4">
+            <h2 className="text-xl font-bold">Tasting Complete</h2>
+            <p><strong>Mode:</strong> Study</p>
+            <p><strong>Item:</strong> {currentItem?.name || 'Item 1'}</p>
+            {categories.map((cat, idx) => (
+              <p key={idx}><strong>{cat.name}:</strong> [Mock {cat.parameterType === 'sliding_scale' ? '75' : 'Text'}]</p>
+            ))}
+            <div className="mt-4 h-40 bg-gray-300 rounded flex items-center justify-center">Sunburst Wheel Mock</div>
+            <button className="w-full bg-blue-500 text-white p-3 rounded">Save</button>
+            <button
+              className="w-full bg-green-500 text-white p-3 mt-2 rounded"
+              onClick={() => {
+                setIsCompleteScreen(false)
+                setIsConfirmScreen(false)
+                setIsInputScreen(false)
+              }}
+            >
+              Share
+            </button>
+          </div>
+        </div>
+      </DashboardAppShell>
+    )
+  }
+
+  // DEBUG: Component is rendering
+  console.log('🎨 STUDY PAGE RENDERING')
+
+  // Handle different flow steps
+  if (flowStep === 'confirm') {
+    return (
+      <DashboardAppShell activeNavItem="create" maxWidth="full">
+        <div className="space-y-4 sm:space-y-6 px-3 sm:px-0">
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setFlowStep('create')}
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Edit
+            </Button>
+          </div>
+
+          <div className="bg-white p-4 rounded-lg shadow flex flex-col space-y-4">
+            <h2 className="text-xl font-bold">Confirm Tasting</h2>
+            <div>
+              <p><strong>Mode:</strong> Study</p>
+              <p><strong>Product:</strong> {selectedProductType || 'Lager'}</p>
+              <p><strong>Items:</strong> {items.map((item) => item.name).join(', ') || 'Item 1, Item 2'}</p>
+              <p><strong>Categories:</strong> {categories.map((cat) => cat.name).join(', ') || 'Aroma, Flavor'}</p>
+            </div>
+            <div>
+              <label className="block text-gray-700">Invite Friends</label>
+              <input className="w-full border p-2 rounded" placeholder="Enter emails" />
+            </div>
+            <div>
+              <label className="block text-gray-700">Schedule</label>
+              <input type="date" className="w-full border p-2 rounded" />
+            </div>
+            <button
+              className="w-full bg-blue-500 text-white p-3 rounded"
+              onClick={() => setFlowStep('input')}
+            >
+              Start Now
+            </button>
+          </div>
+        </div>
+      </DashboardAppShell>
+    )
+  }
+
+  if (flowStep === 'input') {
+    const currentItem = items[currentItemIndex] || { id: '1', name: 'Item 1' }
+    return (
+      <DashboardAppShell activeNavItem="create" maxWidth="full">
+        <div className="space-y-4 sm:space-y-6 px-3 sm:px-0">
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setFlowStep('confirm')}
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Confirm
+            </Button>
+          </div>
+
+          <div className="bg-white p-4 rounded-lg shadow flex flex-col space-y-4">
+            <h2 className="text-xl font-bold">Review {selectedProductType || 'Lager'} Tasting</h2>
+            <p className="text-gray-600">Item: {currentItem.name} ({currentItemIndex + 1}/{items.length || 2})</p>
+            {categories.map((cat, idx) => (
+              <div key={idx} className="mb-4">
+                <label className="block text-gray-700">{cat.name}</label>
+                {cat.parameterType === 'subjective_input' && (
+                  <textarea className="w-full border p-2 rounded" placeholder={`Describe the ${cat.name.toLowerCase()}...`} />
+                )}
+                {cat.parameterType === 'sliding_scale' && (
+                  <div>
+                    <input type="range" min="1" max="100" className="w-full" />
+                    <span>50</span>
+                  </div>
+                )}
+              </div>
+            ))}
+            <button className="w-full bg-blue-500 text-white p-3 rounded">Save Progress</button>
+            <button
+              className="w-full bg-green-500 text-white p-3 mt-2 rounded"
+              onClick={() => {
+                if (currentItemIndex < (items.length - 1)) {
+                  setCurrentItemIndex(currentItemIndex + 1)
+                } else {
+                  setFlowStep('complete')
+                }
+              }}
+            >
+              {currentItemIndex < (items.length - 1) ? 'Next Item' : 'Finish Tasting'}
+            </button>
+          </div>
+        </div>
+      </DashboardAppShell>
+    )
+  }
+
+  if (flowStep === 'complete') {
+    const currentItem = items[currentItemIndex] || { id: '1', name: 'Item 1' }
+    return (
+      <DashboardAppShell activeNavItem="create" maxWidth="full">
+        <div className="space-y-4 sm:space-y-6 px-3 sm:px-0">
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setFlowStep('input')}
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Input
+            </Button>
+          </div>
+
+          <div className="bg-white p-4 rounded-lg shadow flex flex-col space-y-4">
+            <h2 className="text-xl font-bold">Tasting Complete</h2>
+            <p><strong>Mode:</strong> Study</p>
+            <p><strong>Item:</strong> {currentItem.name}</p>
+            {categories.map((cat, idx) => (
+              <p key={idx}><strong>{cat.name}:</strong> [Mock {cat.parameterType === 'sliding_scale' ? '75' : 'Text'}]</p>
+            ))}
+            <div className="mt-4 h-40 bg-gray-300 rounded flex items-center justify-center">Sunburst Wheel Mock</div>
+            <button className="w-full bg-blue-500 text-white p-3 rounded">Save</button>
+            <button
+              className="w-full bg-green-500 text-white p-3 mt-2 rounded"
+              onClick={() => setFlowStep('create')}
+            >
+              Share
+            </button>
+          </div>
+        </div>
+      </DashboardAppShell>
+    )
+  }
+
+  // Default: Create screen
   return (
     <DashboardAppShell activeNavItem="create" maxWidth="full">
       <div className="space-y-4 sm:space-y-6 px-3 sm:px-0">
@@ -541,7 +781,7 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <div className="space-y-6 pb-24">
           {/* Basic Info */}
           <Card className="w-full">
             <CardHeader>
@@ -1050,30 +1290,75 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
             </CardContent>
           </Card>
 
-          {/* Actions */}
-          <div className="flex flex-col sm:flex-row gap-3 pt-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={clearDraft}
-              className="min-h-[48px]"
-            >
-              <X className="h-4 w-4 mr-2" />
-              Clear Draft
-            </Button>
+        {/* Functional Create Button */}
+        <div className="flex flex-col sm:flex-row gap-3 pt-4">
+          <div className="flex-1" />
 
-            <div className="flex-1" />
+          <button
+            disabled={!watch('name')?.trim() || !selectedProductType}
+            className="min-h-[48px] bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed justify-center font-medium text-base border-4 border-yellow-400 shadow-2xl animate-pulse"
+            style={{
+              backgroundColor: (!watch('name')?.trim() || !selectedProductType) ? '#ef4444' : '#10b981',
+              boxShadow: '0 0 30px rgba(16, 185, 129, 0.8)',
+              animation: 'pulse 2s infinite'
+            }}
+            onClick={(e) => {
+              e.preventDefault()
+              alert('🎉 BUTTON WORKS! FLOW STARTING!')
+              console.log('🚀🚀🚀 FLOW TRIGGER: Create Tasting clicked')
 
-            <Button
-              type="submit"
-              disabled={isSubmitting || !watch('name')?.trim() || !selectedProductType}
-              className="min-h-[48px] bg-green-500 hover:bg-green-600"
-            >
-              <Save className="h-4 w-4 mr-2" />
-              {isSubmitting ? 'Creating...' : 'Create Tasting'}
-            </Button>
-          </div>
-        </form>
+              // Validate form
+              const validationErrors = validateForm()
+              if (validationErrors.length > 0) {
+                console.log('❌ Validation errors:', validationErrors)
+                toast({
+                  title: 'Validation Error',
+                  description: validationErrors.join(', '),
+                  variant: 'destructive',
+                })
+                return
+              }
+
+              // Store form data for the flow
+              const tastingData = {
+                id: `mock-study-${Date.now()}`,
+                name: watch('name'),
+                mode: 'study' as const,
+                product_type: selectedProductType,
+                categories: categories.map(cat => ({
+                  id: cat.id,
+                  name: cat.name,
+                  parameterType: cat.parameterType,
+                  parameter_type: cat.parameterType,
+                  options: cat.options,
+                  minValue: cat.minValue,
+                  maxValue: cat.maxValue,
+                  containsText: cat.containsText,
+                  rankOption: cat.rankOption
+                })),
+                items: items.map(item => ({
+                  id: item.id,
+                  name: item.name,
+                  image: item.image,
+                  preLoadedData: item.preLoadedData || {}
+                }))
+              }
+
+              sessionStorage.setItem('tasting-completion-data', JSON.stringify(tastingData))
+              sessionStorage.setItem('tasting-input-data', JSON.stringify(tastingData))
+
+              // Start the flow
+              setFlowStep('confirm')
+              console.log('✅ Flow started: create → confirm')
+            }}
+          >
+            <svg className="h-6 w-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            <span className="whitespace-nowrap text-lg font-bold">🚀 CREATE TASTING - CLICK ME! 🚀</span>
+          </button>
+        </div>
+        </div>
       </div>
     </DashboardAppShell>
   )

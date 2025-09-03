@@ -1,0 +1,801 @@
+{
+  "project_name": "FlavorWheel Landing Page",
+  "component_path": "/app/[locale]/landing/page.tsx",
+  "documentation_type": "Technical Architecture Analysis",
+  "created_for": "UI Enhancement Without Breaking Changes",
+  "last_analyzed": "2024-12-19",
+
+  "architectural_overview": {
+    "framework": "Next.js 15 with App Router",
+    "rendering_mode": "Client-side ('use client')",
+    "styling_system": "Tailwind CSS + Custom Design Tokens",
+    "animation_library": "Framer Motion",
+    "ui_component_library": "Lucide React Icons",
+    "responsive_strategy": "Mobile-first with progressive enhancement",
+    "accessibility_compliance": "WCAG 2.1 guidelines"
+  },
+
+  "component_hierarchy": {
+    "root_container": {
+      "element": "div",
+      "purpose": "Main page wrapper with background and overflow handling",
+      "styling": {
+        "classes": ["overflow-x-hidden", "relative"],
+        "inline_styles": {
+          "webkitOverflowScrolling": "touch",
+          "overscrollBehavior": "none",
+          "backgroundImage": "url(/images/JPEG BG TRY.jpeg)",
+          "backgroundSize": "cover",
+          "backgroundPosition": "center",
+          "backgroundRepeat": "no-repeat",
+          "minHeight": "100vh"
+        },
+        "critical_notes": "Background image must be available at /public/images/JPEG BG TRY.jpeg"
+      },
+      "child_components": ["BackgroundOverlay", "MainContent"]
+    },
+
+    "background_overlay": {
+      "element": "div",
+      "purpose": "Semi-transparent gradient overlay for text readability",
+      "styling": {
+        "classes": ["absolute", "inset-0", "bg-gradient-to-b", "from-black/30", "via-black/20", "to-black/40"],
+        "positioning": "absolute positioned overlay covering entire container"
+      }
+    },
+
+    "main_content": {
+      "element": "motion.main",
+      "purpose": "Animated main content container with responsive layout",
+      "styling": {
+        "classes": ["relative", "z-10", "px-6", "py-12", "max-w-[768px]", "mx-auto", "min-h-screen"],
+        "responsive_notes": "Fixed max-width ensures consistent layout on large screens"
+      },
+      "animation_config": {
+        "framer_motion_props": {
+          "initial": "hidden",
+          "animate": "visible",
+          "variants": "containerVariants"
+        }
+      },
+      "child_sections": ["HeroSection", "FeatureCards", "StatisticsSection", "CallToActionSection"]
+    },
+
+    "hero_section": {
+      "element": "motion.section",
+      "purpose": "Main headline and tagline with staggered animations",
+      "styling": {
+        "classes": ["text-center", "mb-16"],
+        "layout": "Centered text block with bottom margin"
+      },
+      "components": {
+        "title": {
+          "element": "motion.h1",
+          "text_content": "Discover the Art of\\n<span>Flavor Exploration</span>",
+          "styling": {
+            "classes": ["text-4xl", "sm:text-5xl", "lg:text-6xl", "font-bold", "text-white", "mb-6", "font-heading", "tracking-tight", "drop-shadow-lg"],
+            "inline_font": "fontFamily: \"'Playfair Display', ui-serif, Georgia, serif\"",
+            "responsive_breakpoints": {
+              "mobile": "text-4xl",
+              "small": "text-5xl",
+              "large": "text-6xl"
+            }
+          },
+          "animation": {
+            "initial": "{ opacity: 0, y: -30 }",
+            "animate": "{ opacity: 1, y: 0 }",
+            "transition": "{ duration: 0.8, delay: 0.2 }"
+          }
+        },
+        "subtitle": {
+          "element": "motion.p",
+          "text_content": "The world's most user-friendly tasting experience. Create, explore, and share your flavor journey with confidence.",
+          "styling": {
+            "classes": ["text-xl", "text-white/90", "font-body", "max-w-2xl", "mx-auto", "leading-relaxed", "drop-shadow-md"],
+            "responsive_notes": "Max-width constrains line length for readability"
+          },
+          "animation": {
+            "initial": "{ opacity: 0 }",
+            "animate": "{ opacity: 1 }",
+            "transition": "{ duration: 0.8, delay: 0.4 }"
+          }
+        }
+      }
+    },
+
+    "feature_cards": {
+      "element": "motion.div",
+      "purpose": "Grid of interactive feature cards with hover effects",
+      "styling": {
+        "classes": ["grid", "grid-cols-1", "sm:grid-cols-2", "lg:grid-cols-4", "gap-6", "mb-16"],
+        "responsive_breakpoints": {
+          "mobile": "grid-cols-1 (single column)",
+          "small": "grid-cols-2 (2 columns)",
+          "large": "grid-cols-4 (4 columns)"
+        }
+      },
+      "data_structure": {
+        "features_array": [
+          {
+            "icon": "Zap",
+            "title": "Quick Taste",
+            "description": "Fast, intuitive flavor evaluation",
+            "route": "/quick-tasting",
+            "theme": {
+              "color": "from-blue-500/20 to-blue-600/10",
+              "iconBg": "bg-gradient-to-br from-blue-100 to-blue-200",
+              "iconColor": "text-blue-700",
+              "borderColor": "border-blue-200/50"
+            }
+          },
+          {
+            "icon": "Plus",
+            "title": "Create Tasting",
+            "description": "Build comprehensive tasting sessions",
+            "route": "/create",
+            "theme": {
+              "color": "from-purple-500/20 to-purple-600/10",
+              "iconBg": "bg-gradient-to-br from-purple-100 to-purple-200",
+              "iconColor": "text-purple-700",
+              "borderColor": "border-purple-200/50"
+            }
+          },
+          {
+            "icon": "Star",
+            "title": "Write Reviews",
+            "description": "Share your tasting experiences",
+            "route": "/review",
+            "theme": {
+              "color": "from-yellow-500/20 to-yellow-600/10",
+              "iconBg": "bg-gradient-to-br from-yellow-100 to-yellow-200",
+              "iconColor": "text-yellow-700",
+              "borderColor": "border-yellow-200/50"
+            }
+          },
+          {
+            "icon": "Target",
+            "title": "Flavor Wheels",
+            "description": "Explore detailed flavor profiles",
+            "route": "/wheels",
+            "theme": {
+              "color": "from-green-500/20 to-green-600/10",
+              "iconBg": "bg-gradient-to-br from-green-100 to-green-200",
+              "iconColor": "text-green-700",
+              "borderColor": "border-green-200/50"
+            }
+          }
+        ]
+      },
+      "card_structure": {
+        "element": "motion.button",
+        "base_classes": ["bg-gradient-to-br", "backdrop-blur-sm", "border", "rounded-xl", "p-6", "text-left", "hover:shadow-xl", "hover:shadow-black/20", "transition-all", "duration-300", "group", "overflow-hidden"],
+        "dynamic_classes": ["${feature.color}", "${feature.borderColor}"],
+        "animation": {
+          "variants": "itemVariants",
+          "whileHover": "{ scale: 1.05, y: -5 }",
+          "whileTap": "{ scale: 0.95 }",
+          "transition_delay": "0.6 + index * 0.1"
+        },
+        "components": {
+          "background_glow": {
+            "element": "div",
+            "classes": ["absolute", "inset-0", "bg-white/10", "opacity-0", "group-hover:opacity-100", "transition-opacity", "duration-300", "rounded-xl"]
+          },
+          "content_wrapper": {
+            "element": "div",
+            "classes": ["relative", "z-10"],
+            "components": {
+              "icon_container": {
+                "element": "motion.div",
+                "classes": ["w-14", "h-14", "${feature.iconBg}", "rounded-2xl", "flex", "items-center", "justify-center", "mb-4", "shadow-lg", "group-hover:scale-110", "transition-transform", "duration-300"],
+                "icon_element": {
+                  "element": "feature.icon",
+                  "classes": ["h-7", "w-7", "${feature.iconColor}"]
+                },
+                "animation": "{ whileHover: { rotate: 10 } }"
+              },
+              "title": {
+                "element": "h3",
+                "classes": ["text-xl", "font-semibold", "text-white", "mb-2", "font-heading", "group-hover:text-white", "transition-colors"]
+              },
+              "description": {
+                "element": "p",
+                "classes": ["text-white/80", "font-body", "text-sm", "leading-relaxed"]
+              },
+              "accent_line": {
+                "element": "div",
+                "classes": ["absolute", "bottom-0", "left-0", "right-0", "h-0.5", "bg-gradient-to-r", "from-transparent", "via-white/30", "to-transparent", "opacity-0", "group-hover:opacity-100", "transition-opacity", "duration-300"]
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "statistics_section": {
+      "element": "motion.section",
+      "purpose": "User engagement metrics display with glassmorphism effect",
+      "styling": {
+        "classes": ["mb-16"],
+        "container_classes": ["bg-white/10", "backdrop-blur-md", "border", "border-white/20", "rounded-2xl", "p-8", "shadow-2xl"]
+      },
+      "data_source": {
+        "static_metrics": {
+          "tastings": 127,
+          "reviews": 89,
+          "wheels": 23
+        },
+        "note": "Currently hardcoded - should be replaced with real user data"
+      },
+      "components": {
+        "title": {
+          "element": "motion.h2",
+          "text": "Your Tasting Journey",
+          "classes": ["text-2xl", "font-semibold", "text-white", "text-center", "mb-8", "font-heading"],
+          "inline_font": "fontFamily: \"'Playfair Display', ui-serif, Georgia, serif\""
+        },
+        "stats_grid": {
+          "element": "motion.div",
+          "classes": ["grid", "grid-cols-3", "gap-6"],
+          "stats_data": [
+            { "value": "metrics.tastings", "label": "Tastings", "icon": "BarChart3" },
+            { "value": "metrics.reviews", "label": "Reviews", "icon": "Star" },
+            { "value": "metrics.wheels", "label": "Wheels", "icon": "Target" }
+          ]
+        },
+        "stat_item": {
+          "element": "motion.div",
+          "classes": ["text-center", "group"],
+          "components": {
+            "icon_circle": {
+              "element": "motion.div",
+              "classes": ["w-12", "h-12", "bg-white/20", "rounded-full", "flex", "items-center", "justify-center", "mx-auto", "mb-3", "group-hover:bg-white/30", "transition-colors"],
+              "icon_classes": ["h-6", "w-6", "text-white"],
+              "animation": "{ whileHover: { scale: 1.1 } }"
+            },
+            "value": {
+              "element": "div",
+              "classes": ["text-3xl", "font-bold", "text-white", "mb-1", "font-heading"]
+            },
+            "label": {
+              "element": "div",
+              "classes": ["text-white/80", "font-body", "text-sm"]
+            }
+          }
+        }
+      },
+      "animation_config": {
+        "container": {
+          "initial": "{ opacity: 0, scale: 0.9 }",
+          "animate": "{ opacity: 1, scale: 1 }",
+          "transition": "{ delay: 0.8 }"
+        },
+        "stats_grid": {
+          "initial": "{ opacity: 0 }",
+          "animate": "{ opacity: 1 }",
+          "transition": "{ delay: 1.0 }"
+        },
+        "stat_items": {
+          "initial": "{ opacity: 0, y: 20 }",
+          "animate": "{ opacity: 1, y: 0 }",
+          "transition_delay": "1.1 + index * 0.1"
+        }
+      }
+    },
+
+    "call_to_action_section": {
+      "element": "motion.section",
+      "purpose": "Primary conversion element with animated button",
+      "styling": {
+        "classes": ["text-center", "pb-24"],
+        "layout": "Centered content with bottom padding for mobile navigation"
+      },
+      "components": {
+        "cta_button": {
+          "element": "motion.button",
+          "text": "Start Your Tasting Journey",
+          "classes": ["px-12", "py-4", "bg-fx-primary", "text-white", "rounded-xl", "font-semibold", "text-xl", "hover:bg-fx-primaryHover", "disabled:opacity-50", "transition-all", "duration-200", "btn-primary", "shadow-xl", "hover:shadow-2xl"],
+          "animation": {
+            "whileHover": "{ scale: 1.05 }",
+            "whileTap": "{ scale: 0.95 }",
+            "transition_delay": "1.3"
+          },
+          "functionality": {
+            "onClick": "router.push('/create')",
+            "accessibility": "Proper focus states and keyboard navigation"
+          }
+        },
+        "subtitle": {
+          "element": "motion.p",
+          "text": "Join thousands of flavor enthusiasts in discovering the perfect taste experience",
+          "classes": ["text-white/70", "font-body", "mt-4", "max-w-md", "mx-auto"],
+          "animation": {
+            "initial": "{ opacity: 0 }",
+            "animate": "{ opacity: 1 }",
+            "transition": "{ delay: 1.5 }"
+          }
+        }
+      }
+    }
+  },
+
+  "styling_system": {
+    "design_tokens": {
+      "color_scheme": {
+        "fx_primary": "#2E7D32",
+        "fx_primary_hover": "#256a29",
+        "fx_bg": "#FAF7F0",
+        "fx_card": "#FFFFFF",
+        "fx_border": "#E6E1D9",
+        "fx_text": "#1B1B18",
+        "fx_text_2": "#5A5A56",
+        "fx_text_muted": "#737373"
+      },
+      "typography": {
+        "heading_font": "Playfair Display, serif",
+        "body_font": "Inter, sans-serif",
+        "font_sizes": {
+          "h1": "24px (mobile), 36px (lg), 48px (xl)",
+          "p": "14px",
+          "small": "12px"
+        },
+        "line_heights": {
+          "heading": "1.2",
+          "body": "1.5"
+        }
+      },
+      "spacing": {
+        "card_padding": "16px",
+        "section_padding": "24px",
+        "item_gap": "16px",
+        "small_gap": "8px"
+      }
+    },
+
+    "tailwind_configuration": {
+      "custom_colors": {
+        "fx": {
+          "bg": "var(--fx-bg)",
+          "card": "var(--fx-card)",
+          "border": "var(--fx-border)",
+          "text": "var(--fx-text)",
+          "text2": "var(--fx-text-2)",
+          "muted": "var(--fx-text-muted)",
+          "primary": "var(--fx-primary)",
+          "primaryHover": "var(--fx-primary-hover)"
+        }
+      },
+      "font_family": {
+        "heading": "['Playfair Display', 'serif']",
+        "body": "['Inter', 'sans-serif']"
+      },
+      "responsive_breakpoints": {
+        "mobile": "default (320px+)",
+        "sm": "640px+",
+        "md": "768px+",
+        "lg": "1024px+",
+        "xl": "1280px+"
+      }
+    },
+
+    "css_custom_properties": {
+      "defined_in": "/app/globals.css",
+      "usage_pattern": "Accessible via Tailwind's var() function",
+      "fallback_support": "CSS variables with browser fallbacks"
+    }
+  },
+
+  "animation_system": {
+    "framer_motion_setup": {
+      "variants": {
+        "containerVariants": {
+          "hidden": "{ opacity: 0 }",
+          "visible": {
+            "opacity": 1,
+            "transition": {
+              "staggerChildren": 0.2,
+              "delayChildren": 0.1
+            }
+          }
+        },
+        "itemVariants": {
+          "hidden": "{ opacity: 0, y: 30 }",
+          "visible": {
+            "opacity": 1,
+            "y": 0,
+            "transition": {
+              "duration": 0.6,
+              "ease": "easeOut"
+            }
+          }
+        }
+      },
+      "timing_strategy": {
+        "staggered_entry": "0.2s between children",
+        "individual_delays": "Progressive delays for visual flow",
+        "hover_animations": "Scale and transform effects",
+        "tap_feedback": "Scale down for touch interaction"
+      }
+    },
+
+    "performance_considerations": {
+      "reduced_motion": "Respects prefers-reduced-motion",
+      "will_change_properties": "Applied to animated elements",
+      "transform_gpu_acceleration": "Hardware acceleration for smooth animations"
+    }
+  },
+
+  "responsive_design": {
+    "mobile_first_approach": {
+      "base_styles": "Applied to all screen sizes",
+      "progressive_enhancement": "Additional styles for larger screens",
+      "touch_optimization": "Minimum 44px touch targets"
+    },
+
+    "breakpoint_strategy": {
+      "container_max_width": "768px on all screens",
+      "grid_layouts": {
+        "mobile": "1 column (default)",
+        "sm": "2 columns (640px+)",
+        "lg": "4 columns (1024px+)"
+      },
+      "typography_scaling": {
+        "mobile": "text-4xl",
+        "sm": "text-5xl", 
+        "lg": "text-6xl"
+      }
+    },
+
+    "cross_device_compatibility": {
+      "ios_safari": "Special handling for touch scrolling",
+      "android_chrome": "Optimized for touch interactions",
+      "desktop": "Hover states and mouse interactions"
+    }
+  },
+
+  "data_flow_and_state": {
+    "static_data": {
+      "metrics_object": {
+        "tastings": 127,
+        "reviews": 89,
+        "wheels": 23
+      },
+      "features_array": "Inline array of feature objects with routing and theming"
+    },
+
+    "dynamic_elements": {
+      "navigation": "useRouter hook for programmatic routing",
+      "no_external_api_calls": "Purely presentational component",
+      "no_state_management": "No useState or complex state logic"
+    },
+
+    "routing_destinations": {
+      "quick-tasting": "/quick-tasting",
+      "create": "/create", 
+      "review": "/review",
+      "wheels": "/wheels"
+    }
+  },
+
+  "asset_dependencies": {
+    "background_image": {
+      "path": "/public/images/JPEG BG TRY.jpeg",
+      "usage": "Full-screen background with cover sizing",
+      "optimization_notes": "Should be optimized for web (consider WebP format)"
+    },
+
+    "font_assets": {
+      "google_fonts": {
+        "playfair_display": "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700",
+        "inter": "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700"
+      },
+      "font_weights_used": {
+        "playfair_display": [400, 500, 600, 700],
+        "inter": [300, 400, 500, 600, 700]
+      }
+    },
+
+    "icon_library": {
+      "lucide_react": {
+        "icons_used": ["Zap", "Plus", "Star", "Target", "BarChart3"],
+        "import_statement": "import { Zap, Plus, MessageCircle, Target, ChevronRight, Star, Trophy, Zap, BarChart3 } from 'lucide-react'"
+      }
+    }
+  },
+
+  "technical_dependencies": {
+    "next_js": {
+      "version": "15.x",
+      "features_used": [
+        "App Router",
+        "Client Components ('use client')",
+        "useRouter hook",
+        "Dynamic imports (implicit)"
+      ]
+    },
+
+    "react": {
+      "version": "18.x",
+      "hooks_used": ["useRouter (Next.js)"],
+      "patterns": ["Functional components", "JSX with TypeScript"]
+    },
+
+    "framer_motion": {
+      "version": "12.x",
+      "components_used": ["motion.div", "motion.main", "motion.section", "motion.button", "motion.h1", "motion.p", "motion.h2"],
+      "patterns": ["Variants for reusable animations", "whileHover/whileTap for interactions"]
+    },
+
+    "tailwind_css": {
+      "version": "3.x",
+      "custom_classes": ["fx-primary", "fx-primaryHover", "btn-primary"],
+      "responsive_utilities": ["sm:", "lg:", "md:"],
+      "animation_utilities": ["hover:", "group-hover:", "transition-"]
+    }
+  },
+
+  "performance_considerations": {
+    "bundle_size": {
+      "main_concerns": ["Framer Motion", "Lucide React icons", "Tailwind CSS"],
+      "optimization_opportunities": ["Tree shaking", "Dynamic imports", "Code splitting"]
+    },
+
+    "rendering_performance": {
+      "client_side_rendering": "Entire component renders on client",
+      "animation_performance": "GPU-accelerated transforms and opacity changes",
+      "image_loading": "Background image may cause layout shift"
+    },
+
+    "accessibility_performance": {
+      "semantic_html": "Proper heading hierarchy and ARIA labels",
+      "keyboard_navigation": "All interactive elements keyboard accessible",
+      "screen_reader_support": "Text alternatives and semantic markup"
+    }
+  },
+
+  "modification_guidelines": {
+    "safe_modification_zones": {
+      "content_changes": {
+        "hero_text": "Can modify title and subtitle text directly",
+        "feature_descriptions": "Can update descriptions in features array",
+        "metrics_values": "Can replace static metrics with dynamic data",
+        "cta_text": "Can modify button text and subtitle"
+      },
+
+      "styling_changes": {
+        "color_scheme": "Safe to modify theme colors in Tailwind config",
+        "spacing": "Can adjust padding/margins using Tailwind classes",
+        "typography": "Safe to modify font sizes and weights",
+        "animations": "Can adjust timing and easing functions"
+      },
+
+      "structural_changes": {
+        "adding_sections": "Safe between existing sections",
+        "reordering_sections": "May affect animation timing",
+        "modifying_grid": "Safe but test responsive behavior",
+        "changing_routes": "Must ensure destination pages exist"
+      }
+    },
+
+    "breaking_change_risks": {
+      "high_risk": [
+        "Removing animation variants without updating references",
+        "Changing responsive breakpoint classes",
+        "Modifying background image path",
+        "Altering grid layout structure"
+      ],
+
+      "medium_risk": [
+        "Adding new interactive elements without proper ARIA",
+        "Modifying animation timing significantly",
+        "Changing color scheme without testing contrast",
+        "Adding large content that affects layout"
+      ],
+
+      "low_risk": [
+        "Updating text content",
+        "Adjusting spacing and sizing",
+        "Adding hover effects",
+        "Modifying existing animations slightly"
+      ]
+    },
+
+    "testing_requirements": {
+      "responsive_testing": "Test all breakpoints (320px, 640px, 768px, 1024px, 1280px+)",
+      "accessibility_testing": "WCAG 2.1 compliance, keyboard navigation, screen readers",
+      "performance_testing": "Lighthouse scores, Core Web Vitals",
+      "browser_testing": "Chrome, Firefox, Safari, Edge (latest 2 versions)",
+      "device_testing": "iOS Safari, Android Chrome, desktop browsers"
+    },
+
+    "deployment_considerations": {
+      "asset_optimization": "Optimize background image (WebP, responsive images)",
+      "font_loading": "Ensure font-display: swap for performance",
+      "bundle_analysis": "Monitor bundle size changes",
+      "caching_strategy": "Appropriate cache headers for static assets"
+    }
+  },
+
+  "enhancement_opportunities": {
+    "visual_improvements": {
+      "background_effects": [
+        "Add subtle parallax scrolling",
+        "Implement multiple background options",
+        "Add animated background particles",
+        "Create theme-based background variations"
+      ],
+
+      "interactive_elements": [
+        "Add micro-interactions to feature cards",
+        "Implement scroll-triggered animations",
+        "Create hover state variations",
+        "Add loading states and transitions"
+      ],
+
+      "visual_hierarchy": [
+        "Implement better contrast ratios",
+        "Add subtle gradients and shadows",
+        "Create more sophisticated typography",
+        "Add visual separators and dividers"
+      ]
+    },
+
+    "content_enhancements": {
+      "dynamic_content": [
+        "Replace static metrics with real user data",
+        "Add personalized content based on user history",
+        "Implement A/B testing for messaging",
+        "Create location-based content variations"
+      ],
+
+      "social_proof": [
+        "Add user testimonials and reviews",
+        "Show recent activity feed",
+        "Display user-generated content",
+        "Add trust indicators and certifications"
+      ]
+    },
+
+    "technical_enhancements": {
+      "performance": [
+        "Implement lazy loading for background image",
+        "Add skeleton loading states",
+        "Optimize animation performance",
+        "Implement virtual scrolling for large lists"
+      ],
+
+      "accessibility": [
+        "Add ARIA live regions for dynamic content",
+        "Implement focus management for modals",
+        "Add skip links and navigation landmarks",
+        "Create high contrast mode option"
+      ]
+    }
+  },
+
+  "code_quality_assessment": {
+    "strengths": [
+      "Clean component structure",
+      "Consistent naming conventions",
+      "Proper TypeScript usage",
+      "Modular animation system",
+      "Responsive design patterns",
+      "Accessibility considerations"
+    ],
+
+    "areas_for_improvement": [
+      "Extract features array to separate file",
+      "Create reusable animation variants",
+      "Add error boundaries",
+      "Implement proper loading states",
+      "Add unit tests for critical functions"
+    ],
+
+    "maintainability_score": "8/10 - Well-structured but could benefit from more abstraction"
+  },
+
+  "integration_points": {
+    "parent_layout": {
+      "file": "/app/[locale]/layout.tsx",
+      "provides": ["Skip links", "Main content wrapper", "Accessibility landmarks"],
+      "constraints": "Must work within main#main-content"
+    },
+
+    "navigation_system": {
+      "file": "/components/ui/mobile-navigation.tsx",
+      "integration": "Bottom navigation bar (not on landing page)",
+      "spacing_considerations": "pb-24 on CTA section accounts for navigation"
+    },
+
+    "global_styles": {
+      "file": "/app/globals.css",
+      "dependencies": ["Font loading", "CSS custom properties", "Global utilities"],
+      "critical_css": ["fx-* color variables", "Font definitions", "Touch optimizations"]
+    },
+
+    "routing_system": {
+      "next_js_app_router": "Dynamic [locale] routing",
+      "navigation": "Client-side routing with useRouter",
+      "route_dependencies": "All linked routes must exist"
+    }
+  },
+
+  "troubleshooting_guide": {
+    "common_issues": {
+      "background_image_not_loading": {
+        "symptom": "White background or broken image",
+        "solution": "Verify /public/images/JPEG BG TRY.jpeg exists",
+        "fallback": "Add error handling for image loading"
+      },
+
+      "animations_not_working": {
+        "symptom": "Static content, no motion",
+        "solution": "Check Framer Motion import and browser support",
+        "fallback": "Add CSS-only animation fallbacks"
+      },
+
+      "responsive_breakpoints_broken": {
+        "symptom": "Layout doesn't change on screen size",
+        "solution": "Verify Tailwind CSS configuration",
+        "debug": "Check compiled CSS for responsive utilities"
+      },
+
+      "fonts_not_loading": {
+        "symptom": "Fallback fonts displayed",
+        "solution": "Check Google Fonts URL and network connectivity",
+        "fallback": "Add font-display: swap and local font fallbacks"
+      }
+    },
+
+    "performance_issues": {
+      "large_bundle_size": {
+        "cause": "Framer Motion + full Lucide React",
+        "solution": "Implement tree shaking and dynamic imports",
+        "monitoring": "Use bundle analyzer to identify large dependencies"
+      },
+
+      "layout_shift": {
+        "cause": "Background image loading",
+        "solution": "Add aspect ratio and loading placeholder",
+        "optimization": "Use modern image formats (WebP, AVIF)"
+      }
+    },
+
+    "accessibility_issues": {
+      "color_contrast": {
+        "testing": "Use WAVE or axe DevTools",
+        "solution": "Ensure 4.5:1 contrast ratio minimum",
+        "compliance": "WCAG AA standard"
+      },
+
+      "keyboard_navigation": {
+        "testing": "Tab through all interactive elements",
+        "solution": "Add visible focus indicators",
+        "requirements": "All functionality keyboard accessible"
+      }
+    }
+  },
+
+  "future_proofing_recommendations": {
+    "architectural_improvements": [
+      "Extract features array to CMS or configuration file",
+      "Create design system component library",
+      "Implement theme system for multiple brands",
+      "Add internationalization (i18n) support"
+    ],
+
+    "performance_optimizations": [
+      "Implement service worker for offline functionality",
+      "Add critical CSS inlining",
+      "Optimize font loading strategy",
+      "Implement image optimization pipeline"
+    ],
+
+    "scalability_considerations": [
+      "Create reusable section components",
+      "Implement content management system",
+      "Add analytics and A/B testing framework",
+      "Design for progressive enhancement"
+    ]
+  }
+}
