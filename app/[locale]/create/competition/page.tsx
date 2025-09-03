@@ -8,11 +8,12 @@ export const metadata: Metadata = {
 }
 
 interface PageProps {
-  params: {
+  params: Promise<{
     locale: string
-  }
+  }>
 }
 
-export default function CreateCompetitionPage({ params }: PageProps) {
-  return <CompetitionModePageClient params={params} />
+export default async function CreateCompetitionPage({ params }: PageProps) {
+  const resolvedParams = await params
+  return <CompetitionModePageClient params={resolvedParams} />
 }

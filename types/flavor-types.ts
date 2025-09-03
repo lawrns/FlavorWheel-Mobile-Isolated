@@ -16,6 +16,10 @@ export interface MexicanFlavorDictionary {
   categories: Record<string, FlavorCategory>
 }
 
+export interface FlavorDictionary {
+  [key: string]: FlavorCategory
+}
+
 export interface FlavorCategory {
   name: string
   subcategories: Record<string, FlavorSubcategory>

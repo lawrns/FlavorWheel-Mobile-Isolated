@@ -52,8 +52,8 @@ export function MobileNavigation({
         data-testid="mobile-navigation-root"
         id="mobile-navigation"
         className={cn(
-          'fixed bottom-0 left-0 right-0 z-50 h-16',
-          'pb-safe border-t border-gray-200 bg-white/95 backdrop-blur-md shadow-lg will-change-transform',
+          'fixed bottom-0 left-0 right-0 z-sticky h-16',
+          'pb-safe border-t border-fx-border-default bg-fx-card/95 backdrop-blur-md shadow-fx-lg will-change-transform',
           className
         )}
         aria-label="Mobile Navigation"
@@ -86,10 +86,10 @@ export function MobileNavigation({
               role="tab"
               tabIndex={0}
               className={cn(
-                'flex min-w-[60px] flex-col items-center justify-center rounded-lg p-2 transition-all duration-200 focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2',
+                'flex min-w-[60px] flex-col items-center justify-center rounded-lg p-2 transition-all duration-base ease-standard focus-visible:ring-2 focus-visible:ring-fx-focus-ring focus-visible:ring-offset-2 haptic-light',
                 activeScreen === item.id
-                  ? 'bg-green-100 text-green-600'
-                  : 'text-gray-600 hover:bg-amber-50 hover:text-gray-900'
+                  ? 'bg-fx-primary/10 text-fx-primary'
+                  : 'text-fx-text-secondary hover:bg-fx-bg-subtle hover:text-fx-text-primary'
               )}
               whileTap={{ scale: 0.95 }}
               whileHover={{ scale: 1.05 }}
@@ -117,10 +117,10 @@ export function MobileNavigation({
             role="tab"
             tabIndex={0}
             className={cn(
-              'flex min-w-[60px] flex-col items-center justify-center rounded-lg p-2 transition-all duration-200 focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2',
+              'flex min-w-[60px] flex-col items-center justify-center rounded-lg p-2 transition-all duration-base ease-standard focus-visible:ring-2 focus-visible:ring-fx-focus-ring focus-visible:ring-offset-2 haptic-medium',
               isExpanded
-                ? 'bg-amber-50 text-gray-900'
-                : 'text-gray-600 hover:bg-amber-50 hover:text-gray-900'
+                ? 'bg-fx-accent/10 text-fx-accent'
+                : 'text-fx-text-secondary hover:bg-fx-bg-subtle hover:text-fx-text-primary'
             )}
             whileTap={{ scale: 0.95 }}
             whileHover={{ scale: 1.05 }}
@@ -139,7 +139,7 @@ export function MobileNavigation({
           <>
             {/* Backdrop */}
             <motion.div
-              className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm will-change-transform md:hidden"
+              className="fixed inset-0 z-overlay bg-black/30 backdrop-blur-sm will-change-transform md:hidden"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -148,14 +148,14 @@ export function MobileNavigation({
 
             {/* Expanded Menu */}
             <motion.div
-              className="fixed bottom-20 left-4 right-4 z-50 rounded-lg border border-gray-200 bg-white shadow-lg md:hidden"
+              className="fixed bottom-20 left-4 right-4 z-modal rounded-xl border border-fx-border-default bg-fx-card shadow-fx-lg md:hidden"
               initial={{ opacity: 0, y: 20, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.95 }}
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
             >
               <div className="p-4">
-                <h3 className="mb-4 text-xl font-semibold text-gray-900">Full Navigation</h3>
+                <h3 className="mb-4 text-xl font-semibold text-fx-text-primary font-heading">Full Navigation</h3>
 
                 {/* All Navigation Items */}
                 <div className="grid grid-cols-2 gap-2">
@@ -171,10 +171,10 @@ export function MobileNavigation({
                         setIsExpanded(false)
                       }}
                       className={cn(
-                        'flex items-center space-x-2 rounded-lg border p-4 text-left transition-all duration-200 focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2',
+                        'flex items-center space-x-2 rounded-lg border p-4 text-left transition-all duration-base ease-standard focus-visible:ring-2 focus-visible:ring-fx-focus-ring focus-visible:ring-offset-2 haptic-light',
                         activeScreen === item.id
-                          ? 'border-green-600 bg-green-100 text-green-600'
-                          : 'border-gray-200 text-gray-600 hover:border-green-600 hover:bg-amber-50 hover:text-gray-900'
+                          ? 'border-fx-primary bg-fx-primary/10 text-fx-primary'
+                          : 'border-fx-border-default text-fx-text-secondary hover:border-fx-accent hover:bg-fx-bg-subtle hover:text-fx-text-primary'
                       )}
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}

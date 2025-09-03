@@ -49,8 +49,8 @@ export async function generateTastingPDF(
 
   // Add date and basic info
   doc.setFontSize(12)
-  doc.text(`Date: ${new Date(tasting.date).toLocaleDateString()}`, 20, 30)
-  doc.text(`Type: ${tasting.type.charAt(0).toUpperCase() + tasting.type.slice(1)}`, 20, 35)
+  doc.text(`Date: ${tasting.date ? new Date(tasting.date).toLocaleDateString() : 'N/A'}`, 20, 30)
+  doc.text(`Type: ${tasting.type ? tasting.type.charAt(0).toUpperCase() + tasting.type.slice(1) : 'N/A'}`, 20, 35)
 
   // Add item details
   const item = tasting.items.find(i => i.id === tastingNote.itemId)
@@ -69,9 +69,9 @@ export async function generateTastingPDF(
   doc.text('Tasting Notes', 20, 60)
 
   // Convert notes object to array for table
-  const notesArray = Object.entries(tastingNote.notes).map(([key, value]) => {
+  const notesArray = tastingNote.notes ? Object.entries(tastingNote.notes).map(([key, value]) => {
     return [key, typeof value === 'object' ? JSON.stringify(value) : value.toString()]
-  })
+  }) : []
 
   autoTable(doc, {
     startY: 65,
@@ -135,8 +135,8 @@ export async function generateCompleteTastingPDF(
 
   // Add date and basic info
   doc.setFontSize(12)
-  doc.text(`Date: ${new Date(tasting.date).toLocaleDateString()}`, 20, 30)
-  doc.text(`Type: ${tasting.type.charAt(0).toUpperCase() + tasting.type.slice(1)}`, 20, 35)
+  doc.text(`Date: ${tasting.date ? new Date(tasting.date).toLocaleDateString() : 'N/A'}`, 20, 30)
+  doc.text(`Type: ${tasting.type ? tasting.type.charAt(0).toUpperCase() + tasting.type.slice(1) : 'N/A'}`, 20, 35)
   doc.text(`Participants: ${tasting.participants.length}`, 20, 40)
 
   // Add tasting overview
@@ -184,9 +184,9 @@ export async function generateCompleteTastingPDF(
       currentY += 5
 
       // Convert notes object to array for table
-      const notesArray = Object.entries(note.notes).map(([key, value]) => {
+      const notesArray = note.notes ? Object.entries(note.notes).map(([key, value]) => {
         return [key, typeof value === 'object' ? JSON.stringify(value) : value.toString()]
-      })
+      }) : []
 
       autoTable(doc, {
         startY: currentY,
@@ -282,7 +282,7 @@ export async function generateTemplatePDF(
     `Duración: ${template.duration} minutos`,
     `Categoría: ${template.category}`,
     `Número de Muestras: ${template.num_samples}`,
-    `Valoración: ${template.average_rating.toFixed(1)} (${template.rating_count} valoraciones)`,
+    `Valoración: ${template.average_rating ? template.average_rating.toFixed(1) : 'N/A'} (${template.rating_count || 0} valoraciones)`,
     `Usos: ${template.usage_count}`,
   ]
 
@@ -316,7 +316,7 @@ export async function generateTemplatePDF(
   }
 
   // Mexican Cultural Elements
-  if (template.nom_classifications.length > 0 || template.terroir_regions.length > 0) {
+  if ((template.nom_classifications?.length || 0) > 0 || (template.terroir_regions?.length || 0) > 0) {
     doc.setFontSize(14)
     doc.setFont('helvetica', 'bold')
     doc.text('Elementos Culturales Mexicanos', 20, yPosition)
@@ -325,15 +325,15 @@ export async function generateTemplatePDF(
     doc.setFontSize(10)
     doc.setFont('helvetica', 'normal')
 
-    if (template.nom_classifications.length > 0) {
+    if (template.nom_classifications?.length > 0) {
       doc.text(`Clasificaciones NOM: ${template.nom_classifications.join(', ')}`, 20, yPosition)
       yPosition += 6
     }
-    if (template.terroir_regions.length > 0) {
+    if (template.terroir_regions?.length > 0) {
       doc.text(`Regiones: ${template.terroir_regions.join(', ')}`, 20, yPosition)
       yPosition += 6
     }
-    if (template.production_methods.length > 0) {
+    if (template.production_methods?.length > 0) {
       doc.text(`Métodos de Producción: ${template.production_methods.join(', ')}`, 20, yPosition)
       yPosition += 6
     }

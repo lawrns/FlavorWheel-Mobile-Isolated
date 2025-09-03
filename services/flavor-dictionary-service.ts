@@ -487,7 +487,8 @@ const flavorDictionary: any = {
 
 // Mexican beverage flavor dictionary with metadata
 const mexicanFlavorDictionary: MexicanFlavorDictionary = {
-  mezcal: {
+  categories: {
+    mezcal: {
     name: 'Mezcal',
     description: 'Traditional Mexican spirit made from agave',
     mexicanBeverageTypes: ['mezcal'],
@@ -561,6 +562,7 @@ const mexicanFlavorDictionary: MexicanFlavorDictionary = {
         descriptors: [],
       },
     },
+  },
   },
 }
 
@@ -653,7 +655,7 @@ export function getMexicanBeverageCategories(): string[] {
  * @returns Array of agave variety descriptors
  */
 export function getAgaveVarieties(): FlavorDescriptorWithMetadata[] {
-  const mezcalCategory = mexicanFlavorDictionary.mezcal
+  const mezcalCategory = mexicanFlavorDictionary.categories.mezcal
   if (mezcalCategory?.subcategories?.agave_varieties) {
     return mezcalCategory.subcategories.agave_varieties.descriptors
   }
@@ -665,7 +667,7 @@ export function getAgaveVarieties(): FlavorDescriptorWithMetadata[] {
  * @returns Array of terroir descriptors
  */
 export function getTerroirDescriptors(): FlavorDescriptorWithMetadata[] {
-  const mezcalCategory = mexicanFlavorDictionary.mezcal
+  const mezcalCategory = mexicanFlavorDictionary.categories.mezcal
   if (mezcalCategory?.subcategories?.terroir) {
     return mezcalCategory.subcategories.terroir.descriptors
   }
@@ -680,9 +682,9 @@ export function getTerroirDescriptors(): FlavorDescriptorWithMetadata[] {
 export function getDescriptorsByRegion(region: string): FlavorDescriptorWithMetadata[] {
   const descriptors: FlavorDescriptorWithMetadata[] = []
 
-  Object.values(mexicanFlavorDictionary).forEach(category => {
-    Object.values(category.subcategories).forEach(subcategory => {
-      subcategory.descriptors.forEach(descriptor => {
+  Object.values(mexicanFlavorDictionary.categories).forEach(category => {
+    Object.values(category.subcategories).forEach((subcategory: any) => {
+      subcategory.descriptors.forEach((descriptor: any) => {
         if (descriptor.region === region) {
           descriptors.push(descriptor)
         }
@@ -701,9 +703,9 @@ export function getDescriptorsByRegion(region: string): FlavorDescriptorWithMeta
 export function getDescriptorsByProductionMethod(method: string): FlavorDescriptorWithMetadata[] {
   const descriptors: FlavorDescriptorWithMetadata[] = []
 
-  Object.values(mexicanFlavorDictionary).forEach(category => {
-    Object.values(category.subcategories).forEach(subcategory => {
-      subcategory.descriptors.forEach(descriptor => {
+  Object.values(mexicanFlavorDictionary.categories).forEach(category => {
+    Object.values(category.subcategories).forEach((subcategory: any) => {
+      subcategory.descriptors.forEach((descriptor: any) => {
         if (descriptor.productionMethod === method) {
           descriptors.push(descriptor)
         }
@@ -728,7 +730,7 @@ export function getMexicanSpanishTranslations(
   for (const category of Object.values(mexicanFlavorDictionary)) {
     for (const subcategory of Object.values(category.subcategories)) {
       const descriptor = subcategory.descriptors.find(
-        d =>
+        (d: any) =>
           d.name === descriptorName ||
           d.translations.en === descriptorName ||
           d.translations['es-MX'] === descriptorName
@@ -752,9 +754,9 @@ export function getDescriptorsForMexicanBeverage(
 ): FlavorDescriptorWithMetadata[] {
   const descriptors: FlavorDescriptorWithMetadata[] = []
 
-  Object.values(mexicanFlavorDictionary).forEach(category => {
+  Object.values(mexicanFlavorDictionary.categories).forEach(category => {
     if (category.mexicanBeverageTypes.includes(beverageType)) {
-      Object.values(category.subcategories).forEach(subcategory => {
+      Object.values(category.subcategories).forEach((subcategory: any) => {
         descriptors.push(...subcategory.descriptors)
       })
     }
@@ -781,11 +783,11 @@ export function searchDescriptorsByCharacteristics(
 ): FlavorDescriptorWithMetadata[] {
   const descriptors: FlavorDescriptorWithMetadata[] = []
 
-  Object.values(mexicanFlavorDictionary).forEach(category => {
-    Object.values(category.subcategories).forEach(subcategory => {
-      subcategory.descriptors.forEach(descriptor => {
+  Object.values(mexicanFlavorDictionary.categories).forEach(category => {
+    Object.values(category.subcategories).forEach((subcategory: any) => {
+      subcategory.descriptors.forEach((descriptor: any) => {
         const hasMatchingCharacteristic = characteristics.some(char =>
-          descriptor.characteristics.some(descChar =>
+          descriptor.characteristics.some((descChar: any) =>
             descChar.toLowerCase().includes(char.toLowerCase())
           )
         )
@@ -814,4 +816,209 @@ export function getMexicanFoodDescriptors(): FlavorDescriptorWithMetadata[] {
   }
 
   return descriptors
+}
+
+/**
+ * Search for flavor terms by query string
+ */
+export function searchFlavorTerms(query: string): string[] {
+  if (!query || typeof query !== 'string') {
+    return []
+  }
+
+  const dictionary = getMexicanFlavorDictionary()
+  const results: string[] = []
+  const lowerQuery = query.toLowerCase()
+
+  // Search in categories
+  Object.values(dictionary).forEach(category => {
+    if (category.name && category.name.toLowerCase().includes(lowerQuery)) {
+      if (category.subcategories) {
+        Object.values(category.subcategories).forEach((subcategory: any) => {
+          if (subcategory.descriptors) {
+            results.push(...subcategory.descriptors)
+          }
+        })
+      }
+    }
+  })
+
+  return [...new Set(results)].slice(0, 50) // Limit to 50 results
+}
+
+/**
+ * Get flavor category for a given flavor term
+ */
+export function getFlavorCategory(flavor: string): string | null {
+  if (!flavor || typeof flavor !== 'string') {
+    return null
+  }
+
+  const dictionary = getMexicanFlavorDictionary()
+  const lowerFlavor = flavor.toLowerCase()
+
+  for (const [categoryKey, category] of Object.entries(dictionary)) {
+    if (category.subcategories) {
+      for (const [subKey, subcategory] of Object.entries(category.subcategories)) {
+        if (subcategory.descriptors &&
+            subcategory.descriptors.some((desc: any) => desc.toLowerCase().includes(lowerFlavor))) {
+          return categoryKey
+        }
+      }
+    }
+  }
+
+  return null
+}
+
+/**
+ * Validate if a flavor term exists and get suggestions
+ */
+export function validateFlavorTerm(term: string): {
+  isValid: boolean
+  category?: string
+  suggestions?: string[]
+} {
+  if (!term || typeof term !== 'string') {
+    return { isValid: false, suggestions: [] }
+  }
+
+  const dictionary = getMexicanFlavorDictionary()
+  const lowerTerm = term.toLowerCase()
+
+  // Check exact matches
+  for (const [categoryKey, category] of Object.entries(dictionary)) {
+    if (category.subcategories) {
+      for (const subcategory of Object.values(category.subcategories)) {
+        if (subcategory.descriptors &&
+            subcategory.descriptors.some((desc: any) => desc.toLowerCase() === lowerTerm)) {
+          return { isValid: true, category: categoryKey }
+        }
+      }
+    }
+  }
+
+  // Find suggestions (terms that contain the query)
+  const suggestions: string[] = []
+  for (const category of Object.values(dictionary)) {
+    if (category.subcategories) {
+      for (const subcategory of Object.values(category.subcategories)) {
+        if (subcategory.descriptors) {
+          suggestions.push(...subcategory.descriptors.filter((desc: any) =>
+            desc.toLowerCase().includes(lowerTerm)
+          ))
+        }
+      }
+    }
+  }
+
+  return {
+    isValid: false,
+    suggestions: suggestions.slice(0, 5) // Limit to 5 suggestions
+  }
+}
+
+/**
+ * Get synonyms for a flavor term
+ */
+export function getSynonyms(term: string): string[] {
+  if (!term || typeof term !== 'string') {
+    return []
+  }
+
+  // For now, return related terms from the same category
+  const category = getFlavorCategory(term)
+  if (!category) {
+    return []
+  }
+
+  const dictionary = getMexicanFlavorDictionary()
+  const categoryData = dictionary[category as keyof typeof dictionary]
+
+  if (categoryData && categoryData.subcategories) {
+    const allDescriptors: string[] = []
+    Object.values(categoryData.subcategories).forEach(subcategory => {
+      if (subcategory.descriptors) {
+        allDescriptors.push(...subcategory.descriptors)
+      }
+    })
+    return allDescriptors.filter(desc => desc.toLowerCase() !== term.toLowerCase()).slice(0, 10)
+  }
+
+  return []
+}
+
+/**
+ * Get related terms for a flavor term
+ */
+export function getRelatedTerms(term: string): string[] {
+  return getSynonyms(term) // For now, use synonyms as related terms
+}
+
+/**
+ * Translate flavor term between languages
+ */
+export function translateFlavorTerm(
+  term: string,
+  targetLanguage: 'en' | 'es' | 'nah' = 'es'
+): string {
+  if (!term || typeof term !== 'string') {
+    return term
+  }
+
+  // Basic translations for common Mexican flavor terms
+  const translations: Record<string, Record<string, string>> = {
+    'citrus': { 'es': 'cítrico', 'nah': 'citrus' },
+    'sweet': { 'es': 'dulce', 'nah': 'sweet' },
+    'agave': { 'es': 'maguey', 'nah': 'agave' },
+    'vanilla': { 'es': 'vainilla', 'nah': 'vanilla' },
+    'chocolate': { 'es': 'chocolate', 'nah': 'chocolate' }
+  }
+
+  const lowerTerm = term.toLowerCase()
+  const translation = translations[lowerTerm]?.[targetLanguage]
+
+  return translation || term
+}
+
+/**
+ * Get intensity scale for flavor categories
+ */
+export function getFlavorIntensityScale(category: string): { min: number; max: number } {
+  // Default intensity scale
+  const defaultScale = { min: 1, max: 10 }
+
+  if (!category || typeof category !== 'string') {
+    return defaultScale
+  }
+
+  // Category-specific scales
+  const scales: Record<string, { min: number; max: number }> = {
+    'Frutal': { min: 1, max: 10 },
+    'Dulce': { min: 1, max: 10 },
+    'Especiado': { min: 1, max: 10 },
+    'Terroso': { min: 1, max: 8 },
+    'Floral': { min: 1, max: 7 },
+    'Ahumado': { min: 1, max: 9 }
+  }
+
+  return scales[category] || defaultScale
+}
+
+/**
+ * Get cultural context for Mexican beverages
+ */
+export function getCulturalContext(beverage: string): string {
+  if (!beverage || typeof beverage !== 'string') {
+    return 'Traditional Mexican beverage with rich cultural heritage.'
+  }
+
+  const contexts: Record<string, string> = {
+    'tequila': 'Tequila is a traditional Mexican spirit made from the blue Weber agave plant, originating from the town of Tequila in Jalisco. It has been produced for centuries and holds significant cultural importance in Mexican celebrations and ceremonies.',
+    'mezcal': 'Mezcal is a traditional Mexican spirit made from various species of agave, primarily produced in Oaxaca. It represents the rich artisanal heritage of Mexican distillation and is often associated with indigenous traditions.',
+    'pulque': 'Pulque is a traditional fermented beverage made from the sap of the maguey (agave) plant, with roots in pre-Hispanic Mexico. It was considered a sacred drink by the Aztecs and continues to hold cultural significance.',
+    'sotol': 'Sotol is a traditional spirit made from the Desert Spoon plant, primarily produced in Chihuahua and Coahuila. It represents the desert heritage of northern Mexico.'
+  }
+
+  return contexts[beverage.toLowerCase()] || 'Traditional Mexican beverage with rich cultural heritage.'
 }

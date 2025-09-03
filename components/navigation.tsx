@@ -76,8 +76,8 @@ export function Navigation({
     return (
       <nav
         className={cn(
-          'fixed bottom-0 left-0 right-0 z-50 border-t-2',
-          'border-gray-200 bg-white/95 shadow-floating backdrop-blur-md dark:bg-gray-900',
+          'fixed bottom-0 left-0 right-0 z-sticky border-t-2',
+          'border-fx-border-default bg-fx-card/95 shadow-fx-lg backdrop-blur-md',
           className
         )}
       >
@@ -140,7 +140,7 @@ export function Navigation({
           role="navigation"
           aria-label="Navegación principal"
         >
-          <div className="flex items-center justify-center gap-2 overflow-x-auto rounded-full border border-gray-200 bg-white/90 px-4 py-2 shadow-medium backdrop-blur-md dark:bg-gray-900/90">
+          <div className="flex items-center justify-center gap-2 overflow-x-auto rounded-full border border-fx-border-default bg-fx-card/90 px-4 py-2 shadow-fx-md backdrop-blur-md">
             {getVisibleItems().map((item, index) => {
               const Icon = item.icon
               const isActive = currentSection === item.id
@@ -159,12 +159,12 @@ export function Navigation({
                     aria-current={isActive ? 'page' : undefined}
                     data-testid={`nav-${item.id}-link`}
                     className={cn(
-                      'inline-flex h-10 items-center gap-2 rounded-full px-4 leading-none transition-colors',
+                      'inline-flex h-10 items-center gap-2 rounded-full px-4 leading-none transition-all duration-base ease-standard haptic-light',
                       isActive
-                        ? 'bg-primary text-primary-foreground'
-                        : 'text-foreground hover:bg-muted',
+                        ? 'bg-fx-primary text-fx-text-inverse shadow-fx-sm'
+                        : 'text-fx-text-primary hover:bg-fx-bg-subtle hover:text-fx-text-primary',
                       item.disabled && 'cursor-not-allowed opacity-50',
-                      item.premium && 'bg-gradient-to-r from-amber-500 to-yellow-500 text-white'
+                      item.premium && 'bg-gradient-to-r from-fx-accent to-fx-accent-hover text-fx-text-inverse'
                     )}
                   >
                     <Icon className="h-4 w-4" />

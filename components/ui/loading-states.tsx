@@ -71,7 +71,7 @@ interface RetryButtonProps {
   onRetry: () => void
   loading?: boolean
   text?: string
-  variant?: 'default' | 'outline' | 'ghost'
+  variant?: 'primary' | 'outline' | 'ghost'
   size?: 'sm' | 'md' | 'lg'
   className?: string
 }
@@ -80,7 +80,7 @@ export function RetryButton({
   onRetry,
   loading = false,
   text = 'Try Again',
-  variant = 'outline',
+  variant = 'primary',
   size = 'md',
   className = ''
 }: RetryButtonProps) {

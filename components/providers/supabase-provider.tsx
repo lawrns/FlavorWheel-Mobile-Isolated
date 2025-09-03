@@ -11,6 +11,7 @@ type Ctx = {
   initialized: boolean
   signInWithOtp: (email: string) => Promise<{ error: any } | void>
   signOut: () => Promise<void>
+  supabase?: SupabaseClient | null // Add backward compatibility
 }
 
 const SupabaseContext = React.createContext<Ctx | null>(null)
@@ -25,9 +26,19 @@ export function SupabaseProvider({ children }: { children: React.ReactNode }) {
     const c = supabaseClient
     setClient(c)
 
+    if (!c) {
+      // If no client available, mark as initialized but with no session
+      console.warn('Supabase client not available. Running in offline mode.')
+      setInitialized(true)
+      return
+    }
+
     // initial session
     c.auth.getSession().then(({ data }) => {
       setSession(data.session ?? null)
+      setInitialized(true)
+    }).catch((error) => {
+      console.error('Failed to get initial session:', error)
       setInitialized(true)
     })
 
@@ -43,13 +54,28 @@ export function SupabaseProvider({ children }: { children: React.ReactNode }) {
 
   const value = React.useMemo<Ctx>(() => {
     async function signInWithOtp(email: string) {
-      if (!client) return
-      const { error } = await client.auth.signInWithOtp({ email })
-      if (error) return { error }
+      if (!client) {
+        console.warn('Supabase client not available. Cannot sign in.')
+        return { error: { message: 'Authentication service not available' } }
+      }
+      try {
+        const { error } = await client.auth.signInWithOtp({ email })
+        if (error) return { error }
+      } catch (error) {
+        console.error('Sign in error:', error)
+        return { error: { message: 'Sign in failed' } }
+      }
     }
     async function signOut() {
-      if (!client) return
-      await client.auth.signOut()
+      if (!client) {
+        console.warn('Supabase client not available. Cannot sign out.')
+        return
+      }
+      try {
+        await client.auth.signOut()
+      } catch (error) {
+        console.error('Sign out error:', error)
+      }
     }
 
     return {
@@ -59,6 +85,7 @@ export function SupabaseProvider({ children }: { children: React.ReactNode }) {
       initialized,
       signInWithOtp,
       signOut,
+      supabase: client, // Add backward compatibility
     }
   }, [client, session, initialized])
 

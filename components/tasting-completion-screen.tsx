@@ -29,6 +29,7 @@ interface TastingData {
   subjectiveInputs?: string[]
   preLoadedData?: any[]
   quickNotes?: any
+  detailedResponses?: Record<string, any>
 }
 
 interface TastingCompletionScreenProps {
@@ -116,15 +117,15 @@ export function TastingCompletionScreen({
       console.log('🎨 PARSED SUBMISSION DATA:', parsedData)
 
       // Collect all subjective responses with actual user values
-      let collectedSubjectiveInputs = []
+      let collectedSubjectiveInputs: string[] = []
 
       if (responses && responses.length > 0 && tastingData.items && tastingData.categories) {
         // Use actual responses from sessionStorage
         tastingData.items.forEach(item => {
-          tastingData.categories.forEach(category => {
+          tastingData.categories?.forEach(category => {
             if (category.parameterType === 'subjective_input') {
               const responseKey = `${item.id}-${category.id}`
-              const response = responses.find(r => r.itemId === item.id && r.categoryId === category.id)
+              const response = responses.find((r: any) => r.itemId === item.id && r.categoryId === category.id)
 
               if (response && response.value && response.value.trim().length > 0) {
                 const cleanedValue = response.value.trim()
@@ -232,7 +233,7 @@ export function TastingCompletionScreen({
       }
 
       setFlavorWheels(wheels)
-      setHierarchyData(builtHierarchyData)
+      setHierarchyData(builtHierarchyData as SunburstData | null)
 
       // Persist flavor wheel data for Flavorwheels section
       if (wheels) {
@@ -251,7 +252,7 @@ export function TastingCompletionScreen({
             keywords: [], // Would be populated from the extraction service
             viewTypes: ['aroma', 'flavor', 'combined', 'metaphor'],
             scopes: ['personal', 'universal'],
-            totalDescriptors: builtHierarchyData?.children?.length || 0,
+            totalDescriptors: (builtHierarchyData as SunburstData)?.children?.length || 0,
             wheelType: 'personal flavor wheel',
             // Multi-type wheel support
             wheelTypes: {
@@ -293,7 +294,7 @@ export function TastingCompletionScreen({
               data: wheels,
               metadata: {
                 product_type: tastingData.product_type,
-                descriptors_count: builtHierarchyData?.children?.length || 0,
+                descriptors_count: (builtHierarchyData as SunburstData)?.children?.length || 0,
                 categories_count: tastingData.categories?.length || 0
               }
             }
@@ -309,7 +310,7 @@ export function TastingCompletionScreen({
               .from('flavor_wheels')
               .upsert({
                 tasting_id: tastingData.id,
-                user_id: tastingData.created_by,
+                user_id: 'current_user', // TODO: Get from auth context
                 wheel_data: wheelData,
                 created_at: new Date().toISOString(),
                 updated_at: new Date().toISOString()
@@ -594,7 +595,7 @@ export function TastingCompletionScreen({
                   {/* Scope Toggle */}
                   <div className="flex gap-2">
                     <Button
-                      variant={activeScope === 'personal' ? 'default' : 'outline'}
+                      variant={activeScope === 'personal' ? 'primary' : 'outline'}
                       size="sm"
                       onClick={() => setActiveScope('personal')}
                       className="flex items-center gap-1"
@@ -603,7 +604,7 @@ export function TastingCompletionScreen({
                       Personal
                     </Button>
                     <Button
-                      variant={activeScope === 'universal' ? 'default' : 'outline'}
+                      variant={activeScope === 'universal' ? 'primary' : 'outline'}
                       size="sm"
                       onClick={() => setActiveScope('universal')}
                       className="flex items-center gap-1"

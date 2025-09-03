@@ -5,6 +5,8 @@ import { ErrorBoundary } from '@/components/error-boundary'
 import { MobileNavigation } from '@/components/ui/mobile-navigation'
 import { AuthProvider } from '@/components/auth-provider'
 import { SupabaseProvider } from '@/components/providers/supabase-provider'
+import { ServiceWorkerProvider } from '@/components/service-worker-provider'
+import { IconPreloader } from '@/components/icon-preloader'
 // import { RealtimeProvider } from '@/components/providers/realtime-provider'
 import { headers } from 'next/headers'
 
@@ -54,16 +56,19 @@ export default async function RootLayout({
         <link rel="dns-prefetch" href="//kobuclkvlacdwvxmakvq.supabase.co" />
       </head>
       <body className={`${inter.className} touch-manipulation`}>
-        <ErrorBoundary>
-          <SupabaseProvider>
-            <AuthProvider>
-              {!isLandingPage && <MobileNavigation />}
-              <main className="min-h-screen">
-                {children}
-              </main>
-            </AuthProvider>
-          </SupabaseProvider>
-        </ErrorBoundary>
+        <IconPreloader />
+        <ServiceWorkerProvider>
+          <ErrorBoundary>
+            <SupabaseProvider>
+              <AuthProvider>
+                {!isLandingPage && <MobileNavigation />}
+                <main className="min-h-screen">
+                  {children}
+                </main>
+              </AuthProvider>
+            </SupabaseProvider>
+          </ErrorBoundary>
+        </ServiceWorkerProvider>
       </body>
     </html>
   )

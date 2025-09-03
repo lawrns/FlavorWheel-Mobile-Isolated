@@ -28,29 +28,70 @@ const config: Config = {
     },
     extend: {
       colors: {
-        // fx Design Tokens
+        // fx Design Tokens - Complete System
         fx: {
+          // Surface & Background
           bg: 'var(--fx-bg)',
+          'bg-subtle': 'var(--fx-bg-subtle)',
+
+          // Cards & Containers
           card: 'var(--fx-card)',
-          border: 'var(--fx-border)',
-          text: 'var(--fx-text)',
-          text2: 'var(--fx-text-2)',
-          muted: 'var(--fx-text-muted)',
+          elevated: 'var(--fx-elevated)',
+          'tasting-card': 'var(--fx-tasting-card)',
+
+          // Text Hierarchy
+          'text-primary': 'var(--fx-text-primary)',
+          'text-secondary': 'var(--fx-text-secondary)',
+          'text-inverse': 'var(--fx-text-inverse)',
+          'text-muted': 'var(--fx-text-muted)',
+
+          // Brand Colors
           primary: 'var(--fx-primary)',
-          primaryHover: 'var(--fx-primary-hover)'
+          'primary-hover': 'var(--fx-primary-hover)',
+          accent: 'var(--fx-accent)',
+          'accent-hover': 'var(--fx-accent-hover)',
+
+          // AI Confidence Indicators
+          'ai-confidence-low': 'var(--fx-ai-confidence-low)',
+          'ai-confidence-med': 'var(--fx-ai-confidence-med)',
+          'ai-confidence-high': 'var(--fx-ai-confidence-high)',
+          'ai-badge-bg': 'var(--fx-ai-badge-bg)',
+          'ai-confidence-ring': 'var(--fx-ai-confidence-ring)',
+
+          // Borders
+          'border-subtle': 'var(--fx-border-subtle)',
+          'border-default': 'var(--fx-border-default)',
+          'border-strong': 'var(--fx-border-strong)',
+
+          // State Colors
+          'focus-ring': 'var(--fx-focus-ring-color)',
         },
 
-        // FlavorWheel Design Tokens
+        // FlavorWheel Data Viz Colors - CVD-Safe
         fw: {
-          'burgundy-900': 'var(--fw-burgundy-900)',
-          'amber-700': 'var(--fw-amber-700)',
-          'olive-600': 'var(--fw-olive-600)',
-          'sand-100': 'var(--fw-sand-100)',
-          'gold-400': 'var(--fw-gold-400)',
-          'gold-500': 'var(--fw-gold-500)',
-          'gold-600': 'var(--fw-gold-600)',
-          text: 'var(--fw-text)',
-          'text-dim': 'var(--fw-text-dim)'
+          // Category Hues
+          fruity: 'var(--fw-fruity)',
+          floral: 'var(--fw-floral)',
+          vegetal: 'var(--fw-vegetal)',
+          smoky: 'var(--fw-smoky)',
+          sweet: 'var(--fw-sweet)',
+          spicy: 'var(--fw-spicy)',
+          bitter: 'var(--fw-bitter)',
+          sour: 'var(--fw-sour)',
+          roasted: 'var(--fw-roasted)',
+          nutty: 'var(--fw-nutty)',
+          mineral: 'var(--fw-mineral)',
+          earthy: 'var(--fw-earthy)',
+          molecule: 'var(--fw-molecule)',
+
+          // Metaphor Categories
+          'mood-emotion': 'var(--fw-mood-emotion)',
+          'setting-place': 'var(--fw-setting-place)',
+          'texture-material': 'var(--fw-texture-material)',
+          'color-light': 'var(--fw-color-light)',
+          'movement-shape': 'var(--fw-movement-shape)',
+          'character-persona': 'var(--fw-character-persona)',
+          'temporal-time': 'var(--fw-temporal-time)',
         },
 
         // Legacy colors (keeping for compatibility)
@@ -89,54 +130,67 @@ const config: Config = {
         },
       },
       borderRadius: {
-        xl: '16px',
-        // Legacy border radius
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
+        // fx Design Token Border Radius
+        'xs': 'var(--fx-radius-xs)',
+        'sm': 'var(--fx-radius-sm)',
+        'md': 'var(--fx-radius-md)',
+        'lg': 'var(--fx-radius-lg)',
+        'xl': 'var(--fx-radius-xl)',
+        'pill': 'var(--fx-radius-pill)',
+
+        // Legacy border radius (keeping for compatibility)
         card: '16px',
-        pill: '9999px',
       },
       fontFamily: {
-        sans: ["'Inter', sans-serif"],
-        heading: ['Playfair Display', 'serif'],
-        body: ['Inter', 'sans-serif'],
-        accent: ['Crimson Text', 'serif'],
-        display: ['Playfair Display', 'serif'],
+        // fx Design Token Typography
+        heading: ['var(--fx-font-heading)'],
+        body: ['var(--fx-font-body)'],
+        sans: ['var(--fx-font-body)'],
         mono: ['JetBrains Mono', 'monospace'],
-        'fw-brand': ['Inter', 'ui-sans-serif', 'system-ui'],
-        'fw-poetic': ['Playfair Display', 'ui-serif', 'Georgia'],
-        'fw-display': ['Inter', 'ui-sans-serif', 'system-ui'],
-      },
-      spacing: {
-        // Design Token Spacing
-        'padding-card': '16px',
-        'padding-section': '24px',
-        'gap-items': '16px',
-        'gap-small': '8px',
-        'icon-size': '24px',
 
-        // Legacy spacing
-        xs: '0.25rem',
-        sm: '0.5rem',
-        md: '1rem',
-        lg: '1.5rem',
-        xl: '2rem',
-        '2xl': '3rem',
-        'fw-xs': '0.5rem',
-        'fw-sm': '1rem',
-        'fw-md': '1.5rem',
-        'fw-lg': '2rem',
-        'fw-xl': '3rem',
+        // Legacy (keeping for compatibility)
+        display: ['var(--fx-font-heading)'],
+        accent: ['Crimson Text', 'serif'],
       },
       fontSize: {
-        // Design Token Typography
-        'h1': ['24px', { lineHeight: '1.2', fontWeight: '700' }],
-        'h2': ['20px', { lineHeight: '1.3', fontWeight: '600' }],
-        'p': ['14px', { lineHeight: '1.5', fontWeight: '400' }],
-        'small': ['12px', { lineHeight: '1.4', fontWeight: '400' }],
+        // fx Design Token Fluid Typography
+        'h1': ['var(--fx-text-h1)', {
+          lineHeight: 'var(--fx-line-height-tight)',
+          fontWeight: 'var(--fx-weight-bold)',
+          fontFamily: 'var(--fx-font-heading)'
+        }],
+        'h2': ['var(--fx-text-h2)', {
+          lineHeight: 'var(--fx-line-height-tight)',
+          fontWeight: 'var(--fx-weight-semibold)',
+          fontFamily: 'var(--fx-font-heading)'
+        }],
+        'h3': ['var(--fx-text-h3)', {
+          lineHeight: 'var(--fx-line-height-snug)',
+          fontWeight: 'var(--fx-weight-semibold)',
+          fontFamily: 'var(--fx-font-heading)'
+        }],
+        'body': ['var(--fx-text-body)', {
+          lineHeight: 'var(--fx-line-height-normal)',
+          fontWeight: 'var(--fx-weight-regular)',
+          fontFamily: 'var(--fx-font-body)'
+        }],
+        'label': ['var(--fx-text-label)', {
+          lineHeight: 'var(--fx-line-height-normal)',
+          fontWeight: 'var(--fx-weight-medium)',
+          fontFamily: 'var(--fx-font-body)'
+        }],
+        'caption': ['var(--fx-text-caption)', {
+          lineHeight: 'var(--fx-line-height-snug)',
+          fontWeight: 'var(--fx-weight-regular)',
+          fontFamily: 'var(--fx-font-body)'
+        }],
+        'wheel-label': ['var(--fx-text-wheel-label)', {
+          lineHeight: 'var(--fx-line-height-tight)',
+          fontWeight: 'var(--fx-weight-medium)',
+          fontFamily: 'var(--fx-font-body)'
+        }],
 
-        // Legacy font sizes
+        // Legacy font sizes (keeping for compatibility)
         xs: ['0.75rem', { lineHeight: '1.1rem' }],
         sm: ['0.875rem', { lineHeight: '1.3rem' }],
         base: ['1rem', { lineHeight: '1.5rem' }],
@@ -147,7 +201,36 @@ const config: Config = {
         '4xl': ['2.25rem', { lineHeight: '2.5rem' }],
         '5xl': ['3rem', { lineHeight: '1' }],
       },
+      spacing: {
+        // fx Design Token Spacing
+        '0': 'var(--fx-spacing-0)',
+        '1': 'var(--fx-spacing-1)',
+        '2': 'var(--fx-spacing-2)',
+        '3': 'var(--fx-spacing-3)',
+        '4': 'var(--fx-spacing-4)',
+        '5': 'var(--fx-spacing-5)',
+        '6': 'var(--fx-spacing-6)',
+        '7': 'var(--fx-spacing-7)',
+        '8': 'var(--fx-spacing-8)',
+        '9': 'var(--fx-spacing-9)',
+        '10': 'var(--fx-spacing-10)',
+
+        // Legacy spacing (keeping for compatibility)
+        xs: '0.25rem',
+        sm: '0.5rem',
+        md: '1rem',
+        lg: '1.5rem',
+        xl: '2rem',
+        '2xl': '3rem',
+      },
       boxShadow: {
+        // fx Design Token Shadows
+        'xs': 'var(--fx-shadow-xs)',
+        'sm': 'var(--fx-shadow-sm)',
+        'md': 'var(--fx-shadow-md)',
+        'lg': 'var(--fx-shadow-lg)',
+
+        // Legacy shadows (keeping for compatibility)
         fx: '0 1px 3px rgba(0,0,0,0.05)',
         subtle: '0 1px 3px rgba(0,0,0,0.05)',
         soft: '0 2px 6px rgba(0,0,0,0.05)',
@@ -156,14 +239,41 @@ const config: Config = {
         floating: '0 6px 16px rgba(0,0,0,0.1)',
         brand: '0 4px 12px rgba(15, 91, 60, 0.15)',
         accent: '0 4px 12px rgba(196, 107, 30, 0.15)',
-        'fw-soft': 'var(--fw-shadow-soft)',
       },
       transitionTimingFunction: {
+        // fx Design Token Easings
+        'standard': 'var(--fx-easing-standard)',
+        'emphasized': 'var(--fx-easing-emphasized)',
+        'entrance': 'var(--fx-easing-entrance)',
+        'exit': 'var(--fx-easing-exit)',
+
+        // Legacy (keeping for compatibility)
         spring: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
       },
-      animation: {
-        float: 'float 3s ease-in-out infinite',
-        'pulse-marigold': 'pulse-marigold 2s ease-in-out infinite',
+      keyframes: {
+        // fx Design Token Animation Keyframes
+        fadeInUp: {
+          from: { opacity: '0', transform: 'translateY(var(--fx-spacing-5))' },
+          to: { opacity: '1', transform: 'translateY(0)' }
+        },
+        slideInLeft: {
+          from: { opacity: '0', transform: 'translateX(calc(-1 * var(--fx-spacing-5)))' },
+          to: { opacity: '1', transform: 'translateX(0)' }
+        },
+        slideInRight: {
+          from: { opacity: '0', transform: 'translateX(var(--fx-spacing-5))' },
+          to: { opacity: '1', transform: 'translateX(0)' }
+        },
+
+        // Legacy keyframes (keeping for compatibility)
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-10px)' }
+        },
+        'pulse-marigold': {
+          '0%, 100%': { backgroundColor: '#E6A533' },
+          '50%': { backgroundColor: '#D4942D' }
+        }
       },
       keyframes: {
         float: {

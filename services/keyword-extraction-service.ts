@@ -599,6 +599,15 @@ export function validateExtractionQuality(
 } {
   const issues: string[] = []
 
+  // Handle empty or invalid text
+  if (!text || typeof text !== 'string') {
+    return {
+      isValid: false,
+      score: 0,
+      issues: ['Invalid or empty text provided']
+    }
+  }
+
   // Check if keywords are relevant to text
   const textWords = text.toLowerCase().split(/\s+/)
   const relevantKeywords = keywords.filter(keyword =>

@@ -36,7 +36,7 @@ export function SunburstChart({
       .size([2 * Math.PI, radius])
 
     // Create arc generator
-    const arc = d3.arc<SunburstNode>()
+    const arc = d3.arc<d3.HierarchyNode<SunburstNode>>()
       .startAngle(d => d.x0)
       .endAngle(d => d.x1)
       .innerRadius(d => d.y0)
@@ -61,7 +61,7 @@ export function SunburstChart({
     const path = g.selectAll('path')
       .data(root.descendants().filter(d => d.depth > 0))
       .enter().append('path')
-      .attr('d', arc)
+      .attr('d', arc as any)
       .attr('fill', d => {
         if (d.data.color) return d.data.color
         return color(d.data.name)
@@ -89,15 +89,15 @@ export function SunburstChart({
 
     // Add labels for larger segments
     const label = g.selectAll('text')
-      .data(root.descendants().filter(d => d.depth > 0 && (d.y1 - d.y0) > 20))
+      .data(root.descendants().filter(d => (d as any).depth > 0 && ((d as any).y1 - (d as any).y0) > 20))
       .enter().append('text')
       .attr('transform', d => {
-        const angle = (d.x0 + d.x1) / 2
-        const radius = (d.y0 + d.y1) / 2
+        const angle = ((d as any).x0 + (d as any).x1) / 2
+        const radius = ((d as any).y0 + (d as any).y1) / 2
         return `rotate(${(angle * 180 / Math.PI - 90)})translate(${radius},0)${angle > Math.PI ? 'rotate(180)' : ''}`
       })
-      .attr('text-anchor', d => (d.x0 + d.x1) / 2 > Math.PI ? 'end' : 'start')
-      .attr('font-size', d => Math.max(8, Math.min(12, (d.y1 - d.y0) / 4)))
+      .attr('text-anchor', d => ((d as any).x0 + (d as any).x1) / 2 > Math.PI ? 'end' : 'start')
+      .attr('font-size', d => Math.max(8, Math.min(12, ((d as any).y1 - (d as any).y0) / 4)))
       .attr('fill', '#fff')
       .attr('font-weight', 'bold')
       .style('pointer-events', 'none')

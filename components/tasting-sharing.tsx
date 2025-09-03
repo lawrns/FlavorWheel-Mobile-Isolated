@@ -73,7 +73,7 @@ export function TastingSharing({ tastingId, tastingName, onClose, locale = 'en' 
           <Button
             onClick={handleShare}
             className="w-full"
-            variant="default"
+            variant="primary"
           >
             <Share2 className="h-4 w-4 mr-2" />
             {t('share')}

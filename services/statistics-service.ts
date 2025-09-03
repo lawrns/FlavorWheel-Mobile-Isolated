@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase'
+import { cacheUtils } from '@/lib/cache-manager'
 
 export interface AppStatistics {
   totalUsers: number
@@ -26,25 +27,33 @@ export interface AppStatistics {
   }>
 }
 
-export interface StatisticsCache {
-  data: AppStatistics | null
-  timestamp: number
-  ttl: number // Time to live in milliseconds
-}
-
 class StatisticsService {
-  private cache: StatisticsCache | null = null
-  private readonly CACHE_TTL = 5 * 60 * 1000 // 5 minutes
-
   /**
-   * Get comprehensive app statistics with caching
+   * Get comprehensive app statistics with advanced caching and stale-while-revalidate
    */
   async getAppStatistics(forceRefresh = false): Promise<AppStatistics> {
-    // Check cache first
-    if (!forceRefresh && this.cache && this.isCacheValid()) {
-      return this.cache.data!
+    if (forceRefresh) {
+      // Force refresh by bypassing cache
+      return this.fetchFreshStatistics()
     }
 
+    // Use cache manager with stale-while-revalidate
+    return cacheUtils.cachedComputation(
+      'app-statistics',
+      () => this.fetchFreshStatistics(),
+      {
+        ttl: 5 * 60 * 1000, // 5 minutes fresh
+        staleTtl: 30 * 60 * 1000, // 30 minutes stale
+        swr: true,
+        tags: ['statistics', 'users', 'tastings', 'reviews']
+      }
+    )
+  }
+
+  /**
+   * Fetch fresh statistics from database
+   */
+  private async fetchFreshStatistics(): Promise<AppStatistics> {
     try {
       // Fetch all statistics in parallel
       const [
@@ -65,7 +74,7 @@ class StatisticsService {
         this.getTopContributors()
       ])
 
-      const statistics: AppStatistics = {
+      return {
         totalUsers: usersStats.total,
         activeUsers: usersStats.active,
         totalTastings: tastingsStats.total,
@@ -76,15 +85,6 @@ class StatisticsService {
         recentActivity: activityStats,
         topContributors: contributorsStats
       }
-
-      // Update cache
-      this.cache = {
-        data: statistics,
-        timestamp: Date.now(),
-        ttl: this.CACHE_TTL
-      }
-
-      return statistics
     } catch (error) {
       console.error('Error fetching app statistics:', error)
       return this.getFallbackStatistics()
@@ -301,13 +301,6 @@ class StatisticsService {
   }
 
   /**
-   * Check if cache is still valid
-   */
-  private isCacheValid(): boolean {
-    return this.cache ? (Date.now() - this.cache.timestamp) < this.cache.ttl : false
-  }
-
-  /**
    * Get fallback statistics for when database queries fail
    */
   private getFallbackStatistics(): AppStatistics {
@@ -354,8 +347,8 @@ class StatisticsService {
   /**
    * Clear the statistics cache
    */
-  clearCache(): void {
-    this.cache = null
+  async clearCache(): Promise<void> {
+    await cacheUtils.invalidate('app-statistics', ['statistics'])
   }
 
   /**

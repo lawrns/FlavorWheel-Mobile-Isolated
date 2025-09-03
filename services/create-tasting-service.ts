@@ -378,6 +378,11 @@ async function uploadItemImage(file: File, userId: string): Promise<string> {
 }
 
 async function getCurrentUser() {
+  if (!supabase || !supabase.auth) {
+    // Return mock user for testing/development
+    return { id: 'mock-user-id', email: 'mock@example.com' }
+  }
+
   const { data: { user }, error } = await supabase.auth.getUser()
   if (error) throw error
   return user

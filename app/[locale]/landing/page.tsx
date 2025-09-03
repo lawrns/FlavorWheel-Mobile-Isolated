@@ -1,18 +1,13 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 import { useStatistics } from '@/hooks/use-statistics'
 
-interface LandingPageProps {
-  params: {
-    locale: string
-  }
-}
-
-export default function LandingPage({ params }: LandingPageProps) {
+export default function LandingPage() {
   const router = useRouter()
-  const locale = params.locale || 'en'
+  const params = useParams()
+  const locale = (params.locale as string) || 'en'
   const _rotWords = ['coffee','spirits','wine','beer','tea'];
   const [rotIdx,setRotIdx] = useState(0);
 
