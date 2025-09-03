@@ -301,4 +301,11 @@ export const cacheUtils = {
       }
     )
   },
+
+  /**
+   * Invalidate cache entries
+   */
+  async invalidate(key?: string, tags?: string[]): Promise<void> {
+    return cacheManager.invalidate(key, tags)
+  },
 }

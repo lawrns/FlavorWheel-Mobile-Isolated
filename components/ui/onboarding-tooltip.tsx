@@ -33,35 +33,88 @@ export function OnboardingTooltip() {
     const tooltipWidth = 320
     const tooltipHeight = 200
     const offset = 16
+    const viewportWidth = window.innerWidth
+    const viewportHeight = window.innerHeight
+    const scrollX = window.scrollX
+    const scrollY = window.scrollY
+
+    let top: number, left: number
 
     switch (position) {
       case 'top':
-        return {
-          top: targetRect.top - tooltipHeight - offset,
-          left: targetRect.left + (targetRect.width / 2) - (tooltipWidth / 2)
-        }
+        top = targetRect.top + scrollY - tooltipHeight - offset
+        left = targetRect.left + scrollX + (targetRect.width / 2) - (tooltipWidth / 2)
+        break
       case 'bottom':
-        return {
-          top: targetRect.bottom + offset,
-          left: targetRect.left + (targetRect.width / 2) - (tooltipWidth / 2)
-        }
+        top = targetRect.bottom + scrollY + offset
+        left = targetRect.left + scrollX + (targetRect.width / 2) - (tooltipWidth / 2)
+        break
       case 'left':
-        return {
-          top: targetRect.top + (targetRect.height / 2) - (tooltipHeight / 2),
-          left: targetRect.left - tooltipWidth - offset
-        }
+        top = targetRect.top + scrollY + (targetRect.height / 2) - (tooltipHeight / 2)
+        left = targetRect.left + scrollX - tooltipWidth - offset
+        break
       case 'right':
-        return {
-          top: targetRect.top + (targetRect.height / 2) - (tooltipHeight / 2),
-          left: targetRect.right + offset
-        }
+        top = targetRect.top + scrollY + (targetRect.height / 2) - (tooltipHeight / 2)
+        left = targetRect.right + scrollX + offset
+        break
       case 'center':
       default:
-        return {
-          top: window.innerHeight / 2 - tooltipHeight / 2,
-          left: window.innerWidth / 2 - tooltipWidth / 2
-        }
+        top = scrollY + (viewportHeight / 2) - tooltipHeight / 2
+        left = scrollX + (viewportWidth / 2) - tooltipWidth / 2
+        break
     }
+
+    // Adjust for viewport boundaries with proper fallback positioning
+    const adjustedPosition = adjustTooltipForViewport(
+      { top, left, width: tooltipWidth, height: tooltipHeight },
+      { width: viewportWidth, height: viewportHeight, scrollX, scrollY },
+      targetRect,
+      position
+    )
+
+    return adjustedPosition
+  }
+
+  // Helper function to adjust tooltip position to stay within viewport
+  const adjustTooltipForViewport = (
+    tooltipRect: { top: number; left: number; width: number; height: number },
+    viewport: { width: number; height: number; scrollX: number; scrollY: number },
+    targetRect: DOMRect,
+    preferredPosition: string
+  ) => {
+    const { top, left, width, height } = tooltipRect
+    const { width: viewportWidth, height: viewportHeight, scrollX, scrollY } = viewport
+
+    // Check boundaries
+    const overflowsRight = left + width > scrollX + viewportWidth
+    const overflowsLeft = left < scrollX
+    const overflowsBottom = top + height > scrollY + viewportHeight
+    const overflowsTop = top < scrollY
+
+    let adjustedTop = top
+    let adjustedLeft = left
+
+    // Horizontal adjustments
+    if (overflowsRight) {
+      adjustedLeft = scrollX + viewportWidth - width - 8
+    } else if (overflowsLeft) {
+      adjustedLeft = scrollX + 8
+    }
+
+    // Vertical adjustments with position flipping when necessary
+    if (overflowsBottom && preferredPosition === 'top') {
+      // If preferred top position overflows bottom, flip to bottom
+      adjustedTop = targetRect.bottom + scrollY + 16
+    } else if (overflowsTop && preferredPosition === 'bottom') {
+      // If preferred bottom position overflows top, flip to top
+      adjustedTop = targetRect.top + scrollY - height - 16
+    } else if (overflowsBottom) {
+      adjustedTop = scrollY + viewportHeight - height - 8
+    } else if (overflowsTop) {
+      adjustedTop = scrollY + 8
+    }
+
+    return { top: adjustedTop, left: adjustedLeft }
   }
 
   if (!showTooltip || !currentTooltipStep) return null

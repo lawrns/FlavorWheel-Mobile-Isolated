@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { HelpCircle, X } from 'lucide-react'
 import { Button } from './button'
 
@@ -20,24 +20,53 @@ export function HelpTooltip({
   className = ''
 }: HelpTooltipProps) {
   const [isVisible, setIsVisible] = useState(false)
+  const tooltipRef = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLDivElement>(null)
 
-  const getPositionClasses = () => {
-    switch (position) {
+  // Calculate optimal position with viewport checking
+  const calculateOptimalPosition = () => {
+    if (!tooltipRef.current || !triggerRef.current) return position
+
+    const tooltipRect = tooltipRef.current.getBoundingClientRect()
+    const triggerRect = triggerRef.current.getBoundingClientRect()
+    const viewportWidth = window.innerWidth
+    const viewportHeight = window.innerHeight
+
+    const overflows = {
+      top: triggerRect.top - tooltipRect.height - 16 < 0,
+      bottom: triggerRect.bottom + tooltipRect.height + 16 > viewportHeight,
+      left: triggerRect.left - tooltipRect.width - 16 < 0,
+      right: triggerRect.right + tooltipRect.width + 16 > viewportWidth
+    }
+
+    // Smart position selection based on available space
+    if (position === 'top' && overflows.top && !overflows.bottom) return 'bottom'
+    if (position === 'bottom' && overflows.bottom && !overflows.top) return 'top'
+    if (position === 'left' && overflows.left && !overflows.right) return 'right'
+    if (position === 'right' && overflows.right && !overflows.left) return 'left'
+
+    return position
+  }
+
+  const getPositionClasses = (optimalPosition: string) => {
+    const baseOffset = 12 // Increased offset for better spacing
+
+    switch (optimalPosition) {
       case 'top':
-        return 'bottom-full left-1/2 transform -translate-x-1/2 mb-2'
+        return `bottom-full left-1/2 transform -translate-x-1/2 mb-${baseOffset / 4}`
       case 'bottom':
-        return 'top-full left-1/2 transform -translate-x-1/2 mt-2'
+        return `top-full left-1/2 transform -translate-x-1/2 mt-${baseOffset / 4}`
       case 'left':
-        return 'right-full top-1/2 transform -translate-y-1/2 mr-2'
+        return `right-full top-1/2 transform -translate-y-1/2 mr-${baseOffset / 4}`
       case 'right':
-        return 'left-full top-1/2 transform -translate-y-1/2 ml-2'
+        return `left-full top-1/2 transform -translate-y-1/2 ml-${baseOffset / 4}`
       default:
-        return 'bottom-full left-1/2 transform -translate-x-1/2 mb-2'
+        return `bottom-full left-1/2 transform -translate-x-1/2 mb-${baseOffset / 4}`
     }
   }
 
-  const getArrowClasses = () => {
-    switch (position) {
+  const getArrowClasses = (optimalPosition: string) => {
+    switch (optimalPosition) {
       case 'top':
         return 'top-full left-1/2 transform -translate-x-1/2 border-l-transparent border-r-transparent border-b-transparent'
       case 'bottom':
@@ -51,14 +80,17 @@ export function HelpTooltip({
     }
   }
 
+  const optimalPosition = calculateOptimalPosition()
+
   return (
     <div className={`relative inline-block ${className}`}>
       {trigger ? (
-        <div onClick={() => setIsVisible(!isVisible)}>
+        <div ref={triggerRef} onClick={() => setIsVisible(!isVisible)}>
           {trigger}
         </div>
       ) : (
         <Button
+          ref={triggerRef}
           variant="ghost"
           size="sm"
           onClick={() => setIsVisible(!isVisible)}
@@ -78,15 +110,16 @@ export function HelpTooltip({
 
           {/* Tooltip */}
           <div
-            className={`absolute z-50 w-64 p-4 bg-card border border-border rounded-lg shadow-lg ${getPositionClasses()}`}
+            ref={tooltipRef}
+            className={`absolute z-50 w-64 p-4 bg-card border border-border rounded-lg shadow-lg ${getPositionClasses(optimalPosition)}`}
           >
             {/* Arrow */}
             <div
-              className={`absolute w-0 h-0 border-4 border-border ${getArrowClasses()}`}
+              className={`absolute w-0 h-0 border-4 border-border ${getArrowClasses(optimalPosition)}`}
               style={{
-                borderColor: position === 'top' ? 'transparent transparent var(--fx-border) transparent' :
-                           position === 'bottom' ? 'var(--fx-border) transparent transparent transparent' :
-                           position === 'left' ? 'transparent transparent transparent var(--fx-border)' :
+                borderColor: optimalPosition === 'top' ? 'transparent transparent var(--fx-border) transparent' :
+                           optimalPosition === 'bottom' ? 'var(--fx-border) transparent transparent transparent' :
+                           optimalPosition === 'left' ? 'transparent transparent transparent var(--fx-border)' :
                            'transparent var(--fx-border) transparent transparent'
               }}
             />

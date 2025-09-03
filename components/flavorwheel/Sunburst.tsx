@@ -524,15 +524,52 @@ export function Sunburst({
     const touch = event.touches[0]
     if (touch) {
       const content = `${node.name}${node.confidence ? ` (${Math.round(node.confidence * 100)}% confidence)` : ''}${node.intensity ? ` - Intensity: ${node.intensity.toFixed(1)}` : ''}`
+
+      // Calculate position with viewport boundary checking
+      const position = calculateTooltipPosition(touch.clientX, touch.clientY)
+
       setTooltip({
         content,
-        x: touch.clientX,
-        y: touch.clientY - 50
+        x: position.x,
+        y: position.y
       })
 
       // Hide tooltip after 3 seconds
       setTimeout(() => setTooltip(null), 3000)
     }
+  }
+
+  // Helper function to calculate tooltip position with viewport bounds
+  const calculateTooltipPosition = (touchX: number, touchY: number) => {
+    const tooltipHeight = 60 // Approximate height of tooltip
+    const tooltipWidth = 200 // Max width from style
+    const offset = 10
+
+    let x = touchX
+    let y = touchY - tooltipHeight - offset
+
+    // Adjust for viewport boundaries
+    const viewportWidth = window.innerWidth
+    const viewportHeight = window.innerHeight
+
+    // Horizontal bounds
+    if (x + tooltipWidth / 2 > viewportWidth) {
+      x = viewportWidth - tooltipWidth / 2 - 8
+    } else if (x - tooltipWidth / 2 < 0) {
+      x = tooltipWidth / 2 + 8
+    }
+
+    // Vertical bounds - if tooltip would go above screen, show below touch point
+    if (y < 0) {
+      y = touchY + offset
+    }
+
+    // Final vertical bounds check
+    if (y + tooltipHeight > viewportHeight) {
+      y = viewportHeight - tooltipHeight - 8
+    }
+
+    return { x, y }
   }
 
   const currentWidth = responsive ? dimensions.width : width
@@ -827,8 +864,9 @@ export function Sunburst({
           style={{
             left: tooltip.x,
             top: tooltip.y,
-            transform: 'translate(-50%, -100%)',
-            maxWidth: '200px'
+            transform: 'translate(-50%, 0)', // Center horizontally, no vertical offset since we handle positioning in calculateTooltipPosition
+            maxWidth: '200px',
+            whiteSpace: 'nowrap'
           }}
         >
           {tooltip.content}
