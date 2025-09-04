@@ -42,7 +42,7 @@ export default function RegisterPage() {
   // Redirect if already authenticated
   useEffect(() => {
     const checkUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await supabase!.auth.getUser()
       if (user) {
         router.push(`/${locale}/flavor-wheels`)
       }
@@ -108,7 +108,7 @@ export default function RegisterPage() {
     setError(null)
 
     try {
-      const { data, error: authError } = await supabase.auth.signUp({
+      const { data, error: authError } = await supabase!.auth.signUp({
         email: formData.email,
         password: formData.password,
         options: {
@@ -144,7 +144,7 @@ export default function RegisterPage() {
   const handleGoogleSignUp = async () => {
     setIsLoading(true)
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
+      const { error } = await supabase!.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo: `${window.location.origin}/${locale}/flavor-wheels`

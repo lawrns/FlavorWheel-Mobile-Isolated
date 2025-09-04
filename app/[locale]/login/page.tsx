@@ -77,7 +77,7 @@ export default function LoginPage() {
     setError(null)
 
     try {
-      const { data, error: authError } = await supabase.auth.signInWithPassword({
+      const { data, error: authError } = await supabase!.auth.signInWithPassword({
         email: formData.email,
         password: formData.password,
       })
@@ -105,7 +105,7 @@ export default function LoginPage() {
   const handleGoogleSignIn = async () => {
     setIsLoading(true)
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
+      const { error } = await supabase!.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo: `${window.location.origin}/${locale}/flavor-wheels`

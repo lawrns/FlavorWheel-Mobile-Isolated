@@ -69,10 +69,10 @@ export async function POST(request: NextRequest) {
     // For now, return a placeholder response
     return NextResponse.json({
       message: 'Template creation not yet implemented',
-      template: body
+      template: await request.json()
     }, { status: 501 })
   } catch (error) {
-    console.error('Error creating template:', error)
+    // Log error for debugging (in production, consider using a proper logging service)
     return NextResponse.json(
       { error: 'Failed to create template' },
       { status: 500 }

@@ -597,7 +597,7 @@ export default function FlavorWheelsPage() {
             </Button>
 
             <Button
-              variant={selectedSection === 'create' ? 'default' : 'outline'}
+              variant={selectedSection === 'create' ? 'primary' : 'outline'}
               size="sm"
               className={`w-full sm:w-auto rounded-full px-3 sm:px-4 py-2 text-xs sm:text-sm transition-all duration-normal ease-standard ${
                 selectedSection === 'create'

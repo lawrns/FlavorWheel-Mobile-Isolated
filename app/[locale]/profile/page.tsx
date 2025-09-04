@@ -109,7 +109,7 @@ export default function ProfilePage() {
         language: data.language || 'es'
       })
     } catch (error) {
-      console.error('Error loading profile:', error)
+      console.error('Profile loading error:', error.message)
     } finally {
       setLoading(false)
     }
@@ -147,7 +147,7 @@ export default function ProfilePage() {
         .eq('user_id', user.id)
 
       if (reviewsError) {
-        console.error('Error loading reviews:', reviewsError)
+        console.error('Reviews loading error:', reviewsError.message)
         // Handle gracefully if user_reviews table doesn't exist
         if (reviewsError.message.includes('relation "user_reviews" does not exist')) {
           console.warn('user_reviews table does not exist, skipping reviews stats')
@@ -181,7 +181,7 @@ export default function ProfilePage() {
         .eq('created_by', user.id)
 
       if (tastingError) {
-        console.error('Error loading tastings for favorite beverage:', tastingError)
+        console.error('Tastings loading error:', tastingError.message)
         // Handle gracefully if relationships don't exist
         if (tastingError.message.includes('relation') && tastingError.message.includes('does not exist')) {
           console.warn('Beverage relationships not set up, using fallback')
