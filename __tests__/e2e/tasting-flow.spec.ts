@@ -156,7 +156,7 @@ test.describe('Mobile Tasting Flow', () => {
   })
 
   test('should work on mobile devices', async ({ page }) => {
-    await page.goto('/')
+    await page.goto('/en/landing')
     
     // Test mobile navigation
     await page.click('[data-testid="mobile-menu-button"]')
@@ -203,7 +203,7 @@ test.describe('Mobile Tasting Flow', () => {
 
 test.describe('Accessibility', () => {
   test('should be accessible with keyboard navigation', async ({ page }) => {
-    await page.goto('/')
+    await page.goto('/en/landing')
     
     // Test keyboard navigation
     await page.keyboard.press('Tab')
@@ -225,7 +225,7 @@ test.describe('Accessibility', () => {
   })
 
   test('should work with screen readers', async ({ page }) => {
-    await page.goto('/')
+    await page.goto('/en/landing')
     
     // Check for screen reader content
     await expect(page.locator('[aria-live="polite"]')).toBeAttached()
@@ -237,7 +237,7 @@ test.describe('Performance', () => {
   test('should load quickly', async ({ page }) => {
     const startTime = Date.now()
     
-    await page.goto('/')
+    await page.goto('/en/landing')
     await page.waitForSelector('[data-testid="app-ready"]')
     
     const loadTime = Date.now() - startTime

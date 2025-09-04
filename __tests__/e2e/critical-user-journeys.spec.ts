@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test'
 test.describe('Critical User Journeys', () => {
   test.beforeEach(async ({ page }) => {
     // Set up test environment
-    await page.goto('/')
+    await page.goto('/en/landing')
 
     // Wait for app to be ready
     await page.waitForSelector('[data-testid="app-ready"]', { timeout: 30000 })

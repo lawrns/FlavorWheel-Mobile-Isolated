@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test'
 test.describe('Tooltip System Testing', () => {
   test.beforeEach(async ({ page }) => {
     // Set up test environment
-    await page.goto('/')
+    await page.goto('/en/landing')
 
     // Wait for app to be ready
     await page.waitForSelector('#main-heading, [data-testid="profile-button"]', { timeout: 30000 })
