@@ -112,7 +112,12 @@ export function PhotoUpload({
   }, [toast])
 
   const uploadPhoto = useCallback(async (photo: PhotoState, index: number) => {
-    if (!photo.file || !userId) return
+    if (!photo.file || !userId) {
+      setPhotos(prev => prev.map((p, i) =>
+        i === index ? { ...p, uploading: false, error: 'User not authenticated' } : p
+      ))
+      return
+    }
 
     setPhotos(prev => prev.map((p, i) =>
       i === index ? { ...p, uploading: true, error: undefined } : p

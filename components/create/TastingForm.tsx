@@ -433,7 +433,7 @@ export function TastingForm({
               >
                 {isSubmitting ? (
                   <div className="flex items-center justify-center gap-2 md:gap-3">
-                    <div className="w-4 h-4 md:w-5 md:h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    <div className="w-4 h-4 md:w-5 md:h-5 border-2 border-muted/30 border-t-primary rounded-full animate-spin"></div>
                     <span className="text-sm md:text-base">Creating Tasting...</span>
                   </div>
                 ) : (

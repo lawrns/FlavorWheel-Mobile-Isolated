@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Plus, Minus, Camera, Upload, ChevronDown, X, Sparkles, FileText, Sliders, CheckSquare, Type, Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
@@ -92,6 +93,74 @@ export default function CreateStudyPage() {
   const [inviteEmails, setInviteEmails] = useState('')
   const [scheduleDate, setScheduleDate] = useState('')
   const [isAddAsYouGoMode, setIsAddAsYouGoMode] = useState(false)
+  const [showTemplatePicker, setShowTemplatePicker] = useState(false)
+
+  // Template definitions
+  const templates = [
+    {
+      id: 'wine-basic',
+      name: 'Basic Wine Tasting',
+      description: 'Essential categories for wine evaluation',
+      categories: [
+        { category_name: 'Appearance', evaluation_type: 'subjective_input' as EvaluationType },
+        { category_name: 'Aroma', evaluation_type: 'subjective_input' as EvaluationType },
+        { category_name: 'Flavor', evaluation_type: 'subjective_input' as EvaluationType },
+        { category_name: 'Body', evaluation_type: 'multiple_choice' as EvaluationType, mc_options: ['Light', 'Medium', 'Full'] },
+        { category_name: 'Acidity', evaluation_type: 'multiple_choice' as EvaluationType, mc_options: ['Low', 'Medium', 'High'] },
+        { category_name: 'Tannins', evaluation_type: 'multiple_choice' as EvaluationType, mc_options: ['Low', 'Medium', 'High'] },
+        { category_name: 'Overall Rating', evaluation_type: 'sliding_scale' as EvaluationType, scale_meta: { min: 1, max: 10, step: 1 } }
+      ]
+    },
+    {
+      id: 'beer-comprehensive',
+      name: 'Comprehensive Beer Tasting',
+      description: 'Detailed evaluation for beer analysis',
+      categories: [
+        { category_name: 'Appearance', evaluation_type: 'subjective_input' as EvaluationType },
+        { category_name: 'Aroma', evaluation_type: 'subjective_input' as EvaluationType },
+        { category_name: 'Head Retention', evaluation_type: 'multiple_choice' as EvaluationType, mc_options: ['Poor', 'Fair', 'Good', 'Excellent'] },
+        { category_name: 'Flavor Profile', evaluation_type: 'subjective_input' as EvaluationType },
+        { category_name: 'Bitterness', evaluation_type: 'sliding_scale' as EvaluationType, scale_meta: { min: 1, max: 10, step: 1 } },
+        { category_name: 'Sweetness', evaluation_type: 'sliding_scale' as EvaluationType, scale_meta: { min: 1, max: 10, step: 1 } },
+        { category_name: 'Body', evaluation_type: 'multiple_choice' as EvaluationType, mc_options: ['Thin', 'Medium', 'Full'] },
+        { category_name: 'Overall Rating', evaluation_type: 'sliding_scale' as EvaluationType, scale_meta: { min: 1, max: 10, step: 1 } }
+      ]
+    },
+    {
+      id: 'coffee-simple',
+      name: 'Simple Coffee Tasting',
+      description: 'Basic categories for coffee evaluation',
+      categories: [
+        { category_name: 'Aroma', evaluation_type: 'subjective_input' as EvaluationType },
+        { category_name: 'Body', evaluation_type: 'multiple_choice' as EvaluationType, mc_options: ['Light', 'Medium', 'Heavy'] },
+        { category_name: 'Acidity', evaluation_type: 'multiple_choice' as EvaluationType, mc_options: ['Low', 'Medium', 'High'] },
+        { category_name: 'Sweetness', evaluation_type: 'multiple_choice' as EvaluationType, mc_options: ['Dry', 'Balanced', 'Sweet'] },
+        { category_name: 'Bitterness', evaluation_type: 'multiple_choice' as EvaluationType, mc_options: ['Low', 'Medium', 'High'] },
+        { category_name: 'Aftertaste', evaluation_type: 'subjective_input' as EvaluationType },
+        { category_name: 'Overall Rating', evaluation_type: 'sliding_scale' as EvaluationType, scale_meta: { min: 1, max: 10, step: 1 } }
+      ]
+    }
+  ]
+
+  // Template selection handler
+  const selectTemplate = (templateId: string) => {
+    const selectedTemplate = templates.find(t => t.id === templateId)
+    if (selectedTemplate) {
+      setFormData(prev => ({
+        ...prev,
+        categories: selectedTemplate.categories.map((cat, index) => ({
+          id: (index + 1).toString(),
+          category_name: cat.category_name,
+          evaluation_type: cat.evaluation_type,
+          mc_options: cat.mc_options,
+          scale_meta: cat.scale_meta,
+          contains_value: cat.contains_value,
+          category_notes_placeholder: cat.category_notes_placeholder
+        }))
+      }))
+      setShowTemplatePicker(false)
+    }
+  }
 
   // Auto-save functionality
   useEffect(() => {
@@ -342,13 +411,71 @@ export default function CreateStudyPage() {
                   data-testid="button-template-picker"
                   variant="outline"
                   className="min-h-[48px] w-full justify-start rounded-lg border border-fx-border bg-white px-3 text-sm text-fx-text hover:bg-fx-bg focus-enhanced hover-lift"
-                  onClick={() => alert('Template picker dialog would open here')}
+                  onClick={() => setShowTemplatePicker(true)}
                 >
                   <Sparkles className="h-4 w-4 mr-2" />
                   Choose Template
                 </Button>
                 <p className="text-xs text-fx-muted mt-1">Optional. Prefills categories.</p>
               </div>
+
+              {/* Template Picker Dialog */}
+              <Dialog open={showTemplatePicker} onOpenChange={setShowTemplatePicker}>
+                <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>Choose a Template</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <p className="text-sm text-muted-foreground">
+                      Select a template to automatically add evaluation categories to your tasting session.
+                    </p>
+                    <div className="grid gap-4">
+                      {templates.map((template) => (
+                        <Card
+                          key={template.id}
+                          className="cursor-pointer hover:shadow-md transition-shadow"
+                          onClick={() => selectTemplate(template.id)}
+                        >
+                          <CardHeader className="pb-3">
+                            <CardTitle className="text-lg flex items-center gap-2">
+                              <Sparkles className="h-5 w-5 text-primary" />
+                              {template.name}
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <p className="text-sm text-muted-foreground mb-3">
+                              {template.description}
+                            </p>
+                            <div className="flex flex-wrap gap-1">
+                              {template.categories.slice(0, 4).map((category, index) => (
+                                <span
+                                  key={index}
+                                  className="inline-flex items-center px-2 py-1 rounded-md bg-muted text-xs font-medium"
+                                >
+                                  {category.category_name}
+                                </span>
+                              ))}
+                              {template.categories.length > 4 && (
+                                <span className="inline-flex items-center px-2 py-1 rounded-md bg-muted text-xs font-medium">
+                                  +{template.categories.length - 4} more
+                                </span>
+                              )}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                    <div className="flex justify-end gap-2 pt-4 border-t">
+                      <Button
+                        variant="outline"
+                        onClick={() => setShowTemplatePicker(false)}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
 
               <div className="flex items-center justify-between">
                 <Label htmlFor="blind-toggle" className="text-sm font-medium text-fx-text2">

@@ -104,13 +104,28 @@ export default function ReviewPage() {
         .order('created_at', { ascending: false })
         .limit(50)
 
-      if (error) throw error
+      if (error) {
+        // Handle specific database errors gracefully
+        if (error.message.includes('relation "user_reviews" does not exist') ||
+            error.message.includes('does not exist')) {
+          console.warn('user_reviews table does not exist, showing empty state')
+          setReviews([])
+          toast({
+            title: 'Reviews Not Available',
+            description: 'Review functionality is being set up. Please check back later.',
+            variant: 'default',
+          })
+          return
+        }
+        throw error
+      }
       setReviews(data || [])
     } catch (error) {
       console.error('Error loading reviews:', error)
+      setReviews([]) // Set empty array as fallback
       toast({
-        title: 'Error',
-        description: 'Failed to load reviews',
+        title: 'Error Loading Reviews',
+        description: 'Unable to load reviews. Please try again later.',
         variant: 'destructive',
       })
     } finally {
@@ -444,7 +459,7 @@ export default function ReviewPage() {
                     Write Review
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-white">
                   <DialogHeader>
                     <DialogTitle>Write a Review</DialogTitle>
                   </DialogHeader>
@@ -556,7 +571,7 @@ export default function ReviewPage() {
                     >
                       {creatingReview ? (
                         <div className="flex items-center gap-2">
-                          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                          <div className="w-4 h-4 border-2 border-muted/30 border-t-primary rounded-full animate-spin"></div>
                           Publishing Review...
                         </div>
                       ) : (

@@ -91,17 +91,46 @@ export class PhotoService {
     options: PhotoUploadOptions = {}
   ): Promise<PhotoUploadResult> {
     try {
+      // Validate user ID
+      if (!userId || userId.trim() === '') {
+        console.error('PhotoService: No user ID provided')
+        return {
+          success: false,
+          error: 'User not authenticated'
+        }
+      }
+
+      // Check if user is authenticated
+      const { data: { user }, error: authError } = await this.supabase.auth.getUser()
+      if (authError || !user) {
+        console.error('PhotoService: User authentication error:', authError)
+        return {
+          success: false,
+          error: 'User not authenticated'
+        }
+      }
+
+      // Verify user ID matches authenticated user
+      if (user.id !== userId) {
+        console.error('PhotoService: User ID mismatch', { expected: user.id, received: userId })
+        return {
+          success: false,
+          error: 'Authentication mismatch'
+        }
+      }
+
       // Compress image if it's a File
       let uploadFile: File | Blob = file
       if (file instanceof File) {
         uploadFile = await this.compressImage(file, options)
       }
 
-      // Generate unique filename
-      const fileName = `${userId}-${uuidv4()}.jpg`
-      const filePath = `${folder}/${fileName}`
+      // Generate unique filename with user ID as first folder level for RLS policy
+      const fileName = `${uuidv4()}.jpg`
+      const filePath = `${userId}/${folder}/${fileName}`
 
       // Upload to Supabase
+      console.log('PhotoService: Attempting upload with path:', filePath, 'userId:', userId)
       const { error: uploadError } = await this.supabase.storage
         .from('tasting-photos')
         .upload(filePath, uploadFile as any, {
@@ -158,6 +187,7 @@ export class PhotoService {
    */
   async deletePhoto(filePath: string): Promise<boolean> {
     try {
+      // filePath should already include userId/folder/filename format
       const { error } = await this.supabase.storage
         .from('tasting-photos')
         .remove([filePath])

@@ -18,9 +18,9 @@ import {
   SelectLabel,
 } from '@/components/ui/select'
 import { useRouter } from 'next/navigation'
-import { useToast } from '@/hooks/use-toast'
-import { useAuth } from '@/components/auth-provider'
 import { CreateShell, CreateHeader, CreateFooterActions } from '@/components/create'
+
+// Hooks will be loaded dynamically to avoid SSR issues
 
 interface TastingItem {
   id: string
@@ -74,10 +74,37 @@ const createProductTypeOptions = () => {
 
 const PRODUCT_TYPE_OPTIONS = createProductTypeOptions()
 
-export default function QuickTastingPage() {
+// Inner component that uses the hooks
+function QuickTastingPageInner() {
   const router = useRouter()
-  const { toast } = useToast()
-  const { user } = useAuth()
+  const [toast, setToast] = useState<any>(null)
+  const [user, setUser] = useState<any>(null)
+
+  // Load hooks dynamically after mount
+  useEffect(() => {
+    const loadHooks = async () => {
+      try {
+        const [toastModule, authModule] = await Promise.all([
+          import('@/hooks/use-toast'),
+          import('@/components/auth-provider')
+        ])
+
+        setToast(() => toastModule.useToast().toast)
+        setUser(authModule.useAuth().user)
+      } catch (error) {
+        console.error('Error loading hooks:', error)
+      }
+    }
+
+    loadHooks()
+  }, [])
+
+  // Safe toast function for SSR compatibility
+  const safeToast = (options: any) => {
+    if (typeof window !== 'undefined' && toast) {
+      toast(options)
+    }
+  }
 
   // State management
   const [productType, setProductType] = useState<string>('')
@@ -148,7 +175,7 @@ export default function QuickTastingPage() {
             setFlavors(parsed.flavors || [])
             setItems(parsed.items || [{ id: '1', name: '', aroma: '', flavor: '', other: '', overall: 50 }])
             setLastSaved(draftTime)
-            toast({
+            safeToast({
               title: "Draft Loaded",
               description: "Your previous tasting draft has been restored.",
             })
@@ -197,7 +224,7 @@ export default function QuickTastingPage() {
             setFlavors(parsed.flavors || [])
             setItems(parsed.items || [{ id: '1', name: '', aroma: '', flavor: '', other: '', overall: 50 }])
             setLastSaved(draftTime)
-            toast({
+            safeToast({
               title: "Draft Loaded",
               description: "Your previous tasting draft has been restored.",
             })
@@ -270,7 +297,7 @@ export default function QuickTastingPage() {
   // Handle form submission
   const handleSubmit = async () => {
     if (!user) {
-      toast({
+      safeToast({
         title: "Authentication Required",
         description: "Please sign in to save your tasting.",
         variant: "destructive",
@@ -279,7 +306,7 @@ export default function QuickTastingPage() {
     }
 
     if (!productType) {
-      toast({
+      safeToast({
         title: "Product Type Required",
         description: "Please select what you're tasting.",
         variant: "destructive",
@@ -289,7 +316,7 @@ export default function QuickTastingPage() {
 
     const validItems = items.filter(item => item.name.trim() !== '')
     if (validItems.length === 0) {
-      toast({
+      safeToast({
         title: "Item Required",
         description: "Please add at least one item with a name.",
         variant: "destructive",
@@ -301,7 +328,7 @@ export default function QuickTastingPage() {
 
     try {
       // TODO: Implement the actual API call for saving the tasting
-      toast({
+      safeToast({
         title: "Tasting Saved!",
         description: "Your quick tasting has been recorded successfully.",
       })
@@ -310,7 +337,7 @@ export default function QuickTastingPage() {
       router.push('/quick-tasting/confirm')
     } catch (error: any) {
       console.error('Error saving tasting:', error)
-      toast({
+      safeToast({
         title: "Error Saving Tasting",
         description: error.message || "Something went wrong. Please try again.",
         variant: "destructive",
@@ -480,7 +507,7 @@ export default function QuickTastingPage() {
                   <Button
                     variant="outline"
                     onClick={() => {
-                      toast({
+                      safeToast({
                         title: "Photo Upload",
                         description: "Photo upload feature coming soon!",
                       })
@@ -571,4 +598,9 @@ export default function QuickTastingPage() {
       </div>
     </CreateShell>
   )
+}
+
+// Outer component that handles SSR
+export default function QuickTastingPage() {
+  return <QuickTastingPageInner />
 }
