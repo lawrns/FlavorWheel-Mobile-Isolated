@@ -56,6 +56,8 @@ export default function ReviewPage() {
   const [reviews, setReviews] = useState<Review[]>([])
   const [myReviews, setMyReviews] = useState<Review[]>([])
   const [loading, setLoading] = useState(true)
+  const [loadingMyReviews, setLoadingMyReviews] = useState(false)
+  const [creatingReview, setCreatingReview] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [filterType, setFilterType] = useState('all')
   const [sortBy, setSortBy] = useState('newest')
@@ -119,6 +121,7 @@ export default function ReviewPage() {
   const loadMyReviews = async () => {
     if (!user) return
 
+    setLoadingMyReviews(true)
     try {
       const { data, error } = await supabase
         .from('user_reviews')
@@ -130,10 +133,32 @@ export default function ReviewPage() {
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
 
-      if (error) throw error
+      if (error) {
+        // Handle specific database errors gracefully
+        if (error.message.includes('relation "user_reviews" does not exist') ||
+            error.message.includes('does not exist')) {
+          console.warn('user_reviews table does not exist, showing empty state')
+          setMyReviews([])
+          toast({
+            title: 'Reviews Not Available',
+            description: 'Review functionality is being set up. Please check back later.',
+            variant: 'default',
+          })
+          return
+        }
+        throw error
+      }
       setMyReviews(data || [])
     } catch (error) {
       console.error('Error loading my reviews:', error)
+      setMyReviews([]) // Set empty array as fallback
+      toast({
+        title: 'Error Loading Reviews',
+        description: 'Unable to load reviews. Please try again later.',
+        variant: 'destructive',
+      })
+    } finally {
+      setLoadingMyReviews(false)
     }
   }
 
@@ -172,6 +197,7 @@ export default function ReviewPage() {
   const handleCreateReview = async () => {
     if (!user) return
 
+    setCreatingReview(true)
     try {
       const { error } = await supabase
         .from('user_reviews')
@@ -213,6 +239,8 @@ export default function ReviewPage() {
         description: 'Failed to create review',
         variant: 'destructive',
       })
+    } finally {
+      setCreatingReview(false)
     }
   }
 
@@ -231,8 +259,18 @@ export default function ReviewPage() {
           ? { ...review, helpful_count: review.helpful_count + 1 }
           : review
       ))
+
+      toast({
+        title: 'Thank you!',
+        description: 'Your feedback has been recorded.',
+      })
     } catch (error) {
       console.error('Error voting:', error)
+      toast({
+        title: 'Error',
+        description: 'Failed to record your vote. Please try again.',
+        variant: 'destructive',
+      })
     }
   }
 
@@ -514,9 +552,16 @@ export default function ReviewPage() {
                     <Button
                       onClick={handleCreateReview}
                       className="w-full"
-                      disabled={!newReview.tasting_id || !newReview.item_id || !newReview.title.trim()}
+                      disabled={!newReview.tasting_id || !newReview.item_id || !newReview.title.trim() || creatingReview}
                     >
-                      Publish Review
+                      {creatingReview ? (
+                        <div className="flex items-center gap-2">
+                          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                          Publishing Review...
+                        </div>
+                      ) : (
+                        'Publish Review'
+                      )}
                     </Button>
                   </div>
                 </DialogContent>
@@ -598,7 +643,12 @@ export default function ReviewPage() {
 
             <TabsContent value="my-reviews" className="space-y-6">
               <div className="space-y-4">
-                {myReviews.length > 0 ? (
+                {loadingMyReviews ? (
+                  <div className="flex justify-center py-12">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-600"></div>
+                    <span className="ml-2 text-muted-foreground">Loading your reviews...</span>
+                  </div>
+                ) : myReviews.length > 0 ? (
                   myReviews.map((review) => (
                     <ReviewCard key={review.id} review={review} showActions={false} />
                   ))

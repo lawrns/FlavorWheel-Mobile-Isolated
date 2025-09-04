@@ -58,21 +58,14 @@ export function Navigation({
     }
   }
 
-  // Get visible navigation items
+  // Get visible navigation items (only working pages)
   const getVisibleItems = () => {
-    return NAVIGATION_ITEMS.filter(item => {
-      // Show core items always
-      if (['dashboard', 'create', 'join', 'templates'].includes(item.id)) {
-        return true
-      }
-      // Show other items based on user level or premium status
-      return true // For now, show all items
-    })
+    return NAVIGATION_ITEMS // All items are now working pages
   }
 
   // Mobile Navigation (Bottom Tab Bar)
   if (variant === 'mobile') {
-    const mobileItems = getVisibleItems().slice(0, 5) // Limit to 5 items for mobile
+    const mobileItems = getVisibleItems() // Show all 4 core items
 
     return (
       <nav

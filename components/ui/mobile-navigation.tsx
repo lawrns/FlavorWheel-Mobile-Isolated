@@ -33,8 +33,8 @@ export function MobileNavigation({
   }))
 
   const secondaryNavItems = [
+    // Profile is now in main navigation, so only add additional items here
     { id: 'analytics', icon: Settings, label: 'Analytics', path: '/en/analytics' },
-    { id: 'profile', icon: User, label: 'Profile', path: '/en/profile' },
     { id: 'settings', icon: Settings, label: 'Settings', path: '/en/settings' },
   ]
 

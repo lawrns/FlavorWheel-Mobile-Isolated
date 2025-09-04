@@ -1,3 +1,5 @@
 export { CreateShell } from './CreateShell'
 export { CreateHeader } from './CreateHeader'
 export { CreateFooterActions } from './CreateFooterActions'
+export { ModeSelection } from './ModeSelection'
+export { TastingForm } from './TastingForm'

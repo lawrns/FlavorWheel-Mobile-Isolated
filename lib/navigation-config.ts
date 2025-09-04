@@ -28,12 +28,12 @@ export interface NavigationItem {
 }
 
 /**
- * Simplified 4-button navigation configuration for FlavorWheel
- * Single source of truth for all navigation items across desktop and mobile
- * Exactly 4 core buttons as requested in client feedback
+ * Clean 4-button navigation configuration for FlavorWheel
+ * Single source of truth for all navigation items
+ * Only includes working pages to avoid broken links
  */
 export const NAVIGATION_ITEMS: NavigationItem[] = [
-  // Core 4-button navigation (simplified per client feedback)
+  // Core 4-button navigation (only working pages)
   {
     id: 'home',
     label: 'Home',
@@ -51,65 +51,12 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     color: 'wine-green',
   },
   {
-    id: 'social',
-    label: 'Social',
-    icon: HiUsers,
-    emoji: '👥',
-    href: '/social',
-    color: 'wine-green',
-  },
-  {
     id: 'review',
     label: 'Review',
     icon: HiStar,
     emoji: '⭐',
     href: '/review',
     color: 'elegant-brown',
-  },
-
-  // Legacy items for backward compatibility (not shown in main navigation)
-  {
-    id: 'flavor-wheels',
-    label: 'Flavor Wheels',
-    icon: HiSparkles,
-    emoji: '🎯',
-    href: '/flavor-wheels',
-    color: 'elegant-brown',
-    requiredLevel: 'beginner',
-  },
-  {
-    id: 'menu',
-    label: 'Menu',
-    icon: HiCog,
-    emoji: '☰',
-    href: '/menu',
-    color: 'neutral-gray',
-  },
-  {
-    id: 'join',
-    label: 'Join Event',
-    icon: HiUsers,
-    emoji: '📱',
-    href: '/join',
-    color: 'wine-green',
-  },
-  {
-    id: 'templates',
-    label: 'Templates',
-    icon: HiTemplate,
-    emoji: '📋',
-    href: '/templates',
-    color: 'elegant-brown',
-    requiredLevel: 'beginner',
-  },
-  {
-    id: 'analytics',
-    label: 'Analytics',
-    icon: HiChartBar,
-    emoji: '📊',
-    href: '/analytics',
-    color: 'elegant-brown',
-    requiredLevel: 'intermediate',
   },
   {
     id: 'profile',
@@ -119,57 +66,35 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     href: '/profile',
     color: 'neutral-gray',
   },
-  {
-    id: 'settings',
-    label: 'Settings',
-    icon: HiCog,
-    emoji: '⚙️',
-    href: '/settings',
-    color: 'neutral-gray',
-  },
 ]
 
 /**
  * Route to navigation item mapping
  * Maps page routes to their corresponding navigation item IDs
+ * Only includes working pages to avoid broken navigation
  */
 export const ROUTE_TO_NAV_MAPPING: Record<string, string> = {
-  // Core pages - Updated per client feedback
+  // Core pages (only working ones)
   '/': 'home',
   '/landing': 'home',
   '/create': 'create',
-  '/social': 'social',
   '/review': 'review',
-  '/create-wheel': 'review',
-  '/test-sunburst-wheel': 'review',
-  '/flavor-wheels': 'flavor-wheels',
-  '/menu': 'menu',
-
-  // Legacy routes
-  '/join': 'join',
-  '/templates': 'templates',
-  '/analytics': 'analytics',
   '/profile': 'profile',
-  '/settings': 'settings',
 
   // Feature pages that map to core navigation
-  '/flavor-wheel': 'flavor-wheels',
-  '/progress': 'profile',
   '/tastings': 'home',
-  '/design-system': 'settings',
+  '/create-wheel': 'review',
+  '/test-sunburst-wheel': 'review',
 }
 
 /**
- * Mobile navigation items (exactly 4 core buttons per client feedback)
- * Optimized for mobile bottom navigation - Simplified to core 4 buttons only
+ * Mobile navigation items (exactly 4 core buttons)
+ * All core navigation items for mobile bottom navigation
  */
-export const MOBILE_NAV_ITEMS = NAVIGATION_ITEMS.filter(item =>
-  ['home', 'create', 'social', 'review'].includes(item.id)
-)
+export const MOBILE_NAV_ITEMS = NAVIGATION_ITEMS
 
 /**
- * Desktop navigation items (full navigation)
- * All navigation items for desktop/tablet navigation
+ * Desktop navigation items (same as mobile for consistency)
  */
 export const DESKTOP_NAV_ITEMS = NAVIGATION_ITEMS
 

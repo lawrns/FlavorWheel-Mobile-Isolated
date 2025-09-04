@@ -2,6 +2,7 @@ import type React from 'react'
 import { Providers } from '@/components/providers'
 import { OnboardingWrapper } from '@/components/ui/onboarding-wrapper'
 import { ToastProvider } from '@/hooks/use-toast'
+import { ErrorBoundary } from '@/components/ui/error-boundary'
 
 export default function LocaleLayout({
   children,
@@ -27,7 +28,9 @@ export default function LocaleLayout({
           </a>
 
           <main id="main-content" role="main">
-            {children}
+            <ErrorBoundary>
+              {children}
+            </ErrorBoundary>
           </main>
         </OnboardingWrapper>
       </ToastProvider>
