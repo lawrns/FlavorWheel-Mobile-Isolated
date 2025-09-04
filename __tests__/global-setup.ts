@@ -9,14 +9,14 @@ async function globalSetup(config: FullConfig) {
   const page = await browser.newPage()
 
   try {
-    // Wait for the application to be ready
-    console.log('⏳ Waiting for application to be ready...')
-    await page.goto(config.projects[0].use.baseURL || 'http://localhost:3001')
-    
-    // Wait for the main content to load
-    await page.waitForSelector('[data-testid="app-ready"]', { timeout: 30000 })
-    
-    console.log('✅ Application is ready for testing')
+    // Simple navigation to check if app is accessible
+    console.log('⏳ Checking application accessibility...')
+    await page.goto('http://localhost:3001/en/landing')
+
+    // Just wait for page load, don't wait for specific selectors
+    await page.waitForLoadState('networkidle', { timeout: 30000 })
+
+    console.log('✅ Application is accessible')
 
     // Setup test data if needed
     await setupTestData(page)

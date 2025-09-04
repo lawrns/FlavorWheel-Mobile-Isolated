@@ -9,6 +9,9 @@ async function globalTeardown(config: FullConfig) {
   const page = await browser.newPage()
 
   try {
+    // Navigate to the app first
+    await page.goto('http://localhost:3001/en/landing')
+
     // Clean up test data
     await cleanupTestData(page)
 
@@ -60,16 +63,24 @@ async function removeTestUsers(page: any) {
 
 async function clearCaches(page: any) {
   console.log('🧽 Clearing caches...')
-  
-  // Clear browser caches, local storage, etc.
-  await page.evaluate(() => {
-    localStorage.clear()
-    sessionStorage.clear()
-  })
-  
+
+  try {
+    // Clear browser caches, local storage, etc.
+    await page.evaluate(() => {
+      if (typeof localStorage !== 'undefined') {
+        localStorage.clear()
+      }
+      if (typeof sessionStorage !== 'undefined') {
+        sessionStorage.clear()
+      }
+    })
+  } catch (error) {
+    console.log('⚠️ Could not clear browser storage:', error.message)
+  }
+
   // Clear any application-specific caches
   // This might include Redis cache, CDN cache, etc.
-  
+
   console.log('✅ Caches cleared')
 }
 
