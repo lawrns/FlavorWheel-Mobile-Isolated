@@ -66,10 +66,11 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     // TODO: Implement template creation
-    return NextResponse.json(
-      { error: 'Template creation not yet implemented' },
-      { status: 501 }
-    )
+    // For now, return a placeholder response
+    return NextResponse.json({
+      message: 'Template creation not yet implemented',
+      template: body
+    }, { status: 501 })
   } catch (error) {
     console.error('Error creating template:', error)
     return NextResponse.json(

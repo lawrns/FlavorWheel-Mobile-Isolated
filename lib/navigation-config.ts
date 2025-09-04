@@ -131,7 +131,11 @@ export function isNavigationItemAvailable(
   userLevel: 'beginner' | 'intermediate' | 'advanced' = 'beginner'
 ): boolean {
   if (item.disabled) return false
-  if (item.premium) return false // TODO: Check premium status
+  if (item.premium) {
+    // TODO: Implement premium status checking when user system is ready
+    // For now, show premium items to all users
+    return true
+  }
 
   if (item.requiredLevel) {
     const levels = ['beginner', 'intermediate', 'advanced']

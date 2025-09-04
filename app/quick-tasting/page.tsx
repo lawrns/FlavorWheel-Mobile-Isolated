@@ -328,6 +328,8 @@ function QuickTastingPageInner() {
 
     try {
       // TODO: Implement the actual API call for saving the tasting
+      // For now, we'll simulate the save operation
+      console.log('Saving tasting data:', tastingData)
       safeToast({
         title: "Tasting Saved!",
         description: "Your quick tasting has been recorded successfully.",

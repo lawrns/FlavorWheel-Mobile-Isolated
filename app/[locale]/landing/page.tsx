@@ -9,16 +9,32 @@ export default function LandingPage() {
   const router = useRouter()
   const params = useParams()
   const locale = (params.locale as string) || 'en'
-  const _rotWords = ['coffee','spirits','wine','beer','tea'];
-  const [rotIdx,setRotIdx] = useState(0);
+  const rotatingWords = ['coffee', 'spirits', 'wine', 'beer', 'tea']
+  const [currentWordIndex, setCurrentWordIndex] = useState(0)
 
   // Get dynamic statistics
-  const { statistics, loading: statsLoading } = useStatistics({
+  const { statistics, loading: statsLoading, error: statsError } = useStatistics({
     refreshInterval: 300000, // Refresh every 5 minutes
     enableRealtime: true
   })
 
-  useEffect(()=>{ const el=document.getElementById('fw-rot-word'); if(el) el.textContent=_rotWords[0]; const t=setInterval(()=>{ setRotIdx(i=>{ const n=(i+1)%_rotWords.length; const node=document.getElementById('fw-rot-word'); if(node) node.textContent=_rotWords[n]; return n; }); },2200); return ()=>clearInterval(t); },[_rotWords])
+  useEffect(() => {
+    const el = document.getElementById('fw-rot-word')
+    if (el) el.textContent = rotatingWords[0]
+
+    const interval = setInterval(() => {
+      setCurrentWordIndex(prevIndex => {
+        const nextIndex = (prevIndex + 1) % rotatingWords.length
+        const element = document.getElementById('fw-rot-word')
+        if (element) {
+          element.textContent = rotatingWords[nextIndex]
+        }
+        return nextIndex
+      })
+    }, 2200)
+
+    return () => clearInterval(interval)
+  }, [])
 
   const handleIconClick = (route: string) => {
     router.push(route)
@@ -137,21 +153,39 @@ export default function LandingPage() {
             <div className="grid grid-cols-3 gap-8">
               <div className="text-center">
                 <div className="text-3xl md:text-4xl font-bold text-[#8B4513] mb-2" style={{ fontFamily: 'var(--fx-font-heading)' }}>
-                  {statistics ? (statistics.totalUsers || 0).toLocaleString() : '...'}
+                  {statsLoading ? (
+                    <div className="animate-pulse">...</div>
+                  ) : statsError ? (
+                    <span className="text-red-500">Error</span>
+                  ) : (
+                    (statistics?.totalUsers || 0).toLocaleString()
+                  )}
                 </div>
                 <div className="text-sm text-[#4A473F] font-medium">Expert Tasters</div>
               </div>
 
               <div className="text-center border-x border-[#D4AF37]/20 px-4">
                 <div className="text-3xl md:text-4xl font-bold text-[#D4AF37] mb-2" style={{ fontFamily: 'var(--fx-font-heading)' }}>
-                  {statistics ? (statistics.totalTastings || 0).toLocaleString() : '...'}
+                  {statsLoading ? (
+                    <div className="animate-pulse">...</div>
+                  ) : statsError ? (
+                    <span className="text-red-500">Error</span>
+                  ) : (
+                    (statistics?.totalTastings || 0).toLocaleString()
+                  )}
                 </div>
                 <div className="text-sm text-[#4A473F] font-medium">Tastings Completed</div>
               </div>
 
               <div className="text-center">
                 <div className="text-3xl md:text-4xl font-bold text-[#2E8B57] mb-2" style={{ fontFamily: 'var(--fx-font-heading)' }}>
-                  {statistics ? (statistics.totalReviews || 0).toLocaleString() : '...'}
+                  {statsLoading ? (
+                    <div className="animate-pulse">...</div>
+                  ) : statsError ? (
+                    <span className="text-red-500">Error</span>
+                  ) : (
+                    (statistics?.totalReviews || 0).toLocaleString()
+                  )}
                 </div>
                 <div className="text-sm text-[#4A473F] font-medium">Reviews Shared</div>
               </div>
