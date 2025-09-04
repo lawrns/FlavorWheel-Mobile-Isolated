@@ -143,14 +143,29 @@ export default function ProfilePage() {
       // Get reviews count and average rating
       const { data: reviews, error: reviewsError } = await supabase
         .from('user_reviews')
-        .select('overall_rating')
+        .select('rating')
         .eq('user_id', user.id)
 
-      if (reviewsError) throw reviewsError
+      if (reviewsError) {
+        console.error('Error loading reviews:', reviewsError)
+        // Handle gracefully if user_reviews table doesn't exist
+        if (reviewsError.message.includes('relation "user_reviews" does not exist')) {
+          console.warn('user_reviews table does not exist, skipping reviews stats')
+          return {
+            totalTastings: tastingsCount || 0,
+            totalReviews: 0,
+            averageRating: 0,
+            achievements: 0,
+            streakDays: 0,
+            favoriteBeverage: 'Unknown'
+          }
+        }
+        throw reviewsError
+      }
 
       const totalReviews = reviews?.length || 0
       const averageRating = totalReviews > 0
-        ? reviews!.reduce((sum, review) => sum + (review.overall_rating || 0), 0) / totalReviews
+        ? reviews!.reduce((sum, review) => sum + (review.rating || 0), 0) / totalReviews
         : 0
 
       // Get favorite beverage
@@ -165,7 +180,22 @@ export default function ProfilePage() {
         `)
         .eq('created_by', user.id)
 
-      if (tastingError) throw tastingError
+      if (tastingError) {
+        console.error('Error loading tastings for favorite beverage:', tastingError)
+        // Handle gracefully if relationships don't exist
+        if (tastingError.message.includes('relation') && tastingError.message.includes('does not exist')) {
+          console.warn('Beverage relationships not set up, using fallback')
+          return {
+            totalTastings: tastingsCount || 0,
+            totalReviews,
+            averageRating,
+            achievements: 0,
+            streakDays: 0,
+            favoriteBeverage: 'Unknown'
+          }
+        }
+        throw tastingError
+      }
 
       const beverageCounts = tastings?.reduce((acc, tasting) => {
         tasting.tasting_items?.forEach(item => {
@@ -188,6 +218,24 @@ export default function ProfilePage() {
       })
     } catch (error) {
       console.error('Error loading stats:', error)
+
+      // Provide fallback stats if everything fails
+      setStats({
+        totalTastings: 0,
+        totalReviews: 0,
+        averageRating: 0,
+        achievements: 0,
+        streakDays: 0,
+        favoriteBeverage: 'Unknown'
+      })
+
+      toast({
+        title: 'Stats Loading Error',
+        description: 'Unable to load profile statistics. Some features may be unavailable.',
+        variant: 'destructive',
+      })
+    } finally {
+      setLoading(false)
     }
   }
 
