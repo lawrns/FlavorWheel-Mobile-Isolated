@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300..700;1,14..32,300..700&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300..700;1,14..32,300..700&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -8,18 +8,23 @@
 
 /* ===== PRIMITIVES ===== */
 :root {
-  /* Color Primitives */
+  /* Premium Color Primitives */
   --fx-white: #FFFFFF;
-  --fx-black: #0E0E0C;
-  --fx-neutral-0: #FEFCF8;
+  --fx-black: #2C1810;
+  --fx-neutral-0: #FEFCF8;  /* Warm cream background */
   --fx-neutral-50: #F7F3EA;
   --fx-neutral-100: #EDE7DA;
   --fx-neutral-200: #E0D8C7;
-  --fx-neutral-700: #4A473F;
-  --fx-brand-green-500: #4A6B4A;
-  --fx-brand-green-600: #3D5940;
-  --fx-brand-gold-500: #D4AF37;
-  --fx-brand-gold-600: #B8941F;
+  --fx-neutral-700: #8B4513; /* Rich brown for sophistication */
+  --fx-brand-brown-500: #8B4513; /* Primary - Rich Brown */
+  --fx-brand-brown-600: #6B3419; /* Darker brown for hover */
+  --fx-brand-brown-400: #A0552B; /* Lighter brown */
+  --fx-brand-gold-500: #D4AF37; /* Accent - Gold */
+  --fx-brand-gold-600: #B8941F; /* Darker gold for hover */
+  --fx-brand-gold-400: #E6C84A; /* Lighter gold */
+  --fx-brand-green-500: #2E8B57; /* Secondary - Deep Green */
+  --fx-brand-green-600: #1F5A3A; /* Darker green for hover */
+  --fx-brand-green-400: #3F9B6B; /* Lighter green */
   --fx-ai-confidence-low: #E4572E;
   --fx-ai-confidence-med: #DFAF2B;
   --fx-ai-confidence-high: #57A773;
@@ -96,11 +101,13 @@
   --fx-text-inverse: var(--fx-white);
   --fx-text-muted: rgba(0,0,0,0.6);
 
-  /* Brand Semantics */
-  --fx-primary: var(--fx-brand-green-500);
-  --fx-primary-hover: var(--fx-brand-green-600);
-  --fx-accent: var(--fx-brand-gold-500);
-  --fx-accent-hover: var(--fx-brand-gold-600);
+  /* Premium Brand Semantics */
+  --fx-primary: var(--fx-brand-brown-500);        /* Rich Brown - Sophistication */
+  --fx-primary-hover: var(--fx-brand-brown-600);  /* Darker Brown for hover */
+  --fx-accent: var(--fx-brand-gold-500);          /* Gold - Premium feel */
+  --fx-accent-hover: var(--fx-brand-gold-600);    /* Darker Gold for hover */
+  --fx-secondary: var(--fx-brand-green-500);      /* Deep Green - Trust/Nature */
+  --fx-secondary-hover: var(--fx-brand-green-600); /* Darker Green for hover */
 
   /* AI Semantics */
   --fx-ai-badge-bg: var(--fx-neutral-50);
@@ -112,9 +119,18 @@
   --fx-border-strong: var(--fx-neutral-700);
 
   /* State Semantics */
-  --fx-focus-ring-color: #2563eb; /* Blue-600 for better accessibility contrast */
+  --fx-focus-ring-color: var(--fx-accent); /* Gold for premium focus rings */
   --fx-focus-ring-width: 2px;
   --fx-focus-ring-offset: 2px;
+
+  /* Premium Design Tokens */
+  --fx-gradient-primary: linear-gradient(135deg, var(--fx-primary) 0%, var(--fx-primary-hover) 100%);
+  --fx-gradient-accent: linear-gradient(135deg, var(--fx-accent) 0%, var(--fx-accent-hover) 100%);
+  --fx-gradient-secondary: linear-gradient(135deg, var(--fx-secondary) 0%, var(--fx-secondary-hover) 100%);
+  --fx-gradient-hero: linear-gradient(135deg, var(--fx-neutral-0) 0%, rgba(255,255,255,0.9) 50%, var(--fx-neutral-50) 100%);
+  --fx-shadow-premium: 0 20px 40px rgba(139, 69, 19, 0.15);
+  --fx-shadow-glow: 0 0 30px rgba(212, 175, 55, 0.2);
+  --fx-border-premium: 1px solid rgba(212, 175, 55, 0.3);
 
   /* Accessibility Helpers */
   --fx-sr-only: {
@@ -249,9 +265,10 @@
 
 /* ===== TYPOGRAPHY - FLUID SCALE ===== */
 :root {
-  /* Font Families */
-  --fx-font-heading: 'Fraunces Variable', serif;
-  --fx-font-body: 'Inter Variable', system-ui, -apple-system, sans-serif;
+  /* Premium Typography System */
+  --fx-font-heading: 'Crimson Text', serif;        /* Elegant serif for headings */
+  --fx-font-subheading: 'Fraunces Variable', serif; /* Sophisticated serif for subheadings */
+  --fx-font-body: 'Inter Variable', system-ui, -apple-system, sans-serif; /* Clean sans-serif for body */
 
   /* Fluid Typography Scale */
   --fx-text-h1: clamp(28px, 4.5vw, 40px);
