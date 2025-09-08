@@ -1,14 +1,14 @@
-import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
+import React from 'react'
 import { renderHook, act, waitFor } from '@testing-library/react'
 import { useStatistics, useUserStats, useEngagementStats, useTrendingStats } from '@/hooks/use-statistics'
 import { statisticsService } from '@/services/statistics-service'
 
 // Mock the statistics service
-vi.mock('@/services/statistics-service', () => ({
+jest.mock('@/services/statistics-service', () => ({
   statisticsService: {
-    getAppStatistics: vi.fn(),
-    getRealtimeStats: vi.fn(),
-    clearCache: vi.fn()
+    getAppStatistics: jest.fn(),
+    getRealtimeStats: jest.fn(),
+    clearCache: jest.fn()
   }
 }))
 
@@ -44,17 +44,17 @@ describe('useStatistics Hook', () => {
   }
 
   beforeEach(() => {
-    vi.clearAllMocks()
+    jest.clearAllMocks()
 
     // Setup default mock implementations
-    vi.mocked(statisticsService.getAppStatistics).mockResolvedValue(mockStatisticsData)
-    vi.mocked(statisticsService.getRealtimeStats).mockResolvedValue(mockRealtimeStats)
-    vi.mocked(statisticsService.clearCache).mockImplementation(() => {})
+    jest.mocked(statisticsService.getAppStatistics).mockResolvedValue(mockStatisticsData)
+    jest.mocked(statisticsService.getRealtimeStats).mockResolvedValue(mockRealtimeStats)
+    jest.mocked(statisticsService.clearCache).mockImplementation(() => {})
   })
 
   afterEach(() => {
-    vi.resetAllMocks()
-    vi.useRealTimers()
+    jest.resetAllMocks()
+    jest.useRealTimers()
   })
 
   describe('useStatistics', () => {
@@ -82,7 +82,7 @@ describe('useStatistics Hook', () => {
 
     it('should handle loading errors', async () => {
       const errorMessage = 'Failed to fetch statistics'
-      vi.mocked(statisticsService.getAppStatistics).mockRejectedValue(new Error(errorMessage))
+      jest.mocked(statisticsService.getAppStatistics).mockRejectedValue(new Error(errorMessage))
 
       const { result } = renderHook(() => useStatistics())
 
@@ -209,7 +209,7 @@ describe('useStatistics Hook', () => {
     it('should handle real-time update errors gracefully', async () => {
       vi.useFakeTimers()
 
-      vi.mocked(statisticsService.getRealtimeStats).mockRejectedValue(new Error('Realtime error'))
+      jest.mocked(statisticsService.getRealtimeStats).mockRejectedValue(new Error('Realtime error'))
 
       const { result } = renderHook(() => useStatistics({ enableRealtime: true }))
 
@@ -264,7 +264,7 @@ describe('useStatistics Hook', () => {
     })
 
     it('should return zero values when no statistics available', async () => {
-      vi.mocked(statisticsService.getAppStatistics).mockResolvedValue(null as any)
+      jest.mocked(statisticsService.getAppStatistics).mockResolvedValue(null as any)
 
       const { result } = renderHook(() => useUserStats())
 
@@ -292,7 +292,7 @@ describe('useStatistics Hook', () => {
     })
 
     it('should return zero values when no statistics available', async () => {
-      vi.mocked(statisticsService.getAppStatistics).mockResolvedValue(null as any)
+      jest.mocked(statisticsService.getAppStatistics).mockResolvedValue(null as any)
 
       const { result } = renderHook(() => useEngagementStats())
 
@@ -321,7 +321,7 @@ describe('useStatistics Hook', () => {
     })
 
     it('should return empty arrays when no statistics available', async () => {
-      vi.mocked(statisticsService.getAppStatistics).mockResolvedValue(null as any)
+      jest.mocked(statisticsService.getAppStatistics).mockResolvedValue(null as any)
 
       const { result } = renderHook(() => useTrendingStats())
 
@@ -337,7 +337,7 @@ describe('useStatistics Hook', () => {
 
   describe('Error Handling', () => {
     it('should handle network errors during initial load', async () => {
-      vi.mocked(statisticsService.getAppStatistics).mockRejectedValue(
+      jest.mocked(statisticsService.getAppStatistics).mockRejectedValue(
         new Error('Network connection failed')
       )
 
@@ -352,7 +352,7 @@ describe('useStatistics Hook', () => {
     })
 
     it('should handle malformed response data', async () => {
-      vi.mocked(statisticsService.getAppStatistics).mockResolvedValue({
+      jest.mocked(statisticsService.getAppStatistics).mockResolvedValue({
         invalidField: 'invalid'
       } as any)
 
@@ -367,7 +367,7 @@ describe('useStatistics Hook', () => {
     })
 
     it('should handle non-Error objects thrown', async () => {
-      vi.mocked(statisticsService.getAppStatistics).mockRejectedValue('String error')
+      jest.mocked(statisticsService.getAppStatistics).mockRejectedValue('String error')
 
       const { result } = renderHook(() => useStatistics())
 
@@ -472,7 +472,7 @@ describe('useStatistics Hook', () => {
         resolvePromise = resolve
       })
 
-      vi.mocked(statisticsService.getAppStatistics).mockReturnValue(delayedPromise as any)
+      jest.mocked(statisticsService.getAppStatistics).mockReturnValue(delayedPromise as any)
 
       const { result } = renderHook(() => useStatistics())
 

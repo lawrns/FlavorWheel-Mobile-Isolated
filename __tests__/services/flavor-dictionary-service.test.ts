@@ -340,10 +340,10 @@ describe('FlavorDictionaryService', () => {
       // Check that all terms in categories actually exist
       Object.entries(dictionary.categories).forEach(([categoryName, category]: [string, any]) => {
         if (category.subcategories) {
-          category.subcategories.forEach((subcategory: string) => {
+          Object.keys(category.subcategories).forEach((subcategoryKey: string) => {
             // Verify subcategory exists in terms
             const termsWithSubcategory = dictionary.terms.filter(
-              (term: any) => term.subcategory === subcategory
+              (term: any) => term.subcategory === subcategoryKey
             )
             expect(termsWithSubcategory.length).toBeGreaterThan(0)
           })

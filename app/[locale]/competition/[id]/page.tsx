@@ -396,25 +396,51 @@ export default function CompetitionDetailPage() {
                       .filter(p => p.score)
                       .sort((a, b) => (b.score || 0) - (a.score || 0))
                       .map((participant, index) => (
-                        <div key={participant.id} className="flex items-center space-x-3">
-                          <div className="w-6 h-6 bg-amber-100 rounded-full flex items-center justify-center">
-                            <span className="text-xs font-semibold text-amber-800">
-                              {index + 1}
-                            </span>
+                        <div key={participant.id} className="flex items-center space-x-3 p-2 rounded-lg hover:bg-muted/50 transition-colors">
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                            index === 0 ? 'bg-yellow-500 text-white' :
+                            index === 1 ? 'bg-gray-400 text-white' :
+                            index === 2 ? 'bg-amber-600 text-white' :
+                            'bg-muted text-muted-foreground'
+                          }`}>
+                            {index + 1}
                           </div>
-                          <Avatar className="h-8 w-8">
+                          <Avatar className="h-10 w-10">
                             <AvatarImage src={participant.profile.avatar_url} />
                             <AvatarFallback>
                               {participant.profile.name.charAt(0)}
                             </AvatarFallback>
                           </Avatar>
                           <div className="flex-1">
-                            <p className="text-sm font-medium">{participant.profile.name}</p>
-                            <p className="text-xs text-muted-foreground">{participant.score} points</p>
+                            <p className="font-medium">{participant.profile.name}</p>
+                            <div className="flex items-center space-x-2">
+                              <p className="text-sm text-muted-foreground">{participant.score} points</p>
+                              {participant.ranking && (
+                                <Badge variant="outline" className="text-xs">
+                                  Rank #{participant.ranking}
+                                </Badge>
+                              )}
+                            </div>
                           </div>
+                          {index < 3 && (
+                            <Award className={`h-5 w-5 ${
+                              index === 0 ? 'text-yellow-500' :
+                              index === 1 ? 'text-gray-400' :
+                              'text-amber-600'
+                            }`} />
+                          )}
                         </div>
                       ))}
                   </div>
+                  {competition.status === 'completed' && (
+                    <div className="mt-4 pt-4 border-t">
+                      <Link href={`/${locale}/competition/${competitionId}/results`}>
+                        <Button className="w-full" variant="outline">
+                          View Full Results
+                        </Button>
+                      </Link>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 

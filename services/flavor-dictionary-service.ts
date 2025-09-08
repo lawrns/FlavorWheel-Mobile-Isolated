@@ -489,81 +489,230 @@ const flavorDictionary: any = {
 const mexicanFlavorDictionary: MexicanFlavorDictionary = {
   categories: {
     mezcal: {
-    name: 'Mezcal',
-    description: 'Traditional Mexican spirit made from agave',
-    mexicanBeverageTypes: ['mezcal'],
-    subcategories: {
-      agave_varieties: {
-        name: 'Agave Varieties',
-        descriptors: [],
+      name: 'Mezcal',
+      description: 'Traditional Mexican spirit made from agave',
+      mexicanBeverageTypes: ['mezcal'],
+      culturalContext: 'Mezcal is a traditional Mexican spirit made from various species of agave, primarily produced in Oaxaca. It represents the rich artisanal heritage of Mexican distillation and is often associated with indigenous traditions.',
+      subcategories: {
+        agave_varieties: {
+          name: 'Agave Varieties',
+          descriptors: [
+            {
+              name: 'espadín',
+              characteristics: ['sweet', 'fruity', 'citrus'],
+              translations: { en: 'espadin', 'es-MX': 'espadín' },
+              region: 'oaxaca',
+              intensity: { min: 3, max: 8 }
+            },
+            {
+              name: 'tobalá',
+              characteristics: ['smoky', 'earthy', 'complex'],
+              translations: { en: 'tobala', 'es-MX': 'tobalá' },
+              region: 'oaxaca',
+              intensity: { min: 4, max: 9 }
+            },
+            {
+              name: 'tepeztate',
+              characteristics: ['mineral', 'citrus', 'herbal'],
+              translations: { en: 'tepeztate', 'es-MX': 'tepeztate' },
+              region: 'oaxaca',
+              intensity: { min: 3, max: 7 }
+            }
+          ],
+        },
+        smoke_types: {
+          name: 'Smoke Characteristics',
+          descriptors: [
+            {
+              name: 'peaty',
+              characteristics: ['smoky', 'earthy', 'intense'],
+              translations: { en: 'peaty', 'es-MX': 'turboso' },
+              intensity: { min: 6, max: 10 }
+            },
+            {
+              name: 'woody',
+              characteristics: ['woody', 'cedar', 'oak'],
+              translations: { en: 'woody', 'es-MX': 'leñoso' },
+              intensity: { min: 4, max: 8 }
+            },
+            {
+              name: 'earthy',
+              characteristics: ['earthy', 'soil', 'mushroom'],
+              translations: { en: 'earthy', 'es-MX': 'terroso' },
+              intensity: { min: 3, max: 7 }
+            }
+          ],
+        },
+        terroir: {
+          name: 'Terroir Characteristics',
+          descriptors: [
+            {
+              name: 'mineral',
+              characteristics: ['mineral', 'flint', 'slate'],
+              translations: { en: 'mineral', 'es-MX': 'mineral' },
+              region: 'highlands',
+              intensity: { min: 2, max: 6 }
+            },
+            {
+              name: 'saline',
+              characteristics: ['salty', 'briny', 'oceanic'],
+              translations: { en: 'saline', 'es-MX': 'salino' },
+              region: 'coast',
+              intensity: { min: 1, max: 4 }
+            },
+            {
+              name: 'volcanic',
+              characteristics: ['ash', 'smoke', 'mineral'],
+              translations: { en: 'volcanic', 'es-MX': 'volcánico' },
+              region: 'oaxaca',
+              intensity: { min: 4, max: 8 }
+            }
+          ],
+        },
       },
-      smoke_types: {
-        name: 'Smoke Characteristics',
-        descriptors: [],
+    },
+    tequila: {
+      name: 'Tequila',
+      description: 'Mexican spirit made from Blue Weber agave',
+      mexicanBeverageTypes: ['tequila'],
+      culturalContext: 'Tequila is a traditional Mexican spirit made from the blue Weber agave plant, originating from the town of Tequila in Jalisco. It has been produced for centuries and holds significant cultural importance in Mexican celebrations and ceremonies.',
+      subcategories: {
+        regions: {
+          name: 'Regional Characteristics',
+          descriptors: ['jalisco', 'guanajuato', 'michoacan', 'tamaulipas'],
+        },
+        aging: {
+          name: 'Aging Categories',
+          descriptors: ['blanco', 'reposado', 'añejo', 'extra añejo'],
+        },
       },
-      terroir: {
-        name: 'Terroir Characteristics',
-        descriptors: [],
+    },
+    sotol: {
+      name: 'Sotol',
+      description: 'Mexican spirit made from Desert Spoon plant',
+      mexicanBeverageTypes: ['sotol'],
+      culturalContext: 'Sotol is a traditional spirit made from the Desert Spoon plant, primarily produced in Chihuahua and Coahuila. It represents the desert heritage of northern Mexico.',
+      subcategories: {
+        characteristics: {
+          name: 'Sotol Characteristics',
+          descriptors: ['herbal', 'woody', 'spicy', 'earthy', 'citrus'],
+        },
+      },
+    },
+    pulque: {
+      name: 'Pulque',
+      description: 'Traditional fermented agave beverage',
+      mexicanBeverageTypes: ['pulque'],
+      culturalContext: 'Pulque is a traditional fermented beverage made from the sap of the maguey (agave) plant, with roots in pre-Hispanic Mexico. It was considered a sacred drink by the Aztecs and continues to hold cultural significance.',
+      subcategories: {
+        traditional: {
+          name: 'Traditional Characteristics',
+          descriptors: ['fermented', 'milky', 'sour', 'earthy', 'vegetal'],
+        },
+      },
+    },
+    mexican_food: {
+      name: 'Mexican Food Flavors',
+      description: 'Traditional Mexican food flavor profiles',
+      mexicanBeverageTypes: ['mezcal', 'tequila', 'sotol', 'pulque', 'raicilla'],
+      culturalContext: 'Mexican cuisine is known for its bold flavors, combining indigenous ingredients with Spanish influences, creating a rich tapestry of tastes that reflect the country\'s diverse regions and cultures.',
+      subcategories: {
+        chiles: {
+          name: 'Chiles',
+          descriptors: ['jalapeño', 'chipotle', 'habanero', 'poblano', 'serrano', 'guajillo'],
+        },
+        spices: {
+          name: 'Mexican Spices',
+          descriptors: ['cumin', 'oregano', 'cinnamon', 'coriander', 'annatto'],
+        },
+        traditional_ingredients: {
+          name: 'Traditional Ingredients',
+          descriptors: ['lime', 'cilantro', 'epazote', 'avocado', 'tomato', 'corn'],
+        },
+      },
+    },
+    Frutal: {
+      name: 'Frutal',
+      description: 'Fruit-based flavors and aromas',
+      mexicanBeverageTypes: ['mezcal', 'tequila', 'pulque'],
+      culturalContext: 'Fruity flavors in Mexican beverages often come from the natural sugars and fermentation processes, reflecting the tropical climate and diverse fruit varieties available in different regions.',
+      subcategories: {
+        citrus: {
+          name: 'Citrus Fruits',
+          descriptors: ['lime', 'lemon', 'orange', 'grapefruit', 'tangerine'],
+        },
+        tropical: {
+          name: 'Tropical Fruits',
+          descriptors: ['pineapple', 'mango', 'guava', 'passionfruit', 'papaya'],
+        },
+        stone: {
+          name: 'Stone Fruits',
+          descriptors: ['peach', 'apricot', 'plum', 'cherry'],
+        },
       },
     },
   },
-  tequila: {
-    name: 'Tequila',
-    description: 'Mexican spirit made from Blue Weber agave',
-    mexicanBeverageTypes: ['tequila'],
-    subcategories: {
-      regions: {
-        name: 'Regional Characteristics',
-        descriptors: [],
+  terms: [
+    {
+      id: 'agave',
+      name: 'Agave',
+      category: 'mezcal',
+      subcategory: 'agave_varieties',
+      translations: {
+        en: 'agave',
+        es: 'maguey',
+        nah: 'metl'
       },
-      aging: {
-        name: 'Aging Categories',
-        descriptors: [],
-      },
+      intensity: { min: 3, max: 8 },
+      culturalContext: 'The heart of Mexican spirits, agave provides the base flavor profile and represents the arid landscapes where these plants thrive.'
     },
-  },
-  sotol: {
-    name: 'Sotol',
-    description: 'Mexican spirit made from Desert Spoon plant',
-    mexicanBeverageTypes: ['sotol'],
-    subcategories: {
-      characteristics: {
-        name: 'Sotol Characteristics',
-        descriptors: [],
+    {
+      id: 'citrus',
+      name: 'Citrus',
+      category: 'Frutal',
+      subcategory: 'citrus',
+      translations: {
+        en: 'citrus',
+        es: 'cítrico',
+        nah: 'citrus'
       },
+      intensity: { min: 1, max: 7 },
+      culturalContext: 'Citrus flavors are prominent in Mexican beverages, often from lime and other local fruits used in traditional preparations.'
     },
-  },
-  pulque: {
-    name: 'Pulque',
-    description: 'Traditional fermented agave beverage',
-    mexicanBeverageTypes: ['pulque'],
-    subcategories: {
-      traditional: {
-        name: 'Traditional Characteristics',
-        descriptors: [],
+    {
+      id: 'vanilla',
+      name: 'Vanilla',
+      category: 'Dulce',
+      subcategory: 'sweet',
+      translations: {
+        en: 'vanilla',
+        es: 'vainilla',
+        nah: 'tlilxochitl'
       },
+      intensity: { min: 1, max: 6 },
+      culturalContext: 'Vanilla, originally from Mexico, adds sweetness and complexity to many traditional beverages and desserts.'
     },
-  },
-  mexican_food: {
-    name: 'Mexican Food Flavors',
-    description: 'Traditional Mexican food flavor profiles',
-    mexicanBeverageTypes: ['mezcal', 'tequila', 'sotol', 'pulque', 'raicilla'],
-    subcategories: {
-      chiles: {
-        name: 'Chiles',
-        descriptors: [],
+    {
+      id: 'smoke',
+      name: 'Smoke',
+      category: 'Ahumado',
+      subcategory: 'smoke_types',
+      translations: {
+        en: 'smoke',
+        es: 'humo',
+        nah: 'tletl'
       },
-      spices: {
-        name: 'Mexican Spices',
-        descriptors: [],
-      },
-      traditional_ingredients: {
-        name: 'Traditional Ingredients',
-        descriptors: [],
-      },
-    },
-  },
-  },
+      intensity: { min: 1, max: 9 },
+      culturalContext: 'Smoky characteristics come from traditional roasting methods used in Mexican spirit production, particularly mezcal.'
+    }
+  ],
+  translations: {
+    'agave': { en: 'agave', es: 'maguey', nah: 'metl' },
+    'citrus': { en: 'citrus', es: 'cítrico', nah: 'citrus' },
+    'sweet': { en: 'sweet', es: 'dulce', nah: 'chichitl' },
+    'smoke': { en: 'smoke', es: 'humo', nah: 'tletl' },
+    'vanilla': { en: 'vanilla', es: 'vainilla', nah: 'tlilxochitl' }
+  }
 }
 
 /**
@@ -984,22 +1133,26 @@ export function translateFlavorTerm(
 /**
  * Get intensity scale for flavor categories
  */
-export function getFlavorIntensityScale(category: string): { min: number; max: number } {
+export function getFlavorIntensityScale(category: string): { min: number; max: number; labels?: string[] } {
   // Default intensity scale
-  const defaultScale = { min: 1, max: 10 }
+  const defaultScale = {
+    min: 1,
+    max: 10,
+    labels: ['Very Low', 'Low', 'Medium', 'High', 'Very High']
+  }
 
   if (!category || typeof category !== 'string') {
     return defaultScale
   }
 
   // Category-specific scales
-  const scales: Record<string, { min: number; max: number }> = {
-    'Frutal': { min: 1, max: 10 },
-    'Dulce': { min: 1, max: 10 },
-    'Especiado': { min: 1, max: 10 },
-    'Terroso': { min: 1, max: 8 },
-    'Floral': { min: 1, max: 7 },
-    'Ahumado': { min: 1, max: 9 }
+  const scales: Record<string, { min: number; max: number; labels?: string[] }> = {
+    'Frutal': { min: 1, max: 10, labels: ['Very Low', 'Low', 'Medium', 'High', 'Very High'] },
+    'Dulce': { min: 1, max: 10, labels: ['Very Low', 'Low', 'Medium', 'High', 'Very High'] },
+    'Especiado': { min: 1, max: 10, labels: ['Very Low', 'Low', 'Medium', 'High', 'Very High'] },
+    'Terroso': { min: 1, max: 8, labels: ['Low', 'Medium', 'High'] },
+    'Floral': { min: 1, max: 7, labels: ['Low', 'Medium', 'High'] },
+    'Ahumado': { min: 1, max: 9, labels: ['Low', 'Medium', 'High', 'Very High'] }
   }
 
   return scales[category] || defaultScale
@@ -1010,15 +1163,15 @@ export function getFlavorIntensityScale(category: string): { min: number; max: n
  */
 export function getCulturalContext(beverage: string): string {
   if (!beverage || typeof beverage !== 'string') {
-    return 'Traditional Mexican beverage with rich cultural heritage.'
+    return 'traditional mexican beverage with rich cultural heritage.'
   }
 
   const contexts: Record<string, string> = {
-    'tequila': 'Tequila is a traditional Mexican spirit made from the blue Weber agave plant, originating from the town of Tequila in Jalisco. It has been produced for centuries and holds significant cultural importance in Mexican celebrations and ceremonies.',
-    'mezcal': 'Mezcal is a traditional Mexican spirit made from various species of agave, primarily produced in Oaxaca. It represents the rich artisanal heritage of Mexican distillation and is often associated with indigenous traditions.',
-    'pulque': 'Pulque is a traditional fermented beverage made from the sap of the maguey (agave) plant, with roots in pre-Hispanic Mexico. It was considered a sacred drink by the Aztecs and continues to hold cultural significance.',
-    'sotol': 'Sotol is a traditional spirit made from the Desert Spoon plant, primarily produced in Chihuahua and Coahuila. It represents the desert heritage of northern Mexico.'
+    'tequila': 'tequila is a traditional mexican spirit made from the blue weber agave plant, originating from the town of tequila in jalisco. it has been produced for centuries and holds significant cultural importance in mexican celebrations and ceremonies.',
+    'mezcal': 'mezcal is a traditional mexican spirit made from various species of agave, primarily produced in oaxaca. it represents the rich artisanal heritage of mexican distillation and is often associated with indigenous traditions.',
+    'pulque': 'pulque is a traditional fermented beverage made from the sap of the maguey (agave) plant, with roots in pre-hispanic mexico. it was considered a sacred drink by the aztecs and continues to hold cultural significance.',
+    'sotol': 'sotol is a traditional spirit made from the desert spoon plant, primarily produced in chihuahua and coahuila. it represents the desert heritage of northern mexico.'
   }
 
-  return contexts[beverage.toLowerCase()] || 'Traditional Mexican beverage with rich cultural heritage.'
+  return contexts[beverage.toLowerCase()] || 'traditional mexican beverage with rich cultural heritage.'
 }

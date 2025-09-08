@@ -101,13 +101,13 @@
   --fx-text-inverse: var(--fx-white);
   --fx-text-muted: rgba(0,0,0,0.6);
 
-  /* Premium Brand Semantics */
-  --fx-primary: var(--fx-brand-brown-500);        /* Rich Brown - Sophistication */
-  --fx-primary-hover: var(--fx-brand-brown-600);  /* Darker Brown for hover */
-  --fx-accent: var(--fx-brand-gold-500);          /* Gold - Premium feel */
-  --fx-accent-hover: var(--fx-brand-gold-600);    /* Darker Gold for hover */
-  --fx-secondary: var(--fx-brand-green-500);      /* Deep Green - Trust/Nature */
-  --fx-secondary-hover: var(--fx-brand-green-600); /* Darker Green for hover */
+  /* Premium Brand Semantics - Consolidated with Tailwind */
+  --fx-primary: #8B4513;                           /* Rich Brown - Sophistication */
+  --fx-primary-hover: #6B3419;                     /* Darker Brown for hover */
+  --fx-accent: #D4AF37;                            /* Gold - Premium feel */
+  --fx-accent-hover: #B8941F;                      /* Darker Gold for hover */
+  --fx-secondary: #2E8B57;                         /* Deep Green - Trust/Nature */
+  --fx-secondary-hover: #1F5A3A;                   /* Darker Green for hover */
 
   /* AI Semantics */
   --fx-ai-badge-bg: var(--fx-neutral-50);

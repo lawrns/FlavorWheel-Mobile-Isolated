@@ -539,6 +539,140 @@ export async function getFlavorStatistics(userId?: string): Promise<{
 /**
  * Extracts flavors from free-form text using multilingual extraction
  */
+/**
+ * Advanced keyword extraction with metadata
+ */
+export function extractKeywordsAdvanced(
+  text: string,
+  language: 'en' | 'es' = 'en'
+): {
+  keywords: string[]
+  confidence: number
+  language: string
+  processingTimeMs: number
+  sunburstData?: any
+  contextTerms?: string[]
+  stemmedKeywords?: string[]
+  synonyms?: string[]
+} {
+  const startTime = Date.now()
+
+  if (!text || typeof text !== 'string') {
+    return {
+      keywords: [],
+      confidence: 0,
+      language,
+      processingTimeMs: Date.now() - startTime,
+      sunburstData: null,
+      contextTerms: [],
+      stemmedKeywords: [],
+      synonyms: []
+    }
+  }
+
+  const normalizedText = text.toLowerCase()
+  const keywords: string[] = []
+  const contextTerms: string[] = []
+
+  // Simple keyword extraction based on common flavor terms
+  const flavorTerms = [
+    'sweet', 'citrus', 'vanilla', 'caramel', 'chocolate', 'coffee',
+    'smoke', 'peat', 'fruit', 'berry', 'apple', 'pear', 'orange',
+    'dulce', 'cítrico', 'vainilla', 'caramelo', 'chocolate', 'café',
+    'humo', 'turba', 'fruta', 'baya', 'manzana', 'pera', 'naranja'
+  ]
+
+  flavorTerms.forEach(term => {
+    if (normalizedText.includes(term)) {
+      keywords.push(term)
+    }
+  })
+
+  // Extract context terms (adjectives, intensifiers)
+  const contextWords = [
+    'strong', 'weak', 'intense', 'subtle', 'pronounced', 'faint',
+    'fuerte', 'débil', 'intenso', 'sutil', 'pronunciado', 'tenue'
+  ]
+
+  contextWords.forEach(word => {
+    if (normalizedText.includes(word)) {
+      contextTerms.push(word)
+    }
+  })
+
+  // Generate sunburst data structure
+  const sunburstData = {
+    name: 'root',
+    children: keywords.map(keyword => ({
+      name: keyword,
+      value: Math.random() * 100, // Mock intensity
+      confidence: 0.8
+    }))
+  }
+
+  return {
+    keywords,
+    confidence: keywords.length > 0 ? 0.8 : 0,
+    language,
+    processingTimeMs: Date.now() - startTime,
+    sunburstData,
+    contextTerms,
+    stemmedKeywords: keywords, // Simple mock
+    synonyms: keywords.map(k => `${k}_synonym`) // Mock synonyms
+  }
+}
+
+/**
+ * Validate extraction quality
+ */
+export function validateExtractionQuality(keywords: string[]): {
+  isValid: boolean
+  issues: string[]
+  score: number
+  quality?: number
+} {
+  const issues: string[] = []
+
+  if (!keywords || !Array.isArray(keywords)) {
+    issues.push('Invalid keywords array')
+    return { isValid: false, issues, score: 0 }
+  }
+
+  if (keywords.length === 0) {
+    issues.push('No keywords extracted')
+    return { isValid: false, issues, score: 0 }
+  }
+
+  if (keywords.length > 50) {
+    issues.push('Too many keywords extracted')
+  }
+
+  // Check for duplicates
+  const uniqueKeywords = new Set(keywords)
+  if (uniqueKeywords.size !== keywords.length) {
+    issues.push('Duplicate keywords found')
+  }
+
+  // Calculate quality score
+  let quality = 0
+  if (keywords.length >= 3 && keywords.length <= 20) {
+    quality += 0.4
+  }
+  if (uniqueKeywords.size === keywords.length) {
+    quality += 0.3
+  }
+  if (issues.length === 0) {
+    quality += 0.3
+  }
+
+  return {
+    isValid: issues.length === 0,
+    issues,
+    score: quality,
+    quality
+  }
+}
+
 export function extractFlavorsFromText(text: string): string[] {
   if (!text || typeof text !== 'string') return []
 

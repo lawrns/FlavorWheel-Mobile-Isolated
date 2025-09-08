@@ -1,16 +1,16 @@
-import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
+import React from 'react'
 import { renderHook, act, waitFor } from '@testing-library/react'
 import { useToast, toast } from '@/hooks/use-toast'
 
 describe('useToast Hook', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-    vi.useFakeTimers()
+    jest.clearAllMocks()
+    jest.useFakeTimers()
   })
 
   afterEach(() => {
-    vi.resetAllMocks()
-    vi.useRealTimers()
+    jest.resetAllMocks()
+    jest.useRealTimers()
   })
 
   describe('useToast', () => {

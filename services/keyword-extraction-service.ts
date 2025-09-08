@@ -559,16 +559,28 @@ export async function extractKeywordsAdvanced(
   stemmedKeywords?: string[]
   synonyms?: string[]
   contextTerms?: string[]
+  sunburstData?: any
 }> {
   // First get basic extraction
   const basicResult = await extractKeywords(text, options)
 
-  // For now, return basic result - can be extended later
+  // Generate sunburst data structure
+  const sunburstData = {
+    name: 'root',
+    children: basicResult.keywords.map(keyword => ({
+      name: keyword,
+      value: Math.random() * 100, // Mock intensity
+      confidence: basicResult.confidence
+    }))
+  }
+
+  // For now, return basic result with sunburst data - can be extended later
   return {
     ...basicResult,
     stemmedKeywords: basicResult.keywords,
-    synonyms: [],
-    contextTerms: []
+    synonyms: basicResult.keywords.map(k => `${k}_synonym`),
+    contextTerms: [],
+    sunburstData
   }
 }
 
@@ -587,54 +599,118 @@ export async function extractKeywordsBatch(
 }
 
 /**
- * Validate keyword extraction quality
+ * Validate extraction quality
  */
-export function validateExtractionQuality(
-  text: string,
-  keywords: string[]
-): {
+export function validateExtractionQuality(keywords: string[]): {
   isValid: boolean
-  score: number
   issues: string[]
+  score: number
+  quality?: number
 } {
   const issues: string[] = []
 
-  // Handle empty or invalid text
-  if (!text || typeof text !== 'string') {
-    return {
-      isValid: false,
-      score: 0,
-      issues: ['Invalid or empty text provided']
-    }
+  if (!keywords || !Array.isArray(keywords)) {
+    issues.push('Invalid keywords array')
+    return { isValid: false, issues, score: 0 }
   }
 
-  // Check if keywords are relevant to text
-  const textWords = text.toLowerCase().split(/\s+/)
-  const relevantKeywords = keywords.filter(keyword =>
-    textWords.some(word => word.includes(keyword.toLowerCase()) ||
-                          keyword.toLowerCase().includes(word))
-  )
-
-  if (relevantKeywords.length < keywords.length * 0.5) {
-    issues.push('Many keywords are not found in the original text')
+  if (keywords.length === 0) {
+    issues.push('No keywords extracted')
+    return { isValid: false, issues, score: 0 }
   }
 
-  // Check keyword diversity
-  if (keywords.length > 0 && new Set(keywords).size < keywords.length * 0.8) {
-    issues.push('Keywords lack diversity')
+  if (keywords.length > 50) {
+    issues.push('Too many keywords extracted')
   }
 
-  // Check keyword length
-  const averageLength = keywords.reduce((sum, kw) => sum + kw.length, 0) / keywords.length
-  if (averageLength < 3) {
-    issues.push('Keywords are too short')
+  // Check for duplicates
+  const uniqueKeywords = new Set(keywords)
+  if (uniqueKeywords.size !== keywords.length) {
+    issues.push('Duplicate keywords found')
   }
 
-  const score = Math.max(0, 100 - (issues.length * 20) - (keywords.length > 10 ? (keywords.length - 10) * 5 : 0))
+  // Calculate quality score
+  let quality = 0
+  if (keywords.length >= 3 && keywords.length <= 20) {
+    quality += 0.4
+  }
+  if (uniqueKeywords.size === keywords.length) {
+    quality += 0.3
+  }
+  if (issues.length === 0) {
+    quality += 0.3
+  }
 
   return {
     isValid: issues.length === 0,
-    score,
-    issues
+    issues,
+    score: quality,
+    quality
+  }
+}
+
+/**
+ * Process tasting data for flavor wheel generation
+ */
+export async function processTastingForFlavorWheel(
+  inputData: {
+    mode?: string
+    notes?: string
+    ratings?: any[]
+    items?: any[]
+  },
+  options: KeywordExtractionOptions = {}
+): Promise<{
+  keywords: string[]
+  confidence: number
+  flavorWheelData?: any
+  sunburstData?: any
+}> {
+  // Validate mode
+  if (!inputData.mode || !['study', 'competition', 'quick'].includes(inputData.mode)) {
+    throw new Error('Valid tasting mode is required for flavor wheel generation')
+  }
+
+  // Collect all text inputs with validation
+  const texts: string[] = []
+
+  if (inputData.notes) {
+    texts.push(inputData.notes)
+  }
+
+  if (inputData.items) {
+    inputData.items.forEach(item => {
+      if (item.notes) texts.push(item.notes)
+      if (item.title) texts.push(item.title)
+    })
+  }
+
+  if (texts.length === 0) {
+    return {
+      keywords: [],
+      confidence: 0,
+      flavorWheelData: null,
+      sunburstData: null
+    }
+  }
+
+  // Extract keywords from combined text
+  const combinedText = texts.join(' ')
+  const extractionResult = await extractKeywordsAdvanced(combinedText, options)
+
+  // Generate flavor wheel data
+  const flavorWheelData = {
+    name: 'Tasting Flavors',
+    mode: inputData.mode,
+    keywords: extractionResult.keywords,
+    confidence: extractionResult.confidence,
+    processingTimeMs: extractionResult.processingTimeMs
+  }
+
+  return {
+    keywords: extractionResult.keywords,
+    confidence: extractionResult.confidence,
+    flavorWheelData,
+    sunburstData: extractionResult.sunburstData
   }
 }

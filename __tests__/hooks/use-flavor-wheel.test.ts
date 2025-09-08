@@ -1,10 +1,10 @@
-import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
+// Jest globals are available by default
 import { renderHook, act, waitFor } from '@testing-library/react'
 import { useFlavorWheel } from '@/hooks/use-flavor-wheel'
 
 // Mock the flavor analysis service
-vi.mock('@/services/flavor-analysis-service', () => ({
-  generateFlavorWheelData: vi.fn(),
+jest.mock('@/services/flavor-analysis-service', () => ({
+  generateFlavorWheelData: jest.fn(),
   MEXICAN_FLAVOR_CATEGORIES: {
     Frutal: { color: '#FF6B6B', subcategories: ['Cítricos'], culturalContext: 'Mexican fruits' },
     Dulce: { color: '#FD79A8', subcategories: ['Azúcar'], culturalContext: 'Mexican sweets' }
@@ -13,11 +13,11 @@ vi.mock('@/services/flavor-analysis-service', () => ({
 
 describe('useFlavorWheel Hook', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
+    jest.clearAllMocks()
   })
 
   afterEach(() => {
-    vi.resetAllMocks()
+    jest.resetAllMocks()
   })
 
   describe('Current Implementation (Stub)', () => {

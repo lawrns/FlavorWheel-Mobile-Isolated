@@ -1,8 +1,7 @@
 import type React from 'react'
-import { Providers } from '@/components/providers'
-import { OnboardingWrapper } from '@/components/ui/onboarding-wrapper'
+import { SupabaseProvider } from '@/components/providers/supabase-provider'
+import { AuthProvider } from '@/components/auth-provider'
 import { ToastProvider } from '@/hooks/use-toast'
-import { ErrorBoundary } from '@/components/ui/error-boundary'
 
 export default function LocaleLayout({
   children,
@@ -10,9 +9,10 @@ export default function LocaleLayout({
   children: React.ReactNode
 }>) {
   return (
-    <Providers>
-      <ToastProvider>
-        <OnboardingWrapper>
+    <SupabaseProvider>
+      <AuthProvider>
+        <ToastProvider>
+        <div>
           {/* Skip Links for Accessibility */}
           <a
             href="#main-content"
@@ -28,12 +28,11 @@ export default function LocaleLayout({
           </a>
 
           <main id="main-content" role="main">
-            <ErrorBoundary>
-              {children}
-            </ErrorBoundary>
+            {children}
           </main>
-        </OnboardingWrapper>
+        </div>
       </ToastProvider>
-    </Providers>
+      </AuthProvider>
+    </SupabaseProvider>
   )
 }

@@ -15,12 +15,8 @@ const nextConfig = {
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
 
-  // Internationalization
-  i18n: {
-    locales: ['en', 'es'],
-    defaultLocale: 'en',
-    localeDetection: true,
-  },
+  // Removed i18n config - not compatible with App Router
+  // Use middleware for internationalization if needed
 
   // Security headers
   async headers() {

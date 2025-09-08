@@ -1,7 +1,6 @@
 'use client'
 
 import React from 'react'
-import { Inter } from 'next/font/google'
 import { useRouter, usePathname } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import { Navigation } from '@/components/navigation'
@@ -10,12 +9,7 @@ import { cn } from '@/lib/utils'
 import { getActiveNavId, getNavigationItem } from '@/lib/navigation-config'
 import { BrandIcon, BrandTitle } from '@/components/brand'
 
-const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap',
-  preload: true,
-  fallback: ['system-ui', 'arial'],
-})
+// Using system fonts for compatibility with Babel configuration
 
 interface BaseShellProps {
   children: React.ReactNode
@@ -74,7 +68,7 @@ export function AppShell({
   return (
     <div
       className={cn(
-        inter.className,
+        'font-sans',
         applyGradient && 'elegant-gradient-bg',
         'min-h-screen overflow-hidden',
         className

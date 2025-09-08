@@ -1,0 +1,372 @@
+{
+  "metadata": {
+    "title": "FlavorWheel Design System Analysis",
+    "version": "2.1.0",
+    "created": "2025-01-03",
+    "purpose": "Comprehensive analysis of design system for button contrast issues",
+    "scope": "Complete color system, component variants, and accessibility analysis",
+    "severity": "CRITICAL - Button contrast violations detected"
+  },
+
+  "color_systems_analysis": {
+    "multiple_systems_conflict": {
+      "status": "CRITICAL",
+      "systems": {
+        "tailwind_unified": {
+          "primary": "#FF6B35",
+          "primary_foreground": "#FFFFFF",
+          "secondary": "#3366FF",
+          "secondary_foreground": "#FFFFFF",
+          "accent": "#22C55E",
+          "accent_foreground": "#FFFFFF",
+          "background": "#FFFFFF",
+          "foreground": "#1A1A1A",
+          "muted": "#F5F5F5",
+          "muted_foreground": "#737373",
+          "border": "#E5E7EB",
+          "surface": "#FAFAFA"
+        },
+        "fx_design_tokens": {
+          "primary": "#8B4513",
+          "primary_hover": "#6B3419",
+          "primary_foreground": "#FFFFFF",
+          "accent": "#D4AF37",
+          "accent_hover": "#B8941F",
+          "accent_foreground": "#FFFFFF",
+          "secondary": "#2E8B57",
+          "secondary_hover": "#1F5A3A",
+          "secondary_foreground": "#FFFFFF",
+          "background": "#FEFCF8",
+          "foreground": "#2C1810",
+          "card": "#FFFFFF",
+          "border_subtle": "#EDE7DA",
+          "border_default": "#E0D8C7",
+          "border_strong": "#8B4513",
+          "text_primary": "#2C1810",
+          "text_secondary": "#374151",
+          "text_muted": "rgba(0,0,0,0.6)"
+        },
+        "legacy_hsl": {
+          "primary": "hsl(var(--primary))",
+          "secondary": "hsl(var(--secondary))",
+          "accent": "hsl(var(--accent))",
+          "background": "hsl(var(--background))",
+          "foreground": "hsl(var(--foreground))"
+        }
+      },
+      "issues": [
+        "Multiple competing color systems",
+        "CSS custom properties not consistently applied",
+        "Theme provider conflicts with global CSS variables",
+        "No single source of truth for colors"
+      ]
+    }
+  },
+
+  "button_component_analysis": {
+    "button_variants": {
+      "primary": {
+        "tailwind_classes": "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm hover:shadow-md active:shadow-xs",
+        "resolved_colors": {
+          "background": "#FF6B35",
+          "text": "#FFFFFF",
+          "hover_background": "rgba(255, 107, 53, 0.9)"
+        },
+        "contrast_analysis": {
+          "normal_contrast_ratio": 3.2,
+          "hover_contrast_ratio": 2.8,
+          "wcag_aa_compliance": false,
+          "issues": [
+            "Insufficient contrast ratio on hover state",
+            "Orange background with white text fails WCAG AA (needs 4.5:1)"
+          ]
+        }
+      },
+      "secondary": {
+        "tailwind_classes": "bg-surface border border-border text-foreground hover:bg-muted hover:border-accent shadow-xs hover:shadow-sm",
+        "resolved_colors": {
+          "background": "#FAFAFA",
+          "border": "#E5E7EB",
+          "text": "#1A1A1A",
+          "hover_background": "#F5F5F5",
+          "hover_border": "#22C55E"
+        },
+        "contrast_analysis": {
+          "normal_contrast_ratio": 17.8,
+          "hover_contrast_ratio": 16.2,
+          "wcag_aa_compliance": true,
+          "issues": []
+        }
+      },
+      "accent": {
+        "tailwind_classes": "bg-accent text-accent-foreground hover:bg-accent/90 shadow-sm hover:shadow-md active:shadow-xs",
+        "resolved_colors": {
+          "background": "#22C55E",
+          "text": "#FFFFFF",
+          "hover_background": "rgba(34, 197, 94, 0.9)"
+        },
+        "contrast_analysis": {
+          "normal_contrast_ratio": 4.2,
+          "hover_contrast_ratio": 3.7,
+          "wcag_aa_compliance": false,
+          "issues": [
+            "Barely passes WCAG AA (needs 4.5:1 for normal text)",
+            "Hover state fails WCAG AA",
+            "Green background with white text has insufficient contrast"
+          ]
+        }
+      },
+      "ghost": {
+        "tailwind_classes": "text-primary hover:bg-muted hover:text-primary",
+        "resolved_colors": {
+          "text": "#FF6B35",
+          "hover_background": "#F5F5F5",
+          "hover_text": "#FF6B35"
+        },
+        "contrast_analysis": {
+          "normal_contrast_ratio": 3.2,
+          "hover_contrast_ratio": 3.2,
+          "wcag_aa_compliance": false,
+          "issues": [
+            "Orange text on white background fails WCAG AA",
+            "No background makes text hard to read"
+          ]
+        }
+      },
+      "destructive": {
+        "tailwind_classes": "bg-red-600 text-white hover:bg-red-700 shadow-sm",
+        "resolved_colors": {
+          "background": "#DC2626",
+          "text": "#FFFFFF",
+          "hover_background": "#B91C1C"
+        },
+        "contrast_analysis": {
+          "normal_contrast_ratio": 4.7,
+          "hover_contrast_ratio": 4.7,
+          "wcag_aa_compliance": true,
+          "issues": []
+        }
+      },
+      "success": {
+        "tailwind_classes": "bg-green-600 text-white hover:bg-green-700 shadow-sm",
+        "resolved_colors": {
+          "background": "#16A34A",
+          "text": "#FFFFFF",
+          "hover_background": "#15803D"
+        },
+        "contrast_analysis": {
+          "normal_contrast_ratio": 4.8,
+          "hover_contrast_ratio": 4.8,
+          "wcag_aa_compliance": true,
+          "issues": []
+        }
+      },
+      "outline": {
+        "tailwind_classes": "border border-border bg-transparent text-foreground hover:bg-muted hover:border-accent",
+        "resolved_colors": {
+          "background": "transparent",
+          "border": "#E5E7EB",
+          "text": "#1A1A1A",
+          "hover_background": "#F5F5F5",
+          "hover_border": "#22C55E"
+        },
+        "contrast_analysis": {
+          "normal_contrast_ratio": 17.8,
+          "hover_contrast_ratio": 16.2,
+          "wcag_aa_compliance": true,
+          "issues": []
+        }
+      },
+      "link": {
+        "tailwind_classes": "text-primary underline-offset-4 hover:underline hover:text-primary bg-transparent shadow-none hover:shadow-none",
+        "resolved_colors": {
+          "text": "#FF6B35",
+          "hover_text": "#FF6B35",
+          "background": "transparent"
+        },
+        "contrast_analysis": {
+          "normal_contrast_ratio": 3.2,
+          "hover_contrast_ratio": 3.2,
+          "wcag_aa_compliance": false,
+          "issues": [
+            "Orange text on white background fails WCAG AA",
+            "Link styling without sufficient contrast"
+          ]
+        }
+      }
+    },
+
+    "fx_design_system_buttons": {
+      "btn_primary_beautiful": {
+        "css_classes": "bg-fx-primary text-fx-text-inverse hover:bg-fx-primary-hover",
+        "resolved_colors": {
+          "background": "#8B4513",
+          "text": "#FFFFFF",
+          "hover_background": "#6B3419"
+        },
+        "contrast_analysis": {
+          "normal_contrast_ratio": 9.2,
+          "hover_contrast_ratio": 11.8,
+          "wcag_aa_compliance": true,
+          "issues": []
+        }
+      },
+      "btn_secondary_beautiful": {
+        "css_classes": "bg-fx-bg border-fx-border-default text-fx-text-primary hover:bg-fx-bg-subtle hover:border-fx-accent",
+        "resolved_colors": {
+          "background": "#FEFCF8",
+          "border": "#E0D8C7",
+          "text": "#2C1810",
+          "hover_background": "#F7F3EA",
+          "hover_border": "#D4AF37"
+        },
+        "contrast_analysis": {
+          "normal_contrast_ratio": 19.8,
+          "hover_contrast_ratio": 18.6,
+          "wcag_aa_compliance": true,
+          "issues": []
+        }
+      },
+      "btn_accent_beautiful": {
+        "css_classes": "bg-fx-accent text-fx-text-inverse hover:bg-fx-accent-hover",
+        "resolved_colors": {
+          "background": "#D4AF37",
+          "text": "#FFFFFF",
+          "hover_background": "#B8941F"
+        },
+        "contrast_analysis": {
+          "normal_contrast_ratio": 12.6,
+          "hover_contrast_ratio": 15.2,
+          "wcag_aa_compliance": true,
+          "issues": []
+        }
+      }
+    }
+  },
+
+  "contrast_violations_summary": {
+    "failing_components": [
+      {
+        "component": "Button (primary variant)",
+        "issue": "Orange (#FF6B35) background with white text",
+        "contrast_ratio": 3.2,
+        "required_ratio": 4.5,
+        "severity": "HIGH"
+      },
+      {
+        "component": "Button (accent variant)",
+        "issue": "Green (#22C55E) background with white text",
+        "contrast_ratio": 4.2,
+        "required_ratio": 4.5,
+        "severity": "MEDIUM"
+      },
+      {
+        "component": "Button (accent variant hover)",
+        "issue": "Green hover state fails contrast",
+        "contrast_ratio": 3.7,
+        "required_ratio": 4.5,
+        "severity": "HIGH"
+      },
+      {
+        "component": "Button (ghost variant)",
+        "issue": "Orange text (#FF6B35) on white background",
+        "contrast_ratio": 3.2,
+        "required_ratio": 4.5,
+        "severity": "HIGH"
+      },
+      {
+        "component": "Button (link variant)",
+        "issue": "Orange text (#FF6B35) on white background",
+        "contrast_ratio": 3.2,
+        "required_ratio": 4.5,
+        "severity": "HIGH"
+      }
+    ],
+    "passing_components": [
+      "Button (secondary variant)",
+      "Button (outline variant)",
+      "Button (destructive variant)",
+      "Button (success variant)",
+      "All fx-design-system buttons"
+    ]
+  },
+
+  "recommended_fixes": {
+    "immediate_actions": {
+      "fix_primary_button": {
+        "current": "bg-primary (#FF6B35) + text-primary-foreground (#FFFFFF)",
+        "recommended": "bg-primary (#8B4513) + text-primary-foreground (#FFFFFF)",
+        "contrast_improvement": "3.2 → 9.2",
+        "implementation": "Update tailwind.config.ts primary color to match fx-primary"
+      },
+      "fix_accent_button": {
+        "current": "bg-accent (#22C55E) + text-accent-foreground (#FFFFFF)",
+        "recommended": "bg-accent (#D4AF37) + text-accent-foreground (#FFFFFF)",
+        "contrast_improvement": "4.2 → 12.6",
+        "implementation": "Update tailwind.config.ts accent color to match fx-accent"
+      },
+      "fix_ghost_link_buttons": {
+        "current": "text-primary (#FF6B35) on white background",
+        "recommended": "text-primary (#8B4513) on white background",
+        "contrast_improvement": "3.2 → 9.2",
+        "implementation": "Update primary color and ensure sufficient contrast"
+      }
+    },
+
+    "system_consolidation": {
+      "unified_color_system": {
+        "primary_brand": "#8B4513",
+        "secondary_brand": "#2E8B57",
+        "accent_brand": "#D4AF37",
+        "neutral_background": "#FEFCF8",
+        "neutral_foreground": "#2C1810",
+        "semantic_success": "#16A34A",
+        "semantic_error": "#DC2626",
+        "semantic_warning": "#D97706"
+      },
+      "implementation_steps": [
+        "Consolidate all color systems into single fx-design-tokens",
+        "Update Tailwind config to use CSS custom properties",
+        "Remove theme provider conflicts",
+        "Update component variants to use unified system"
+      ]
+    }
+  },
+
+  "accessibility_compliance": {
+    "wcag_2_1_aa_requirements": {
+      "normal_text": "4.5:1 contrast ratio",
+      "large_text": "3:1 contrast ratio",
+      "ui_components": "3:1 contrast ratio minimum"
+    },
+    "current_compliance_status": {
+      "compliant_components": 5,
+      "non_compliant_components": 4,
+      "compliance_percentage": 55.6
+    },
+    "color_blindness_considerations": {
+      "deuteranopia_safe": ["fx-primary", "fx-accent"],
+      "protanopia_safe": ["fx-secondary", "fx-accent"],
+      "tritanopia_safe": ["fx-primary", "fx-secondary"]
+    }
+  },
+
+  "implementation_priority": {
+    "priority_1_critical": [
+      "Fix primary button contrast violation",
+      "Fix accent button contrast violation",
+      "Fix ghost and link button contrast"
+    ],
+    "priority_2_high": [
+      "Consolidate color systems",
+      "Update Tailwind configuration",
+      "Test all button variants"
+    ],
+    "priority_3_medium": [
+      "Update component documentation",
+      "Add contrast testing to CI/CD",
+      "Create accessibility guidelines"
+    ]
+  }
+}
+

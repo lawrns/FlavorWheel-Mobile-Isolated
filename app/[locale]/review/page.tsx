@@ -32,6 +32,16 @@ interface Review {
   created_at: string
   updated_at: string
   helpful_count: number
+  // New comprehensive review fields
+  salt_level?: number
+  umami_level?: number
+  spiciness_level?: number
+  acidity_level?: number
+  sweetness_level?: number
+  texture_rating?: string
+  typicity_score?: number
+  complexity_score?: number
+  review_data?: any
   user_profile: {
     name: string
     avatar_url?: string
@@ -63,14 +73,23 @@ export default function ReviewPage() {
   const [sortBy, setSortBy] = useState('newest')
   const [showCreateReview, setShowCreateReview] = useState(false)
 
-  // New review form state
+  // New review form state - comprehensive review fields
   const [newReview, setNewReview] = useState({
     tasting_id: '',
     item_id: '',
     rating: 5,
     title: '',
     content: '',
-    photo_url: ''
+    photo_url: '',
+    // New comprehensive fields from specification
+    salt_level: 0,
+    umami_level: 0,
+    spiciness_level: 0,
+    acidity_level: 0,
+    sweetness_level: 0,
+    texture_rating: 'medium',
+    typicity_score: 50,
+    complexity_score: 50
   })
 
   const [availableTastings, setAvailableTastings] = useState<any[]>([])
@@ -224,6 +243,20 @@ export default function ReviewPage() {
           title: newReview.title,
           content: newReview.content,
           photo_url: newReview.photo_url || null,
+          // New comprehensive review fields
+          salt_level: newReview.salt_level,
+          umami_level: newReview.umami_level,
+          spiciness_level: newReview.spiciness_level,
+          acidity_level: newReview.acidity_level,
+          sweetness_level: newReview.sweetness_level,
+          texture_rating: newReview.texture_rating,
+          typicity_score: newReview.typicicty_score,
+          complexity_score: newReview.complexity_score,
+          review_data: {
+            created_at: new Date().toISOString(),
+            version: '2.0',
+            comprehensive: true
+          }
         })
 
       if (error) throw error
@@ -240,7 +273,16 @@ export default function ReviewPage() {
         rating: 5,
         title: '',
         content: '',
-        photo_url: ''
+        photo_url: '',
+        // Reset new comprehensive fields
+        salt_level: 0,
+        umami_level: 0,
+        spiciness_level: 0,
+        acidity_level: 0,
+        sweetness_level: 0,
+        texture_rating: 'medium',
+        typicity_score: 50,
+        complexity_score: 50
       })
       setSelectedTasting(null)
       setAvailableItems([])
@@ -392,6 +434,41 @@ export default function ReviewPage() {
                 </div>
               )}
 
+              {/* Comprehensive Review Details */}
+              {(review.salt_level || review.umami_level || review.spiciness_level ||
+                review.acidity_level || review.sweetness_level || review.texture_rating ||
+                review.typicicty_score || review.complexity_score) && (
+                <div className="mb-3 p-3 bg-muted/50 rounded-lg">
+                  <h5 className="font-medium text-sm mb-2">Tasting Profile</h5>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs">
+                    {review.salt_level !== undefined && review.salt_level > 0 && (
+                      <div>Salt: {review.salt_level}/100</div>
+                    )}
+                    {review.umami_level !== undefined && review.umami_level > 0 && (
+                      <div>Umami: {review.umami_level}/100</div>
+                    )}
+                    {review.spiciness_level !== undefined && review.spiciness_level > 0 && (
+                      <div>Spicy: {review.spiciness_level}/100</div>
+                    )}
+                    {review.acidity_level !== undefined && review.acidity_level > 0 && (
+                      <div>Acidity: {review.acidity_level}/100</div>
+                    )}
+                    {review.sweetness_level !== undefined && review.sweetness_level > 0 && (
+                      <div>Sweet: {review.sweetness_level}/100</div>
+                    )}
+                    {review.texture_rating && (
+                      <div>Texture: {review.texture_rating}</div>
+                    )}
+                    {review.typicicty_score !== undefined && (
+                      <div>Typicity: {review.typicicty_score}/100</div>
+                    )}
+                    {review.complexity_score !== undefined && (
+                      <div>Complexity: {review.complexity_score}/100</div>
+                    )}
+                  </div>
+                </div>
+              )}
+
               <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                 <span>📍 {review.item?.name}</span>
                 <span>🏷️ {review.item?.type || 'General'}</span>
@@ -508,7 +585,7 @@ export default function ReviewPage() {
 
                     {/* Rating */}
                     <div>
-                      <Label>Rating</Label>
+                      <Label>Overall Rating</Label>
                       <div className="flex items-center space-x-1 mt-2">
                         {[1, 2, 3, 4, 5].map((star) => (
                           <button
@@ -525,6 +602,122 @@ export default function ReviewPage() {
                             />
                           </button>
                         ))}
+                      </div>
+                    </div>
+
+                    {/* Comprehensive Review Fields */}
+                    <div className="border-t pt-4">
+                      <Label className="text-base font-semibold mb-4 block">Detailed Tasting Profile</Label>
+
+                      {/* Basic Tastes */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                          <Label>Salt Level: {newReview.salt_level}/100</Label>
+                          <Slider
+                            value={[newReview.salt_level]}
+                            onValueChange={(value) => setNewReview(prev => ({ ...prev, salt_level: value[0] }))}
+                            min={0}
+                            max={100}
+                            step={5}
+                            className="mt-2"
+                          />
+                        </div>
+
+                        <div>
+                          <Label>Umami Level: {newReview.umami_level}/100</Label>
+                          <Slider
+                            value={[newReview.umami_level]}
+                            onValueChange={(value) => setNewReview(prev => ({ ...prev, umami_level: value[0] }))}
+                            min={0}
+                            max={100}
+                            step={5}
+                            className="mt-2"
+                          />
+                        </div>
+
+                        <div>
+                          <Label>Spiciness Level: {newReview.spiciness_level}/100</Label>
+                          <Slider
+                            value={[newReview.spiciness_level]}
+                            onValueChange={(value) => setNewReview(prev => ({ ...prev, spiciness_level: value[0] }))}
+                            min={0}
+                            max={100}
+                            step={5}
+                            className="mt-2"
+                          />
+                        </div>
+
+                        <div>
+                          <Label>Acidity Level: {newReview.acidity_level}/100</Label>
+                          <Slider
+                            value={[newReview.acidity_level]}
+                            onValueChange={(value) => setNewReview(prev => ({ ...prev, acidity_level: value[0] }))}
+                            min={0}
+                            max={100}
+                            step={5}
+                            className="mt-2"
+                          />
+                        </div>
+
+                        <div>
+                          <Label>Sweetness Level: {newReview.sweetness_level}/100</Label>
+                          <Slider
+                            value={[newReview.sweetness_level]}
+                            onValueChange={(value) => setNewReview(prev => ({ ...prev, sweetness_level: value[0] }))}
+                            min={0}
+                            max={100}
+                            step={5}
+                            className="mt-2"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Texture Selection */}
+                      <div className="mb-4">
+                        <Label>Texture/Mouthfeel</Label>
+                        <Select
+                          value={newReview.texture_rating}
+                          onValueChange={(value) => setNewReview(prev => ({ ...prev, texture_rating: value }))}
+                        >
+                          <SelectTrigger className="mt-2">
+                            <SelectValue placeholder="Select texture" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="watery">Watery</SelectItem>
+                            <SelectItem value="light">Light</SelectItem>
+                            <SelectItem value="medium">Medium</SelectItem>
+                            <SelectItem value="full">Full</SelectItem>
+                            <SelectItem value="heavy">Heavy</SelectItem>
+                            <SelectItem value="syrupy">Syrupy</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {/* Quality Scores */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                          <Label>Typicity (How representative): {newReview.typicicty_score}/100</Label>
+                          <Slider
+                            value={[newReview.typicicty_score]}
+                            onValueChange={(value) => setNewReview(prev => ({ ...prev, typicity_score: value[0] }))}
+                            min={0}
+                            max={100}
+                            step={5}
+                            className="mt-2"
+                          />
+                        </div>
+
+                        <div>
+                          <Label>Complexity: {newReview.complexity_score}/100</Label>
+                          <Slider
+                            value={[newReview.complexity_score]}
+                            onValueChange={(value) => setNewReview(prev => ({ ...prev, complexity_score: value[0] }))}
+                            min={0}
+                            max={100}
+                            step={5}
+                            className="mt-2"
+                          />
+                        </div>
                       </div>
                     </div>
 

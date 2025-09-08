@@ -45,6 +45,87 @@ jest.mock('next/navigation', () => ({
   },
 }))
 
+// Mock Next.js server components
+jest.mock('next/server', () => ({
+  NextRequest: class NextRequest {
+    constructor(url, init = {}) {
+      this.url = url
+      this.method = init.method || 'GET'
+      this.headers = new Headers(init.headers)
+      this.body = init.body
+    }
+
+    async json() {
+      if (this.body) {
+        return JSON.parse(this.body)
+      }
+      return {}
+    }
+
+    async text() {
+      return this.body || ''
+    }
+  },
+  NextResponse: {
+    json: jest.fn((data, options = {}) => ({
+      status: options.status || 200,
+      json: () => Promise.resolve(data),
+      headers: options.headers || {},
+      ok: (options.status || 200) < 400,
+    })),
+    redirect: jest.fn((url, status = 302) => ({
+      status,
+      headers: { location: url },
+    })),
+    next: jest.fn(() => ({
+      status: 200,
+      headers: {},
+    })),
+  },
+}))
+
+// Create a more comprehensive Supabase mock that supports method chaining
+const createSupabaseQueryMock = () => {
+  const mockQuery = {
+    select: jest.fn().mockReturnThis(),
+    insert: jest.fn().mockReturnThis(),
+    update: jest.fn().mockReturnThis(),
+    delete: jest.fn().mockReturnThis(),
+    eq: jest.fn().mockReturnThis(),
+    or: jest.fn().mockReturnThis(),
+    ilike: jest.fn().mockReturnThis(),
+    order: jest.fn().mockReturnThis(),
+    limit: jest.fn().mockReturnThis(),
+    single: jest.fn().mockResolvedValue({ data: null, error: null }),
+    raw: jest.fn((sql) => sql),
+    // Add more methods as needed
+    neq: jest.fn().mockReturnThis(),
+    gt: jest.fn().mockReturnThis(),
+    gte: jest.fn().mockReturnThis(),
+    lt: jest.fn().mockReturnThis(),
+    lte: jest.fn().mockReturnThis(),
+    like: jest.fn().mockReturnThis(),
+    in: jest.fn().mockReturnThis(),
+    is: jest.fn().mockReturnThis(),
+    not: jest.fn().mockReturnThis(),
+    contains: jest.fn().mockReturnThis(),
+    containedBy: jest.fn().mockReturnThis(),
+    range: jest.fn().mockReturnThis(),
+    overlaps: jest.fn().mockReturnThis(),
+    textSearch: jest.fn().mockReturnThis(),
+    filter: jest.fn().mockReturnThis(),
+  }
+
+  // Make all methods return the mockQuery to support chaining
+  Object.keys(mockQuery).forEach(key => {
+    if (typeof mockQuery[key] === 'function' && key !== 'single' && key !== 'raw') {
+      mockQuery[key].mockReturnValue(mockQuery)
+    }
+  })
+
+  return mockQuery
+}
+
 // Mock Supabase client
 jest.mock('@supabase/supabase-js', () => ({
   createClient: jest.fn(() => ({
@@ -56,16 +137,7 @@ jest.mock('@supabase/supabase-js', () => ({
       signOut: jest.fn(),
       onAuthStateChange: jest.fn(() => ({ data: { subscription: { unsubscribe: jest.fn() } } })),
     },
-    from: jest.fn(() => ({
-      select: jest.fn().mockReturnThis(),
-      insert: jest.fn().mockReturnThis(),
-      update: jest.fn().mockReturnThis(),
-      delete: jest.fn().mockReturnThis(),
-      eq: jest.fn().mockReturnThis(),
-      order: jest.fn().mockReturnThis(),
-      limit: jest.fn().mockReturnThis(),
-      single: jest.fn().mockResolvedValue({ data: null, error: null }),
-    })),
+    from: jest.fn(() => createSupabaseQueryMock()),
     storage: {
       from: jest.fn(() => ({
         upload: jest.fn(),
@@ -82,7 +154,40 @@ jest.mock('@supabase/supabase-js', () => ({
         unsubscribe: jest.fn(),
       })),
     },
+    rpc: jest.fn().mockResolvedValue({ data: null, error: null }),
   })),
+}))
+
+// Also mock the lib/supabase module
+jest.mock('@/lib/supabase', () => ({
+  supabase: {
+    from: jest.fn(() => createSupabaseQueryMock()),
+    auth: {
+      getSession: jest.fn().mockResolvedValue({ data: { session: null }, error: null }),
+      getUser: jest.fn().mockResolvedValue({ data: { user: null }, error: null }),
+      signInWithPassword: jest.fn(),
+      signUp: jest.fn(),
+      signOut: jest.fn(),
+      onAuthStateChange: jest.fn(() => ({ data: { subscription: { unsubscribe: jest.fn() } } })),
+    },
+    storage: {
+      from: jest.fn(() => ({
+        upload: jest.fn(),
+        download: jest.fn(),
+        remove: jest.fn(),
+        list: jest.fn(),
+        getPublicUrl: jest.fn(() => ({ data: { publicUrl: 'mock-url' } })),
+      })),
+    },
+    realtime: {
+      channel: jest.fn(() => ({
+        on: jest.fn().mockReturnThis(),
+        subscribe: jest.fn(),
+        unsubscribe: jest.fn(),
+      })),
+    },
+    rpc: jest.fn().mockResolvedValue({ data: null, error: null }),
+  },
 }))
 
 // Mock framer-motion

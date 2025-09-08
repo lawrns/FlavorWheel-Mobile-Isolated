@@ -1,6 +1,5 @@
 import './globals.css'
 import type React from 'react'
-import { Inter } from 'next/font/google'
 
 export const metadata = {
   title: 'Flavatix - Discover the Art of Spirits Tasting',
@@ -70,11 +69,7 @@ export const metadata = {
   manifest: '/manifest.json',
 }
 
-const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-inter',
-})
+// Using system fonts for compatibility with Babel configuration
 
 export default function RootLayout({
   children,
@@ -82,7 +77,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en" className="font-sans">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#8B4513" />
@@ -94,7 +89,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
       </head>
-      <body className={`${inter.className} antialiased min-h-screen bg-background text-foreground`}>
+      <body className="font-sans antialiased min-h-screen bg-background text-foreground">
         <main className="min-h-screen flex flex-col">
           {children}
         </main>

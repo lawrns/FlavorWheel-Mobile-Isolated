@@ -28,13 +28,13 @@ const config: Config = {
     },
     extend: {
       colors: {
-        // Unified Design System Colors
-        primary: '#FF6B35',
-        'primary-foreground': '#FFFFFF',
-        secondary: '#3366FF',
-        'secondary-foreground': '#FFFFFF',
-        accent: '#22C55E',
-        'accent-foreground': '#FFFFFF',
+        // Unified Design System Colors (fx-design-tokens via CSS custom properties)
+        primary: 'var(--fx-primary)',
+        'primary-foreground': 'var(--fx-text-inverse)',
+        secondary: 'var(--fx-secondary)',
+        'secondary-foreground': 'var(--fx-text-inverse)',
+        accent: 'var(--fx-accent)',
+        'accent-foreground': 'var(--fx-text-inverse)',
         background: '#FFFFFF',
         foreground: '#1A1A1A',
         muted: '#F5F5F5',
@@ -42,13 +42,13 @@ const config: Config = {
         border: '#E5E7EB',
         surface: '#FAFAFA',
 
-        // Dark mode colors
-        'dark-primary': '#FF6B35',
-        'dark-primary-foreground': '#1A1A1A',
-        'dark-secondary': '#6699FF',
-        'dark-secondary-foreground': '#1A1A1A',
-        'dark-accent': '#4ADE80',
-        'dark-accent-foreground': '#1A1A1A',
+        // Dark mode colors (fx-design-tokens via CSS custom properties)
+        'dark-primary': 'var(--fx-primary)',
+        'dark-primary-foreground': 'var(--fx-text-primary)',
+        'dark-secondary': 'var(--fx-secondary)',
+        'dark-secondary-foreground': 'var(--fx-text-primary)',
+        'dark-accent': 'var(--fx-accent)',
+        'dark-accent-foreground': 'var(--fx-text-primary)',
         'dark-background': '#0B0B0B',
         'dark-foreground': '#F9FAFB',
         'dark-muted': '#1F2937',
@@ -56,10 +56,10 @@ const config: Config = {
         'dark-border': '#2D2D2D',
         'dark-surface': '#111111',
 
-        // High contrast colors
-        'hc-primary': '#FF0000',
-        'hc-secondary': '#0000FF',
-        'hc-accent': '#00FF00',
+        // High contrast colors (fx-design-tokens via CSS custom properties)
+        'hc-primary': 'var(--fx-primary)',
+        'hc-secondary': 'var(--fx-secondary)',
+        'hc-accent': 'var(--fx-accent)',
         'hc-background': '#000000',
         'hc-foreground': '#FFFFFF',
 
