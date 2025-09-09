@@ -21,6 +21,7 @@ import { Badge } from '@/components/ui/badge'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/components/auth-provider'
 import { MobileFlavorSelector } from '@/components/ui/mobile-flavor-selector'
+import { useSmartDefaults } from '@/lib/smart-defaults'
 
 interface TastingData {
   productType: string
@@ -52,6 +53,7 @@ const FLAVOR_CATEGORIES = {
 export function SimplifiedTastingFlow() {
   const router = useRouter()
   const { user } = useAuth()
+  const smartDefaults = useSmartDefaults()
   const [currentStep, setCurrentStep] = useState(0)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [tastingData, setTastingData] = useState<TastingData>({
@@ -61,6 +63,29 @@ export function SimplifiedTastingFlow() {
     overallRating: 5,
     notes: '',
   })
+
+  // Initialize with smart defaults
+  useEffect(() => {
+    const recommendedType = smartDefaults.getRecommendedBeverageType()
+    const ratingSuggestion = smartDefaults.getRatingSuggestion(recommendedType)
+
+    setTastingData(prev => ({
+      ...prev,
+      productType: recommendedType,
+      overallRating: ratingSuggestion
+    }))
+  }, [smartDefaults])
+
+  // Update smart suggestions when product type changes
+  useEffect(() => {
+    if (tastingData.productType) {
+      const ratingSuggestion = smartDefaults.getRatingSuggestion(tastingData.productType)
+      setTastingData(prev => ({
+        ...prev,
+        overallRating: ratingSuggestion
+      }))
+    }
+  }, [tastingData.productType, smartDefaults])
 
   const steps = [
     { id: 'product', title: 'What are you tasting?', icon: '🥤' },
@@ -101,8 +126,23 @@ export function SimplifiedTastingFlow() {
     setIsSubmitting(true)
 
     try {
-      // TODO: Implement actual API call
-      console.log('Submitting tasting data:', tastingData)
+      // Save tasting data and update smart defaults
+      const tastingPayload = {
+        name: `${tastingData.productName} Tasting`,
+        productType: tastingData.productType,
+        productName: tastingData.productName,
+        selectedFlavors: tastingData.selectedFlavors,
+        overallRating: tastingData.overallRating,
+        notes: tastingData.notes,
+        createdAt: new Date().toISOString(),
+        userId: user?.id
+      }
+
+      // Save to smart defaults for future recommendations
+      smartDefaults.saveTasting(tastingPayload)
+
+      // TODO: Implement actual API call to save tasting
+      console.log('Submitting tasting data:', tastingPayload)
 
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 2000))
@@ -138,16 +178,39 @@ export function SimplifiedTastingFlow() {
                   <SelectValue placeholder="Select a beverage type" />
                 </SelectTrigger>
                 <SelectContent>
-                  {PRODUCT_TYPES.map((type) => (
-                    <SelectItem key={type.value} value={type.value} className="h-12">
-                      <span className="flex items-center gap-3">
-                        <span className="text-2xl">{type.emoji}</span>
-                        {type.label}
-                      </span>
-                    </SelectItem>
-                  ))}
+                  {PRODUCT_TYPES.map((type) => {
+                    const recommendedType = smartDefaults.getRecommendedBeverageType()
+                    const isRecommended = type.value === recommendedType
+
+                    return (
+                      <SelectItem key={type.value} value={type.value} className="h-12">
+                        <span className="flex items-center gap-3">
+                          <span className="text-2xl">{type.emoji}</span>
+                          <span>{type.label}</span>
+                          {isRecommended && (
+                            <span className="ml-auto text-xs bg-fx-accent/10 text-fx-accent px-2 py-1 rounded-full">
+                              Recommended
+                            </span>
+                          )}
+                        </span>
+                      </SelectItem>
+                    )
+                  })}
                 </SelectContent>
               </Select>
+
+              {/* Smart recommendation hint */}
+              {(() => {
+                const recommendedType = smartDefaults.getRecommendedBeverageType()
+                const recommendedLabel = PRODUCT_TYPES.find(t => t.value === recommendedType)?.label
+                return recommendedType && recommendedType !== tastingData.productType ? (
+                  <div className="mt-3 p-3 bg-fx-accent/5 rounded-lg border border-fx-accent/20">
+                    <p className="text-sm text-fx-accent">
+                      💡 <strong>Based on your history:</strong> You might enjoy tasting {recommendedLabel?.toLowerCase()}!
+                    </p>
+                  </div>
+                ) : null
+              })()}
             </div>
 
             {tastingData.productType && (
@@ -182,12 +245,21 @@ export function SimplifiedTastingFlow() {
           ? FLAVOR_CATEGORIES[tastingData.productType as keyof typeof FLAVOR_CATEGORIES] || FLAVOR_CATEGORIES.other
           : []
 
+        // Get smart flavor suggestions
+        const smartSuggestions = smartDefaults.getFlavorSuggestions(
+          tastingData.productType,
+          tastingData.selectedFlavors
+        )
+
+        // Combine available flavors with smart suggestions
+        const allFlavorOptions = [...new Set([...availableFlavors, ...smartSuggestions])]
+
         // Convert flavor names to objects for the mobile selector
-        const flavorObjects = availableFlavors.map((flavorName, index) => ({
+        const flavorObjects = allFlavorOptions.map((flavorName, index) => ({
           id: `flavor-${index}`,
           name: flavorName,
-          category: 'general',
-          color: '#8B4513'
+          category: smartSuggestions.includes(flavorName) ? 'recommended' : 'general',
+          color: smartSuggestions.includes(flavorName) ? '#10B981' : '#8B4513'
         }))
 
         return (
@@ -210,6 +282,15 @@ export function SimplifiedTastingFlow() {
               title={`Flavors in your ${tastingData.productName || 'beverage'}`}
               subtitle="Select all flavors you can detect - trust your palate!"
             />
+
+            {smartSuggestions.length > 0 && (
+              <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                <p className="text-sm text-green-800">
+                  💡 <strong>Smart suggestions:</strong> Based on your tasting history and this beverage type,
+                  you might also detect: {smartSuggestions.slice(0, 3).join(', ')}
+                </p>
+              </div>
+            )}
 
             <div className="bg-fx-bg-subtle p-4 rounded-lg">
               <p className="text-sm text-fx-text-secondary">
@@ -262,6 +343,29 @@ export function SimplifiedTastingFlow() {
                 placeholder="Any specific observations, pairing suggestions, or memorable characteristics?"
                 className="min-h-[100px] text-base"
               />
+
+              {/* Smart note suggestions */}
+              {tastingData.productType && (
+                <div className="mt-4">
+                  <p className="text-sm text-fx-text-secondary mb-2">
+                    💡 <strong>Quick notes:</strong>
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {smartDefaults.getNoteSuggestions(tastingData.productType, tastingData.selectedFlavors).map((note, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setTastingData(prev => ({
+                          ...prev,
+                          notes: prev.notes ? `${prev.notes}\n• ${note}` : `• ${note}`
+                        }))}
+                        className="text-xs bg-fx-bg-subtle hover:bg-fx-accent/10 text-fx-text-secondary hover:text-fx-accent px-3 py-1 rounded-full border border-fx-border-default hover:border-fx-accent transition-colors"
+                      >
+                        + {note}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Summary */}

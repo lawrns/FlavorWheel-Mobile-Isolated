@@ -3,19 +3,13 @@
 import * as React from 'react'
 import dynamic from 'next/dynamic'
 import type { FlavorNode } from '@/lib/flavorwheel/types'
+import { FlavorWheelSkeleton } from '@/components/ui/skeleton-loader'
 
 // Dynamically import the heavy D3 visualization component
 const FlavorWheelVisualization = dynamic(
   () => import('./FlavorWheelVisualization').then(mod => ({ default: mod.FlavorWheelVisualization })),
   {
-    loading: () => (
-      <div className="flavor-wheel-loading flex items-center justify-center h-96 bg-gray-50 rounded-lg">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading flavor wheel...</p>
-        </div>
-      </div>
-    ),
+    loading: () => <FlavorWheelSkeleton />,
     ssr: false // Disable SSR for D3 components
   }
 )

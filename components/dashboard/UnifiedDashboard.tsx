@@ -16,6 +16,7 @@ import { useStatistics } from '@/hooks/use-statistics'
 import { useSupabase } from '@/components/providers/supabase-provider'
 import { DashboardAppShell } from '@/components/app-shell'
 import { BrandIcon } from '@/components/brand'
+import { SkeletonLoader, LoadingStates, ProgressiveLoader } from '@/components/ui/skeleton-loader'
 
 interface UserStats {
   totalTastings: number
@@ -92,6 +93,7 @@ export function UnifiedDashboard() {
   })
 
   const [userStats, setUserStats] = useState<UserStats | null>(null)
+  const [isLoadingStats, setIsLoadingStats] = useState(true)
 
   // Enhanced test mode detection
   const isTestMode = process.env.NODE_ENV === 'test' ||
@@ -105,40 +107,49 @@ export function UnifiedDashboard() {
     if (user || isTestMode) {
       loadUserStats()
     } else {
-      // Loading handled by useStatistics hook
+      setIsLoadingStats(false)
     }
   }, [user, isTestMode])
 
   const loadUserStats = async () => {
-    // Mock data for demonstration - replace with actual API calls
-    setUserStats({
-      totalTastings: 12,
-      totalReviews: 8,
-      averageRating: 8.2,
-      achievements: 5,
-      streakDays: 7,
-      favoriteBeverage: 'Mezcal',
-      recentActivity: [
-        {
-          type: 'tasting',
-          title: 'Completed tasting: Premium Blanco Tequila',
-          timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-          points: 10
-        },
-        {
-          type: 'achievement',
-          title: 'Earned "Flavor Explorer" badge',
-          timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-          points: 25
-        },
-        {
-          type: 'review',
-          title: 'Reviewed Aged Reposado Mezcal',
-          timestamp: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString(),
-          points: 15
-        }
-      ]
-    })
+    setIsLoadingStats(true)
+
+    try {
+      // Simulate API delay for better loading demonstration
+      await new Promise(resolve => setTimeout(resolve, 1500))
+
+      // Mock data for demonstration - replace with actual API calls
+      setUserStats({
+        totalTastings: 12,
+        totalReviews: 8,
+        averageRating: 8.2,
+        achievements: 5,
+        streakDays: 7,
+        favoriteBeverage: 'Mezcal',
+        recentActivity: [
+          {
+            type: 'tasting',
+            title: 'Completed tasting: Premium Blanco Tequila',
+            timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+            points: 10
+          },
+          {
+            type: 'achievement',
+            title: 'Earned "Flavor Explorer" badge',
+            timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+            points: 25
+          },
+          {
+            type: 'review',
+            title: 'Reviewed Aged Reposado Mezcal',
+            timestamp: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString(),
+            points: 15
+          }
+        ]
+      })
+    } finally {
+      setIsLoadingStats(false)
+    }
   }
 
   const handleQuickAction = (action: string) => {
@@ -407,96 +418,123 @@ export function UnifiedDashboard() {
           {/* Stats Overview */}
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-6">Your Progress</h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Total Tastings</p>
-                      <p className="text-2xl font-bold">{userStats?.totalTastings || 0}</p>
+            <ProgressiveLoader
+              isLoading={isLoadingStats}
+              skeleton={<LoadingStates.DashboardStats />}
+            >
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <Card>
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-muted-foreground">Total Tastings</p>
+                        <p className="text-2xl font-bold">{userStats?.totalTastings || 0}</p>
+                      </div>
+                      <Target className="h-8 w-8 text-amber-500" />
                     </div>
-                    <Target className="h-8 w-8 text-amber-500" />
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
 
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Reviews Written</p>
-                      <p className="text-2xl font-bold">{userStats?.totalReviews || 0}</p>
+                <Card>
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-muted-foreground">Reviews Written</p>
+                        <p className="text-2xl font-bold">{userStats?.totalReviews || 0}</p>
+                      </div>
+                      <Star className="h-8 w-8 text-yellow-500" />
                     </div>
-                    <Star className="h-8 w-8 text-yellow-500" />
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
 
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Avg Rating</p>
-                      <p className="text-2xl font-bold">{userStats?.averageRating?.toFixed(1) || '0.0'}</p>
+                <Card>
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-muted-foreground">Avg Rating</p>
+                        <p className="text-2xl font-bold">{userStats?.averageRating?.toFixed(1) || '0.0'}</p>
+                      </div>
+                      <Award className="h-8 w-8 text-green-500" />
                     </div>
-                    <Award className="h-8 w-8 text-green-500" />
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
 
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Achievements</p>
-                      <p className="text-2xl font-bold">{userStats?.achievements || 0}</p>
+                <Card>
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-muted-foreground">Achievements</p>
+                        <p className="text-2xl font-bold">{userStats?.achievements || 0}</p>
+                      </div>
+                      <Trophy className="h-8 w-8 text-purple-500" />
                     </div>
-                    <Trophy className="h-8 w-8 text-purple-500" />
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </ProgressiveLoader>
           </section>
 
           {/* Recent Activity */}
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-6">Recent Activity</h2>
-            <Card>
-              <CardContent className="p-6">
-                <div className="space-y-4">
-                  {userStats?.recentActivity?.map((activity, index) => (
-                    <div key={index} className="flex items-center space-x-4">
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                        activity.type === 'tasting' ? 'bg-amber-100 text-amber-600' :
-                        activity.type === 'review' ? 'bg-green-100 text-green-600' :
-                        'bg-purple-100 text-purple-600'
-                      }`}>
-                        {activity.type === 'tasting' && <Target className="h-5 w-5" />}
-                        {activity.type === 'review' && <Star className="h-5 w-5" />}
-                        {activity.type === 'achievement' && <Trophy className="h-5 w-5" />}
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-medium">{activity.title}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {new Date(activity.timestamp).toLocaleDateString()}
-                        </p>
-                      </div>
-                      {activity.points && (
-                        <Badge variant="secondary">
-                          +{activity.points} pts
-                        </Badge>
-                      )}
+            <ProgressiveLoader
+              isLoading={isLoadingStats}
+              skeleton={
+                <Card>
+                  <CardContent className="p-6">
+                    <div className="space-y-4">
+                      {Array.from({ length: 3 }).map((_, index) => (
+                        <div key={index} className="flex items-center space-x-4">
+                          <SkeletonLoader className="w-10 h-10 rounded-full" />
+                          <div className="flex-1 space-y-2">
+                            <SkeletonLoader className="h-4 w-3/4" />
+                            <SkeletonLoader className="h-3 w-1/2" />
+                          </div>
+                          <SkeletonLoader className="h-6 w-16 rounded-full" />
+                        </div>
+                      ))}
                     </div>
-                  )) || (
-                    <div className="text-center py-8 text-muted-foreground">
-                      <Target className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                      <p>No recent activity yet.</p>
-                      <p className="text-sm">Start tasting to see your activity here!</p>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
+                  </CardContent>
+                </Card>
+              }
+            >
+              <Card>
+                <CardContent className="p-6">
+                  <div className="space-y-4">
+                    {userStats?.recentActivity?.map((activity, index) => (
+                      <div key={index} className="flex items-center space-x-4">
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                          activity.type === 'tasting' ? 'bg-amber-100 text-amber-600' :
+                          activity.type === 'review' ? 'bg-green-100 text-green-600' :
+                          'bg-purple-100 text-purple-600'
+                        }`}>
+                          {activity.type === 'tasting' && <Target className="h-5 w-5" />}
+                          {activity.type === 'review' && <Star className="h-5 w-5" />}
+                          {activity.type === 'achievement' && <Trophy className="h-5 w-5" />}
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-medium">{activity.title}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {new Date(activity.timestamp).toLocaleDateString()}
+                          </p>
+                        </div>
+                        {activity.points && (
+                          <Badge variant="secondary">
+                            +{activity.points} pts
+                          </Badge>
+                        )}
+                      </div>
+                    )) || (
+                      <div className="text-center py-8 text-muted-foreground">
+                        <Target className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                        <p>No recent activity yet.</p>
+                        <p className="text-sm">Start tasting to see your activity here!</p>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </ProgressiveLoader>
           </section>
         </div>
       </div>
