@@ -302,9 +302,7 @@ export default function QuickTastingPage() {
               </Card>
             )}
           </div>
-        )}
-
+        </div>
       </div>
-    </div>
   )
 }

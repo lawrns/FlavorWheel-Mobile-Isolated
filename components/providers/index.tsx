@@ -6,6 +6,7 @@ import { RealtimeProvider } from './realtime-provider'
 import { OnboardingProvider } from './onboarding-provider'
 import { ThemeProvider } from './theme-provider'
 import { AuthProvider } from '@/components/auth-provider'
+import { ToastProvider } from '@/hooks/use-toast'
 
 interface ProvidersProps {
   children: React.ReactNode
@@ -14,15 +15,17 @@ interface ProvidersProps {
 export function Providers({ children }: ProvidersProps) {
   return (
     <ThemeProvider>
-      <SupabaseProvider>
-        <AuthProvider>
-          <RealtimeProvider>
-            <OnboardingProvider>
-              {children}
-            </OnboardingProvider>
-          </RealtimeProvider>
-        </AuthProvider>
-      </SupabaseProvider>
+      <ToastProvider>
+        <SupabaseProvider>
+          <AuthProvider>
+            <RealtimeProvider>
+              <OnboardingProvider>
+                {children}
+              </OnboardingProvider>
+            </RealtimeProvider>
+          </AuthProvider>
+        </SupabaseProvider>
+      </ToastProvider>
     </ThemeProvider>
   )
 }

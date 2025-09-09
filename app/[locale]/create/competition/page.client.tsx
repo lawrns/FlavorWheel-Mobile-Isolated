@@ -214,6 +214,7 @@ export default function CreateCompetitionPage() {
       product_type: '',
       template: '',
       blind_toggle: false,
+      participants: [],
       categories: [{
         id: '1',
         category_name: '',

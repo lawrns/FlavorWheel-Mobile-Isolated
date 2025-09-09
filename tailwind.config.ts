@@ -35,8 +35,8 @@ const config: Config = {
     },
     extend: {
       colors: {
-        // ===== SEMANTIC DESIGN SYSTEM =====
-        // Single source of truth using CSS custom properties
+        // ===== FLAVORWHEEL DESIGN SYSTEM =====
+        // Complete integration with fx- design tokens
 
         // Brand Colors (Core identity)
         primary: 'var(--fx-primary)',
@@ -77,6 +77,48 @@ const config: Config = {
         // Focus & Interaction
         focus: 'var(--fx-focus-ring-color)',
         ring: 'var(--fx-focus-ring-color)',
+
+        // ===== FX DESIGN TOKENS =====
+        // Direct access to fx- design system
+        'fx-primary': 'var(--fx-primary)',
+        'fx-primary-hover': 'var(--fx-primary-hover)',
+        'fx-secondary': 'var(--fx-secondary)',
+        'fx-secondary-hover': 'var(--fx-secondary-hover)',
+        'fx-accent': 'var(--fx-accent)',
+        'fx-accent-hover': 'var(--fx-accent-hover)',
+
+        // fx Surface colors
+        'fx-bg': 'var(--fx-bg)',
+        'fx-bg-subtle': 'var(--fx-bg-subtle)',
+        'fx-card': 'var(--fx-card)',
+        'fx-elevated': 'var(--fx-elevated)',
+
+        // fx Text colors
+        'fx-text-primary': 'var(--fx-text-primary)',
+        'fx-text-secondary': 'var(--fx-text-secondary)',
+        'fx-text-muted': 'var(--fx-text-muted)',
+        'fx-text-inverse': 'var(--fx-text-inverse)',
+
+        // fx Border colors
+        'fx-border-subtle': 'var(--fx-border-subtle)',
+        'fx-border-default': 'var(--fx-border-default)',
+        'fx-border-strong': 'var(--fx-border-strong)',
+
+        // fx Brand primitives
+        'fx-brand-brown-500': 'var(--fx-brand-brown-500)',
+        'fx-brand-brown-600': 'var(--fx-brand-brown-600)',
+        'fx-brand-brown-400': 'var(--fx-brand-brown-400)',
+        'fx-brand-gold-500': 'var(--fx-brand-gold-500)',
+        'fx-brand-gold-600': 'var(--fx-brand-gold-600)',
+        'fx-brand-gold-400': 'var(--fx-brand-gold-400)',
+        'fx-brand-green-500': 'var(--fx-brand-green-500)',
+        'fx-brand-green-600': 'var(--fx-brand-green-600)',
+        'fx-brand-green-400': 'var(--fx-brand-green-400)',
+
+        // fx AI confidence colors
+        'fx-ai-confidence-low': 'var(--fx-ai-confidence-low)',
+        'fx-ai-confidence-med': 'var(--fx-ai-confidence-med)',
+        'fx-ai-confidence-high': 'var(--fx-ai-confidence-high)',
 
         // ===== LEGACY SUPPORT =====
         // Minimal support for existing fw- tokens (will be removed in future)
@@ -122,6 +164,11 @@ const config: Config = {
         sans: ['var(--fx-font-body)'],
         mono: ['JetBrains Mono', 'monospace'],
         display: ['var(--fx-font-heading)'],
+
+        // fx Design System fonts
+        'fx-heading': ['var(--fx-font-heading)'],
+        'fx-subheading': ['var(--fx-font-subheading)'],
+        'fx-body': ['var(--fx-font-body)'],
       },
       fontSize: {
         // Unified Typography Scale using CSS custom properties
@@ -229,11 +276,15 @@ const config: Config = {
         'xl': '0 20px 25px rgba(0,0,0,0.2)',
         '2xl': '0 25px 50px rgba(0,0,0,0.25)',
 
-        // fx Design Token Shadows (legacy support)
+        // fx Design Token Shadows
         'fx-xs': 'var(--fx-shadow-xs)',
         'fx-sm': 'var(--fx-shadow-sm)',
         'fx-md': 'var(--fx-shadow-md)',
         'fx-lg': 'var(--fx-shadow-lg)',
+
+        // fx Premium shadows
+        'fx-premium': 'var(--fx-shadow-premium)',
+        'fx-glow': 'var(--fx-shadow-glow)',
 
         // Legacy shadows (keeping for compatibility)
         'legacy-fx': '0 1px 3px rgba(0,0,0,0.05)',

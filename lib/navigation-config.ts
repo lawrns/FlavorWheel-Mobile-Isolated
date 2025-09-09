@@ -35,11 +35,11 @@ export interface NavigationItem {
 export const NAVIGATION_ITEMS: NavigationItem[] = [
   // Core 4-button navigation (only working pages)
   {
-    id: 'home',
-    label: 'Home',
+    id: 'dashboard',
+    label: 'Dashboard',
     icon: HiHome,
     emoji: '🏠',
-    href: '/landing',
+    href: '/dashboard',
     color: 'wine-green',
   },
   {
@@ -75,14 +75,16 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
  */
 export const ROUTE_TO_NAV_MAPPING: Record<string, string> = {
   // Core pages (only working ones)
-  '/': 'home',
-  '/landing': 'home',
+  '/': 'dashboard',
+  '/landing': 'dashboard',
+  '/home': 'dashboard',
+  '/dashboard': 'dashboard',
   '/create': 'create',
   '/review': 'review',
   '/profile': 'profile',
 
   // Feature pages that map to core navigation
-  '/tastings': 'home',
+  '/tastings': 'dashboard',
   '/create-wheel': 'review',
   '/test-sunburst-wheel': 'review',
 }

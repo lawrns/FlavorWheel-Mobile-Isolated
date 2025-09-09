@@ -41,7 +41,7 @@ export default function AnalyticsPage() {
     if (user) {
       loadAnalytics()
     }
-  }, [user, timeRange, loadAnalytics])
+  }, [user, timeRange])
 
   const loadAnalytics = async () => {
     if (!user) return
@@ -153,7 +153,7 @@ export default function AnalyticsPage() {
     }
   }
 
-  const generateMonthlyProgress = (tastings: Array<{ created_at: string }>) => {
+  const generateMonthlyProgress = (tastings: Array<{ created_at: string; user_reviews?: any[] }>) => {
     const months = []
     const now = new Date()
 
@@ -162,7 +162,7 @@ export default function AnalyticsPage() {
       const monthName = date.toLocaleDateString('en-US', { month: 'short' })
 
       const monthTastings = tastings.filter(tasting => {
-        const tastingDate = new Date(tasting.date)
+        const tastingDate = new Date(tasting.created_at)
         return tastingDate.getMonth() === date.getMonth() &&
                tastingDate.getFullYear() === date.getFullYear()
       })

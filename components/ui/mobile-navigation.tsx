@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { MOBILE_NAV_ITEMS } from '@/lib/navigation-config'
 import { BrandIcon, BrandTitle } from '@/components/brand'
+import { shouldShowNav } from '@/lib/navigation-visibility'
+import { navProps, navButtonProps, focusProps } from '@/lib/a11y/roles'
 
 interface MobileNavigationProps {
   activeScreen?: string
@@ -43,12 +45,19 @@ export function MobileNavigation({
     setIsExpanded(false)
   }, [activeScreen])
 
-  // Hide navigation on landing page
-  const shouldShowNavigation = !pathname?.includes('/landing')
+  // Use centralized navigation visibility logic
+  const shouldShowNavigation = shouldShowNav(pathname)
+
+  // Debug logging
+  console.log('MobileNavigation Debug:', {
+    pathname,
+    shouldShowNavigation,
+    isMobile: typeof window !== 'undefined' ? window.innerWidth < 768 : false
+  })
 
   // Instead of returning null, render an empty div to maintain hooks consistency
   if (!shouldShowNavigation) {
-    return <div style={{ display: 'none' }} aria-hidden="true" />
+    return <div style={{ display: 'none' }} aria-hidden="true" data-debug="nav-hidden" />
   }
 
   return (
@@ -58,14 +67,24 @@ export function MobileNavigation({
         data-testid="mobile-navigation-root"
         id="mobile-navigation"
         className={cn(
-          'fixed bottom-0 left-0 right-0 z-50 h-16',
-          'pb-safe border-t border-fx-border-default bg-fx-card/95 backdrop-blur-md shadow-fx-lg will-change-transform',
+          'fixed bottom-0 left-0 right-0 z-[10] h-16', // fx-z-sticky = 10
+          'pb-safe border-t border-fx-border-default',
+          'bg-fx-card/95 backdrop-blur-md shadow-fx-lg will-change-transform',
           'supports-[backdrop-filter]:backdrop-blur-md',
+          'md:hidden', // Only show on mobile
           className
         )}
-        aria-label="Mobile Navigation"
-        role="navigation"
+        {...navProps('Bottom Navigation')}
         suppressHydrationWarning
+        style={{
+          backgroundColor: 'var(--fx-card, rgba(255, 255, 255, 0.95))',
+          borderColor: 'var(--fx-border-default, #e5e7eb)',
+          borderTop: '1px solid var(--fx-border-default, #e5e7eb)',
+          // Force visibility
+          display: 'block !important',
+          visibility: 'visible !important',
+          opacity: '1 !important'
+        }}
       >
         <div className="flex items-center justify-around px-4 py-3">
           {mainNavItems.map(item => (
@@ -88,20 +107,24 @@ export function MobileNavigation({
                   }
                 }
               }}
-              aria-label={`Navigate to ${item.label}`}
-              aria-current={activeScreen === item.id ? 'page' : undefined}
-              role="tab"
-              tabIndex={0}
+              {...navButtonProps(activeScreen === item.id, `Navigate to ${item.label}`)}
               data-nav-item={item.id}
               className={cn(
-                'flex min-w-[60px] min-h-[44px] flex-col items-center justify-center rounded-lg p-3 transition-all duration-base ease-standard focus-visible:ring-2 focus-visible:ring-fx-focus-ring focus-visible:ring-offset-2 haptic-light',
-                'touch-manipulation',
+                'flex min-w-[60px] min-h-[44px] flex-col items-center justify-center rounded-lg p-3 transition-all duration-base ease-standard haptic-light touch-manipulation',
+                focusProps.keyboardOnly,
                 activeScreen === item.id
-                  ? 'bg-fx-primary/10 text-fx-primary'
-                  : 'text-fx-text-secondary hover:bg-fx-bg-subtle hover:text-fx-text-primary active:bg-fx-primary/5'
+                  ? 'bg-fx-primary/15 text-fx-primary shadow-fx-sm'
+                  : 'text-fx-text-secondary hover:bg-fx-bg-subtle hover:text-fx-text-primary active:bg-fx-primary/8'
               )}
               whileTap={{ scale: 0.95 }}
               whileHover={{ scale: 1.05 }}
+              style={{
+                color: activeScreen === item.id
+                  ? 'var(--fx-primary, #8B4513)'
+                  : 'var(--fx-text-secondary, #6B7280)',
+                minHeight: '44px',
+                minWidth: '60px'
+              }}
             >
               <item.icon className="mb-1 h-5 w-5" />
               <span className="max-w-[60px] truncate text-center text-xs font-medium">
@@ -130,8 +153,8 @@ export function MobileNavigation({
               'flex min-w-[60px] min-h-[44px] flex-col items-center justify-center rounded-lg p-3 transition-all duration-base ease-standard focus-visible:ring-2 focus-visible:ring-fx-focus-ring focus-visible:ring-offset-2 haptic-medium',
               'touch-manipulation',
               isExpanded
-                ? 'bg-fx-accent/10 text-fx-accent'
-                : 'text-fx-text-secondary hover:bg-fx-bg-subtle hover:text-fx-text-primary active:bg-fx-accent/5'
+                ? 'bg-fx-accent/15 text-fx-accent shadow-fx-sm'
+                : 'text-fx-text-secondary hover:bg-fx-bg-subtle hover:text-fx-text-primary active:bg-fx-accent/8'
             )}
             whileTap={{ scale: 0.95 }}
             whileHover={{ scale: 1.05 }}
@@ -159,7 +182,7 @@ export function MobileNavigation({
 
             {/* Expanded Menu */}
             <motion.div
-              className="fixed bottom-20 left-4 right-4 z-50 rounded-xl border border-fx-border-default bg-fx-card shadow-fx-lg md:hidden"
+              className="fixed bottom-20 left-4 right-4 z-[11] rounded-xl border border-fx-border-default bg-fx-card shadow-fx-lg md:hidden"
               data-testid="mobile-menu"
               initial={{ opacity: 0, y: 20, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -182,7 +205,7 @@ export function MobileNavigation({
                     router.push('/en/create')
                     setIsExpanded(false)
                   }}
-                  className="mb-4 w-full rounded-lg bg-fx-primary px-4 py-4 text-white font-medium hover:bg-fx-primary/90 active:bg-fx-primary/80 transition-colors min-h-[48px] touch-manipulation"
+                  className="btn-primary-beautiful mb-4 w-full"
                 >
                   Create New Tasting
                 </button>

@@ -7,18 +7,23 @@ import { cn } from '@/lib/utils'
 // Base button styles using unified design tokens
 const base = 'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-body-sm font-medium transition-all duration-fast ease-standard focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 active:scale-98 min-h-[44px]'
 
-// Enhanced button variants using new design tokens
+// Enhanced button variants using fx- design tokens
 export const buttonVariants = cva(base, {
   variants: {
     variant: {
-      primary: 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm hover:shadow-md active:shadow-xs',
-      secondary: 'bg-[color:var(--fx-surface-muted)] text-[color:var(--fx-text-primary)] border border-[color:var(--fx-border)] hover:bg-[color:var(--fx-surface-hover)] hover:border-[color:var(--fx-accent)] shadow-xs hover:shadow-sm',
-      accent: 'bg-accent text-accent-foreground hover:bg-accent/90 shadow-sm hover:shadow-md active:shadow-xs',
-      ghost: 'text-[color:var(--fx-text-primary)] hover:bg-[color:var(--fx-surface-hover)] hover:text-[color:var(--fx-text-primary)]',
-      destructive: 'bg-red-600 text-white hover:bg-red-700 shadow-sm',
-      success: 'bg-green-600 text-white hover:bg-green-700 shadow-sm',
-      outline: 'border border-border bg-transparent text-foreground hover:bg-muted hover:border-accent',
-      link: 'text-primary underline-offset-4 hover:underline hover:text-primary bg-transparent shadow-none hover:shadow-none'
+      primary: 'bg-gradient-to-r from-fx-primary to-fx-primary-hover text-fx-text-inverse hover:shadow-fx-lg active:shadow-fx-sm transform hover:-translate-y-1 transition-all duration-base',
+      secondary: 'bg-fx-bg text-fx-text-primary border border-fx-border-default hover:bg-fx-bg-subtle hover:border-fx-accent shadow-fx-xs hover:shadow-fx-sm',
+      accent: 'bg-gradient-to-r from-fx-accent to-fx-accent-hover text-fx-text-inverse hover:shadow-fx-lg active:shadow-fx-sm transform hover:-translate-y-1 transition-all duration-base',
+      ghost: 'text-fx-text-primary hover:bg-fx-bg-subtle hover:text-fx-text-primary',
+      destructive: 'bg-red-600 text-white hover:bg-red-700 shadow-fx-sm',
+      success: 'bg-green-600 text-white hover:bg-green-700 shadow-fx-sm',
+      outline: 'border border-fx-border-default bg-transparent text-fx-text-primary hover:bg-fx-bg-subtle hover:border-fx-accent',
+      link: 'text-fx-primary underline-offset-4 hover:underline hover:text-fx-primary bg-transparent shadow-none hover:shadow-none',
+
+      // Beautiful premium variants
+      beautiful: 'btn-primary-beautiful',
+      'beautiful-secondary': 'btn-secondary-beautiful',
+      'beautiful-accent': 'btn-accent-beautiful'
     },
     size: {
       xs: 'h-6 px-2 text-xs',

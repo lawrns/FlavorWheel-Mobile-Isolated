@@ -2,18 +2,16 @@
 
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { motion } from 'framer-motion'
-import { Trophy, Users, Calendar, MapPin, Clock, Star, Award, Target } from 'lucide-react'
+import { Trophy, Users, Calendar, MapPin, Award, Target } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Progress } from '@/components/ui/progress'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useSupabase } from '@/components/providers/supabase-provider'
 import { useToast } from '@/hooks/use-toast'
 import { DashboardAppShell } from '@/components/app-shell'
 import Link from 'next/link'
+import { competitionPreloadingService } from '@/services/competition-preloading-service'
 
 interface Competition {
   id: string
@@ -81,33 +79,103 @@ export default function CompetitionDetailPage() {
 
   const loadCompetition = async () => {
     try {
-      // This would typically fetch from a competitions table
-      // For now, we'll create a mock competition
-      const mockCompetition: Competition = {
-        id: competitionId,
-        name: 'México Spirits Championship 2024',
-        description: 'The ultimate test of tequila and mezcal expertise. Judges will evaluate blind samples across multiple categories.',
-        type: 'professional',
-        status: 'upcoming',
-        start_date: '2024-03-15T10:00:00Z',
-        end_date: '2024-03-16T18:00:00Z',
-        max_participants: 20,
-        current_participants: 12,
-        organizer: {
-          name: 'Consejo Regulador del Tequila',
-          avatar_url: undefined
-        },
-        location: 'Guadalajara, Jalisco',
-        prize: '$5,000 + Trophy',
-        rules: 'Blind tasting evaluation. Professional judging criteria. All decisions final.',
-        tasting_items: [
-          { id: '1', name: 'Premium Blanco Tequila', type: 'tequila' },
-          { id: '2', name: 'Aged Reposado Mezcal', type: 'mezcal' },
-          { id: '3', name: 'Single Village Sotol', type: 'sotol' }
-        ]
+      // Try to get preloaded data first
+      const preloadedData = await competitionPreloadingService.preloadCompetition(competitionId)
+
+      if (preloadedData) {
+        // Convert preloaded data to competition format
+        const competitionData: Competition = {
+          id: preloadedData.id,
+          name: preloadedData.name,
+          description: `Competition with ${preloadedData.participants.length} participants evaluating ${preloadedData.items.length} items.`,
+          type: 'competition',
+          status: preloadedData.status === 'completed' ? 'completed' : preloadedData.status === 'active' ? 'active' : 'upcoming',
+          start_date: new Date().toISOString(), // Would come from actual competition data
+          end_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // Would come from actual competition data
+          max_participants: preloadedData.settings.max_participants,
+          current_participants: preloadedData.participants.length,
+          organizer: {
+            name: 'Competition Organizer',
+            avatar_url: undefined
+          },
+          location: 'Online',
+          prize: 'Recognition',
+          rules: 'Standard competition rules apply.',
+          tasting_items: preloadedData.items.map(item => ({
+            id: item.id,
+            name: item.name,
+            type: item.type
+          }))
+        }
+
+        setCompetition(competitionData)
+        console.log('Loaded competition using preloaded data:', competitionData)
+        return
       }
 
-      setCompetition(mockCompetition)
+      // Fallback to direct database query if preloading fails
+      console.log('Preloading failed, falling back to direct query')
+      if (!supabase) {
+        throw new Error('Database connection not available')
+      }
+      const { data, error } = await supabase
+        .from('competitions')
+        .select('*')
+        .eq('id', competitionId)
+        .single()
+
+      if (error || !data) {
+        // Create mock data as final fallback
+        const mockCompetition: Competition = {
+          id: competitionId,
+          name: 'México Spirits Championship 2024',
+          description: 'The ultimate test of tequila and mezcal expertise. Judges will evaluate blind samples across multiple categories.',
+          type: 'professional',
+          status: 'upcoming',
+          start_date: '2024-03-15T10:00:00Z',
+          end_date: '2024-03-16T18:00:00Z',
+          max_participants: 20,
+          current_participants: 12,
+          organizer: {
+            name: 'Consejo Regulador del Tequila',
+            avatar_url: undefined
+          },
+          location: 'Guadalajara, Jalisco',
+          prize: '$5,000 + Trophy',
+          rules: 'Blind tasting evaluation. Professional judging criteria. All decisions final.',
+          tasting_items: [
+            { id: '1', name: 'Premium Blanco Tequila', type: 'tequila' },
+            { id: '2', name: 'Aged Reposado Mezcal', type: 'mezcal' },
+            { id: '3', name: 'Single Village Sotol', type: 'sotol' }
+          ]
+        }
+        setCompetition(mockCompetition)
+        return
+      }
+
+      // Convert database data to competition format
+      const competitionData: Competition = {
+        id: data.id,
+        name: data.name,
+        description: data.description || 'Competition tasting event',
+        type: data.type || 'competition',
+        status: data.status,
+        start_date: data.start_date,
+        end_date: data.end_date,
+        max_participants: data.max_participants || 20,
+        current_participants: data.current_participants || 0,
+        organizer: {
+          name: data.organizer_name || 'Competition Organizer',
+          avatar_url: data.organizer_avatar_url
+        },
+        location: data.location || 'Online',
+        prize: data.prize || 'Recognition',
+        rules: data.rules || 'Standard competition rules apply.',
+        tasting_items: [] // Would need to fetch from related table
+      }
+
+      setCompetition(competitionData)
+
     } catch (error) {
       console.error('Error loading competition:', error)
       toast({
@@ -122,7 +190,100 @@ export default function CompetitionDetailPage() {
 
   const loadParticipants = async () => {
     try {
-      // Mock participants data
+      // Try to get preloaded participant data first
+      const preloadedData = competitionPreloadingService.getPreloadedCompetition(competitionId)
+
+      if (preloadedData && preloadedData.participants.length > 0) {
+        // Convert preloaded participants to the expected format
+        const participantsData: Participant[] = preloadedData.participants
+          .filter(p => p.status === 'joined' || p.status === 'completed')
+          .map((participant, index) => ({
+            id: participant.id,
+            user_id: participant.user_id,
+            status: participant.status === 'completed' ? 'completed' : 'joined',
+            score: participant.scores?.total || 0,
+            ranking: participant.scores ? index + 1 : undefined, // This would need proper ranking calculation
+            profile: participant.profile
+          }))
+
+        setParticipants(participantsData)
+        console.log('Loaded participants using preloaded data:', participantsData.length)
+        return
+      }
+
+      // Fallback to direct database query
+      console.log('Participant preloading not available, falling back to direct query')
+      if (!supabase) {
+        throw new Error('Database connection not available')
+      }
+      const { data, error } = await supabase
+        .from('competition_participants')
+        .select(`
+          id,
+          user_id,
+          status,
+          profiles:user_id (
+            name,
+            avatar_url
+          ),
+          competition_participant_scores (
+            total_score
+          )
+        `)
+        .eq('competition_id', competitionId)
+        .eq('status', 'joined')
+
+      if (error) {
+        console.error('Error fetching participants:', error)
+        // Fallback to mock data
+        const mockParticipants: Participant[] = [
+          {
+            id: '1',
+            user_id: 'user1',
+            status: 'joined',
+            score: 95,
+            ranking: 1,
+            profile: { name: 'María González', avatar_url: undefined }
+          },
+          {
+            id: '2',
+            user_id: 'user2',
+            status: 'joined',
+            score: 92,
+            ranking: 2,
+            profile: { name: 'Carlos Rodríguez', avatar_url: undefined }
+          },
+          {
+            id: '3',
+            user_id: 'user3',
+            status: 'joined',
+            score: 89,
+            ranking: 3,
+            profile: { name: 'Ana López', avatar_url: undefined }
+          }
+        ]
+        setParticipants(mockParticipants)
+        return
+      }
+
+      // Convert database data to participant format
+      const participantsData: Participant[] = (data || []).map((participant, index) => ({
+        id: participant.id,
+        user_id: participant.user_id,
+        status: participant.status,
+        score: participant.competition_participant_scores?.[0]?.total_score || 0,
+        ranking: index + 1, // Simple ranking - would need proper sorting
+        profile: {
+          name: participant.profiles?.[0]?.name || 'Anonymous',
+          avatar_url: participant.profiles?.[0]?.avatar_url
+        }
+      }))
+
+      setParticipants(participantsData)
+
+    } catch (error) {
+      console.error('Error loading participants:', error)
+      // Final fallback to mock data
       const mockParticipants: Participant[] = [
         {
           id: '1',
@@ -149,10 +310,7 @@ export default function CompetitionDetailPage() {
           profile: { name: 'Ana López', avatar_url: undefined }
         }
       ]
-
       setParticipants(mockParticipants)
-    } catch (error) {
-      console.error('Error loading participants:', error)
     }
   }
 

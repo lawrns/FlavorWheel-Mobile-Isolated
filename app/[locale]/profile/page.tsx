@@ -52,6 +52,21 @@ export default function ProfilePage() {
   const [stats, setStats] = useState<UserStats | null>(null)
   const [loading, setLoading] = useState(true)
   const [editing, setEditing] = useState(false)
+
+  // Mock data for testing
+  const mockUser = {
+    id: 'test-user',
+    name: 'Test User',
+    email: 'test@example.com',
+    avatar_url: null,
+    experience_level: 'beginner',
+    beverage_preferences: ['tequila', 'mezcal'],
+    language: 'en',
+    bio: 'Test user for E2E testing',
+    location: 'Test Location',
+    website: null,
+    created_at: new Date().toISOString()
+  }
   const [saving, setSaving] = useState(false)
 
   const [editForm, setEditForm] = useState({
@@ -366,20 +381,6 @@ export default function ProfilePage() {
     )
   }
 
-  // Use mock data for testing when user is not available
-  const mockUser = {
-    id: 'test-user',
-    name: 'Test User',
-    email: 'test@example.com',
-    avatar_url: null,
-    experience_level: 'beginner',
-    beverage_preferences: ['tequila', 'mezcal'],
-    language: 'en',
-    bio: 'Test user for E2E testing',
-    location: 'Test Location',
-    website: null,
-    created_at: new Date().toISOString()
-  }
 
   const currentUser = user || (isTestMode ? mockUser : null)
 

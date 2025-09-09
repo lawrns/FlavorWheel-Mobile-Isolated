@@ -52,6 +52,7 @@ import {
   shareReview,
   joinEvent
 } from '@/services/social-service'
+import { FilterPanel } from '@/components/flavorwheel/FilterPanel'
 
 // Dynamic import to avoid SSR issues
 const FlavorWheel = dynamic(() => import('@/components/flavorwheel/FlavorWheel'), { ssr: false })
@@ -1149,6 +1150,16 @@ export default function FlavorWheelsPage() {
                           </Button>
                         )}
                       </div>
+                    </div>
+                  )}
+
+                  {/* Demographic Filters Panel */}
+                  {!loading && !error && wheelData && (
+                    <div className="mb-6">
+                      <FilterPanel
+                        config={config}
+                        onConfigChange={setConfig}
+                      />
                     </div>
                   )}
 

@@ -52,6 +52,13 @@ export interface FlavorWheelConfig {
   }
   // Enables dictionary-driven multilingual extraction for better mapping
   useMultilingualExtraction?: boolean
+  // New demographic filters for enhanced personalization
+  demographicFilters?: {
+    gender?: 'male' | 'female' | 'other' | 'prefer_not_to_say'
+    ageRange?: '18-24' | '25-34' | '35-44' | '45-54' | '55-64' | '65+'
+    location?: string
+    geographicRadius?: number
+  }
 }
 
 // Mexican beverage flavor categories with cultural context
@@ -151,7 +158,47 @@ function analyzeTastingData(
 ): Map<string, FlavorAnalysisData> {
   const flavorMap = new Map<string, FlavorAnalysisData>()
 
-  tastings.forEach(tasting => {
+  // Apply demographic filtering if specified
+  let filteredTastings = tastings
+
+  if (config.demographicFilters) {
+    filteredTastings = tastings.filter(tasting => {
+      // Check gender filter
+      if (config.demographicFilters?.gender && tasting.user_gender) {
+        if (tasting.user_gender !== config.demographicFilters.gender) {
+          return false
+        }
+      }
+
+      // Check age range filter
+      if (config.demographicFilters?.ageRange && tasting.user_age) {
+        const userAge = parseInt(tasting.user_age)
+        const [minAge, maxAge] = config.demographicFilters.ageRange.split('-').map((age, index) => {
+          if (age === '+') return 100 // Handle 65+ case
+          return parseInt(age)
+        })
+
+        if (userAge < minAge || (maxAge && userAge > maxAge)) {
+          return false
+        }
+      }
+
+      // Check location filter
+      if (config.demographicFilters?.location && tasting.user_location) {
+        // Simple string matching - could be enhanced with geocoding
+        if (!tasting.user_location.toLowerCase().includes(config.demographicFilters.location.toLowerCase())) {
+          return false
+        }
+      }
+
+      // Geographic radius filtering would require lat/lng coordinates
+      // For now, we'll skip this as it requires additional user location data
+
+      return true
+    })
+  }
+
+  filteredTastings.forEach(tasting => {
     // Extract flavors from different sources based on wheel type and review type
     let flavors: string[] = []
     let noteText = ''
@@ -539,140 +586,6 @@ export async function getFlavorStatistics(userId?: string): Promise<{
 /**
  * Extracts flavors from free-form text using multilingual extraction
  */
-/**
- * Advanced keyword extraction with metadata
- */
-export function extractKeywordsAdvanced(
-  text: string,
-  language: 'en' | 'es' = 'en'
-): {
-  keywords: string[]
-  confidence: number
-  language: string
-  processingTimeMs: number
-  sunburstData?: any
-  contextTerms?: string[]
-  stemmedKeywords?: string[]
-  synonyms?: string[]
-} {
-  const startTime = Date.now()
-
-  if (!text || typeof text !== 'string') {
-    return {
-      keywords: [],
-      confidence: 0,
-      language,
-      processingTimeMs: Date.now() - startTime,
-      sunburstData: null,
-      contextTerms: [],
-      stemmedKeywords: [],
-      synonyms: []
-    }
-  }
-
-  const normalizedText = text.toLowerCase()
-  const keywords: string[] = []
-  const contextTerms: string[] = []
-
-  // Simple keyword extraction based on common flavor terms
-  const flavorTerms = [
-    'sweet', 'citrus', 'vanilla', 'caramel', 'chocolate', 'coffee',
-    'smoke', 'peat', 'fruit', 'berry', 'apple', 'pear', 'orange',
-    'dulce', 'cítrico', 'vainilla', 'caramelo', 'chocolate', 'café',
-    'humo', 'turba', 'fruta', 'baya', 'manzana', 'pera', 'naranja'
-  ]
-
-  flavorTerms.forEach(term => {
-    if (normalizedText.includes(term)) {
-      keywords.push(term)
-    }
-  })
-
-  // Extract context terms (adjectives, intensifiers)
-  const contextWords = [
-    'strong', 'weak', 'intense', 'subtle', 'pronounced', 'faint',
-    'fuerte', 'débil', 'intenso', 'sutil', 'pronunciado', 'tenue'
-  ]
-
-  contextWords.forEach(word => {
-    if (normalizedText.includes(word)) {
-      contextTerms.push(word)
-    }
-  })
-
-  // Generate sunburst data structure
-  const sunburstData = {
-    name: 'root',
-    children: keywords.map(keyword => ({
-      name: keyword,
-      value: Math.random() * 100, // Mock intensity
-      confidence: 0.8
-    }))
-  }
-
-  return {
-    keywords,
-    confidence: keywords.length > 0 ? 0.8 : 0,
-    language,
-    processingTimeMs: Date.now() - startTime,
-    sunburstData,
-    contextTerms,
-    stemmedKeywords: keywords, // Simple mock
-    synonyms: keywords.map(k => `${k}_synonym`) // Mock synonyms
-  }
-}
-
-/**
- * Validate extraction quality
- */
-export function validateExtractionQuality(keywords: string[]): {
-  isValid: boolean
-  issues: string[]
-  score: number
-  quality?: number
-} {
-  const issues: string[] = []
-
-  if (!keywords || !Array.isArray(keywords)) {
-    issues.push('Invalid keywords array')
-    return { isValid: false, issues, score: 0 }
-  }
-
-  if (keywords.length === 0) {
-    issues.push('No keywords extracted')
-    return { isValid: false, issues, score: 0 }
-  }
-
-  if (keywords.length > 50) {
-    issues.push('Too many keywords extracted')
-  }
-
-  // Check for duplicates
-  const uniqueKeywords = new Set(keywords)
-  if (uniqueKeywords.size !== keywords.length) {
-    issues.push('Duplicate keywords found')
-  }
-
-  // Calculate quality score
-  let quality = 0
-  if (keywords.length >= 3 && keywords.length <= 20) {
-    quality += 0.4
-  }
-  if (uniqueKeywords.size === keywords.length) {
-    quality += 0.3
-  }
-  if (issues.length === 0) {
-    quality += 0.3
-  }
-
-  return {
-    isValid: issues.length === 0,
-    issues,
-    score: quality,
-    quality
-  }
-}
-
 export function extractFlavorsFromText(text: string): string[] {
   if (!text || typeof text !== 'string') return []
 

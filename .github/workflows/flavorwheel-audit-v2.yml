@@ -1,0 +1,379 @@
+name: FlavorWheel Audit v2.0 - Critical User Flows
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+    inputs:
+      audit_focus:
+        description: 'Audit focus area'
+        required: false
+        default: 'all'
+        type: choice
+        options:
+        - all
+        - mobile-responsiveness
+        - accessibility
+        - performance
+        - error-handling
+
+jobs:
+  audit-critical-user-flows:
+    name: Critical User Flows Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    strategy:
+      matrix:
+        browser: [chromium, firefox]
+        viewport: [
+          { width: 375, height: 667, name: 'Mobile Chrome' },
+          { width: 768, height: 1024, name: 'Tablet' },
+          { width: 1920, height: 1080, name: 'Desktop' }
+        ]
+        include:
+          - browser: webkit
+            viewport: { width: 375, height: 667, name: 'Mobile Safari' }
+          - browser: webkit
+            viewport: { width: 768, height: 1024, name: 'iPad Safari' }
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: flavorwheel_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Install Playwright browsers
+      run: npx playwright install --with-deps
+
+    - name: Setup test database
+      run: |
+        npm run db:reset
+        npm run db:migrate
+        npm run db:seed:test
+
+    - name: Start application
+      run: |
+        npm run build
+        npm start &
+        sleep 10
+        curl -f http://localhost:3001/en/landing || exit 1
+
+    - name: Run FlavorWheel Audit v2.0
+      run: |
+        npx playwright test flavorwheel-audit-v2.spec.ts \
+          --project=${{ matrix.browser }} \
+          --config=playwright.config.ts \
+          --reporter=json \
+          --output=test-results/audit-v2-${{ matrix.browser }}-${{ matrix.viewport.name }}
+
+    - name: Generate audit report
+      if: always()
+      run: |
+        node scripts/generate-audit-report.js \
+          --results=test-results/audit-v2-${{ matrix.browser }}-${{ matrix.viewport.name }}/results.json \
+          --output=test-results/audit-summary-v2.0.json
+
+    - name: Upload test artifacts
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: audit-v2-results-${{ matrix.browser }}-${{ matrix.viewport.name }}
+        path: |
+          test-results/
+          playwright-report/
+
+    - name: Check critical issues status
+      if: always()
+      run: |
+        node scripts/check-critical-issues.js \
+          --report=test-results/audit-summary-v2.0.json \
+          --fail-on-violations=true
+
+  audit-mobile-focus:
+    name: Mobile Responsiveness Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: github.event.inputs.audit_focus == 'mobile-responsiveness' || github.event.inputs.audit_focus == 'all'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Install Playwright browsers
+      run: npx playwright install --with-deps
+
+    - name: Start application
+      run: |
+        npm run build
+        npm start &
+        sleep 10
+
+    - name: Test mobile viewports
+      run: |
+        npx playwright test flavorwheel-audit-v2.spec.ts \
+          --grep="Mobile|viewport" \
+          --project=chromium \
+          --reporter=json \
+          --output=test-results/mobile-audit
+
+    - name: Verify safe area insets
+      run: |
+        npx playwright test \
+          --grep="safe.*area|Mobile Safari" \
+          --project=webkit \
+          --reporter=json
+
+  audit-accessibility:
+    name: Accessibility Compliance Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    if: github.event.inputs.audit_focus == 'accessibility' || github.event.inputs.audit_focus == 'all'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Install Playwright browsers
+      run: npx playwright install --with-deps
+
+    - name: Install accessibility tools
+      run: npm install -g @axe-core/playwright axe-playwright
+
+    - name: Start application
+      run: |
+        npm run build
+        npm start &
+        sleep 10
+
+    - name: Run accessibility audit
+      run: |
+        npx playwright test flavorwheel-audit-v2.spec.ts \
+          --grep="accessibility|WCAG|keyboard" \
+          --project=chromium \
+          --reporter=json \
+          --output=test-results/accessibility-audit
+
+    - name: Generate accessibility report
+      run: |
+        node scripts/accessibility-report.js \
+          --results=test-results/accessibility-audit/results.json
+
+  audit-performance:
+    name: Performance Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    if: github.event.inputs.audit_focus == 'performance' || github.event.inputs.audit_focus == 'all'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Install Playwright browsers
+      run: npx playwright install --with-deps
+
+    - name: Start application
+      run: |
+        npm run build
+        npm start &
+        sleep 10
+
+    - name: Run performance audit
+      run: |
+        npx playwright test flavorwheel-audit-v2.spec.ts \
+          --grep="performance|CSS bundle|60fps|horizontal scroll" \
+          --project=chromium \
+          --reporter=json \
+          --output=test-results/performance-audit
+
+    - name: Generate performance report
+      run: |
+        node scripts/performance-report.js \
+          --results=test-results/performance-audit/results.json \
+          --baseline=150KB
+
+  audit-error-handling:
+    name: Error Handling Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    if: github.event.inputs.audit_focus == 'error-handling' || github.event.inputs.audit_focus == 'all'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Install Playwright browsers
+      run: npx playwright install --with-deps
+
+    - name: Start application
+      run: |
+        npm run build
+        npm start &
+        sleep 10
+
+    - name: Run error handling audit
+      run: |
+        npx playwright test flavorwheel-audit-v2.spec.ts \
+          --grep="error|Error|boundary|500|database" \
+          --project=chromium \
+          --reporter=json \
+          --output=test-results/error-audit
+
+  audit-summary:
+    name: Generate Audit Summary
+    runs-on: ubuntu-latest
+    needs: [audit-critical-user-flows, audit-mobile-focus, audit-accessibility, audit-performance, audit-error-handling]
+    if: always()
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Download all audit artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: all-audit-results/
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Generate comprehensive audit summary
+      run: |
+        node scripts/comprehensive-audit-summary.js \
+          --input=all-audit-results/ \
+          --output=audit-summary-v2.0-final.json \
+          --format=markdown
+
+    - name: Upload final audit report
+      uses: actions/upload-artifact@v4
+      with:
+        name: comprehensive-audit-report-v2.0
+        path: |
+          audit-summary-v2.0-final.json
+          AUDIT_SUMMARY.md
+
+    - name: Audit status check
+      run: |
+        node scripts/audit-status-check.js \
+          --report=audit-summary-v2.0-final.json \
+          --required-pass-rate=100
+
+    - name: Comment audit results on PR
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs')
+          const report = JSON.parse(fs.readFileSync('audit-summary-v2.0-final.json', 'utf8'))
+
+          const summary = `## 🎯 FlavorWheel Audit v2.0 Results
+
+          ### Critical User Flows Status
+          ${report.userFlows.map(flow => `- ${flow.name}: ${flow.passed ? '✅ PASS' : '❌ FAIL'}`).join('\n')}
+
+          ### Key Metrics
+          - **Test Coverage**: ${report.metrics.coverage}%
+          - **Performance Score**: ${report.metrics.performance}/100
+          - **Accessibility Score**: ${report.metrics.accessibility}/100
+          - **Mobile Responsiveness**: ${report.metrics.mobileResponsive ? '✅' : '❌'}
+
+          ### Critical Issues Resolution
+          ${report.criticalIssues.map(issue => `- ${issue.name}: ${issue.resolved ? '✅ RESOLVED' : '❌ PENDING'}`).join('\n')}
+
+          ${report.recommendations.length > 0 ? '### Recommendations\n' + report.recommendations.map(rec => `- ${rec}`).join('\n') : '🎉 All critical issues resolved!'}
+
+          [View full report](${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}})`
+
+
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: summary
+          })
+
+  audit-gatekeeper:
+    name: Audit Gatekeeper
+    runs-on: ubuntu-latest
+    needs: audit-summary
+    if: always()
+
+    steps:
+    - name: Download audit summary
+      uses: actions/download-artifact@v4
+      with:
+        name: comprehensive-audit-report-v2.0
+
+    - name: Check audit requirements
+      run: |
+        node scripts/audit-gatekeeper.js \
+          --report=audit-summary-v2.0-final.json \
+          --block-on-failures=true \
+          --minimum-pass-rate=95
+
+

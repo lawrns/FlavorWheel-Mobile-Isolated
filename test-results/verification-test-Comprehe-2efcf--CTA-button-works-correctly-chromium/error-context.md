@@ -1,0 +1,124 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e3]:
+      - link "Skip to main content" [ref=e4] [cursor=pointer]:
+        - /url: "#main-content"
+      - link "Skip to navigation" [ref=e5] [cursor=pointer]:
+        - /url: "#navigation"
+      - banner "Page header" [ref=e11]:
+        - generic [ref=e12]:
+          - generic [ref=e14]: F
+          - generic [ref=e15]:
+            - heading "FLAVATIX" [level=2] [ref=e16]
+            - paragraph [ref=e17]: FlavorWheel México landing
+        - link [ref=e18] [cursor=pointer]:
+          - /url: /en/profile
+          - img [ref=e19] [cursor=pointer]
+      - generic [ref=e21]:
+        - generic [ref=e22]:
+          - heading "Discover the World In Every Sip" [level=1] [ref=e23]:
+            - generic [ref=e24]: Discover the World
+            - generic [ref=e25]: In Every Sip
+          - paragraph [ref=e26]:
+            - generic [ref=e27]: Transform your tasting experience with AI-powered flavor intelligence and
+            - generic [ref=e28]: coffee
+            - generic [ref=e29]: tasting expertise
+          - generic [ref=e30]:
+            - button "Start Your Flavor Journey" [ref=e31] [cursor=pointer]:
+              - generic [ref=e32] [cursor=pointer]:
+                - text: Start Your Flavor Journey
+                - img [ref=e33] [cursor=pointer]
+            - button "Watch Demo" [ref=e35] [cursor=pointer]:
+              - generic [ref=e36] [cursor=pointer]:
+                - img [ref=e37] [cursor=pointer]
+                - text: Watch Demo
+        - generic [ref=e40]:
+          - heading "Join 10,000+ Passionate Tasters" [level=2] [ref=e41]
+          - generic [ref=e42]:
+            - generic [ref=e43]:
+              - generic [ref=e44]: 10,000+
+              - generic [ref=e45]: Expert Tasters
+            - generic [ref=e46]:
+              - generic [ref=e47]: 50,000+
+              - generic [ref=e48]: Tastings Completed
+            - generic [ref=e49]:
+              - generic [ref=e50]: 25,000+
+              - generic [ref=e51]: Reviews Shared
+          - paragraph [ref=e53]: "\"Transforming how the world experiences flavor, one sip at a time.\""
+        - generic [ref=e54]:
+          - heading "Experience AI-Powered Tasting" [level=3] [ref=e55]
+          - generic [ref=e56]:
+            - generic [ref=e57]:
+              - img [ref=e59]
+              - heading "AI Flavor Analysis" [level=4] [ref=e61]
+              - paragraph [ref=e62]: Advanced machine learning identifies complex flavor profiles and provides personalized tasting insights.
+              - button "Try AI Analysis" [ref=e63] [cursor=pointer]
+            - generic [ref=e64]:
+              - img [ref=e66]
+              - heading "Expert Community" [level=4] [ref=e68]
+              - paragraph [ref=e69]: Connect with professional tasters, share experiences, and discover new flavor perspectives.
+              - button "Join Community" [ref=e70] [cursor=pointer]
+            - generic [ref=e71]:
+              - img [ref=e73]
+              - heading "Mobile-First Design" [level=4] [ref=e75]
+              - paragraph [ref=e76]: Optimized for tasting environments with camera integration and offline functionality.
+              - button "Quick Tasting" [ref=e77] [cursor=pointer]
+            - generic [ref=e78]:
+              - img [ref=e80]
+              - heading "Professional Tools" [level=4] [ref=e82]
+              - paragraph [ref=e83]: Industry-standard templates, expert validation, and comprehensive tasting reports.
+              - button "Expert Reviews" [ref=e84] [cursor=pointer]
+        - generic [ref=e86]:
+          - heading "Trusted by Flavor Experts Worldwide" [level=3] [ref=e87]
+          - generic [ref=e88]:
+            - generic [ref=e89]:
+              - generic [ref=e92]: S
+              - generic [ref=e93]:
+                - img [ref=e94]
+                - img [ref=e96]
+                - img [ref=e98]
+                - img [ref=e100]
+                - img [ref=e102]
+              - paragraph [ref=e104]: "\"This app revolutionized how I experience wine. The AI analysis is incredibly accurate.\""
+              - paragraph [ref=e105]: Sarah Martinez
+              - paragraph [ref=e106]: Master Sommelier
+            - generic [ref=e107]:
+              - generic [ref=e110]: M
+              - generic [ref=e111]:
+                - img [ref=e112]
+                - img [ref=e114]
+                - img [ref=e116]
+                - img [ref=e118]
+                - img [ref=e120]
+              - paragraph [ref=e122]: "\"Finally, tasting notes that actually mean something. The community insights are invaluable.\""
+              - paragraph [ref=e123]: Marco Rodriguez
+              - paragraph [ref=e124]: Coffee Roaster
+            - generic [ref=e125]:
+              - generic [ref=e128]: J
+              - generic [ref=e129]:
+                - img [ref=e130]
+                - img [ref=e132]
+                - img [ref=e134]
+                - img [ref=e136]
+                - img [ref=e138]
+              - paragraph [ref=e140]: "\"The AI flavor matching is incredible. It helped me discover pairings I never would have considered.\""
+              - paragraph [ref=e141]: Jennifer Chen
+              - paragraph [ref=e142]: Culinary Director
+        - generic [ref=e144]:
+          - heading "Ready to Transform Your Tasting Experience?" [level=3] [ref=e145]
+          - paragraph [ref=e146]: Join thousands of flavor enthusiasts who have already discovered the world in every sip.
+          - generic [ref=e147]:
+            - button "Start Free Today" [active] [ref=e148] [cursor=pointer]
+            - button "Sign In" [ref=e149] [cursor=pointer]
+          - paragraph [ref=e150]: No credit card required • Full access to all features
+      - generic [ref=e151]: FlavorWheel México - Your gateway to Mexican beverage culture
+      - generic [ref=e152]: My First Tequila Tasting
+      - generic [ref=e153]: App Ready
+      - generic [ref=e154]: Tasting List Loaded
+  - button "Open Next.js Dev Tools" [ref=e160] [cursor=pointer]:
+    - img [ref=e161] [cursor=pointer]
+  - alert [ref=e164]
+```

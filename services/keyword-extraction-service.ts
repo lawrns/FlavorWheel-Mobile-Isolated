@@ -652,7 +652,7 @@ export function validateExtractionQuality(keywords: string[]): {
 /**
  * Process tasting data for flavor wheel generation
  */
-export async function processTastingForFlavorWheel(
+export async function processTastingForFlavorWheelLegacy(
   inputData: {
     mode?: string
     notes?: string

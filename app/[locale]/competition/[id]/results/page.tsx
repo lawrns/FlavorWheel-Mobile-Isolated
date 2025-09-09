@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { motion } from 'framer-motion'
-import { Trophy, Medal, Award, Crown, Star, Download, Share2, Calendar, Users, Target } from 'lucide-react'
+import { Trophy, Medal, Award, Crown, Download, Share2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -15,6 +14,7 @@ import { useSupabase } from '@/components/providers/supabase-provider'
 import { useToast } from '@/hooks/use-toast'
 import { DashboardAppShell } from '@/components/app-shell'
 import Link from 'next/link'
+import { competitionPreloadingService } from '@/services/competition-preloading-service'
 
 interface CompetitionResult {
   id: string
@@ -62,10 +62,9 @@ interface ParticipantResult {
 
 export default function CompetitionResultsPage() {
   const params = useParams()
-  const router = useRouter()
   const locale = (params.locale as string) || 'en'
   const competitionId = (params.id as string)
-  const { user, client: supabase } = useSupabase()
+  const { client: supabase } = useSupabase()
   const { toast } = useToast()
 
   const [competition, setCompetition] = useState<CompetitionResult | null>(null)
@@ -80,7 +79,62 @@ export default function CompetitionResultsPage() {
 
   const loadCompetitionResults = async () => {
     try {
-      // Mock competition results data
+      // Try to get preloaded competition data first
+      const preloadedData = await competitionPreloadingService.preloadCompetition(competitionId)
+
+      if (preloadedData) {
+        // Convert preloaded data to results format
+        const competitionData: CompetitionResult = {
+          id: preloadedData.id,
+          name: preloadedData.name,
+          description: `Competition results with ${preloadedData.participants.length} participants evaluating ${preloadedData.items.length} items.`,
+          type: 'competition',
+          status: 'completed',
+          start_date: new Date().toISOString(),
+          end_date: new Date().toISOString(),
+          max_participants: preloadedData.settings.max_participants,
+          current_participants: preloadedData.participants.length,
+          organizer: {
+            name: 'Competition Organizer',
+            avatar_url: undefined
+          },
+          location: 'Online',
+          prize: 'Recognition',
+          tasting_items: preloadedData.items.map(item => ({
+            id: item.id,
+            name: item.name,
+            type: item.type
+          }))
+        }
+
+        // Convert participants to results format with proper ranking
+        const participantsData: ParticipantResult[] = preloadedData.participants
+          .filter(p => p.status === 'completed')
+          .map((participant, index) => ({
+            id: participant.id,
+            user_id: participant.user_id,
+            status: 'completed',
+            score: participant.scores?.total || 0,
+            ranking: index + 1,
+            profile: participant.profile,
+            total_score: participant.scores?.total || 0,
+            average_score: participant.scores?.average || 0,
+            consistency_score: participant.scores?.consistency || 0,
+            item_scores: Object.entries(participant.scores?.item_scores || {}).map(([itemId, score]) => ({
+              item_id: itemId,
+              item_name: preloadedData.items.find(item => item.id === itemId)?.name || 'Unknown Item',
+              score: score,
+              comments: ''
+            }))
+          }))
+
+        setCompetition(competitionData)
+        setParticipants(participantsData)
+        console.log('Loaded competition results using preloaded data:', participantsData.length, 'participants')
+        return
+      }
+
+      // Fallback to mock competition results data
       const mockCompetition: CompetitionResult = {
         id: competitionId,
         name: 'México Spirits Championship 2024',

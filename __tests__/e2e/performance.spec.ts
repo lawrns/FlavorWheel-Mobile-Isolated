@@ -6,7 +6,7 @@ test.describe('Performance & Load Testing', () => {
       const startTime = Date.now()
 
       await page.goto('/en/landing', { waitUntil: 'domcontentloaded' })
-      await page.waitForSelector('#main-content', { timeout: 10000 })
+      await page.waitForSelector('header h1', { timeout: 10000 })
 
       const loadTime = Date.now() - startTime
       expect(loadTime).toBeLessThan(3000) // Should load within 3 seconds

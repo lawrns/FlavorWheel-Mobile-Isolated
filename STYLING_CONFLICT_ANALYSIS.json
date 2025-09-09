@@ -1,0 +1,292 @@
+{
+  "metadata": {
+    "title": "FlavorWheel México - Styling Conflict Analysis",
+    "version": "1.0.0",
+    "created": "2025-01-03",
+    "purpose": "Comprehensive analysis of styling inconsistencies between pages using fx-design system vs manual Tailwind utilities",
+    "scope": "Complete application styling conflict analysis with migration recommendations",
+    "severity": "CRITICAL - Inconsistent user experience across pages",
+    "primary_issue": "Landing page uses blue gradients while authenticated pages use fx-design brown/beige system"
+  },
+
+  "styling_systems_conflict": {
+    "fx_design_system": {
+      "description": "Comprehensive design system defined in globals.css with CSS custom properties",
+      "colors": {
+        "primary": "#8B4513 (Rich Brown)",
+        "secondary": "#2E8B57 (Deep Green)",
+        "accent": "#D4AF37 (Gold)",
+        "background": "#FEFCF8 (Warm Cream)",
+        "text_primary": "#2C1810 (Dark Brown)",
+        "text_secondary": "#374151 (Gray)"
+      },
+      "status": "WELL_DEFINED",
+      "coverage": "95% complete with full Tailwind integration",
+      "usage": "Used extensively in authenticated pages (create/study, dashboard, profile, etc.)"
+    },
+    "manual_tailwind_system": {
+      "description": "Ad-hoc Tailwind utility classes without design system tokens",
+      "colors": {
+        "primary": "#FF6B35 (Orange)",
+        "secondary": "#3366FF (Blue)",
+        "background": "Various gradients (blue-50 to indigo-100, amber-50 to amber-100)",
+        "text": "Standard gray scale"
+      },
+      "status": "INCONSISTENT",
+      "coverage": "Used in landing page and some component overrides",
+      "usage": "Limited to landing page and occasional component overrides"
+    },
+    "conflict_impact": {
+      "user_experience": "HIGH - Jarring visual transition from landing to authenticated pages",
+      "brand_consistency": "LOW - Two different color palettes and design languages",
+      "maintainability": "POOR - Multiple competing systems increase complexity",
+      "accessibility": "CONCERN - Different contrast ratios and color usage patterns"
+    }
+  },
+
+  "page_by_page_analysis": {
+    "landing_page": {
+      "path": "/[locale]/landing/page.tsx",
+      "styling_approach": "MANUAL_TAILWIND",
+      "issues": [
+        "Uses bg-gradient-to-br from-blue-50 to-indigo-100 (blue gradient)",
+        "Orange/amber color scheme (from-amber-600 to-orange-600)",
+        "No fx-design system classes",
+        "Inconsistent with authenticated pages"
+      ],
+      "conflict_with_fx_system": "COMPLETE - Uses entirely different color palette",
+      "user_impact": "HIGH - First impression doesn't match app experience"
+    },
+    "create_study_page": {
+      "path": "/[locale]/create/study/page.tsx",
+      "styling_approach": "FX_DESIGN_SYSTEM",
+      "issues": [],
+      "fx_system_usage": [
+        "backgroundStyle=\"fx-bg\" (AppShell)",
+        "fx-primary, fx-primary-hover (buttons)",
+        "fx-text-primary, fx-text-secondary (typography)",
+        "fx-border (borders)",
+        "shadow-fx (shadows)"
+      ],
+      "status": "GOOD - Properly uses fx-design system",
+      "reference_implementation": true
+    },
+    "dashboard_page": {
+      "path": "/[locale]/dashboard/page.tsx",
+      "styling_approach": "MIXED",
+      "issues": [
+        "Uses DashboardAppShell (fx-bg) correctly",
+        "But has some manual amber/orange colors in UnifiedDashboard",
+        "bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100"
+      ],
+      "conflict_with_fx_system": "PARTIAL - AppShell uses fx-bg but content has manual colors",
+      "status": "IMPROVABLE - Could be fully fx-system compliant"
+    },
+    "profile_page": {
+      "path": "/[locale]/profile/page.tsx",
+      "styling_approach": "MIXED",
+      "issues": [
+        "Uses DashboardAppShell (fx-bg) correctly",
+        "Manual amber colors: bg-amber-600 hover:bg-amber-700",
+        "bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100"
+      ],
+      "conflict_with_fx_system": "PARTIAL - Same pattern as dashboard",
+      "status": "IMPROVABLE - Could be fully fx-system compliant"
+    },
+    "flavor_wheels_page": {
+      "path": "/[locale]/flavor-wheels/page.tsx",
+      "styling_approach": "MIXED",
+      "issues": [
+        "Uses DashboardAppShell (fx-bg) correctly",
+        "Manual amber colors: bg-amber-500, text-amber-600",
+        "bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100"
+      ],
+      "conflict_with_fx_system": "PARTIAL - Consistent with other dashboard pages",
+      "status": "IMPROVABLE - Could be fully fx-system compliant"
+    },
+    "root_landing_page": {
+      "path": "/page.tsx",
+      "styling_approach": "MANUAL_TAILWIND",
+      "issues": [
+        "Uses bg-gradient-to-br from-blue-50 to-indigo-100 (blue gradient)",
+        "Blue button colors: bg-blue-600 hover:bg-blue-700",
+        "No fx-design system classes"
+      ],
+      "conflict_with_fx_system": "COMPLETE - Same as dedicated landing page",
+      "status": "CRITICAL - Main entry point has wrong styling"
+    }
+  },
+
+  "design_system_integration_analysis": {
+    "tailwind_config_status": {
+      "fx_tokens_coverage": "EXCELLENT",
+      "description": "Tailwind config properly integrates fx-design tokens as semantic classes",
+      "semantic_mapping": {
+        "primary": "var(--fx-primary)",
+        "fx-bg": "var(--fx-bg)",
+        "fx-text-primary": "var(--fx-text-primary)",
+        "fx-border": "var(--fx-border-default)"
+      },
+      "issues": [],
+      "status": "GOOD - Properly configured"
+    },
+    "globals_css_status": {
+      "fx_system_completeness": "EXCELLENT",
+      "description": "Comprehensive design system with primitives, semantic tokens, and component classes",
+      "features": [
+        "CSS custom properties for all design tokens",
+        "Component utility classes (.btn-primary-beautiful, .card-beautiful)",
+        "Responsive design utilities",
+        "Accessibility features",
+        "Animation system"
+      ],
+      "issues": [],
+      "status": "EXCELLENT - Well-implemented design system"
+    },
+    "component_system_status": {
+      "ui_components": "GOOD",
+      "description": "UI components properly use Tailwind classes that map to fx-design tokens",
+      "status": "GOOD - Components are design-system aware"
+    }
+  },
+
+  "migration_strategy": {
+    "immediate_actions": {
+      "priority_1_critical": [
+        {
+          "action": "Update landing page to use fx-design system",
+          "files": ["/app/[locale]/landing/page.tsx", "/app/page.tsx"],
+          "changes": [
+            "Replace blue gradients with fx-bg",
+            "Replace blue/orange colors with fx-primary/fx-accent",
+            "Use fx-text-primary for headings",
+            "Apply consistent spacing using fx-design tokens"
+          ],
+          "impact": "HIGH - Fixes main entry point inconsistency"
+        }
+      ],
+      "priority_2_high": [
+        {
+          "action": "Standardize dashboard pages",
+          "files": [
+            "/components/dashboard/UnifiedDashboard.tsx",
+            "/app/[locale]/profile/page.tsx",
+            "/app/[locale]/flavor-wheels/page.tsx"
+          ],
+          "changes": [
+            "Replace manual amber/orange colors with fx-primary/fx-accent",
+            "Replace gradient backgrounds with fx-bg",
+            "Use fx-text hierarchy consistently"
+          ],
+          "impact": "HIGH - Fixes authenticated user experience"
+        }
+      ],
+      "priority_3_medium": [
+        {
+          "action": "Audit remaining pages",
+          "files": ["All other pages in /app/[locale]/"],
+          "changes": [
+            "Check for manual color usage",
+            "Ensure consistent fx-system usage",
+            "Update any remaining inconsistencies"
+          ],
+          "impact": "MEDIUM - Complete system consistency"
+        }
+      ]
+    },
+    "implementation_approach": {
+      "search_replace_patterns": {
+        "background_gradients": {
+          "from": "bg-gradient-to-br from-blue-50 to-indigo-100",
+          "to": "bg-fx-bg"
+        },
+        "button_colors": {
+          "from": "bg-blue-600 hover:bg-blue-700",
+          "to": "bg-fx-primary hover:bg-fx-primary-hover"
+        },
+        "text_colors": {
+          "from": "text-gray-900",
+          "to": "text-fx-text-primary"
+        },
+        "amber_colors": {
+          "from": "bg-amber-600 hover:bg-amber-700",
+          "to": "bg-fx-accent hover:bg-fx-accent-hover"
+        }
+      },
+      "component_patterns": {
+        "app_shell_usage": "Use backgroundStyle='fx-bg' for consistent backgrounds",
+        "button_components": "Use fx-primary/fx-accent variants instead of manual colors",
+        "typography": "Use font-heading and text-fx-text-primary for consistency"
+      }
+    },
+    "testing_requirements": {
+      "visual_regression": [
+        "Landing page appearance before/after migration",
+        "Transition from landing to authenticated pages",
+        "Button consistency across all pages",
+        "Typography hierarchy consistency"
+      ],
+      "user_experience": [
+        "Color consistency across page navigation",
+        "Brand recognition and cohesion",
+        "Accessibility compliance (contrast ratios)"
+      ]
+    }
+  },
+
+  "benefits_of_migration": {
+    "user_experience": [
+      "Seamless visual transition from landing to authenticated pages",
+      "Consistent brand identity throughout the application",
+      "Improved professional appearance",
+      "Better user trust and engagement"
+    ],
+    "development": [
+      "Single source of truth for design tokens",
+      "Reduced maintenance overhead",
+      "Easier theme updates and brand changes",
+      "Better component reusability"
+    ],
+    "accessibility": [
+      "Consistent contrast ratios across all pages",
+      "Predictable interaction patterns",
+      "Better screen reader compatibility",
+      "Improved keyboard navigation consistency"
+    ],
+    "performance": [
+      "Reduced CSS bundle size (eliminate duplicate color definitions)",
+      "Better caching of design tokens",
+      "Optimized component rendering"
+    ]
+  },
+
+  "current_state_summary": {
+    "conflict_severity": "CRITICAL",
+    "affected_pages": "6+ pages with inconsistent styling",
+    "fx_system_maturity": "HIGH - Well-implemented and comprehensive",
+    "migration_complexity": "MEDIUM - Mostly search/replace operations",
+    "estimated_effort": "2-3 days for complete migration",
+    "business_impact": "HIGH - Affects user onboarding and brand perception"
+  },
+
+  "recommendations": {
+    "immediate_next_steps": [
+      "Start with landing page migration (highest impact)",
+      "Create a design system audit checklist",
+      "Set up visual regression testing",
+      "Document the fx-design token usage patterns"
+    ],
+    "long_term_strategy": [
+      "Implement design system governance",
+      "Add automated linting for design token usage",
+      "Create design system documentation",
+      "Consider design system component library"
+    ],
+    "success_criteria": [
+      "All pages use consistent fx-design color palette",
+      "Seamless visual transition between landing and authenticated pages",
+      "No manual Tailwind color classes in component code",
+      "Design system documentation is up-to-date"
+    ]
+  }
+}

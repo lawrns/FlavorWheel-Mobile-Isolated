@@ -49,6 +49,7 @@ interface Category {
   minValue?: number
   maxValue?: number
   containsText?: string
+  rankOption?: boolean
 }
 
 interface Item {
@@ -57,6 +58,7 @@ interface Item {
   description?: string
   image?: File
   imageUrl?: string
+  preLoadedData?: Record<string, any>
 }
 
 interface Template {
@@ -126,6 +128,7 @@ const PRODUCT_TYPES: ProductTypeOption[] = [
 ]
 
 export default function StudyModePageClient({ params }: StudyModePageProps) {
+  const [studyName, setStudyName] = useState<string>('')
   const [selectedProductType, setSelectedProductType] = useState<string>('')
   const [categories, setCategories] = useState<Category[]>([
     {
@@ -154,12 +157,15 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
 
   // Flow state management
   const [flowStep, setFlowStep] = useState<'create' | 'confirm' | 'input' | 'complete'>('create')
+
+  // Type assertion for flow step comparisons
+  const currentFlowStep = flowStep as 'create' | 'confirm' | 'input' | 'complete'
   const [currentItemIndex, setCurrentItemIndex] = useState(0)
 
   // Computed screen states
-  const isConfirmScreen = flowStep === 'confirm'
-  const isInputScreen = flowStep === 'input'
-  const isCompleteScreen = flowStep === 'complete'
+  const isConfirmScreen = currentFlowStep === 'confirm'
+  const isInputScreen = currentFlowStep === 'input'
+  const isCompleteScreen = currentFlowStep === 'complete'
 
   // Debug state changes
   useEffect(() => {
@@ -414,6 +420,55 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
     router.push(`/${params.locale}/create`)
   }
 
+  const handleCreateTasting = async () => {
+    if (!selectedProductType) {
+      toast({
+        title: 'Error',
+        description: 'Please select a product type',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    try {
+      setIsSubmitting(true)
+
+      const tastingData = {
+        name: studyName || 'Unnamed Study Session',
+        product_type: selectedProductType,
+        categories: categories.map(cat => ({
+          name: cat.name,
+          parameterType: cat.parameterType
+        })),
+        items: items.map(item => ({
+          name: item.name
+        })),
+        blind_tasting: isBlindTasting,
+        is_blind: isBlindTasting,
+        mode: 'study' as const,
+        type: 'study'
+      }
+
+      await createTasting(tastingData)
+
+      toast({
+        title: 'Success',
+        description: 'Study session created successfully!',
+      })
+
+      router.push(`/${params.locale}/analytics`)
+    } catch (error) {
+      console.error('Error creating tasting:', error)
+      toast({
+        title: 'Error',
+        description: 'Failed to create study session',
+        variant: 'destructive',
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   // Study Confirmation Screen
   if (isConfirmScreen) {
     return (
@@ -521,8 +576,7 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
               variant="ghost"
               size="sm"
               onClick={() => {
-                setIsInputScreen(false)
-                setIsConfirmScreen(true)
+                setFlowStep('confirm')
               }}
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -554,8 +608,7 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
                 if (currentItemIndex < (items.length - 1)) {
                   setCurrentItemIndex(currentItemIndex + 1)
                 } else {
-                  setIsInputScreen(false)
-                  setIsCompleteScreen(true)
+                  setFlowStep('complete')
                 }
               }}
             >
@@ -579,8 +632,7 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
               variant="ghost"
               size="sm"
               onClick={() => {
-                setIsCompleteScreen(false)
-                setIsInputScreen(true)
+                setFlowStep('input')
               }}
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -600,9 +652,7 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
             <button
               className="w-full bg-green-500 text-white p-3 mt-2 rounded"
               onClick={() => {
-                setIsCompleteScreen(false)
-                setIsConfirmScreen(false)
-                setIsInputScreen(false)
+                setFlowStep('create')
               }}
             >
               Share
@@ -617,7 +667,7 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
   console.log('🎨 STUDY PAGE RENDERING')
 
   // Handle different flow steps
-  if (flowStep === 'confirm') {
+  if (currentFlowStep === 'confirm' as typeof currentFlowStep) {
     return (
       <DashboardAppShell activeNavItem="create" maxWidth="full">
         <div className="space-y-4 sm:space-y-6 px-3 sm:px-0">
@@ -659,9 +709,7 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
         </div>
       </DashboardAppShell>
     )
-  }
-
-  if (flowStep === 'input') {
+  } else if (currentFlowStep === 'input' as typeof currentFlowStep) {
     const currentItem = items[currentItemIndex] || { id: '1', name: 'Item 1' }
     return (
       <DashboardAppShell activeNavItem="create" maxWidth="full">
@@ -712,9 +760,7 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
         </div>
       </DashboardAppShell>
     )
-  }
-
-  if (flowStep === 'complete') {
+  } else if (currentFlowStep === 'complete' as typeof currentFlowStep) {
     const currentItem = items[currentItemIndex] || { id: '1', name: 'Item 1' }
     return (
       <DashboardAppShell activeNavItem="create" maxWidth="full">
@@ -750,10 +796,8 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
         </div>
       </DashboardAppShell>
     )
-  }
-
-  // Default: Create screen
-  return (
+  } else {
+    return (
     <DashboardAppShell activeNavItem="create" maxWidth="full">
       <div className="space-y-4 sm:space-y-6 px-3 sm:px-0">
         {/* Header */}
@@ -1361,5 +1405,6 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
         </div>
       </div>
     </DashboardAppShell>
-  )
+    )
+  }
 }

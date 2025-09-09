@@ -5,22 +5,22 @@ test.describe('Flavatix Site Functionality', () => {
     // Navigate to the main landing page
     await page.goto('/en/landing')
 
-    // Wait for the main content to load
-    await page.waitForSelector('#main-content', { timeout: 10000 })
+    // Wait for the FLAVATIX heading to load (landing page specific)
+    await page.waitForSelector('header h1', { timeout: 10000 })
 
     // Wait for the app to be ready (check for the app-ready indicator)
     await page.waitForSelector('[data-testid="app-ready"]', { timeout: 15000 })
   })
 
   test('should load the landing page successfully', async ({ page }) => {
-    // Check that the main heading is visible
-    await expect(page.locator('#main-heading')).toBeVisible()
+    // Check that the FLAVATIX header is visible
+    await expect(page.locator('header h1')).toBeVisible()
 
     // Check that the heading contains "FLAVATIX"
-    await expect(page.locator('#main-heading')).toContainText('FLAVATIX')
+    await expect(page.locator('header h1')).toContainText('FLAVATIX')
 
-    // Check that the main content area is present
-    await expect(page.locator('#main-content')).toBeVisible()
+    // Check that the landing page main content area is present
+    await expect(page.locator('main.relative.z-10')).toBeVisible()
 
     // Verify page title
     await expect(page).toHaveTitle('Flavatix - Discover the Art of Spirits Tasting')

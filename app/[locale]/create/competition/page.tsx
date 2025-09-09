@@ -15,5 +15,5 @@ interface PageProps {
 
 export default async function CreateCompetitionPage({ params }: PageProps) {
   const resolvedParams = await params
-  return <CompetitionModePageClient params={resolvedParams} />
+  return <CompetitionModePageClient />
 }
