@@ -2,108 +2,350 @@
 
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
+import { ProgressiveDisclosure, ProgressiveForm, ContextualHelp } from '@/components/ui/progressive-disclosure'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Calendar, Users, Settings, Zap, Star } from 'lucide-react'
 
 export default function CreatePage() {
   const params = useParams()
   const locale = (params?.locale as string) || 'en'
 
+  const handleQuickStart = () => {
+    // Navigate to quick tasting
+    window.location.href = `/${locale}/quick-tasting`
+  }
+
+  const handleAdvancedSetup = () => {
+    // Navigate to advanced creation flow
+    window.location.href = `/${locale}/create/advanced`
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-100">
-      <div className="container mx-auto px-6 py-12">
+    <div className="min-h-screen bg-gradient-to-br from-fx-bg to-fx-bg-subtle">
+      <div className="container mx-auto px-6 py-12 max-w-6xl">
         {/* Header */}
         <div className="text-center mb-12">
-          <Link href={`/${locale}/landing`} className="inline-block mb-6 text-blue-600 hover:text-blue-800">
-            ← Back to Landing
+          <Link
+            href={`/${locale}/landing`}
+            className="inline-flex items-center gap-2 text-fx-text-secondary hover:text-fx-text-primary mb-6 transition-colors"
+          >
+            ← Back to Home
           </Link>
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+          <h1 className="text-4xl md:text-5xl font-bold text-fx-text-primary mb-6 font-heading">
             Create Your Tasting Experience
           </h1>
-          <p className="text-xl text-gray-700 max-w-3xl mx-auto">
-            Choose your tasting mode and start discovering new flavors with AI-powered insights
+          <p className="text-xl text-fx-text-secondary max-w-3xl mx-auto">
+            Choose how you'd like to explore flavors. Start simple or dive deep with our AI-powered tools.
           </p>
         </div>
 
-        {/* Tasting Options */}
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {/* Study Mode */}
-          <div className="bg-white rounded-2xl p-8 shadow-xl border border-gray-200 hover:shadow-2xl transition-all duration-300 hover:scale-105">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center mb-6">
-              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-              </svg>
-            </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">Study Mode</h3>
-            <p className="text-gray-600 mb-6 leading-relaxed">
-              Learn and practice with guided tastings. Perfect for developing your palate and understanding flavor profiles.
-            </p>
-            <Link
-              href={`/${locale}/create/study`}
-              className="w-full inline-block text-center py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300"
-            >
-              Start Study Session
-            </Link>
-          </div>
+        {/* Quick Actions */}
+        <div className="grid md:grid-cols-2 gap-6 mb-12">
+          {/* Quick Start */}
+          <Card className="group cursor-pointer hover:shadow-xl transition-all duration-300 hover:scale-105 border-2 hover:border-fx-accent">
+            <CardHeader className="text-center pb-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-fx-accent to-fx-accent-hover rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                <Zap className="w-8 h-8 text-white" />
+              </div>
+              <CardTitle className="text-2xl font-bold text-fx-text-primary mb-2">
+                Quick Tasting
+              </CardTitle>
+              <p className="text-fx-text-secondary">
+                Get started in under 2 minutes with our streamlined tasting experience
+              </p>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center gap-2 text-sm text-fx-text-secondary">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  3 simple steps
+                </div>
+                <div className="flex items-center gap-2 text-sm text-fx-text-secondary">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  AI flavor suggestions
+                </div>
+                <div className="flex items-center gap-2 text-sm text-fx-text-secondary">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  Instant results
+                </div>
+              </div>
+              <Button
+                onClick={handleQuickStart}
+                className="w-full bg-fx-accent hover:bg-fx-accent-hover text-white font-semibold py-3"
+                size="lg"
+              >
+                Start Quick Tasting
+              </Button>
+            </CardContent>
+          </Card>
 
-          {/* Competition Mode */}
-          <div className="bg-white rounded-2xl p-8 shadow-xl border border-gray-200 hover:shadow-2xl transition-all duration-300 hover:scale-105">
-            <div className="w-16 h-16 bg-gradient-to-br from-red-600 to-red-700 rounded-2xl flex items-center justify-center mb-6">
-              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-              </svg>
-            </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">Competition Mode</h3>
-            <p className="text-gray-600 mb-6 leading-relaxed">
-              Challenge yourself and compete with other tasters. Test your skills in blind tastings and earn recognition.
-            </p>
-            <Link
-              href={`/${locale}/create/competition`}
-              className="w-full inline-block text-center py-3 bg-gradient-to-r from-red-600 to-red-700 text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300"
-            >
-              Start Competition
-            </Link>
-          </div>
-
-          {/* Quick Tasting */}
-          <div className="bg-white rounded-2xl p-8 shadow-xl border border-gray-200 hover:shadow-2xl transition-all duration-300 hover:scale-105">
-            <div className="w-16 h-16 bg-gradient-to-br from-green-600 to-green-700 rounded-2xl flex items-center justify-center mb-6">
-              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-            </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">Quick Tasting</h3>
-            <p className="text-gray-600 mb-6 leading-relaxed">
-              Fast and simple tasting notes. Perfect for on-the-go flavor discoveries and quick evaluations.
-            </p>
-            <Link
-              href={`/${locale}/quick-tasting`}
-              className="w-full inline-block text-center py-3 bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300"
-            >
-              Quick Tasting
-            </Link>
-            </div>
+          {/* Advanced Options */}
+          <Card className="group cursor-pointer hover:shadow-xl transition-all duration-300 hover:scale-105 border-2 hover:border-fx-secondary">
+            <CardHeader className="text-center pb-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-fx-secondary to-fx-secondary-hover rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                <Settings className="w-8 h-8 text-white" />
+              </div>
+              <CardTitle className="text-2xl font-bold text-fx-text-primary mb-2">
+                Advanced Options
+              </CardTitle>
+              <p className="text-fx-text-secondary">
+                Full control with professional tools and detailed customization
+              </p>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center gap-2 text-sm text-fx-text-secondary">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  Study mode for learning
+                </div>
+                <div className="flex items-center gap-2 text-sm text-fx-text-secondary">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  Competition challenges
+                </div>
+                <div className="flex items-center gap-2 text-sm text-fx-text-secondary">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  Custom templates
+                </div>
+              </div>
+              <Button
+                onClick={handleAdvancedSetup}
+                variant="outline"
+                className="w-full border-fx-secondary text-fx-secondary hover:bg-fx-secondary hover:text-white font-semibold py-3"
+                size="lg"
+              >
+                Explore Advanced Options
+              </Button>
+            </CardContent>
+          </Card>
         </div>
 
-        {/* Additional Info */}
-        <div className="text-center mt-16">
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-gray-200 max-w-4xl mx-auto">
-            <h4 className="text-2xl font-bold text-gray-900 mb-4">New to Tasting?</h4>
-            <p className="text-gray-700 mb-6">
-              Our AI-powered system will guide you through each step, helping you develop your palate and discover new flavor dimensions.
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link
-                href={`/${locale}/dashboard`}
-                className="px-6 py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-all duration-300"
-              >
-                View Dashboard
-              </Link>
-              <Link
-                href={`/${locale}/settings`}
-                className="px-6 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-all duration-300"
-              >
-                Settings
-              </Link>
+        {/* Progressive Disclosure Sections */}
+        <div className="space-y-6">
+          {/* Learning Resources */}
+          <ProgressiveDisclosure
+            title="New to Tasting? Start Here"
+            description="Learn the basics and get comfortable with flavor evaluation"
+            level="primary"
+            variant="accordion"
+            icon={<Star className="w-5 h-5 text-yellow-500" />}
+            badge="Beginner"
+          >
+            <div className="grid md:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Star className="w-5 h-5 text-yellow-500" />
+                    Flavor Basics
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-fx-text-secondary mb-4">
+                    Learn about the fundamental taste categories and how to identify them in beverages.
+                  </p>
+                  <Link href={`/${locale}/learn/basics`}>
+                    <Button variant="outline" className="w-full">
+                      Start Learning
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Users className="w-5 h-5 text-blue-500" />
+                    Guided Practice
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-fx-text-secondary mb-4">
+                    Follow step-by-step guidance through your first tasting experience.
+                  </p>
+                  <Link href={`/${locale}/create/study`}>
+                    <Button variant="outline" className="w-full">
+                      Begin Guided Session
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
             </div>
+          </ProgressiveDisclosure>
+
+          {/* Advanced Features */}
+          <ProgressiveDisclosure
+            title="Advanced Tasting Features"
+            description="Professional tools for experienced tasters and competitions"
+            level="secondary"
+            variant="accordion"
+            icon={<Settings className="w-5 h-5 text-purple-500" />}
+            badge="Pro"
+          >
+            <div className="space-y-4">
+              <div className="grid md:grid-cols-3 gap-4">
+                <Card className="text-center">
+                  <CardHeader>
+                    <CardTitle className="text-lg">Study Mode</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-fx-text-secondary mb-4">
+                      Systematic learning with detailed analysis
+                    </p>
+                    <Link href={`/${locale}/create/study`}>
+                      <Button size="sm" className="w-full">
+                        Start Study
+                      </Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+
+                <Card className="text-center">
+                  <CardHeader>
+                    <CardTitle className="text-lg">Competition</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-fx-text-secondary mb-4">
+                      Challenge yourself in blind tastings
+                    </p>
+                    <Link href={`/${locale}/create/competition`}>
+                      <Button size="sm" className="w-full">
+                        Join Competition
+                      </Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+
+                <Card className="text-center">
+                  <CardHeader>
+                    <CardTitle className="text-lg">Custom Templates</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-fx-text-secondary mb-4">
+                      Create personalized tasting workflows
+                    </p>
+                    <Link href={`/${locale}/create/templates`}>
+                      <Button size="sm" variant="outline" className="w-full">
+                        Browse Templates
+                      </Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </ProgressiveDisclosure>
+
+          {/* Community & Social */}
+          <ProgressiveDisclosure
+            title="Connect with the Community"
+            description="Share experiences and learn from fellow tasters"
+            level="secondary"
+            variant="accordion"
+            icon={<Users className="w-5 h-5 text-green-500" />}
+          >
+            <div className="grid md:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Recent Community Activity</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                        MS
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium">Maria shared a tasting of Premium Mezcal</p>
+                        <p className="text-xs text-fx-text-secondary">2 hours ago</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                        JD
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium">John completed his first blind tasting</p>
+                        <p className="text-xs text-fx-text-secondary">4 hours ago</p>
+                      </div>
+                    </div>
+                  </div>
+                  <Link href={`/${locale}/social`} className="mt-4 inline-block">
+                    <Button variant="outline" size="sm">
+                      View Community
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Upcoming Events</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <Calendar className="w-5 h-5 text-fx-accent" />
+                      <div>
+                        <p className="text-sm font-medium">Mexican Spirits Masterclass</p>
+                        <p className="text-xs text-fx-text-secondary">Tomorrow at 7 PM</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Calendar className="w-5 h-5 text-fx-secondary" />
+                      <div>
+                        <p className="text-sm font-medium">Weekly Blind Tasting</p>
+                        <p className="text-xs text-fx-text-secondary">Friday at 8 PM</p>
+                      </div>
+                    </div>
+                  </div>
+                  <Link href={`/${locale}/events`} className="mt-4 inline-block">
+                    <Button variant="outline" size="sm">
+                      View All Events
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            </div>
+          </ProgressiveDisclosure>
+        </div>
+
+        {/* Help Section */}
+        <div className="text-center mt-12 p-6 bg-fx-bg-subtle rounded-2xl">
+          <h3 className="text-xl font-semibold text-fx-text-primary mb-4">
+            Need Help Getting Started?
+          </h3>
+          <p className="text-fx-text-secondary mb-6 max-w-2xl mx-auto">
+            Our AI assistant can guide you through your first tasting or answer any questions about flavor evaluation.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <ContextualHelp
+              title="Quick Start Guide"
+              content={
+                <div>
+                  <p className="mb-2">Getting started is easy:</p>
+                  <ol className="list-decimal list-inside space-y-1 text-sm">
+                    <li>Choose Quick Tasting for immediate results</li>
+                    <li>Select your beverage type</li>
+                    <li>Pick the flavors you detect</li>
+                    <li>Rate your overall impression</li>
+                  </ol>
+                </div>
+              }
+            >
+              <Button variant="outline">
+                💡 Quick Start Guide
+              </Button>
+            </ContextualHelp>
+
+            <Link href={`/${locale}/dashboard`}>
+              <Button variant="ghost">
+                View My Dashboard
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
