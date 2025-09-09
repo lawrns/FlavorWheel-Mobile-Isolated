@@ -26,13 +26,19 @@ const config: Config = {
     './hooks/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
-    container: {
-      center: true,
-      padding: '2rem',
-      screens: {
-        '2xl': '1400px',
+      container: {
+        center: true,
+        padding: {
+          DEFAULT: '1rem',
+          sm: '2rem',
+          lg: '4rem',
+          xl: '5rem',
+          '2xl': '6rem',
+        },
+        screens: {
+          '2xl': '1400px',
+        },
       },
-    },
     extend: {
       colors: {
         // ===== FLAVORWHEEL DESIGN SYSTEM =====
@@ -245,6 +251,13 @@ const config: Config = {
         '3xl': '4rem',
         'section-y': '6rem',
         'container-max': '1200px',
+
+        // ===== STANDARDIZED CONTAINER CLASSES =====
+        // Unified container pattern for consistent layouts
+        'container-mobile': 'calc(100vw - 2rem)',
+        'container-tablet': 'calc(100vw - 4rem)',
+        'container-desktop': 'min(1200px, calc(100vw - 8rem))',
+        'container-wide': 'min(1400px, calc(100vw - 10rem))',
 
         // fx Design Token Spacing (legacy support)
         'fx-0': 'var(--fx-spacing-0)',

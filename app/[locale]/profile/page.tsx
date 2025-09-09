@@ -17,7 +17,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Progress } from '@/components/ui/progress'
 import { useSupabase } from '@/components/providers/supabase-provider'
 import { useToast } from '@/hooks/use-toast'
-import { DashboardAppShell } from '@/components/app-shell'
+import { UnifiedAppShell } from '@/components/app-shell'
 
 interface UserProfile {
   id: string
@@ -373,11 +373,11 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <DashboardAppShell activeNavItem="profile">
+      <UnifiedAppShell variant="dashboard" activeNavItemOverride="profile">
         <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 flex items-center justify-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-600"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-fx-primary"></div>
         </div>
-      </DashboardAppShell>
+      </UnifiedAppShell>
     )
   }
 
@@ -385,7 +385,7 @@ export default function ProfilePage() {
   const currentUser = user || (isTestMode ? mockUser : null)
 
   return (
-    <DashboardAppShell activeNavItem="profile">
+    <UnifiedAppShell variant="dashboard" activeNavItemOverride="profile">
       <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100">
         {/* Header */}
         <div className="bg-white/80 backdrop-blur-sm border-b">
@@ -398,7 +398,7 @@ export default function ProfilePage() {
                 </p>
               </div>
               {!editing && (
-                <Button onClick={() => setEditing(true)} className="bg-amber-600 hover:bg-amber-700">
+                <Button onClick={() => setEditing(true)} variant="primary">
                   <Edit className="h-4 w-4 mr-2" />
                   Edit Profile
                 </Button>
@@ -423,7 +423,7 @@ export default function ProfilePage() {
                         </AvatarFallback>
                       </Avatar>
                       {editing && (
-                        <label className="absolute bottom-0 right-0 bg-amber-600 text-white p-2 rounded-full cursor-pointer hover:bg-amber-700">
+                        <label className="absolute bottom-0 right-0 bg-fx-primary text-fx-text-inverse p-2 rounded-full cursor-pointer hover:bg-fx-primary-hover">
                           <Camera className="h-4 w-4" />
                           <input
                             type="file"
@@ -446,11 +446,11 @@ export default function ProfilePage() {
                     {stats && (
                       <div className="grid grid-cols-2 gap-4 pt-4 border-t">
                         <div className="text-center">
-                          <div className="text-2xl font-bold text-amber-600">{stats.totalTastings}</div>
+                          <div className="text-2xl font-bold text-fx-primary">{stats.totalTastings}</div>
                           <div className="text-xs text-muted-foreground">Tastings</div>
                         </div>
                         <div className="text-center">
-                          <div className="text-2xl font-bold text-amber-600">{stats.averageRating.toFixed(1)}</div>
+                          <div className="text-2xl font-bold text-fx-primary">{stats.averageRating.toFixed(1)}</div>
                           <div className="text-xs text-muted-foreground">Avg Rating</div>
                         </div>
                       </div>
@@ -498,9 +498,9 @@ export default function ProfilePage() {
                             </Button>
                             <Button
                               size="sm"
+                              variant="primary"
                               onClick={handleSaveProfile}
                               disabled={saving}
-                              className="bg-amber-600 hover:bg-amber-700"
                             >
                               {saving ? (
                                 <>

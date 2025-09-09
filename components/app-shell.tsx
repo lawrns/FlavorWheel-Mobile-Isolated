@@ -78,19 +78,19 @@ export function AppShell({
       case 'create':
         return 'max-w-[768px] mx-auto'
       case 'sm':
-        return 'mobile-container'
+        return 'container-mobile'
       case 'md':
-        return 'max-w-2xl mx-auto'
+        return 'container-tablet'
       case 'lg':
-        return 'max-w-4xl mx-auto'
+        return 'container-desktop'
       case 'xl':
-        return 'max-w-6xl mx-auto'
+        return 'container-wide'
       case '2xl':
         return 'max-w-7xl mx-auto'
       case 'full':
         return 'w-full'
       default:
-        return 'mobile-container'
+        return 'container-mobile'
     }
   }
 
@@ -209,7 +209,136 @@ export function AppShell({
   )
 }
 
-// MinimalAppShell is now deprecated - use AppShell with appropriate props
+// ===== UNIFIED APPSHELL VARIANTS =====
+// These provide convenient presets while maintaining flexibility
+
+export interface UnifiedAppShellProps extends Omit<AppShellProps, 'showNavigation' | 'showMobileNav' | 'applyGradient' | 'maxWidth' | 'padding' | 'contentContainer'> {
+  variant?: 'dashboard' | 'minimal' | 'landing' | 'auth' | 'fullscreen'
+}
+
+/**
+ * Unified AppShell with preset configurations for common use cases
+ * This replaces the deprecated MinimalAppShell and DashboardAppShell
+ */
+export function UnifiedAppShell({
+  variant = 'dashboard',
+  children,
+  className,
+  header,
+  footer,
+  sidebar,
+  activeNavItemOverride,
+  backgroundStyle = 'default',
+  enableTestMode = false,
+  ...props
+}: UnifiedAppShellProps) {
+
+  // Preset configurations for different variants
+  const getVariantConfig = () => {
+    switch (variant) {
+      case 'dashboard':
+        return {
+          showNavigation: true,
+          showMobileNav: true,
+          navigationVariant: 'unified' as const,
+          applyGradient: true,
+          maxWidth: 'sm' as const,
+          padding: 'px-6 pb-24',
+          contentContainer: false,
+          backgroundStyle: backgroundStyle as any,
+        }
+
+      case 'minimal':
+        return {
+          showNavigation: false,
+          showMobileNav: false,
+          navigationVariant: 'unified' as const,
+          applyGradient: true,
+          maxWidth: 'full' as const,
+          padding: 'p-0',
+          contentContainer: true,
+          backgroundStyle: 'fx-bg' as const,
+        }
+
+      case 'landing':
+        return {
+          showNavigation: true,
+          showMobileNav: true,
+          navigationVariant: 'unified' as const,
+          applyGradient: true,
+          maxWidth: 'full' as const,
+          padding: 'p-0',
+          contentContainer: false,
+          backgroundStyle: 'fx-bg' as const,
+        }
+
+      case 'auth':
+        return {
+          showNavigation: false,
+          showMobileNav: false,
+          navigationVariant: 'unified' as const,
+          applyGradient: true,
+          maxWidth: 'md' as const,
+          padding: 'p-4',
+          contentContainer: true,
+          backgroundStyle: 'fx-bg' as const,
+        }
+
+      case 'fullscreen':
+        return {
+          showNavigation: false,
+          showMobileNav: false,
+          navigationVariant: 'unified' as const,
+          applyGradient: false,
+          maxWidth: 'full' as const,
+          padding: 'p-0',
+          contentContainer: false,
+          backgroundStyle: 'none' as const,
+        }
+
+      default:
+        return {
+          showNavigation: true,
+          showMobileNav: true,
+          navigationVariant: 'unified' as const,
+          applyGradient: true,
+          maxWidth: 'sm' as const,
+          padding: 'px-6 pb-24',
+          contentContainer: false,
+          backgroundStyle: backgroundStyle as any,
+        }
+    }
+  }
+
+  const config = getVariantConfig()
+
+  // Handle special content wrapping for minimal variant
+  const wrappedChildren = variant === 'minimal' ? (
+    <div className="min-h-screen flex items-center justify-center p-4">
+      {children}
+    </div>
+  ) : children
+
+  return (
+    <AppShell
+      {...config}
+      {...props}
+      header={header}
+      footer={footer}
+      sidebar={sidebar}
+      activeNavItemOverride={activeNavItemOverride}
+      className={className}
+      enableTestMode={enableTestMode}
+    >
+      {wrappedChildren}
+    </AppShell>
+  )
+}
+
+// ===== BACKWARD COMPATIBILITY =====
+// These will be removed in a future version - use UnifiedAppShell instead
+
+/** @deprecated Use UnifiedAppShell with variant="minimal" instead */
 export const MinimalAppShell = ({
   children,
   className,
@@ -221,6 +350,8 @@ export const MinimalAppShell = ({
   showBranding?: boolean
   centerContent?: boolean
 }) => {
+  console.warn('MinimalAppShell is deprecated. Use UnifiedAppShell with variant="minimal" instead.')
+
   const brandingHeader = showBranding ? (
     <div className="mb-8 text-center">
       <h1 className="mb-2 text-3xl font-bold text-white">FlavorWheel México</h1>
@@ -229,26 +360,18 @@ export const MinimalAppShell = ({
   ) : null
 
   return (
-    <AppShell
-      showNavigation={false}
-      showMobileNav={false}
-      applyGradient
-      maxWidth="full"
-      padding="p-0"
-      className={className}
-      contentContainer
-    >
-      <div
-        className={cn('min-h-screen', centerContent && 'flex items-center justify-center', 'p-4')}
-      >
-        {brandingHeader}
-        {children}
-      </div>
-    </AppShell>
+    <UnifiedAppShell variant="minimal" className={className}>
+      {brandingHeader}
+      {centerContent ? (
+        <div className="flex items-center justify-center">
+          {children}
+        </div>
+      ) : children}
+    </UnifiedAppShell>
   )
 }
 
-// DashboardAppShell is now deprecated - use AppShell with appropriate props
+/** @deprecated Use UnifiedAppShell with variant="dashboard" instead */
 export const DashboardAppShell = ({
   children,
   activeNavItem,
@@ -259,17 +382,17 @@ export const DashboardAppShell = ({
   activeNavItem?: string
   maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full'
   className?: string
-}) => (
-  <AppShell
-    showNavigation
-    showMobileNav
-    navigationVariant="unified"
-    applyGradient
-    maxWidth={maxWidth}
-    className={className}
-    activeNavItemOverride={activeNavItem}
-    enableTestMode
-  >
-    {children}
-  </AppShell>
-)
+}) => {
+  console.warn('DashboardAppShell is deprecated. Use UnifiedAppShell with variant="dashboard" instead.')
+
+  return (
+    <UnifiedAppShell
+      variant="dashboard"
+      className={className}
+      activeNavItemOverride={activeNavItem}
+      maxWidth={maxWidth}
+    >
+      {children}
+    </UnifiedAppShell>
+  )
+}

@@ -12,6 +12,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Separator } from '@/components/ui/separator'
 import { useSupabase } from '@/components/providers/supabase-provider'
 import { useToast } from '@/hooks/use-toast'
+import { UnifiedAppShell } from '@/components/app-shell'
 import Link from 'next/link'
 
 export default function LoginPage() {
@@ -124,7 +125,8 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 flex items-center justify-center p-4">
+    <UnifiedAppShell variant="auth">
+      <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -211,7 +213,9 @@ export default function LoginPage() {
               {/* Submit Button */}
               <Button
                 type="submit"
-                className="w-full h-12 bg-amber-600 hover:bg-amber-700 text-white font-semibold"
+                variant="primary"
+                size="lg"
+                className="w-full"
                 disabled={isLoading}
               >
                 {isLoading ? (
@@ -269,7 +273,7 @@ export default function LoginPage() {
                 Don&apos;t have an account?{' '}
                 <Link
                   href={`/${locale}/register`}
-                  className="font-medium text-amber-600 hover:text-amber-700 underline"
+                  className="font-medium text-fx-primary hover:text-fx-primary-hover underline"
                 >
                   Sign up
                 </Link>
@@ -289,6 +293,7 @@ export default function LoginPage() {
         </Card>
       </motion.div>
     </div>
+    </UnifiedAppShell>
   )
 }
 

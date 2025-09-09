@@ -59,8 +59,8 @@ const QUICK_ACTIONS: QuickAction[] = [
     description: 'Set up a structured tasting event',
     icon: <Target className="h-6 w-6" />,
     action: '/create',
-    color: 'text-amber-600',
-    gradient: 'from-amber-500 to-amber-600'
+    color: 'text-fx-primary',
+    gradient: 'from-fx-primary to-fx-primary-hover'
   },
   {
     id: 'review',
