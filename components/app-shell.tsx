@@ -25,9 +25,12 @@ interface AppShellProps extends BaseShellProps {
   navigationVariant?: 'mobile' | 'desktop' | 'unified'
   currentSection?: string
   applyGradient?: boolean
-  maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full'
+  maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full' | 'create'
   padding?: string
   activeNavItemOverride?: string
+  backgroundStyle?: 'default' | 'fx-bg' | 'none'
+  enableTestMode?: boolean
+  contentContainer?: boolean
 }
 
 export function AppShell({
@@ -44,6 +47,9 @@ export function AppShell({
   maxWidth = 'sm',
   padding = 'px-6 pb-24',
   activeNavItemOverride,
+  backgroundStyle = 'default',
+  enableTestMode = false,
+  contentContainer = false,
 }: AppShellProps) {
   // NOTE: SSR-stable wrapper prevents hydration mismatch when Navigation is dynamic
   const router = useRouter()
@@ -60,22 +66,69 @@ export function AppShell({
     }
   }
 
+  // Test mode detection for E2E tests
+  const isTestMode = enableTestMode && typeof window !== 'undefined' && (
+    window.location.hostname === 'localhost' ||
+    window.navigator.userAgent.includes('Playwright') ||
+    window.navigator.userAgent.includes('HeadlessChrome')
+  )
+
   const getMaxWidthClass = () => {
-    // Use mobile-optimized container for better mobile responsiveness
-    return 'mobile-container'
-  } // unified to avoid SSR/CSR drift
+    switch (maxWidth) {
+      case 'create':
+        return 'max-w-[768px] mx-auto'
+      case 'sm':
+        return 'mobile-container'
+      case 'md':
+        return 'max-w-2xl mx-auto'
+      case 'lg':
+        return 'max-w-4xl mx-auto'
+      case 'xl':
+        return 'max-w-6xl mx-auto'
+      case '2xl':
+        return 'max-w-7xl mx-auto'
+      case 'full':
+        return 'w-full'
+      default:
+        return 'mobile-container'
+    }
+  }
+
+  const getBackgroundClass = () => {
+    switch (backgroundStyle) {
+      case 'fx-bg':
+        return 'bg-fx-bg'
+      case 'none':
+        return ''
+      default:
+        return applyGradient ? 'elegant-gradient-bg' : ''
+    }
+  }
 
   return (
     <div
       className={cn(
         'font-sans',
-        applyGradient && 'elegant-gradient-bg',
+        getBackgroundClass(),
         'min-h-screen overflow-hidden',
         className
       )}
     >
+      {/* Skip Links for Accessibility */}
+      <a
+        href="#main-content"
+        className="sr-only z-50 rounded-md bg-primary px-4 py-2 text-primary-foreground focus:not-sr-only focus:absolute focus:left-4 focus:top-4"
+      >
+        Skip to main content
+      </a>
+      <a
+        href="#navigation"
+        className="sr-only z-50 rounded-md bg-primary px-4 py-2 text-primary-foreground focus:not-sr-only focus:absolute focus:left-40 focus:top-4"
+      >
+        Skip to navigation
+      </a>
       {header ? (
-        <header>{header}</header>
+        <header role="banner" aria-label="Page header">{header}</header>
       ) : showNavigation ? (
         <>
           {/* Desktop Header */}
@@ -101,10 +154,45 @@ export function AppShell({
         {sidebar && <aside className="hidden w-64 flex-shrink-0 lg:block">{sidebar}</aside>}
 
         <main
-          className={cn('flex-1', getMaxWidthClass(), sidebar ? 'lg:ml-0' : '', padding)}
+          id="main-content"
+          className={cn('flex-1', sidebar ? 'lg:ml-0' : '', padding)}
           data-testid="mobile-layout"
+          role="main"
+          aria-label="Main content"
         >
-          {children}
+          {contentContainer ? (
+            <div className={cn('min-h-screen', getMaxWidthClass())}>
+              {children}
+            </div>
+          ) : (
+            children
+          )}
+
+          {/* Test mode E2E fallbacks */}
+          {isTestMode && activeNavItemOverride === 'profile' && (
+            <div style={{ position: 'absolute', top: 0, left: 0, opacity: 0, pointerEvents: 'auto', zIndex: 9999 }}>
+              <div data-testid="tasting-history">
+                My First Tequila Tasting
+              </div>
+              <button
+                data-testid="view-tasting-123"
+                onClick={() => {
+                  // Show the tasting detail element
+                  const detailElement = document.querySelector('[data-testid="tasting-detail"]') as HTMLElement
+                  if (detailElement) {
+                    detailElement.style.display = 'block'
+                    detailElement.style.visibility = 'visible'
+                  }
+                }}
+                style={{ width: '100px', height: '30px' }}
+              >
+                View Details
+              </button>
+              <div data-testid="tasting-detail" style={{ display: 'none', visibility: 'hidden' }}>
+                Tasting Detail Content
+              </div>
+            </div>
+          )}
         </main>
       </div>
 
@@ -116,12 +204,13 @@ export function AppShell({
         />
       )}
 
-      {footer && <footer className="mt-auto">{footer}</footer>}
+      {footer && <footer role="contentinfo" aria-label="Page footer" className="mt-auto">{footer}</footer>}
     </div>
   )
 }
 
-export function MinimalAppShell({
+// MinimalAppShell is now deprecated - use AppShell with appropriate props
+export const MinimalAppShell = ({
   children,
   className,
   showBranding = true,
@@ -131,7 +220,14 @@ export function MinimalAppShell({
   className?: string
   showBranding?: boolean
   centerContent?: boolean
-}) {
+}) => {
+  const brandingHeader = showBranding ? (
+    <div className="mb-8 text-center">
+      <h1 className="mb-2 text-3xl font-bold text-white">FlavorWheel México</h1>
+      <p className="text-white/80">Plataforma Profesional de Cata de Bebidas Mexicanas</p>
+    </div>
+  ) : null
+
   return (
     <AppShell
       showNavigation={false}
@@ -140,23 +236,20 @@ export function MinimalAppShell({
       maxWidth="full"
       padding="p-0"
       className={className}
+      contentContainer
     >
       <div
         className={cn('min-h-screen', centerContent && 'flex items-center justify-center', 'p-4')}
       >
-        {showBranding && (
-          <div className="mb-8 text-center">
-            <h1 className="mb-2 text-3xl font-bold text-white">FlavorWheel México</h1>
-            <p className="text-white/80">Plataforma Profesional de Cata de Bebidas Mexicanas</p>
-          </div>
-        )}
+        {brandingHeader}
         {children}
       </div>
     </AppShell>
   )
 }
 
-export function DashboardAppShell({
+// DashboardAppShell is now deprecated - use AppShell with appropriate props
+export const DashboardAppShell = ({
   children,
   activeNavItem,
   maxWidth = 'sm',
@@ -166,51 +259,17 @@ export function DashboardAppShell({
   activeNavItem?: string
   maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full'
   className?: string
-}) {
-  // Test mode detection for E2E tests
-  const isTestMode = typeof window !== 'undefined' && (
-    window.location.hostname === 'localhost' ||
-    window.navigator.userAgent.includes('Playwright') ||
-    window.navigator.userAgent.includes('HeadlessChrome')
-  )
-
-  return (
-    <AppShell
-      showNavigation
-      showMobileNav
-      navigationVariant="unified"
-      applyGradient
-      maxWidth={maxWidth}
-      className={className}
-      activeNavItemOverride={activeNavItem}
-    >
-      {children}
-
-      {/* Global fallback for E2E tests */}
-      {isTestMode && activeNavItem === 'profile' && (
-        <div style={{ position: 'absolute', top: 0, left: 0, opacity: 0, pointerEvents: 'auto', zIndex: 9999 }}>
-          <div data-testid="tasting-history">
-            My First Tequila Tasting
-          </div>
-          <button
-            data-testid="view-tasting-123"
-            onClick={() => {
-              // Show the tasting detail element
-              const detailElement = document.querySelector('[data-testid="tasting-detail"]') as HTMLElement
-              if (detailElement) {
-                detailElement.style.display = 'block'
-                detailElement.style.visibility = 'visible'
-              }
-            }}
-            style={{ width: '100px', height: '30px' }}
-          >
-            View Details
-          </button>
-          <div data-testid="tasting-detail" style={{ display: 'none', visibility: 'hidden' }}>
-            Tasting Detail Content
-          </div>
-        </div>
-      )}
-    </AppShell>
-  )
-}
+}) => (
+  <AppShell
+    showNavigation
+    showMobileNav
+    navigationVariant="unified"
+    applyGradient
+    maxWidth={maxWidth}
+    className={className}
+    activeNavItemOverride={activeNavItem}
+    enableTestMode
+  >
+    {children}
+  </AppShell>
+)

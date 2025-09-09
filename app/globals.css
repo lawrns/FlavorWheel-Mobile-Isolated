@@ -133,6 +133,10 @@
   --fx-border-premium: 1px solid rgba(212, 175, 55, 0.3);
 
   /* Accessibility Helpers */
+  --fx-focus: oklch(0.72 0.18 210);
+  --fx-on-primary: oklch(0.98 0 0);
+  --fx-on-accent: oklch(0.98 0 0);
+  --fx-surface-hover: oklch(0.94 0.02 85);
   --fx-sr-only: {
     position: absolute;
     width: 1px;
@@ -734,7 +738,7 @@ select:focus-visible,
 }
 
 .form-input:focus {
-  @apply ring-2 ring-primary border-fx-primary;
+  @apply ring-2 ring-primary border-primary;
 }
 
 /* Subtle hover effects */

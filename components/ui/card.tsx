@@ -4,16 +4,16 @@ import { cn } from '@/lib/utils'
 import { cva, type VariantProps } from 'class-variance-authority'
 
 const cardStyles = cva(
-  'rounded-2xl border text-fx-text-primary transition-all duration-normal ease-standard',
+  'rounded-2xl border text-text-primary transition-all duration-normal ease-standard',
   {
     variants: {
       variant: {
-        solid: 'border-fx-border-default bg-fx-card shadow-fx-sm hover:-translate-y-0.5 hover:shadow-fx-md',
+        solid: 'border-border-default bg-surface shadow-sm hover:-translate-y-0.5 hover:shadow-md',
         translucent:
-          'border-fx-border-default bg-fx-card/90 backdrop-blur-sm shadow-fx-sm hover:-translate-y-0.5 hover:shadow-fx-md',
+          'border-border-default bg-surface/90 backdrop-blur-sm shadow-sm hover:-translate-y-0.5 hover:shadow-md',
         elevated:
-          'border-fx-border-default bg-fx-bg shadow-fx-md hover:-translate-y-0.5 hover:shadow-fx-lg',
-        subtle: 'border-fx-border-default bg-fx-bg-subtle',
+          'border-border-default bg-background shadow-md hover:-translate-y-0.5 hover:shadow-lg',
+        subtle: 'border-border-default bg-background-subtle',
       },
       padding: {
         none: 'p-0',
@@ -87,7 +87,7 @@ const CardTitle = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivE
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn('text-fx-h3 font-semibold leading-none tracking-tight', className)}
+      className={cn('text-h3 font-semibold leading-none tracking-tight', className)}
       {...props}
     />
   )
@@ -96,7 +96,7 @@ CardTitle.displayName = 'CardTitle'
 
 const CardDescription = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn('text-fx-body text-fx-text-secondary', className)} {...props} />
+    <div ref={ref} className={cn('text-body text-text-secondary', className)} {...props} />
   )
 )
 CardDescription.displayName = 'CardDescription'
