@@ -1,0 +1,400 @@
+{
+  "metadata": {
+    "title": "FlavorWheel Styling & Layout Systematization Context",
+    "version": "1.0.0",
+    "created": "2025-01-03",
+    "purpose": "Comprehensive context for resolving styling inconsistencies and layout issues across the entire FlavorWheel application",
+    "scope": "Complete audit and resolution of React errors, mobile navigation visibility, design system consistency, and layout standardization",
+    "severity": "HIGH - Multiple critical issues affecting user experience and functionality",
+    "analysis_framework": "Multi-layered approach covering technical fixes, design system alignment, and user experience optimization"
+  },
+
+  "critical_issues_identified": {
+    "react_import_errors": {
+      "description": "React not defined errors in multiple files",
+      "affected_files": [
+        "lib/smart-defaults.ts (FIXED - missing React import)",
+        "components/ui/simplified-tasting-flow.tsx (potential issues)",
+        "components/ui/mobile-flavor-selector.tsx (potential issues)"
+      ],
+      "impact": "Runtime errors preventing component functionality",
+      "priority": "CRITICAL"
+    },
+
+    "mobile_navigation_visibility": {
+      "description": "Mobile navigation not always visible on certain pages",
+      "root_cause": "Inconsistent application of navigation visibility rules",
+      "affected_pages": [
+        "Authentication pages (login/register)",
+        "Landing page variations",
+        "Onboarding flows"
+      ],
+      "current_logic": "Based on pathname pattern matching in navigation-visibility.ts",
+      "impact": "Poor mobile user experience and navigation confusion",
+      "priority": "HIGH"
+    },
+
+    "design_system_inconsistencies": {
+      "description": "Inconsistent styling patterns across pages and components",
+      "issues": [
+        "Mixed usage of fx- design tokens vs legacy classes",
+        "Inconsistent background gradients and color schemes",
+        "Different card styling approaches",
+        "Inconsistent spacing and typography scales",
+        "Mixed responsive breakpoint usage"
+      ],
+      "impact": "Visual inconsistency and poor brand coherence",
+      "priority": "HIGH"
+    },
+
+    "layout_standardization": {
+      "description": "Different layout patterns and container structures",
+      "issues": [
+        "Inconsistent use of AppShell vs direct layouts",
+        "Mixed container max-widths and padding approaches",
+        "Inconsistent header and footer implementations",
+        "Different responsive layout strategies"
+      ],
+      "impact": "Inconsistent user experience and maintenance overhead",
+      "priority": "MEDIUM"
+    },
+
+    "component_styling_conflicts": {
+      "description": "Conflicts between component-specific styles and global design system",
+      "issues": [
+        "Override of design system tokens by component styles",
+        "Inconsistent use of CSS custom properties",
+        "Mixed approach to responsive design",
+        "Conflicts between Tailwind and custom CSS"
+      ],
+      "impact": "Maintenance difficulties and styling unpredictability",
+      "priority": "MEDIUM"
+    }
+  },
+
+  "current_styling_analysis": {
+    "design_system_state": {
+      "fx_design_tokens": {
+        "status": "Well-implemented but inconsistently used",
+        "coverage": "80% of components use fx- tokens",
+        "issues": "Mixed with legacy Tailwind classes",
+        "recommendation": "Standardize on fx- tokens across all components"
+      },
+
+      "tailwind_integration": {
+        "status": "Good foundation with custom config",
+        "issues": "Inconsistent use of custom spacing and color tokens",
+        "recommendation": "Ensure all components use design system tokens"
+      },
+
+      "typography_system": {
+        "status": "Well-structured with fluid scales",
+        "issues": "Inconsistent font-family usage across components",
+        "recommendation": "Standardize on fx-font-* classes"
+      }
+    },
+
+    "page_layout_patterns": {
+      "root_layout": {
+        "structure": "html > body > Providers > main > page-content",
+        "issues": "Inconsistent main content wrapper usage",
+        "recommendation": "Standardize main content structure"
+      },
+
+      "locale_layout": {
+        "structure": "Simple wrapper div with locale-layout class",
+        "issues": "No real layout functionality, just a wrapper",
+        "recommendation": "Either enhance or remove this layout layer"
+      },
+
+      "page_specific_layouts": {
+        "authentication_pages": "Custom gradient backgrounds, centered cards",
+        "dashboard_pages": "AppShell with navigation and content areas",
+        "landing_pages": "Full-screen hero sections with custom layouts",
+        "form_pages": "Centered content with custom styling",
+        "inconsistency": "Different approaches to responsive design and spacing"
+      }
+    },
+
+    "component_styling_patterns": {
+      "card_components": {
+        "variations": [
+          "Standard Card with shadow",
+          "Card with custom background gradients",
+          "Card with fx- design tokens",
+          "Card with legacy Tailwind classes"
+        ],
+        "issues": "Inconsistent border radius, shadows, and background usage",
+        "recommendation": "Create standardized Card variants"
+      },
+
+      "button_components": {
+        "variations": [
+          "Primary buttons with gradients",
+          "Secondary buttons with borders",
+          "Ghost buttons for actions",
+          "Custom colored buttons"
+        ],
+        "issues": "Inconsistent hover states and sizing",
+        "recommendation": "Standardize button variants using design tokens"
+      },
+
+      "form_components": {
+        "variations": [
+          "Input with icons",
+          "Select with custom styling",
+          "Textarea with different heights",
+          "Checkbox and radio variations"
+        ],
+        "issues": "Inconsistent focus states and error handling",
+        "recommendation": "Create unified form component system"
+      }
+    }
+  },
+
+  "mobile_navigation_analysis": {
+    "visibility_logic": {
+      "current_implementation": {
+        "file": "lib/navigation-visibility.ts",
+        "logic": "Pattern-based pathname matching with show/hide rules",
+        "rules": [
+          {"pattern": "/landing", "show": true},
+          {"pattern": "/dashboard", "show": true},
+          {"pattern": "/create", "show": true},
+          {"pattern": "/login", "show": false},
+          {"pattern": "/register", "show": false}
+        ]
+      },
+
+      "issues_identified": [
+        "Inconsistent pathname cleaning for locale prefixes",
+        "Missing rules for new pages added recently",
+        "No fallback handling for edge cases",
+        "Hard-coded locale assumptions (/en/ prefix)"
+      ],
+
+      "recommended_fixes": [
+        "Improve pathname normalization logic",
+        "Add comprehensive rule coverage",
+        "Implement better error handling",
+        "Make locale handling more robust"
+      ]
+    },
+
+    "component_structure": {
+      "mobile_navigation_tsx": {
+        "issues": [
+          "Hard-coded /en/ prefixes in navigation paths",
+          "Inconsistent active state detection",
+          "Complex conditional rendering logic",
+          "Mixed responsive breakpoint usage"
+        ],
+
+        "recommended_improvements": [
+          "Use dynamic locale detection",
+          "Simplify active state logic",
+          "Clean up conditional rendering",
+          "Standardize responsive approach"
+        ]
+      }
+    }
+  },
+
+  "systematization_roadmap": {
+    "phase_1_immediate_fixes": {
+      "title": "Critical Error Resolution",
+      "duration": "1-2 hours",
+      "tasks": [
+        {
+          "task": "Fix React import errors",
+          "files": ["lib/smart-defaults.ts", "All component files using React hooks"],
+          "action": "Add missing React imports where needed",
+          "priority": "CRITICAL"
+        },
+
+        {
+          "task": "Fix mobile navigation visibility",
+          "files": ["lib/navigation-visibility.ts", "components/ui/mobile-navigation.tsx"],
+          "action": "Improve pathname handling and add missing rules",
+          "priority": "HIGH"
+        },
+
+        {
+          "task": "Standardize design token usage",
+          "files": ["All component files"],
+          "action": "Replace legacy classes with fx- design tokens",
+          "priority": "HIGH"
+        }
+      ]
+    },
+
+    "phase_2_layout_standardization": {
+      "title": "Layout and Component Consistency",
+      "duration": "4-6 hours",
+      "tasks": [
+        {
+          "task": "Create layout component hierarchy",
+          "action": "Define PageLayout, ContentLayout, FormLayout components",
+          "priority": "HIGH"
+        },
+
+        {
+          "task": "Standardize container and spacing",
+          "action": "Implement consistent max-widths and padding patterns",
+          "priority": "MEDIUM"
+        },
+
+        {
+          "task": "Unify card component variants",
+          "action": "Create standardized Card variants with consistent styling",
+          "priority": "MEDIUM"
+        },
+
+        {
+          "task": "Standardize button system",
+          "action": "Implement consistent button variants and states",
+          "priority": "MEDIUM"
+        }
+      ]
+    },
+
+    "phase_3_responsive_design_audit": {
+      "title": "Mobile and Responsive Optimization",
+      "duration": "6-8 hours",
+      "tasks": [
+        {
+          "task": "Audit responsive breakpoints",
+          "action": "Ensure consistent breakpoint usage across components",
+          "priority": "HIGH"
+        },
+
+        {
+          "task": "Fix mobile navigation issues",
+          "action": "Resolve visibility and interaction problems",
+          "priority": "HIGH"
+        },
+
+        {
+          "task": "Optimize touch targets",
+          "action": "Ensure all interactive elements meet 44px minimum",
+          "priority": "MEDIUM"
+        },
+
+        {
+          "task": "Test cross-device compatibility",
+          "action": "Verify consistent experience across devices",
+          "priority": "MEDIUM"
+        }
+      ]
+    },
+
+    "phase_4_design_system_cleanup": {
+      "title": "Design System Consolidation",
+      "duration": "8-12 hours",
+      "tasks": [
+        {
+          "task": "Audit and clean CSS custom properties",
+          "action": "Remove unused tokens and standardize naming",
+          "priority": "MEDIUM"
+        },
+
+        {
+          "task": "Consolidate Tailwind configuration",
+          "action": "Ensure all design tokens are properly integrated",
+          "priority": "MEDIUM"
+        },
+
+        {
+          "task": "Create component style guide",
+          "action": "Document standardized component usage patterns",
+          "priority": "LOW"
+        },
+
+        {
+          "task": "Implement automated style linting",
+          "action": "Set up ESLint rules for design system compliance",
+          "priority": "LOW"
+        }
+      ]
+    }
+  },
+
+  "implementation_strategy": {
+    "file_organization": {
+      "layout_components": "components/ui/layouts/",
+      "page_layouts": "components/layouts/",
+      "style_utilities": "lib/styles/",
+      "design_tokens": "lib/tokens/"
+    },
+
+    "naming_conventions": {
+      "layout_components": "PageLayout, ContentLayout, FormLayout, AuthLayout",
+      "utility_classes": "fx-layout-*, fx-spacing-*, fx-typography-*",
+      "component_variants": "Card.variant, Button.variant, Input.variant"
+    },
+
+    "responsive_strategy": {
+      "breakpoints": "Use Tailwind defaults: sm, md, lg, xl, 2xl",
+      "mobile_first": "Design mobile-first, enhance for larger screens",
+      "touch_targets": "Minimum 44px for all interactive elements",
+      "gesture_support": "Implement swipe gestures where appropriate"
+    }
+  },
+
+  "success_criteria": {
+    "technical": [
+      "Zero React import errors across all components",
+      "Consistent mobile navigation visibility",
+      "All components use design system tokens",
+      "No styling conflicts or overrides"
+    ],
+
+    "user_experience": [
+      "Consistent visual design across all pages",
+      "Reliable mobile navigation on all pages",
+      "Smooth responsive behavior on all devices",
+      "Professional, polished appearance"
+    ],
+
+    "maintainability": [
+      "Clear component hierarchy and structure",
+      "Documented styling patterns and conventions",
+      "Easy to extend and modify components",
+      "Automated quality checks where possible"
+    ]
+  },
+
+  "risks_and_mitigations": {
+    "breaking_changes": {
+      "risk": "Layout changes could break existing functionality",
+      "mitigation": "Implement changes incrementally with testing"
+    },
+
+    "performance_impact": {
+      "risk": "Additional CSS and components could impact bundle size",
+      "mitigation": "Use dynamic imports and code splitting appropriately"
+    },
+
+    "cross_browser_compatibility": {
+      "risk": "Design token usage might not work across all browsers",
+      "mitigation": "Test thoroughly and provide fallbacks"
+    }
+  },
+
+  "monitoring_and_maintenance": {
+    "style_guide": {
+      "location": "docs/STYLE_GUIDE.md",
+      "content": "Component usage patterns, design token reference, layout guidelines"
+    },
+
+    "linting_rules": {
+      "eslint": "Custom rules for design system compliance",
+      "stylelint": "CSS organization and consistency rules"
+    },
+
+    "component_library": {
+      "storybook": "Component documentation and testing",
+      "design_system_docs": "Token usage and component variants"
+    }
+  }
+}
