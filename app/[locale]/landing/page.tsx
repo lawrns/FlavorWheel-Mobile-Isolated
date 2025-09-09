@@ -1,112 +1,74 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useRouter, useParams } from 'next/navigation'
-import { useStatistics } from '@/hooks/use-statistics'
-import { BrandIcon, LogoOnly } from '@/components/brand'
+import Link from 'next/link'
+import { useParams } from 'next/navigation'
 
+/**
+ * Landing Page (Client Component)
+ * Polished marketing content for guests
+ */
 export default function LandingPage() {
-  const router = useRouter()
   const params = useParams()
-  const locale = (params.locale as string) || 'en'
-  const rotatingWords = ['coffee', 'spirits', 'wine', 'beer', 'tea']
-  const [currentWordIndex, setCurrentWordIndex] = useState(0)
-
-  // Get dynamic statistics
-  const { statistics, loading: statsLoading, error: statsError } = useStatistics({
-    refreshInterval: 300000, // Refresh every 5 minutes
-    enableRealtime: true
-  })
-
-  useEffect(() => {
-    const el = document.getElementById('fw-rot-word')
-    if (el) el.textContent = rotatingWords[0]
-
-    const interval = setInterval(() => {
-      setCurrentWordIndex(prevIndex => {
-        const nextIndex = (prevIndex + 1) % rotatingWords.length
-        const element = document.getElementById('fw-rot-word')
-        if (element) {
-          element.textContent = rotatingWords[nextIndex]
-        }
-        return nextIndex
-      })
-    }, 2200)
-
-    return () => clearInterval(interval)
-  }, [])
-
-  const handleIconClick = (route: string) => {
-    router.push(route)
-  }
+  const locale = (params?.locale as string) || 'en'
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
+    <div className="relative min-h-screen overflow-hidden page-bg-primary">
+      {/* Skip Links for Accessibility */}
+      <a
+        href="#main-content"
+        className="sr-only z-50 rounded-md bg-primary px-4 py-2 text-primary-foreground focus:not-sr-only focus:absolute focus:left-4 focus:top-4"
+      >
+        Skip to main content
+      </a>
+      <a
+        href="#navigation"
+        className="sr-only z-50 rounded-md bg-primary px-4 py-2 text-primary-foreground focus:not-sr-only focus:absolute focus:left-40 focus:top-4"
+      >
+        Skip to navigation
+      </a>
+
       {/* Premium Hero Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#FEFCF8] via-[#F7F3EA] to-[#EDE7DA]" />
+      <div className="absolute inset-0 bg-gradient-to-br from-fx-bg via-fx-bg-subtle to-fx-primary/5" />
 
       {/* Floating Flavor Elements */}
       <div className="absolute inset-0 overflow-hidden">
-        {/* Animated flavor visualization rings */}
-        <div className="absolute top-20 left-10 w-64 h-64 border-2 border-[#D4AF37]/20 rounded-full animate-spin" style={{ animationDuration: '20s' }}>
-          <div className="absolute top-4 left-4 w-56 h-56 border border-[#8B4513]/10 rounded-full animate-spin" style={{ animationDuration: '15s', animationDirection: 'reverse' }}>
-            <div className="absolute top-8 left-8 w-40 h-40 border border-[#2E8B57]/15 rounded-full animate-pulse" />
-          </div>
-        </div>
-
-        <div className="absolute top-40 right-20 w-48 h-48 border border-[#D4AF37]/15 rounded-full animate-bounce" style={{ animationDelay: '2s', animationDuration: '4s' }} />
-        <div className="absolute bottom-32 left-1/4 w-32 h-32 bg-[#8B4513]/5 rounded-full blur-xl animate-pulse" style={{ animationDelay: '4s' }} />
-        <div className="absolute bottom-40 right-1/3 w-24 h-24 bg-[#2E8B57]/8 rounded-full blur-lg animate-pulse" style={{ animationDelay: '6s' }} />
+        {/* Soft accent blobs (design tokens) */}
+        <div className="absolute top-20 left-10 w-32 h-32 bg-fx-accent/10 rounded-full blur-xl animate-pulse" />
+        <div className="absolute top-40 right-20 w-24 h-24 bg-fx-primary/8 rounded-full blur-lg animate-pulse" style={{animationDelay: "2s"}} />
+        <div className="absolute bottom-32 left-1/3 w-40 h-40 bg-fx-accent/5 rounded-full blur-2xl animate-pulse" style={{animationDelay: "4s"}} />
       </div>
 
-      {/* Dramatic Hero Image Overlay */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-4xl max-h-4xl">
-          {/* Placeholder for hero tasting image - replace with actual image */}
-          <div className="w-full h-full bg-gradient-to-br from-[#8B4513]/20 to-[#D4AF37]/20 rounded-full blur-3xl" />
-        </div>
-      </div>
-
-      {/* Premium Header */}
-      <header className="relative z-10 pt-12 pb-8 flex items-center justify-between px-6 lg:px-12">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-[#8B4513] to-[#6B3419] rounded-xl flex items-center justify-center shadow-lg">
-            <LogoOnly size="sm" animated />
+      {/* Header */}
+      <header id="navigation" className="relative z-10 pt-12 pb-8 flex items-center justify-between px-6" role="banner" aria-label="Page header">
+        <div className="flex items-center space-x-3">
+          <div className="w-12 h-12 bg-gradient-to-br from-[#8B4513] to-[#D4AF37] rounded-xl flex items-center justify-center shadow-lg">
+            <span className="text-white font-bold text-xl">F</span>
           </div>
-          <h1 id="main-heading" className="text-2xl md:text-3xl font-bold text-[#2C1810]" style={{ fontFamily: 'var(--fx-font-heading)' }}>
-            FLAVATIX
-          </h1>
+          <div>
+            <h2 className="text-2xl font-bold text-[#2C1810]" style={{ fontFamily: 'var(--fx-font-heading)' }}>FLAVATIX</h2>
+            <p className="text-sm text-[#4A473F]">FlavorWheel México landing</p>
+          </div>
         </div>
-
-        {/* Profile Button */}
-        <button
-          onClick={() => router.push(`/${locale}/profile`)}
-          className="btn-secondary-beautiful p-3 rounded-full transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-fx-accent/50"
-          data-testid="profile-button"
-          aria-label="Go to profile"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-            <circle cx="12" cy="7" r="4"/>
+        <Link href={`/${locale}/profile`} className="p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300">
+          <svg className="w-6 h-6 text-[#8B4513]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
           </svg>
-        </button>
-
-        <span className="sr-only">FlavorWheel México landing</span>
+        </Link>
       </header>
 
-      {/* Main Content */}
-      <main className="relative z-10 px-6 lg:px-12 pt-16 pb-24 flex flex-col items-center text-center max-w-6xl mx-auto">
+      {/* Main Content - Full viewport, no constraints */}
+      <section id="main-content" className="relative z-10 w-full h-full flex flex-col items-center text-center" tabIndex={-1}>
         {/* Dramatic Hero Section */}
         <div className="animate-fade-in-up animate-delay-200 mb-16">
-          <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-8 leading-tight text-[#2C1810]" style={{ fontFamily: 'var(--fx-font-heading)' }}>
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-8 leading-tight text-[#2C1810]" style={{ fontFamily: 'var(--fx-font-heading)' }}>
             <span className="block mb-2">Discover the World</span>
             <span className="block bg-gradient-to-r from-[#8B4513] via-[#D4AF37] to-[#2E8B57] bg-clip-text text-transparent">
               In Every Sip
             </span>
-          </h2>
+          </h1>
 
           {/* Premium Subheading */}
-          <p aria-live='polite' className='text-xl md:text-2xl text-[#4A473F] mb-12 leading-relaxed max-w-3xl mx-auto font-light' style={{ fontFamily: 'var(--fx-font-body)' }}>
+          <p aria-live='polite' className='text-xl md:text-2xl text-[#4A473F] mb-12 leading-relaxed max-w-5xl mx-auto font-light' style={{ fontFamily: 'var(--fx-font-body)' }}>
             <span>Transform your tasting experience with AI-powered flavor intelligence and </span>
             <span id='fw-rot-word' className='font-semibold bg-gradient-to-r from-[#D4AF37] to-[#2E8B57] bg-clip-text text-transparent transition-all duration-500'>coffee</span>
             <span> tasting expertise</span>
@@ -114,9 +76,10 @@ export default function LandingPage() {
 
           {/* Hero CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-16">
-            <button
-              onClick={() => router.push(`/${locale}/create`)}
+            <Link
+              href={`/${locale}/create`}
               className="group px-8 py-4 bg-gradient-to-r from-[#8B4513] to-[#6B3419] text-white font-semibold text-lg rounded-xl shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 min-w-[200px]"
+              role="button"
             >
               <span className="flex items-center justify-center gap-3">
                 Start Your Flavor Journey
@@ -124,14 +87,12 @@ export default function LandingPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
               </span>
-            </button>
+            </Link>
 
-            <button
-              onClick={() => {
-                // Scroll to demo section or open modal
-                document.getElementById('demo-section')?.scrollIntoView({ behavior: 'smooth' });
-              }}
+            <Link
+              href={`/${locale}/create`}
               className="group px-8 py-4 border-2 border-[#D4AF37] text-[#D4AF37] font-semibold text-lg rounded-xl hover:bg-[#D4AF37] hover:text-white transition-all duration-300 min-w-[200px] shadow-lg hover:shadow-xl"
+              role="button"
             >
               <span className="flex items-center justify-center gap-3">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -139,53 +100,35 @@ export default function LandingPage() {
                 </svg>
                 Watch Demo
               </span>
-            </button>
+            </Link>
           </div>
         </div>
 
         {/* Premium Statistics Section */}
         <div className="animate-fade-in-up animate-delay-300 mb-20">
-          <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border border-[#D4AF37]/20 max-w-2xl mx-auto">
-            <h3 className="text-lg font-semibold text-[#2C1810] mb-6" style={{ fontFamily: 'var(--fx-font-heading)' }}>
+          <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border border-[#D4AF37]/20 max-w-4xl mx-auto">
+            <h2 className="text-lg font-semibold text-[#2C1810] mb-6" style={{ fontFamily: 'var(--fx-font-heading)' }}>
               Join 10,000+ Passionate Tasters
-            </h3>
+            </h2>
 
             <div className="grid grid-cols-3 gap-8">
               <div className="text-center">
                 <div className="text-3xl md:text-4xl font-bold text-[#8B4513] mb-2" style={{ fontFamily: 'var(--fx-font-heading)' }}>
-                  {statsLoading ? (
-                    <div className="animate-pulse">...</div>
-                  ) : statsError ? (
-                    <span className="text-red-500">Error</span>
-                  ) : (
-                    (statistics?.totalUsers || 0).toLocaleString()
-                  )}
+                  10,000+
                 </div>
                 <div className="text-sm text-[#4A473F] font-medium">Expert Tasters</div>
               </div>
 
               <div className="text-center border-x border-[#D4AF37]/20 px-4">
                 <div className="text-3xl md:text-4xl font-bold text-[#D4AF37] mb-2" style={{ fontFamily: 'var(--fx-font-heading)' }}>
-                  {statsLoading ? (
-                    <div className="animate-pulse">...</div>
-                  ) : statsError ? (
-                    <span className="text-red-500">Error</span>
-                  ) : (
-                    (statistics?.totalTastings || 0).toLocaleString()
-                  )}
+                  50,000+
                 </div>
                 <div className="text-sm text-[#4A473F] font-medium">Tastings Completed</div>
               </div>
 
               <div className="text-center">
                 <div className="text-3xl md:text-4xl font-bold text-[#2E8B57] mb-2" style={{ fontFamily: 'var(--fx-font-heading)' }}>
-                  {statsLoading ? (
-                    <div className="animate-pulse">...</div>
-                  ) : statsError ? (
-                    <span className="text-red-500">Error</span>
-                  ) : (
-                    (statistics?.totalReviews || 0).toLocaleString()
-                  )}
+                  25,000+
                 </div>
                 <div className="text-sm text-[#4A473F] font-medium">Reviews Shared</div>
               </div>
@@ -205,7 +148,7 @@ export default function LandingPage() {
             Experience AI-Powered Tasting
           </h3>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
             {/* AI Analysis Feature */}
             <div className="group bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-[#D4AF37]/20 hover:shadow-2xl transition-all duration-500 hover:scale-105 hover:-translate-y-2">
               <div className="w-16 h-16 bg-gradient-to-br from-[#8B4513] to-[#6B3419] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
@@ -215,12 +158,13 @@ export default function LandingPage() {
               </div>
               <h4 className="text-xl font-semibold text-[#2C1810] mb-4" style={{ fontFamily: 'var(--fx-font-heading)' }}>AI Flavor Analysis</h4>
               <p className="text-[#4A473F] mb-6 leading-relaxed">Advanced machine learning identifies complex flavor profiles and provides personalized tasting insights.</p>
-              <button
-                onClick={() => handleIconClick(`/${locale}/create`)}
-                className="w-full py-3 bg-gradient-to-r from-[#8B4513] to-[#6B3419] text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300"
+              <Link
+                href={`/${locale}/create`}
+                className="w-full inline-block text-center py-3 bg-gradient-to-r from-[#8B4513] to-[#6B3419] text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300"
+                role="button"
               >
                 Try AI Analysis
-              </button>
+              </Link>
             </div>
 
             {/* Community Feature */}
@@ -232,12 +176,13 @@ export default function LandingPage() {
               </div>
               <h4 className="text-xl font-semibold text-[#2C1810] mb-4" style={{ fontFamily: 'var(--fx-font-heading)' }}>Expert Community</h4>
               <p className="text-[#4A473F] mb-6 leading-relaxed">Connect with professional tasters, share experiences, and discover new flavor perspectives.</p>
-              <button
-                onClick={() => handleIconClick(`/${locale}/social`)}
-                className="w-full py-3 bg-gradient-to-r from-[#D4AF37] to-[#B8941F] text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300"
+              <Link
+                href={`/${locale}/social`}
+                className="w-full inline-block text-center py-3 bg-gradient-to-r from-[#D4AF37] to-[#B8941F] text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300"
+                role="button"
               >
                 Join Community
-              </button>
+              </Link>
             </div>
 
             {/* Mobile Experience Feature */}
@@ -249,12 +194,13 @@ export default function LandingPage() {
               </div>
               <h4 className="text-xl font-semibold text-[#2C1810] mb-4" style={{ fontFamily: 'var(--fx-font-heading)' }}>Mobile-First Design</h4>
               <p className="text-[#4A473F] mb-6 leading-relaxed">Optimized for tasting environments with camera integration and offline functionality.</p>
-              <button
-                onClick={() => handleIconClick(`/${locale}/quick-tasting`)}
-                className="w-full py-3 bg-gradient-to-r from-[#2E8B57] to-[#1F5A3A] text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300"
+              <Link
+                href={`/${locale}/quick-tasting`}
+                className="w-full inline-block text-center py-3 bg-gradient-to-r from-[#2E8B57] to-[#1F5A3A] text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300"
+                role="button"
               >
                 Quick Tasting
-              </button>
+              </Link>
             </div>
 
             {/* Professional Tools Feature */}
@@ -266,12 +212,13 @@ export default function LandingPage() {
               </div>
               <h4 className="text-xl font-semibold text-[#2C1810] mb-4" style={{ fontFamily: 'var(--fx-font-heading)' }}>Professional Tools</h4>
               <p className="text-[#4A473F] mb-6 leading-relaxed">Industry-standard templates, expert validation, and comprehensive tasting reports.</p>
-              <button
-                onClick={() => handleIconClick(`/${locale}/review`)}
-                className="w-full py-3 bg-gradient-to-r from-[#6B3419] to-[#4A1F0A] text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300"
+              <Link
+                href={`/${locale}/review`}
+                className="w-full inline-block text-center py-3 bg-gradient-to-r from-[#6B3419] to-[#4A1F0A] text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300"
+                role="button"
               >
                 Expert Reviews
-              </button>
+              </Link>
             </div>
           </div>
         </section>
@@ -343,28 +290,30 @@ export default function LandingPage() {
 
         {/* Final CTA Section */}
         <section className="animate-fade-in-up animate-delay-600 text-center">
-          <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-8 md:p-12 shadow-2xl border border-[#D4AF37]/20 max-w-4xl mx-auto">
+          <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-8 md:p-12 shadow-2xl border border-[#D4AF37]/20 max-w-6xl mx-auto">
             <h3 className="text-3xl md:text-4xl font-bold text-[#2C1810] mb-6" style={{ fontFamily: 'var(--fx-font-heading)' }}>
               Ready to Transform Your Tasting Experience?
             </h3>
-            <p className="text-xl text-[#4A473F] mb-8 max-w-2xl mx-auto">
+            <p className="text-xl text-[#4A473F] mb-8 max-w-4xl mx-auto">
               Join thousands of flavor enthusiasts who have already discovered the world in every sip.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-              <button
-                onClick={() => router.push(`/${locale}/register`)}
-                className="px-10 py-4 bg-gradient-to-r from-[#8B4513] to-[#6B3419] text-white font-bold text-lg rounded-2xl shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 min-w-[220px]"
+              <Link
+                href={`/${locale}/register`}
+                className="px-10 py-4 bg-gradient-to-r from-[#8B4513] to-[#6B3419] text-white font-bold text-lg rounded-2xl shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 min-w-[220px] text-center"
+                role="button"
               >
                 Start Free Today
-              </button>
+              </Link>
 
-              <button
-                onClick={() => router.push(`/${locale}/login`)}
-                className="px-10 py-4 border-2 border-[#D4AF37] text-[#D4AF37] font-bold text-lg rounded-2xl hover:bg-[#D4AF37] hover:text-white transition-all duration-300 min-w-[220px] shadow-lg hover:shadow-xl"
+              <Link
+                href={`/${locale}/login`}
+                className="px-10 py-4 border-2 border-[#D4AF37] text-[#D4AF37] font-bold text-lg rounded-2xl hover:bg-[#D4AF37] hover:text-white transition-all duration-300 min-w-[220px] shadow-lg hover:shadow-xl text-center"
+                role="button"
               >
                 Sign In
-              </button>
+              </Link>
             </div>
 
             <p className="text-sm text-[#4A473F] mt-6">
@@ -372,7 +321,7 @@ export default function LandingPage() {
             </p>
           </div>
         </section>
-      </main>
+      </section>
 
       {/* Screen Reader Announcements */}
       <div aria-live="polite" aria-atomic="true" className="sr-only">
