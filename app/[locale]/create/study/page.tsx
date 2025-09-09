@@ -14,7 +14,7 @@ import { Slider } from '@/components/ui/slider'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import ProductTypeSelect from '@/components/ProductTypeSelect'
 import { PhotoUpload } from '@/components/ui/photo-upload'
-import { CreateShell, CreateHeader, CreateFooterActions } from '@/components/create'
+import { AppShell } from '@/components/app-shell'
 
 
 // Enhanced types based on the updated JSON specification
@@ -345,24 +345,47 @@ export default function CreateStudyPage() {
   }
 
   return (
-    <CreateShell
+    <AppShell
+      showNavigation
+      showMobileNav
+      maxWidth="create"
+      backgroundStyle="fx-bg"
+      contentContainer
       header={
-        <CreateHeader
-          title="Study Session"
-          onBack={() => router.back()}
-          status={lastSaved ? 'saved' : null}
-        />
+        <div className="flex items-center justify-between p-4 border-b">
+          <button
+            onClick={() => router.back()}
+            className="flex items-center gap-2 text-fx-text-primary hover:text-fx-text-secondary"
+          >
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Back
+          </button>
+          <h1 className="text-lg font-semibold text-fx-text-primary">Study Session</h1>
+          <div className="w-16"></div>
+          {lastSaved && (
+            <div className="text-xs text-green-600">Auto-saved</div>
+          )}
+        </div>
       }
       footer={
-        <CreateFooterActions
-          primaryLabel="Create Study"
-          onPrimary={handleCreateTasting}
-          secondaryLabel="Cancel"
-          onSecondary={() => router.back()}
-          disabled={!isFormValid()}
-          busy={isSubmitting}
-          statusMessage={isSubmitting ? 'Creating tasting...' : undefined}
-        />
+        <div className="flex items-center justify-between p-4 border-t bg-white">
+          <button
+            onClick={() => router.back()}
+            className="px-4 py-2 text-fx-text-secondary hover:text-fx-text-primary"
+            disabled={isSubmitting}
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleCreateTasting}
+            disabled={!isFormValid() || isSubmitting}
+            className="px-6 py-2 bg-fx-primary text-white rounded-lg hover:bg-fx-primary-hover disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isSubmitting ? 'Creating...' : 'Create Study'}
+          </button>
+        </div>
       }
     >
 
@@ -811,6 +834,6 @@ export default function CreateStudyPage() {
 
         {/* Footer Actions - Moved to footer prop */}
       </div>
-    </CreateShell>
+    </AppShell>
   )
 }

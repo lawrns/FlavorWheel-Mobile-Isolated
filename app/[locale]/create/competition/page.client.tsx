@@ -18,7 +18,7 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { PhotoUpload } from '@/components/ui/photo-upload'
-import { CreateShell, CreateHeader, CreateFooterActions } from '@/components/create'
+import { AppShell } from '@/components/app-shell'
 
 // Types matching the specification
 type EvaluationType = 'subjective_input' | 'multiple_choice' | 'sliding_scale' | 'exact_answer' | 'contains_x'
@@ -426,13 +426,26 @@ export default function CreateCompetitionPage() {
   // Handle different flow steps
   if (flowStep === 'confirm') {
     return (
-      <CreateShell
+      <AppShell
+        showNavigation
+        showMobileNav
+        maxWidth="create"
+        backgroundStyle="fx-bg"
+        contentContainer
         header={
-          <CreateHeader
-            title="Confirm Competition"
-            onBack={() => setFlowStep('create')}
-            status={null}
-          />
+          <div className="flex items-center justify-between p-4 border-b">
+            <button
+              onClick={() => setFlowStep('create')}
+              className="flex items-center gap-2 text-fx-text-primary hover:text-fx-text-secondary"
+            >
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Back
+            </button>
+            <h1 className="text-lg font-semibold text-fx-text-primary">Confirm Competition</h1>
+            <div className="w-16"></div>
+          </div>
         }
         footer={<div />}
       >
@@ -459,20 +472,33 @@ export default function CreateCompetitionPage() {
             Start Competition
           </button>
         </div>
-      </CreateShell>
+      </AppShell>
     )
   }
 
   if (flowStep === 'input') {
     const currentItem = formData.items[currentItemIndex] || { item_name: 'Item 1' }
     return (
-      <CreateShell
+      <AppShell
+        showNavigation
+        showMobileNav
+        maxWidth="create"
+        backgroundStyle="fx-bg"
+        contentContainer
         header={
-          <CreateHeader
-            title="Competition Input"
-            onBack={() => setFlowStep('confirm')}
-            status={null}
-          />
+          <div className="flex items-center justify-between p-4 border-b">
+            <button
+              onClick={() => setFlowStep('confirm')}
+              className="flex items-center gap-2 text-fx-text-primary hover:text-fx-text-secondary"
+            >
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Back
+            </button>
+            <h1 className="text-lg font-semibold text-fx-text-primary">Competition Input</h1>
+            <div className="w-16"></div>
+          </div>
         }
         footer={<div />}
       >
@@ -521,20 +547,33 @@ export default function CreateCompetitionPage() {
             {currentItemIndex < (formData.items.length - 1) ? 'Next Item' : 'Finish Competition'}
           </button>
         </div>
-      </CreateShell>
+      </AppShell>
     )
   }
 
   if (flowStep === 'complete') {
     const currentItem = formData.items[currentItemIndex] || { item_name: 'Item 1' }
     return (
-      <CreateShell
+      <AppShell
+        showNavigation
+        showMobileNav
+        maxWidth="create"
+        backgroundStyle="fx-bg"
+        contentContainer
         header={
-          <CreateHeader
-            title="Competition Complete"
-            onBack={() => setFlowStep('input')}
-            status={null}
-          />
+          <div className="flex items-center justify-between p-4 border-b">
+            <button
+              onClick={() => setFlowStep('input')}
+              className="flex items-center gap-2 text-fx-text-primary hover:text-fx-text-secondary"
+            >
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Back
+            </button>
+            <h1 className="text-lg font-semibold text-fx-text-primary">Competition Complete</h1>
+            <div className="w-16"></div>
+          </div>
         }
         footer={<div />}
       >
@@ -554,19 +593,35 @@ export default function CreateCompetitionPage() {
             Share Results
           </button>
         </div>
-      </CreateShell>
+      </AppShell>
     )
   }
 
   // Default: Create screen
   return (
-    <CreateShell
+    <AppShell
+      showNavigation
+      showMobileNav
+      maxWidth="create"
+      backgroundStyle="fx-bg"
+      contentContainer
       header={
-        <CreateHeader
-          title="Competition"
-          onBack={() => router.back()}
-          status={lastSaved ? 'saved' : null}
-        />
+        <div className="flex items-center justify-between p-4 border-b">
+          <button
+            onClick={() => router.back()}
+            className="flex items-center gap-2 text-fx-text-primary hover:text-fx-text-secondary"
+          >
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Back
+          </button>
+          <h1 className="text-lg font-semibold text-fx-text-primary">Competition</h1>
+          <div className="w-16"></div>
+          {lastSaved && (
+            <div className="text-xs text-green-600">Auto-saved</div>
+          )}
+        </div>
       }
       footer={<div />}
     >
@@ -1183,6 +1238,6 @@ export default function CreateCompetitionPage() {
         </div>
 
       </div>
-    </CreateShell>
+    </AppShell>
   )
 }
