@@ -136,9 +136,8 @@ export function Navigation({
         >
           <div className="flex items-center justify-center gap-2 overflow-x-auto rounded-full border border-border bg-background/90 px-4 py-2 shadow-md backdrop-blur-md">
             {/* Brand Logo */}
-            <div className="flex items-center gap-3 pr-4 mr-4 border-r border-border">
+            <div className="flex items-center pr-4 mr-4 border-r border-border">
               <LogoOnly size="md" className="h-10 w-10" />
-              <BrandTitle size="sm" className="hidden lg:block" />
             </div>
 
             {getVisibleItems().map((item, index) => {
