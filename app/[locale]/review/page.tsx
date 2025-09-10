@@ -518,7 +518,7 @@ export default function ReviewPage() {
   }
 
   return (
-    <DashboardAppShell activeNavItem="review">
+    <UnifiedAppShell variant="dashboard" activeNavItemOverride="review">
       <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100">
         {/* Header */}
         <div className="bg-white/80 backdrop-blur-sm border-b">
