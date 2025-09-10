@@ -517,3 +517,85 @@ export function NestedDisclosure({ items, className = '' }: NestedDisclosureProp
     </div>
   )
 }
+
+// Feature Discovery Component for highlighting new features
+interface FeatureDiscoveryProps {
+  feature: string
+  description: string
+  icon: React.ReactNode
+  onDiscover?: () => void
+  className?: string
+  dismissed?: boolean
+  onDismiss?: () => void
+}
+
+export function FeatureDiscovery({
+  feature,
+  description,
+  icon,
+  onDiscover,
+  className = '',
+  dismissed = false,
+  onDismiss
+}: FeatureDiscoveryProps) {
+  const [isVisible, setIsVisible] = useState(!dismissed)
+
+  useEffect(() => {
+    setIsVisible(!dismissed)
+  }, [dismissed])
+
+  const handleDiscover = () => {
+    onDiscover?.()
+    onDismiss?.()
+    setIsVisible(false)
+  }
+
+  if (!isVisible) return null
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      className={cn(
+        'bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4',
+        'shadow-sm hover:shadow-md transition-shadow duration-200',
+        className
+      )}
+    >
+      <div className="flex items-start gap-3">
+        <div className="flex-shrink-0 p-2 bg-blue-100 rounded-lg">
+          {icon}
+        </div>
+        <div className="flex-1 min-w-0">
+          <h4 className="text-sm font-semibold text-blue-900 mb-1">
+            New Feature: {feature}
+          </h4>
+          <p className="text-sm text-blue-700 mb-3">
+            {description}
+          </p>
+          <div className="flex gap-2">
+            <Button
+              size="sm"
+              onClick={handleDiscover}
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+            >
+              Try it now
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => {
+                onDismiss?.()
+                setIsVisible(false)
+              }}
+              className="text-blue-600 hover:text-blue-800"
+            >
+              Dismiss
+            </Button>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  )
+}

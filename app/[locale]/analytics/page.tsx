@@ -251,11 +251,11 @@ export default function AnalyticsPage() {
 
   if (loading) {
     return (
-      <DashboardAppShell activeNavItem="analytics">
+      <UnifiedAppShell variant="dashboard" activeNavItemOverride="analytics">
         <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 flex items-center justify-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-600"></div>
         </div>
-      </DashboardAppShell>
+      </UnifiedAppShell>
     )
   }
 

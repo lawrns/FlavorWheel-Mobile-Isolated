@@ -37,7 +37,7 @@ export function ContextualHelp({ page, section, className = '' }: ContextualHelp
           <div className="space-y-4">
             <ProgressiveDisclosure title="Tasting Tips">
               <div className="space-y-3 text-sm">
-                <p>• <strong>Observe:</strong> Take time to observe the liquid's appearance and viscosity</p>
+                <p>• <strong>Observe:</strong> Take time to observe the liquid&apos;s appearance and viscosity</p>
                 <p>• <strong>Smell:</strong> Identify aromas by category (fruity, floral, spicy, etc.)</p>
                 <p>• <strong>Taste:</strong> Note the flavors on different parts of your tongue</p>
                 <p>• <strong>Finish:</strong> Pay attention to the aftertaste and how long it lasts</p>

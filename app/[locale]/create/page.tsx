@@ -43,7 +43,7 @@ export default function CreatePage() {
             Create Your Tasting Experience
           </h1>
           <p className="text-xl text-fx-text-secondary max-w-3xl mx-auto">
-            Choose how you'd like to explore flavors. Start simple or dive deep with our AI-powered tools.
+            Choose how you&apos;d like to explore flavors. Start simple or dive deep with our AI-powered tools.
           </p>
         </div>
 

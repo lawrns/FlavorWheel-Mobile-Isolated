@@ -634,7 +634,7 @@ function TemplatePreviewModal({
                   <div className="space-y-2">
                     {template.cultural_context.map((context, index) => (
                       <p key={index} className="text-sm italic text-muted-foreground">
-                        "                        &quot;{context}&quot;"
+                        &ldquo;{context}&rdquo;
                       </p>
                     ))}
                   </div>

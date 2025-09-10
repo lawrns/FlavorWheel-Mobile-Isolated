@@ -208,8 +208,8 @@ export default function LandingPage() {
                 </div>
               </div>
               <blockquote className="text-fx-text-secondary italic">
-                "FlavorWheel has revolutionized how we train our sommeliers. The AI accuracy in detecting subtle flavor notes
-                is remarkable, and the community insights help us stay ahead of emerging trends."
+                &ldquo;FlavorWheel has revolutionized how we train our sommeliers. The AI accuracy in detecting subtle flavor notes
+                is remarkable, and the community insights help us stay ahead of emerging trends.&rdquo;
               </blockquote>
             </div>
           </div>
