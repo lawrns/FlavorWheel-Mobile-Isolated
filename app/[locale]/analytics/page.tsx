@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useSupabase } from '@/components/providers/supabase-provider'
 import { useToast } from '@/hooks/use-toast'
-import { DashboardAppShell } from '@/components/app-shell'
+import { UnifiedAppShell } from '@/components/app-shell'
 
 interface AnalyticsData {
   totalTastings: number
@@ -260,7 +260,7 @@ export default function AnalyticsPage() {
   }
 
   return (
-    <DashboardAppShell activeNavItem="analytics">
+    <UnifiedAppShell variant="dashboard" activeNavItemOverride="analytics">
       <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100">
         {/* Header */}
         <div className="bg-white/80 backdrop-blur-sm border-b">
@@ -544,7 +544,7 @@ export default function AnalyticsPage() {
           )}
         </div>
       </div>
-    </DashboardAppShell>
+    </UnifiedAppShell>
   )
 }
 

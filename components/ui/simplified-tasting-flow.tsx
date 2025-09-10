@@ -54,6 +54,8 @@ export function SimplifiedTastingFlow() {
   const router = useRouter()
   const { user } = useAuth()
   const smartDefaults = useSmartDefaults()
+  const locale = (typeof window !== 'undefined' ? window.location.pathname.split('/')[1] : 'en') || 'en'
+
   const [currentStep, setCurrentStep] = useState(0)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [tastingData, setTastingData] = useState<TastingData>({
@@ -69,23 +71,26 @@ export function SimplifiedTastingFlow() {
     const recommendedType = smartDefaults.getRecommendedBeverageType()
     const ratingSuggestion = smartDefaults.getRatingSuggestion(recommendedType)
 
-    setTastingData(prev => ({
-      ...prev,
-      productType: recommendedType,
-      overallRating: ratingSuggestion
-    }))
-  }, [smartDefaults])
+    setTastingData(prev => {
+      const next = {
+        ...prev,
+        productType: recommendedType,
+        overallRating: ratingSuggestion,
+      }
+      return (prev.productType === next.productType && prev.overallRating === next.overallRating) ? prev : next
+    })
+  }, [])
 
   // Update smart suggestions when product type changes
   useEffect(() => {
     if (tastingData.productType) {
       const ratingSuggestion = smartDefaults.getRatingSuggestion(tastingData.productType)
-      setTastingData(prev => ({
+      setTastingData(prev => prev.overallRating === ratingSuggestion ? prev : ({
         ...prev,
         overallRating: ratingSuggestion
       }))
     }
-  }, [tastingData.productType, smartDefaults])
+  }, [tastingData.productType])
 
   const steps = [
     { id: 'product', title: 'What are you tasting?', icon: '🥤' },
@@ -148,7 +153,7 @@ export function SimplifiedTastingFlow() {
       await new Promise(resolve => setTimeout(resolve, 2000))
 
       // Redirect to results or dashboard
-      router.push('/dashboard')
+      router.push(`/${locale}/dashboard`)
     } catch (error) {
       console.error('Error submitting tasting:', error)
     } finally {

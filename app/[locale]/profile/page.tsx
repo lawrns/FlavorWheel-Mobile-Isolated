@@ -45,13 +45,19 @@ interface UserStats {
 export default function ProfilePage() {
   const params = useParams()
   const locale = (params.locale as string) || 'en'
-  const { user, client: supabase } = useSupabase()
+  const { user, client: supabase, initialized } = useSupabase()
   const { toast } = useToast()
 
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [stats, setStats] = useState<UserStats | null>(null)
   const [loading, setLoading] = useState(true)
   const [editing, setEditing] = useState(false)
+
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // Mock data for testing
   const mockUser = {
@@ -87,6 +93,7 @@ export default function ProfilePage() {
                        window.navigator.userAgent.includes('Playwright') ||
                        window.navigator.userAgent.includes('HeadlessChrome')
                      ))
+
 
   useEffect(() => {
     if (user || isTestMode) {
@@ -355,7 +362,7 @@ export default function ProfilePage() {
     { id: 'bacanora', label: 'Bacanora' }
   ]
 
-  if (!user && !isTestMode) {
+  if (initialized && !user && !isTestMode) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 flex items-center justify-center p-4">
         <Card className="w-full max-w-md text-center">
@@ -371,7 +378,7 @@ export default function ProfilePage() {
     )
   }
 
-  if (loading) {
+  if (loading || !mounted || !initialized) {
     return (
       <UnifiedAppShell variant="dashboard" activeNavItemOverride="profile">
         <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 flex items-center justify-center">

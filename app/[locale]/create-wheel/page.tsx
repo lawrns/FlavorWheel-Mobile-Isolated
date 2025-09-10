@@ -29,7 +29,7 @@ import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Sunburst } from '@/components/flavorwheel/Sunburst'
-import { DashboardAppShell } from '@/components/app-shell'
+import { UnifiedAppShell } from '@/components/app-shell'
 
 // WheelNode interface matching Sunburst component
 interface WheelNode {
@@ -274,7 +274,7 @@ export default function CreateWheelPage() {
   }
 
   return (
-    <DashboardAppShell activeNavItem="review" maxWidth="full" className="[&>div>main]:p-0 [&>div>main]:max-w-none">
+    <UnifiedAppShell variant="dashboard" activeNavItemOverride="review" className="[&>div>main]:p-0 [&>div>main]:max-w-none">
       {/* Desktop message - hidden on mobile */}
       <div className="desktop-message hidden min-h-screen items-center justify-center bg-gradient-to-br from-surface-secondary to-surface-muted p-8">
         <div className="max-w-md mx-auto text-center">
@@ -620,6 +620,6 @@ export default function CreateWheelPage() {
 
 
       </div>
-    </DashboardAppShell>
+    </UnifiedAppShell>
   )
 }

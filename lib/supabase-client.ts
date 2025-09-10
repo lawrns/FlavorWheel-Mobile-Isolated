@@ -41,4 +41,12 @@ function createSupabaseClient() {
 // Client-side Supabase client
 export const supabaseClient = createSupabaseClient()
 
+// Expose singleton on globalThis so other modules can reuse it (avoids duplicate GoTrue clients)
+try {
+  if (typeof globalThis !== 'undefined' && supabaseClient) {
+    ;(globalThis as any).__FW_SUPABASE__ = supabaseClient
+  }
+} catch {}
+
+
 export default supabaseClient

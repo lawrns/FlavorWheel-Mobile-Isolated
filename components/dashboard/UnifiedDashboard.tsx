@@ -94,22 +94,27 @@ export function UnifiedDashboard() {
 
   const [userStats, setUserStats] = useState<UserStats | null>(null)
   const [isLoadingStats, setIsLoadingStats] = useState(true)
+  const [isMounted, setIsMounted] = useState(false)
 
   // Enhanced test mode detection
   const isTestMode = process.env.NODE_ENV === 'test' ||
-                     (typeof window !== 'undefined' && (
+                     (typeof window !== 'undefined' && typeof window.location !== 'undefined' && (
                        window.location.hostname === 'localhost' ||
                        window.location.search.includes('test=true') ||
-                       window.navigator.userAgent.includes('Playwright')
+                       (window.navigator && window.navigator.userAgent.includes('Playwright'))
                      ))
 
   useEffect(() => {
-    if (user || isTestMode) {
+    setIsMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (isMounted && (user || isTestMode)) {
       loadUserStats()
-    } else {
+    } else if (isMounted) {
       setIsLoadingStats(false)
     }
-  }, [user, isTestMode])
+  }, [user, isTestMode, isMounted])
 
   const loadUserStats = async () => {
     setIsLoadingStats(true)
@@ -165,188 +170,33 @@ export function UnifiedDashboard() {
   }
 
   // Redirect guests to landing page instead of showing guest experience here
+  useEffect(() => {
+    if (!user && !isTestMode && typeof window !== 'undefined') {
+      router.push(`/${locale}/landing`)
+    }
+  }, [user, isTestMode, locale, router])
+
+  // Prevent hydration mismatch by showing loading state until mounted
+  if (!isMounted) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100" data-testid="app-ready">
+        <div className="bg-white/80 backdrop-blur-sm border-b">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+            <div className="animate-pulse">
+              <div className="h-8 bg-gray-200 rounded w-1/3 mb-2"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   if (!user && !isTestMode) {
-    router.push(`/${locale}/landing`)
     return null
   }
 
-  // Remove the old guest experience - it's now handled by the dedicated landing page
-  if (false) {
-    return (
-      <DashboardAppShell activeNavItem="dashboard">
-        <div className="relative min-h-screen overflow-hidden" data-testid="app-ready">
-        {/* Premium Hero Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#FEFCF8] via-[#F7F3EA] to-[#EDE7DA]" />
-
-        {/* Floating Flavor Elements */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-20 left-10 w-32 h-32 bg-amber-200/30 rounded-full blur-xl animate-pulse" />
-          <div className="absolute top-40 right-20 w-24 h-24 bg-green-200/30 rounded-full blur-xl animate-pulse delay-1000" />
-          <div className="absolute bottom-32 left-1/4 w-40 h-40 bg-orange-200/30 rounded-full blur-xl animate-pulse delay-2000" />
-        </div>
-
-        <div className="relative z-10">
-          {/* Header */}
-          <header className="px-4 sm:px-6 py-4">
-            <div className="max-w-6xl mx-auto flex items-center justify-between">
-              <BrandIcon />
-              <div className="flex items-center space-x-4">
-                <Button variant="ghost" onClick={() => router.push(`/${locale}/login`)}>
-                  Sign In
-                </Button>
-                <Button onClick={() => router.push(`/${locale}/register`)}>
-                  Get Started
-                </Button>
-              </div>
-            </div>
-          </header>
-
-          {/* Hero Section */}
-          <section className="px-4 sm:px-6 py-12">
-            <div className="max-w-4xl mx-auto text-center">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
-                className="mb-8"
-              >
-                <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold mb-6 leading-tight text-[#2C1810]">
-                  <span className="block mb-2">Discover the World</span>
-                  <span className="block bg-gradient-to-r from-[#8B4513] via-[#D4AF37] to-[#2E8B57] bg-clip-text text-transparent">
-                    In Every Sip
-                  </span>
-                </h1>
-
-                <p className="text-lg sm:text-xl text-[#4A473F] mb-8 max-w-2xl mx-auto leading-relaxed">
-                  Transform your tasting experience with AI-powered flavor intelligence and expert guidance.
-                </p>
-
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-                  <Button
-                    size="lg"
-                    onClick={handleStartJourney}
-                    className="px-8 py-4 bg-gradient-to-r from-[#8B4513] to-[#6B3419] text-white font-semibold text-lg rounded-xl shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300"
-                  >
-                    <span className="flex items-center gap-3">
-                      Start Your Flavor Journey
-                      <ChevronRight className="h-5 w-5" />
-                    </span>
-                  </Button>
-
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
-                    className="px-8 py-4 border-2 border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-white transition-all duration-300 rounded-xl"
-                  >
-                    <span className="flex items-center gap-3">
-                      <Play className="h-5 w-5" />
-                      Watch Demo
-                    </span>
-                  </Button>
-                </div>
-              </motion.div>
-
-              {/* Statistics */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                className="mb-16"
-              >
-                <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-xl">
-                  <CardContent className="p-8">
-                    <h3 className="text-lg font-semibold text-[#2C1810] mb-6">
-                      Join 10,000+ Passionate Tasters
-                    </h3>
-
-                    <div className="grid grid-cols-3 gap-8">
-                      <div className="text-center">
-                        <div className="text-3xl md:text-4xl font-bold text-[#8B4513] mb-2">
-                          {statsLoading ? '...' : (statistics?.totalUsers || 0).toLocaleString()}
-                        </div>
-                        <div className="text-sm text-[#4A473F] font-medium">Expert Tasters</div>
-                      </div>
-
-                      <div className="text-center border-x border-[#D4AF37]/20 px-4">
-                        <div className="text-3xl md:text-4xl font-bold text-[#D4AF37] mb-2">
-                          {statsLoading ? '...' : (statistics?.totalTastings || 0).toLocaleString()}
-                        </div>
-                        <div className="text-sm text-[#4A473F] font-medium">Tastings Completed</div>
-                      </div>
-
-                      <div className="text-center">
-                        <div className="text-3xl md:text-4xl font-bold text-[#2E8B57] mb-2">
-                          {statsLoading ? '...' : (statistics?.totalReviews || 0).toLocaleString()}
-                        </div>
-                        <div className="text-sm text-[#4A473F] font-medium">Reviews Shared</div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            </div>
-          </section>
-
-          {/* Quick Actions Grid */}
-          <section id="features" className="px-4 sm:px-6 py-12 bg-white/50">
-            <div className="max-w-6xl mx-auto">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                viewport={{ once: true }}
-                className="text-center mb-12"
-              >
-                <h2 className="text-3xl md:text-4xl font-bold text-[#2C1810] mb-4">
-                  Choose Your Tasting Experience
-                </h2>
-                <p className="text-lg text-[#4A473F] max-w-2xl mx-auto">
-                  Four powerful tools designed to enhance your flavor discovery journey
-                </p>
-              </motion.div>
-
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {QUICK_ACTIONS.map((action, index) => (
-                  <motion.div
-                    key={action.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: index * 0.1 }}
-                    viewport={{ once: true }}
-                  >
-                    <Card className="group h-full bg-white/90 backdrop-blur-sm border border-[#D4AF37]/20 hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer">
-                      <CardContent className="p-6 text-center h-full flex flex-col">
-                        <div className={`w-16 h-16 bg-gradient-to-br ${action.gradient} rounded-2xl flex items-center justify-center mb-4 mx-auto group-hover:scale-110 transition-transform duration-300`}>
-                          <div className="text-white">
-                            {action.icon}
-                          </div>
-                        </div>
-                        <h3 className="text-xl font-semibold text-[#2C1810] mb-2">
-                          {action.title}
-                        </h3>
-                        <p className="text-[#4A473F] mb-6 flex-grow">
-                          {action.description}
-                        </p>
-                        <Button
-                          onClick={() => handleQuickAction(action.action)}
-                          className={`w-full bg-gradient-to-r ${action.gradient} hover:shadow-lg transition-all duration-300`}
-                          data-testid={`${action.id}-button`}
-                        >
-                          Get Started
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          </section>
-        </div>
-      </div>
-      </DashboardAppShell>
-    )
-  }
+  // Guest experience is now handled by the dedicated landing page
 
   // Authenticated User Dashboard
   return (

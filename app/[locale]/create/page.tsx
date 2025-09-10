@@ -28,9 +28,9 @@ export default function CreatePage() {
   }
 
   return (
-    <UnifiedAppShell variant="dashboard" backgroundStyle="fx-bg">
+    <UnifiedAppShell variant="dashboard" activeNavItemOverride="create" backgroundStyle="fx-bg">
       <div className="min-h-screen bg-gradient-to-br from-fx-bg to-fx-bg-subtle">
-        <div className="container mx-auto px-6 py-12 max-w-6xl">
+      <div className="container mx-auto px-6 py-12 max-w-6xl">
         {/* Header */}
         <div className="text-center mb-12">
           <Link
@@ -351,6 +351,7 @@ export default function CreatePage() {
           </div>
         </div>
       </div>
+    </div>
     </UnifiedAppShell>
   )
 }

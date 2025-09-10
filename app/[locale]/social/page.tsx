@@ -13,7 +13,7 @@ import { SocialFeed } from '@/components/social-feed'
 import { FriendSystem } from '@/components/friend-system'
 import { useSupabase } from '@/components/providers/supabase-provider'
 import { useStatistics } from '@/hooks/use-statistics'
-import { DashboardAppShell } from '@/components/app-shell'
+import { UnifiedAppShell } from '@/components/app-shell'
 import Link from 'next/link'
 
 export default function SocialPage() {
@@ -31,7 +31,7 @@ export default function SocialPage() {
 
   if (!user) {
     return (
-      <DashboardAppShell activeNavItem="social">
+      <UnifiedAppShell variant="dashboard" activeNavItemOverride="social">
         <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 flex items-center justify-center p-4">
           <Card className="w-full max-w-md text-center">
             <CardContent className="p-6">
@@ -45,12 +45,12 @@ export default function SocialPage() {
             </CardContent>
           </Card>
         </div>
-      </DashboardAppShell>
+      </UnifiedAppShell>
     )
   }
 
   return (
-    <DashboardAppShell activeNavItem="social">
+    <UnifiedAppShell variant="dashboard" activeNavItemOverride="social">
       <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100">
         {/* Header */}
         <div className="bg-white/80 backdrop-blur-sm border-b">
@@ -354,6 +354,6 @@ export default function SocialPage() {
         {/* Floating Help Button */}
         <FloatingHelp page="social" />
       </div>
-    </DashboardAppShell>
+    </UnifiedAppShell>
   )
 }

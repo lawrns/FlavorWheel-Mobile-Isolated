@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import dynamic from 'next/dynamic'
 import { useRouter, useParams } from 'next/navigation'
-import { DashboardAppShell } from '@/components/app-shell'
+import { UnifiedAppShell } from '@/components/app-shell'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 
@@ -41,7 +41,7 @@ import type { FlavorNode } from '@/lib/flavorwheel/types'
 import { transformFlavorDataToNode } from '@/lib/utils'
 import { useToast } from '@/hooks/use-toast'
 import { generateTastingPDF } from '@/services/pdf-service'
-import { supabase } from '@/lib/supabase'
+
 import {
   getUserReviews,
   getUserReviewsCount,
@@ -92,7 +92,7 @@ export default function FlavorWheelsPage() {
   const params = useParams()
   const router = useRouter()
   const locale = (params.locale as string) || 'en'
-  const { user } = useSupabase()
+  const { user, client: supabase } = useSupabase()
   const { toast } = useToast()
 
   // State for wheel configuration
@@ -508,7 +508,7 @@ export default function FlavorWheelsPage() {
   }
 
   return (
-    <DashboardAppShell activeNavItem="flavor-wheels" maxWidth="full">
+    <UnifiedAppShell variant="dashboard" activeNavItemOverride="flavor-wheels">
       <ErrorBoundary>
         <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100">
         {/* Header - Mobile Optimized */}
@@ -1298,6 +1298,6 @@ export default function FlavorWheelsPage() {
         </DialogContent>
       </Dialog>
       </ErrorBoundary>
-    </DashboardAppShell>
+    </UnifiedAppShell>
   )
 }

@@ -216,16 +216,29 @@ function createMockClient() {
 
 // Create the main Supabase client instance with error handling
 let supabaseClient: ReturnType<typeof createClient> | ReturnType<typeof createMockClient> | null = null
-try {
-  supabaseClient = createClient()
-} catch (error) {
-  console.error('Failed to initialize Supabase client:', error)
-  // In development, use mock client as fallback
-  if (process.env.NODE_ENV === 'development') {
-    console.warn('Using mock Supabase client for development')
-    supabaseClient = createMockClient()
-  } else {
-    throw error // Re-throw in production
+
+// Reuse global singleton if available to avoid multiple GoTrueClient instances
+const existingGlobalClient = (typeof globalThis !== 'undefined' && (globalThis as any).__FW_SUPABASE__) || null
+if (existingGlobalClient) {
+  supabaseClient = existingGlobalClient
+} else {
+  try {
+    supabaseClient = createClient()
+    if (typeof globalThis !== 'undefined') {
+      ;(globalThis as any).__FW_SUPABASE__ = supabaseClient
+    }
+  } catch (error) {
+    console.error('Failed to initialize Supabase client:', error)
+    // In development, use mock client as fallback
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('Using mock Supabase client for development')
+      supabaseClient = createMockClient()
+      if (typeof globalThis !== 'undefined') {
+        ;(globalThis as any).__FW_SUPABASE__ = supabaseClient
+      }
+    } else {
+      throw error // Re-throw in production
+    }
   }
 }
 
