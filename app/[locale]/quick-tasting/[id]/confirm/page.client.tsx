@@ -187,14 +187,14 @@ export default function QuickTastingConfirmPageClient({ params }: QuickTastingCo
 
           <div>
             <label className="block text-gray-700">Invite Friends</label>
-            <input className="w-full border p-2 rounded" placeholder="Enter emails" />
+            <input className="w-full border p-2 rounded min-h-[44px] touch-manipulation" placeholder="Enter emails" />
           </div>
           <div>
             <label className="block text-gray-700">Schedule</label>
-            <input type="date" className="w-full border p-2 rounded" />
+            <input type="date" className="w-full border p-2 rounded min-h-[44px] touch-manipulation" />
           </div>
           <button
-            className="w-full bg-blue-500 text-white p-3 rounded"
+            className="w-full bg-blue-500 text-white p-3 rounded min-h-[44px] touch-manipulation"
             onClick={handleStartNow}
           >
             Start Now

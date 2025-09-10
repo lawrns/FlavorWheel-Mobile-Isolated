@@ -15,41 +15,41 @@ type Props = {
 // Complete category mapping with CVD-safe colors and metaphor support
 const FLAVORWHEEL_COLORS: Record<string, string> = {
   // Primary Categories - CVD-Safe
-  'fruity': 'var(--fw-fruity)',
-  'floral': 'var(--fw-floral)',
-  'vegetal': 'var(--fw-vegetal)',
-  'smoky': 'var(--fw-smoky)',
-  'sweet': 'var(--fw-sweet)',
-  'spicy': 'var(--fw-spicy)',
-  'bitter': 'var(--fw-bitter)',
-  'sour': 'var(--fw-sour)',
-  'roasted': 'var(--fw-roasted)',
-  'nutty': 'var(--fw-nutty)',
-  'mineral': 'var(--fw-mineral)',
-  'earthy': 'var(--fw-earthy)',
-  'molecule': 'var(--fw-molecule)',
+  'fruity': 'var(--fx-flavor-fruity)',
+  'floral': 'var(--fx-flavor-floral)',
+  'vegetal': 'var(--fx-flavor-vegetal)',
+  'smoky': 'var(--fx-flavor-smoky)',
+  'sweet': 'var(--fx-flavor-sweet)',
+  'spicy': 'var(--fx-flavor-spicy)',
+  'bitter': 'var(--fx-flavor-bitter)',
+  'sour': 'var(--fx-flavor-sour)',
+  'roasted': 'var(--fx-flavor-roasted)',
+  'nutty': 'var(--fx-flavor-nutty)',
+  'mineral': 'var(--fx-flavor-mineral)',
+  'earthy': 'var(--fx-flavor-earthy)',
+  'molecule': 'var(--fx-flavor-molecule)',
 
   // Metaphor Categories
-  'mood-emotion': 'var(--fw-mood-emotion)',
-  'setting-place': 'var(--fw-setting-place)',
-  'texture-material': 'var(--fw-texture-material)',
-  'color-light': 'var(--fw-color-light)',
-  'movement-shape': 'var(--fw-movement-shape)',
-  'character-persona': 'var(--fw-character-persona)',
-  'temporal-time': 'var(--fw-temporal-time)',
+  'mood-emotion': 'var(--fx-flavor-mood-emotion)',
+  'setting-place': 'var(--fx-flavor-setting-place)',
+  'texture-material': 'var(--fx-flavor-texture-material)',
+  'color-light': 'var(--fx-flavor-color-light)',
+  'movement-shape': 'var(--fx-flavor-movement-shape)',
+  'character-persona': 'var(--fx-flavor-character-persona)',
+  'temporal-time': 'var(--fx-flavor-temporal-time)',
 
   // Legacy Spanish/English mappings (keeping for backward compatibility)
-  'malta': 'var(--fw-roasted)',      // Malt -> Roasted
-  'lúpulo': 'var(--fw-vegetal)',     // Hops -> Vegetal
-  'dulce': 'var(--fw-sweet)',        // Sweet
-  'especiado': 'var(--fw-spicy)',    // Spicy
-  'frutal': 'var(--fw-fruity)',      // Fruit
-  'ahumado': 'var(--fw-smoky)',      // Smoky
-  'herbal': 'var(--fw-vegetal)',     // Herbal -> Vegetal
-  'cítrico': 'var(--fw-sour)',       // Citrus -> Sour
-  'fruit': 'var(--fw-fruity)',       // English fruit
-  'citrus': 'var(--fw-sour)',        // English citrus -> Sour
-  'woody': 'var(--fw-roasted)'       // Woody -> Roasted
+  'malta': 'var(--fx-flavor-roasted)',      // Malt -> Roasted
+  'lúpulo': 'var(--fx-flavor-vegetal)',     // Hops -> Vegetal
+  'dulce': 'var(--fx-flavor-sweet)',        // Sweet
+  'especiado': 'var(--fx-flavor-spicy)',    // Spicy
+  'frutal': 'var(--fx-flavor-fruity)',      // Fruit
+  'ahumado': 'var(--fx-flavor-smoky)',      // Smoky
+  'herbal': 'var(--fx-flavor-vegetal)',     // Herbal -> Vegetal
+  'cítrico': 'var(--fx-flavor-sour)',       // Citrus -> Sour
+  'fruit': 'var(--fx-flavor-fruity)',       // English fruit
+  'citrus': 'var(--fx-flavor-sour)',        // English citrus -> Sour
+  'woody': 'var(--fx-flavor-roasted)'       // Woody -> Roasted
 }
 
 function colorForNode(node: d3.HierarchyRectangularNode<FlavorNode>) {
@@ -60,7 +60,7 @@ function colorForNode(node: d3.HierarchyRectangularNode<FlavorNode>) {
   // Use new CVD-safe color palette with fallback chain
   const base = FLAVORWHEEL_COLORS[topCategory] ||
                (MEXICAN_FLAVOR_CATEGORIES as Record<string, { color: string }>)[topCategory]?.color ||
-               'var(--fw-mineral)' // Default to mineral gray
+               'var(--fx-flavor-mineral)' // Default to mineral gray
 
   // For CSS custom properties, return as-is for depth 0 and 1
   const depth = node.depth

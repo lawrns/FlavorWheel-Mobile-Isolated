@@ -762,16 +762,16 @@ export default function TastingInputPageClient({ params }: TastingInputPageClien
               <div key={category.id} className="mb-4">
                 <label className="block text-gray-700">{category.name}</label>
                 {category.parameterType === 'subjective_input' && (
-                  <textarea className="w-full border p-2 rounded" placeholder={`Describe the ${category.name.toLowerCase()}...`} />
+                  <textarea className="w-full border p-2 rounded min-h-[44px] touch-manipulation" placeholder={`Describe the ${category.name.toLowerCase()}...`} />
                 )}
                 {category.parameterType === 'sliding_scale' && (
                   <div>
-                    <input type="range" min="1" max="100" className="w-full" />
+                    <input type="range" min="1" max="100" className="w-full min-h-[44px] touch-manipulation" />
                     <span>50</span>
                   </div>
                 )}
                 {category.parameterType === 'multiple_choice' && (
-                  <select className="w-full border p-2 rounded">
+                  <select className="w-full border p-2 rounded min-h-[44px] touch-manipulation">
                     <option>Select {category.name.toLowerCase()}</option>
                     {(category.options || []).map((option, optIdx) => (
                       <option key={optIdx} value={option}>{option}</option>
@@ -779,10 +779,10 @@ export default function TastingInputPageClient({ params }: TastingInputPageClien
                   </select>
                 )}
                 {category.parameterType === 'exact_answer' && (
-                  <input className="w-full border p-2 rounded" placeholder={`Enter ${category.name.toLowerCase()}`} />
+                  <input className="w-full border p-2 rounded min-h-[44px] touch-manipulation" placeholder={`Enter ${category.name.toLowerCase()}`} />
                 )}
                 {category.parameterType === 'contains_x' && (
-                  <input className="w-full border p-2 rounded" placeholder={`Text containing: ${category.containsText || 'specific term'}`} />
+                  <input className="w-full border p-2 rounded min-h-[44px] touch-manipulation" placeholder={`Text containing: ${category.containsText || 'specific term'}`} />
                 )}
               </div>
             ))
@@ -795,9 +795,9 @@ export default function TastingInputPageClient({ params }: TastingInputPageClien
 
         {/* Mock Action Buttons */}
         <div className="flex flex-col space-y-2">
-          <button className="w-full bg-blue-500 text-white p-3 rounded">Save Progress</button>
+          <button className="w-full bg-blue-500 text-white p-3 rounded min-h-[44px] touch-manipulation">Save Progress</button>
           <button
-            className="w-full bg-green-500 text-white p-3 rounded"
+            className="w-full bg-green-500 text-white p-3 rounded min-h-[44px] touch-manipulation"
             onClick={() => {
               if (currentItemIndex < (tastingData?.items?.length - 1)) {
                 setCurrentItemIndex(currentItemIndex + 1)

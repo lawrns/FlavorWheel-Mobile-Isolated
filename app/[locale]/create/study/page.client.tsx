@@ -591,19 +591,19 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
               <div key={idx} className="mb-4">
                 <label className="block text-gray-700">{cat.name}</label>
                 {cat.parameterType === 'subjective_input' && (
-                  <textarea className="w-full border p-2 rounded" placeholder={`Describe the ${cat.name.toLowerCase()}...`} />
+                  <textarea className="w-full border p-2 rounded min-h-[44px] touch-manipulation" placeholder={`Describe the ${cat.name.toLowerCase()}...`} />
                 )}
                 {cat.parameterType === 'sliding_scale' && (
                   <div>
-                    <input type="range" min="1" max="100" className="w-full" />
+                    <input type="range" min="1" max="100" className="w-full min-h-[44px] touch-manipulation" />
                     <span>50</span>
                   </div>
                 )}
               </div>
             ))}
-            <button className="w-full bg-blue-500 text-white p-3 rounded">Save Progress</button>
+            <button className="w-full bg-blue-500 text-white p-3 rounded min-h-[44px] touch-manipulation">Save Progress</button>
             <button
-              className="w-full bg-green-500 text-white p-3 mt-2 rounded"
+              className="w-full bg-green-500 text-white p-3 min-h-[44px] touch-manipulation mt-2 rounded"
               onClick={() => {
                 if (currentItemIndex < (items.length - 1)) {
                   setCurrentItemIndex(currentItemIndex + 1)
@@ -648,9 +648,9 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
               <p key={idx}><strong>{cat.name}:</strong> [Mock {cat.parameterType === 'sliding_scale' ? '75' : 'Text'}]</p>
             ))}
             <div className="mt-4 h-40 bg-gray-300 rounded flex items-center justify-center">Sunburst Wheel Mock</div>
-            <button className="w-full bg-blue-500 text-white p-3 rounded">Save</button>
+            <button className="w-full bg-blue-500 text-white p-3 rounded min-h-[44px] touch-manipulation">Save</button>
             <button
-              className="w-full bg-green-500 text-white p-3 mt-2 rounded"
+              className="w-full bg-green-500 text-white p-3 min-h-[44px] touch-manipulation mt-2 rounded"
               onClick={() => {
                 setFlowStep('create')
               }}
@@ -693,14 +693,14 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
             </div>
             <div>
               <label className="block text-gray-700">Invite Friends</label>
-              <input className="w-full border p-2 rounded" placeholder="Enter emails" />
+              <input className="w-full border p-2 rounded min-h-[44px] touch-manipulation" placeholder="Enter emails" />
             </div>
             <div>
               <label className="block text-gray-700">Schedule</label>
-              <input type="date" className="w-full border p-2 rounded" />
+              <input type="date" className="w-full border p-2 rounded min-h-[44px] touch-manipulation" />
             </div>
             <button
-              className="w-full bg-blue-500 text-white p-3 rounded"
+              className="w-full bg-blue-500 text-white p-3 rounded min-h-[44px] touch-manipulation"
               onClick={() => setFlowStep('input')}
             >
               Start Now
@@ -733,19 +733,19 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
               <div key={idx} className="mb-4">
                 <label className="block text-gray-700">{cat.name}</label>
                 {cat.parameterType === 'subjective_input' && (
-                  <textarea className="w-full border p-2 rounded" placeholder={`Describe the ${cat.name.toLowerCase()}...`} />
+                  <textarea className="w-full border p-2 rounded min-h-[44px] touch-manipulation" placeholder={`Describe the ${cat.name.toLowerCase()}...`} />
                 )}
                 {cat.parameterType === 'sliding_scale' && (
                   <div>
-                    <input type="range" min="1" max="100" className="w-full" />
+                    <input type="range" min="1" max="100" className="w-full min-h-[44px] touch-manipulation" />
                     <span>50</span>
                   </div>
                 )}
               </div>
             ))}
-            <button className="w-full bg-blue-500 text-white p-3 rounded">Save Progress</button>
+            <button className="w-full bg-blue-500 text-white p-3 rounded min-h-[44px] touch-manipulation">Save Progress</button>
             <button
-              className="w-full bg-green-500 text-white p-3 mt-2 rounded"
+              className="w-full bg-green-500 text-white p-3 min-h-[44px] touch-manipulation mt-2 rounded"
               onClick={() => {
                 if (currentItemIndex < (items.length - 1)) {
                   setCurrentItemIndex(currentItemIndex + 1)
@@ -785,9 +785,9 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
               <p key={idx}><strong>{cat.name}:</strong> [Mock {cat.parameterType === 'sliding_scale' ? '75' : 'Text'}]</p>
             ))}
             <div className="mt-4 h-40 bg-gray-300 rounded flex items-center justify-center">Sunburst Wheel Mock</div>
-            <button className="w-full bg-blue-500 text-white p-3 rounded">Save</button>
+            <button className="w-full bg-blue-500 text-white p-3 rounded min-h-[44px] touch-manipulation">Save</button>
             <button
-              className="w-full bg-green-500 text-white p-3 mt-2 rounded"
+              className="w-full bg-green-500 text-white p-3 min-h-[44px] touch-manipulation mt-2 rounded"
               onClick={() => setFlowStep('create')}
             >
               Share

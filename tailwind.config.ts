@@ -52,12 +52,11 @@ const config: Config = {
         accent: 'var(--fx-accent)',
         'accent-hover': 'var(--fx-accent-hover)',
 
-        // Surface System
+        // Surface System (removed unused elevated variant)
         background: 'var(--fx-bg)',
         'background-subtle': 'var(--fx-bg-subtle)',
         foreground: 'var(--fx-text-primary)',
         surface: 'var(--fx-card)',
-        'surface-elevated': 'var(--fx-elevated)',
 
         // Text Hierarchy
         text: {
@@ -74,15 +73,11 @@ const config: Config = {
           strong: 'var(--fx-border-strong)',
         },
 
-        // State & Feedback
-        success: 'var(--fx-ai-confidence-high)',
-        warning: 'var(--fx-ai-confidence-med)',
+        // State & Feedback (removed unused AI confidence tokens)
         error: 'var(--fx-ai-confidence-low)',
         info: 'var(--fx-accent)',
 
-        // Focus & Interaction
-        focus: 'var(--fx-focus-ring-color)',
-        ring: 'var(--fx-focus-ring-color)',
+        // Focus & Interaction (removed unused focus ring token)
 
         // ===== FX DESIGN TOKENS =====
         // Direct access to fx- design system
@@ -108,23 +103,32 @@ const config: Config = {
         // fx Border colors
         'fx-border-subtle': 'var(--fx-border-subtle)',
         'fx-border-default': 'var(--fx-border-default)',
-        'fx-border-strong': 'var(--fx-border-strong)',
 
-        // fx Brand primitives
-        'fx-brand-brown-500': 'var(--fx-brand-brown-500)',
-        'fx-brand-brown-600': 'var(--fx-brand-brown-600)',
-        'fx-brand-brown-400': 'var(--fx-brand-brown-400)',
-        'fx-brand-gold-500': 'var(--fx-brand-gold-500)',
-        'fx-brand-gold-600': 'var(--fx-brand-gold-600)',
-        'fx-brand-gold-400': 'var(--fx-brand-gold-400)',
-        'fx-brand-green-500': 'var(--fx-brand-green-500)',
-        'fx-brand-green-600': 'var(--fx-brand-green-600)',
-        'fx-brand-green-400': 'var(--fx-brand-green-400)',
+        // fx Brand primitives (removed unused tokens - keeping only essentials)
 
-        // fx AI confidence colors
-        'fx-ai-confidence-low': 'var(--fx-ai-confidence-low)',
-        'fx-ai-confidence-med': 'var(--fx-ai-confidence-med)',
-        'fx-ai-confidence-high': 'var(--fx-ai-confidence-high)',
+        // fx Flavor visualization colors (migrated from fw- tokens)
+        'fx-flavor-fruity': 'var(--fx-flavor-fruity)',
+        'fx-flavor-floral': 'var(--fx-flavor-floral)',
+        'fx-flavor-vegetal': 'var(--fx-flavor-vegetal)',
+        'fx-flavor-smoky': 'var(--fx-flavor-smoky)',
+        'fx-flavor-sweet': 'var(--fx-flavor-sweet)',
+        'fx-flavor-spicy': 'var(--fx-flavor-spicy)',
+        'fx-flavor-bitter': 'var(--fx-flavor-bitter)',
+        'fx-flavor-sour': 'var(--fx-flavor-sour)',
+        'fx-flavor-roasted': 'var(--fx-flavor-roasted)',
+        'fx-flavor-nutty': 'var(--fx-flavor-nutty)',
+        'fx-flavor-mineral': 'var(--fx-flavor-mineral)',
+        'fx-flavor-earthy': 'var(--fx-flavor-earthy)',
+        'fx-flavor-molecule': 'var(--fx-flavor-molecule)',
+
+        // fx Flavor metaphor categories
+        'fx-flavor-mood-emotion': 'var(--fx-flavor-mood-emotion)',
+        'fx-flavor-setting-place': 'var(--fx-flavor-setting-place)',
+        'fx-flavor-texture-material': 'var(--fx-flavor-texture-material)',
+        'fx-flavor-color-light': 'var(--fx-flavor-color-light)',
+        'fx-flavor-movement-shape': 'var(--fx-flavor-movement-shape)',
+        'fx-flavor-character-persona': 'var(--fx-flavor-character-persona)',
+        'fx-flavor-temporal-time': 'var(--fx-flavor-temporal-time)',
 
         // ===== LEGACY SUPPORT =====
         // Minimal support for existing fw- tokens (will be removed in future)
@@ -152,13 +156,7 @@ const config: Config = {
         '2xl': '1.5rem',
         'full': '9999px',
 
-        // fx Design Token Border Radius (legacy support)
-        'fx-xs': 'var(--fx-radius-xs)',
-        'fx-sm': 'var(--fx-radius-sm)',
-        'fx-md': 'var(--fx-radius-md)',
-        'fx-lg': 'var(--fx-radius-lg)',
-        'fx-xl': 'var(--fx-radius-xl)',
-        'fx-pill': 'var(--fx-radius-pill)',
+        // fx Design Token Border Radius (removed unused border radius tokens)
 
         // Legacy border radius (keeping for compatibility)
         'legacy-card': '16px',
@@ -170,19 +168,10 @@ const config: Config = {
         sans: ['var(--fx-font-body)'],
         mono: ['JetBrains Mono', 'monospace'],
         display: ['var(--fx-font-heading)'],
-
-        // fx Design System fonts
-        'fx-heading': ['var(--fx-font-heading)'],
-        'fx-subheading': ['var(--fx-font-subheading)'],
-        'fx-body': ['var(--fx-font-body)'],
       },
       fontSize: {
         // Unified Typography Scale using CSS custom properties
-        display: ['var(--fx-text-display)', {
-          lineHeight: 'var(--fx-line-height-tight)',
-          fontWeight: 'var(--fx-weight-bold)',
-          fontFamily: 'var(--fx-font-heading)'
-        }],
+        // Unified typography scale (removed unused display token)
         h1: ['var(--fx-text-h1)', {
           lineHeight: 'var(--fx-line-height-tight)',
           fontWeight: 'var(--fx-weight-bold)',
@@ -218,16 +207,6 @@ const config: Config = {
           fontWeight: 'var(--fx-weight-regular)',
           fontFamily: 'var(--fx-font-body)'
         }],
-        label: ['var(--fx-text-label)', {
-          lineHeight: 'var(--fx-line-height-normal)',
-          fontWeight: 'var(--fx-weight-medium)',
-          fontFamily: 'var(--fx-font-body)'
-        }],
-        caption: ['var(--fx-text-caption)', {
-          lineHeight: 'var(--fx-line-height-snug)',
-          fontWeight: 'var(--fx-weight-regular)',
-          fontFamily: 'var(--fx-font-body)'
-        }],
 
         // Legacy support (deprecated)
         xs: ['0.75rem', { lineHeight: '1.1rem' }],
@@ -259,18 +238,7 @@ const config: Config = {
         'container-desktop': 'min(1200px, calc(100vw - 8rem))',
         'container-wide': 'min(1400px, calc(100vw - 10rem))',
 
-        // fx Design Token Spacing (legacy support)
-        'fx-0': 'var(--fx-spacing-0)',
-        'fx-1': 'var(--fx-spacing-1)',
-        'fx-2': 'var(--fx-spacing-2)',
-        'fx-3': 'var(--fx-spacing-3)',
-        'fx-4': 'var(--fx-spacing-4)',
-        'fx-5': 'var(--fx-spacing-5)',
-        'fx-6': 'var(--fx-spacing-6)',
-        'fx-7': 'var(--fx-spacing-7)',
-        'fx-8': 'var(--fx-spacing-8)',
-        'fx-9': 'var(--fx-spacing-9)',
-        'fx-10': 'var(--fx-spacing-10)',
+        // fx Design Token Spacing (removed unused individual spacing tokens)
 
         // Legacy spacing (keeping for compatibility)
         'legacy-xs': '0.25rem',
@@ -289,15 +257,9 @@ const config: Config = {
         'xl': '0 20px 25px rgba(0,0,0,0.2)',
         '2xl': '0 25px 50px rgba(0,0,0,0.25)',
 
-        // fx Design Token Shadows
-        'fx-xs': 'var(--fx-shadow-xs)',
-        'fx-sm': 'var(--fx-shadow-sm)',
-        'fx-md': 'var(--fx-shadow-md)',
-        'fx-lg': 'var(--fx-shadow-lg)',
+        // fx Design Token Shadows (removed unused shadow tokens)
 
-        // fx Premium shadows
-        'fx-premium': 'var(--fx-shadow-premium)',
-        'fx-glow': 'var(--fx-shadow-glow)',
+        // fx Premium shadows (removed unused shadow tokens)
 
         // Legacy shadows (keeping for compatibility)
         'legacy-fx': '0 1px 3px rgba(0,0,0,0.05)',
@@ -314,11 +276,7 @@ const config: Config = {
         'standard': 'ease-in-out',
         'spring': 'cubic-bezier(0.34, 1.56, 0.64, 1)',
 
-        // fx Design Token Easings (legacy support)
-        'fx-standard': 'var(--fx-easing-standard)',
-        'fx-emphasized': 'var(--fx-easing-emphasized)',
-        'fx-entrance': 'var(--fx-easing-entrance)',
-        'fx-exit': 'var(--fx-easing-exit)',
+        // fx Design Token Easings (removed unused easing tokens)
 
         // Legacy (keeping for compatibility)
         'legacy-spring': 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
@@ -348,19 +306,7 @@ const config: Config = {
           to: { opacity: '1', transform: 'scale(1)' }
         },
 
-        // fx Design Token Animation Keyframes (legacy support)
-        'fx-fadeInUp': {
-          from: { opacity: '0', transform: 'translateY(var(--fx-spacing-5))' },
-          to: { opacity: '1', transform: 'translateY(0)' }
-        },
-        'fx-slideInLeft': {
-          from: { opacity: '0', transform: 'translateX(calc(-1 * var(--fx-spacing-5)))' },
-          to: { opacity: '1', transform: 'translateX(0)' }
-        },
-        'fx-slideInRight': {
-          from: { opacity: '0', transform: 'translateX(var(--fx-spacing-5))' },
-          to: { opacity: '1', transform: 'translateX(0)' }
-        },
+        // fx Design Token Animation Keyframes (removed unused animation tokens)
 
         // Legacy keyframes (keeping for compatibility)
         float: {

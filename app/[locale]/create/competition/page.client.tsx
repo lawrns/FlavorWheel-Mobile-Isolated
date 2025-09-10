@@ -460,11 +460,11 @@ export default function CreateCompetitionPage() {
           </div>
           <div>
             <label className="block text-gray-700">Invite Participants</label>
-            <input className="w-full border p-2 rounded" placeholder="Enter emails" />
+            <input className="w-full border p-2 rounded min-h-[44px] touch-manipulation" placeholder="Enter emails" />
           </div>
           <div>
             <label className="block text-gray-700">Competition Date</label>
-            <input type="date" className="w-full border p-2 rounded" />
+            <input type="date" className="w-full border p-2 rounded min-h-[44px] touch-manipulation" />
           </div>
           <button
             className="w-full bg-blue-500 text-white p-3 rounded"
@@ -510,16 +510,16 @@ export default function CreateCompetitionPage() {
             <div key={idx} className="mb-4">
               <label className="block text-gray-700">{cat.category_name}</label>
               {cat.evaluation_type === 'subjective_input' && (
-                <textarea className="w-full border p-2 rounded" placeholder={`Describe the ${cat.category_name.toLowerCase()}...`} />
+                <textarea className="w-full border p-2 rounded min-h-[44px] touch-manipulation" placeholder={`Describe the ${cat.category_name.toLowerCase()}...`} />
               )}
               {cat.evaluation_type === 'sliding_scale' && (
                 <div>
-                  <input type="range" min="1" max="100" className="w-full" />
+                  <input type="range" min="1" max="100" className="w-full min-h-[44px] touch-manipulation" />
                   <span>50</span>
                 </div>
               )}
               {cat.evaluation_type === 'multiple_choice' && (
-                <select className="w-full border p-2 rounded">
+                <select className="w-full border p-2 rounded min-h-[44px] touch-manipulation">
                   <option>Select {cat.category_name.toLowerCase()}</option>
                   {(cat.mc_options || []).map((option, optIdx) => (
                     <option key={optIdx} value={option}>{option}</option>
@@ -527,14 +527,14 @@ export default function CreateCompetitionPage() {
                 </select>
               )}
               {cat.evaluation_type === 'exact_answer' && (
-                <input className="w-full border p-2 rounded" placeholder={`Enter ${cat.category_name.toLowerCase()}`} />
+                <input className="w-full border p-2 rounded min-h-[44px] touch-manipulation" placeholder={`Enter ${cat.category_name.toLowerCase()}`} />
               )}
               {cat.evaluation_type === 'contains_x' && (
-                <input className="w-full border p-2 rounded" placeholder={`Text containing: ${cat.contains_value || 'specific term'}`} />
+                <input className="w-full border p-2 rounded min-h-[44px] touch-manipulation" placeholder={`Text containing: ${cat.contains_value || 'specific term'}`} />
               )}
             </div>
           ))}
-          <button className="w-full bg-blue-500 text-white p-3 rounded">Save Progress</button>
+          <button className="w-full bg-blue-500 text-white p-3 rounded min-h-[44px] touch-manipulation">Save Progress</button>
           <button
             className="w-full bg-green-500 text-white p-3 mt-2 rounded"
             onClick={() => {
@@ -586,7 +586,7 @@ export default function CreateCompetitionPage() {
             <p key={idx}><strong>{cat.category_name}:</strong> [Mock {cat.evaluation_type === 'sliding_scale' ? '75' : 'Text'}]</p>
           ))}
           <div className="mt-4 h-40 bg-gray-300 rounded flex items-center justify-center">Sunburst Wheel Mock</div>
-          <button className="w-full bg-blue-500 text-white p-3 rounded">Save Results</button>
+          <button className="w-full bg-blue-500 text-white p-3 rounded min-h-[44px] touch-manipulation">Save Results</button>
           <button
             className="w-full bg-green-500 text-white p-3 mt-2 rounded"
             onClick={() => setFlowStep('create')}

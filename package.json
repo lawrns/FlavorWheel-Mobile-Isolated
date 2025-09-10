@@ -6,7 +6,14 @@
     "dev": "next dev -p 3010",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "lint:css": "stylelint '**/*.{css,scss}'",
+    "lint:all": "npm run lint && npm run lint:css",
+    "lighthouse": "lhci autorun",
+    "lighthouse:mobile": "lhci autorun --config=mobileConfig",
+    "test:e2e": "playwright test",
+    "test:styling": "playwright test styling-systematization.spec.ts",
+    "ci:quality": "npm run lint:all && npm run test:styling && npm run lighthouse"
   },
   "dependencies": {
     "@playwright/test": "^1.55.0",
@@ -48,6 +55,12 @@
     "cypress": "^15.1.0",
     "eslint": "^8.0.0",
     "eslint-config-next": "14.0.4",
+    "stylelint": "^16.0.0",
+    "stylelint-config-standard": "^36.0.0",
+    "stylelint-config-tailwindcss": "^0.0.7",
+    "@stylelint/postcss-css-in-js": "^0.38.0",
+    "lighthouse": "^11.0.0",
+    "@lhci/cli": "^0.13.0",
     "postcss": "^8.4.32",
     "prettier": "^3.1.0",
     "tailwindcss": "^3.3.6",

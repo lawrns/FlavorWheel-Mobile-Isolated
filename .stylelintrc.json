@@ -1,0 +1,142 @@
+{
+  "extends": [
+    "stylelint-config-standard",
+    "stylelint-config-tailwindcss"
+  ],
+  "plugins": [
+    "@stylelint/postcss-css-in-js"
+  ],
+  "rules": {
+    // ===== DESIGN SYSTEM COMPLIANCE =====
+
+    // Prevent hardcoded colors
+    "color-no-hex": [true, {
+      "severity": "error",
+      "message": "Hardcoded hex colors are deprecated. Use fx- design tokens instead."
+    }],
+
+    // Enforce fx- design token usage
+    "property-allowed-list": [
+      ["/^--fx-/", "/^--tw-/"],
+      {
+        "severity": "warning",
+        "message": "Custom properties should use fx- prefix for design tokens"
+      }
+    ],
+
+    // Prevent legacy fw- classes in CSS
+    "selector-class-pattern": [
+      "^(?!(fw-|bg-amber|text-amber|border-amber|max-w-(sm|md|lg|xl)))[a-zA-Z][a-zA-Z0-9_-]*$",
+      {
+        "severity": "error",
+        "message": "Legacy fw- classes and hardcoded colors are deprecated. Use fx- design tokens and standardized container classes."
+      }
+    ],
+
+    // ===== CONSISTENCY RULES =====
+
+    // Enforce consistent spacing units
+    "declaration-property-value-allowed-list": {
+      "padding": ["/^var\\(--fx-/", "/^0\\.?\\d*rem$/", "/^\\d+px$/"],
+      "margin": ["/^var\\(--fx-/", "/^0\\.?\\d*rem$/", "/^\\d+px$/"],
+      "gap": ["/^var\\(--fx-/", "/^0\\.?\\d*rem$/", "/^\\d+px$/"]
+    },
+
+    // Enforce consistent border radius
+    "declaration-property-value-allowed-list": {
+      "border-radius": ["/^var\\(--fx-/", "/^0\\.?\\d*rem$/", "/^\\d+px$/"]
+    },
+
+    // ===== PERFORMANCE RULES =====
+
+    // Prevent expensive selectors
+    "selector-max-compound-selectors": 3,
+    "selector-max-specificity": "0,3,1",
+
+    // ===== ACCESSIBILITY RULES =====
+
+    // Ensure sufficient color contrast (when possible)
+    "color-contrast": [
+      true,
+      {
+        "severity": "warning"
+      }
+    ],
+
+    // ===== ORGANIZATION RULES =====
+
+    // Enforce alphabetical order for declarations
+    "order/order": [
+      "declarations",
+      {
+        "order": "alphabetical"
+      }
+    ],
+
+    // Group related properties
+    "order/properties-order": [
+      "position",
+      "top",
+      "right",
+      "bottom",
+      "left",
+      "z-index",
+      "display",
+      "flex",
+      "flex-direction",
+      "flex-wrap",
+      "justify-content",
+      "align-items",
+      "align-content",
+      "gap",
+      "grid",
+      "grid-template",
+      "grid-template-columns",
+      "grid-template-rows",
+      "width",
+      "height",
+      "min-width",
+      "min-height",
+      "max-width",
+      "max-height",
+      "padding",
+      "margin",
+      "border",
+      "border-radius",
+      "background",
+      "color",
+      "font",
+      "font-family",
+      "font-size",
+      "font-weight",
+      "line-height",
+      "text-align",
+      "text-decoration",
+      "text-transform",
+      "letter-spacing",
+      "word-spacing",
+      "opacity",
+      "visibility",
+      "overflow",
+      "transform",
+      "transition",
+      "animation"
+    ]
+  },
+
+  "overrides": [
+    {
+      "files": ["**/*.css"],
+      "customSyntax": "@stylelint/postcss-css-in-js"
+    }
+  ],
+
+  "ignoreFiles": [
+    "**/*.js",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/node_modules/**",
+    "**/build/**",
+    "**/.next/**"
+  ]
+}

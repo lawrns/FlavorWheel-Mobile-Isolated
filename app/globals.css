@@ -30,6 +30,31 @@
   --fx-ai-confidence-high: #57A773;
   --fx-gradient-subtle: linear-gradient(180deg, rgba(255,255,255,0.1) 0%, transparent 100%);
 
+  /* ===== FLAVOR WHEEL VISUALIZATION COLORS ===== */
+  /* Migrated from fw- tokens to fx- tokens for consistency */
+  --fx-flavor-fruity: #E4572E;
+  --fx-flavor-floral: #E9A2AD;
+  --fx-flavor-vegetal: #57A773;
+  --fx-flavor-smoky: #6B5B95;
+  --fx-flavor-sweet: #DFAF2B;
+  --fx-flavor-spicy: #B53F3F;
+  --fx-flavor-bitter: #2F4858;
+  --fx-flavor-sour: #3B9ED8;
+  --fx-flavor-roasted: #8C5A3A;
+  --fx-flavor-nutty: #C29F6D;
+  --fx-flavor-mineral: #7A8A8C;
+  --fx-flavor-earthy: #6D7F4B;
+  --fx-flavor-molecule: #2F4858;
+
+  /* Metaphor Categories */
+  --fx-flavor-mood-emotion: #6B5B95;
+  --fx-flavor-setting-place: #3B9ED8;
+  --fx-flavor-texture-material: #8C5A3A;
+  --fx-flavor-color-light: #DFAF2B;
+  --fx-flavor-movement-shape: #57A773;
+  --fx-flavor-character-persona: #E9A2AD;
+  --fx-flavor-temporal-time: #7A8A8C;
+
   /* Spacing Primitives */
   --fx-spacing-0: 0px;
   --fx-spacing-1: 2px;
