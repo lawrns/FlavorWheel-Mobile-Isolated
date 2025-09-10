@@ -188,7 +188,7 @@ export function MobileNavigation({
                 {/* Header with Logo */}
                 <div className="mb-4 flex items-center justify-between">
                   <div className="flex items-center">
-                    <LogoOnly size="sm" className="h-8 w-8" />
+                    <LogoOnly size="sm" className="h-16 w-16" />
                   </div>
                 </div>
 
