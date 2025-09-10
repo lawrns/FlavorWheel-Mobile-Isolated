@@ -139,14 +139,17 @@ export class SmartDefaultsService {
   }
 
   private loadUserPreferences() {
+    // Check if we're on the client side before accessing localStorage
+    if (typeof window === 'undefined') return
+
     // Load from localStorage or user profile
-    const saved = localStorage.getItem('user-preferences')
-    if (saved) {
-      try {
+    try {
+      const saved = localStorage.getItem('user-preferences')
+      if (saved) {
         this.userPreferences = JSON.parse(saved)
-      } catch (error) {
-        console.warn('Failed to parse user preferences:', error)
       }
+    } catch (error) {
+      console.warn('Failed to parse user preferences:', error)
     }
 
     // Set defaults if no preferences exist
@@ -162,14 +165,17 @@ export class SmartDefaultsService {
   }
 
   private loadTastingHistory() {
+    // Check if we're on the client side before accessing localStorage
+    if (typeof window === 'undefined') return
+
     // Load recent tasting history for pattern analysis
-    const saved = localStorage.getItem('tasting-history')
-    if (saved) {
-      try {
+    try {
+      const saved = localStorage.getItem('tasting-history')
+      if (saved) {
         this.tastingHistory = JSON.parse(saved).slice(-10) // Last 10 tastings
-      } catch (error) {
-        console.warn('Failed to parse tasting history:', error)
       }
+    } catch (error) {
+      console.warn('Failed to parse tasting history:', error)
     }
   }
 
@@ -335,8 +341,10 @@ export class SmartDefaultsService {
       }
     }
 
-    // Save updated preferences
-    localStorage.setItem('user-preferences', JSON.stringify(this.userPreferences))
+    // Save updated preferences (client-side only)
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('user-preferences', JSON.stringify(this.userPreferences))
+    }
   }
 
   // Save tasting to history for pattern analysis
@@ -348,7 +356,11 @@ export class SmartDefaultsService {
 
     // Keep only last 20 tastings
     this.tastingHistory = this.tastingHistory.slice(-20)
-    localStorage.setItem('tasting-history', JSON.stringify(this.tastingHistory))
+
+    // Save tasting history (client-side only)
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('tasting-history', JSON.stringify(this.tastingHistory))
+    }
 
     // Update preferences based on new tasting
     this.updatePreferences(tasting)
@@ -397,25 +409,30 @@ function generateFlavorBasedNotes(selectedFlavors: string[]): string[] {
 // React hook for using smart defaults
 export function useSmartDefaults() {
   const { user } = useAuth()
-  const [service] = React.useState(() => new SmartDefaultsService())
+  const serviceRef = React.useRef<SmartDefaultsService>()
+
+  // Create service only once
+  if (!serviceRef.current) {
+    serviceRef.current = new SmartDefaultsService()
+  }
 
   React.useEffect(() => {
     // Reload preferences when user changes
-    if (user) {
-      service.loadUserPreferences()
-      service.loadTastingHistory()
+    if (user && serviceRef.current) {
+      serviceRef.current.loadUserPreferences()
+      serviceRef.current.loadTastingHistory()
     }
-  }, [user, service])
+  }, [user]) // Remove service from dependencies
 
   return {
-    getBeverageDefaults: (productType: string) => service.getBeverageDefaults(productType),
-    getRecommendedBeverageType: () => service.getRecommendedBeverageType(),
+    getBeverageDefaults: (productType: string) => serviceRef.current?.getBeverageDefaults(productType),
+    getRecommendedBeverageType: () => serviceRef.current?.getRecommendedBeverageType() || 'wine',
     getFlavorSuggestions: (productType: string, selected: string[] = []) =>
-      service.getFlavorSuggestions(productType, selected),
-    getRatingSuggestion: (productType: string) => service.getRatingSuggestion(productType),
+      serviceRef.current?.getFlavorSuggestions(productType, selected) || [],
+    getRatingSuggestion: (productType: string) => serviceRef.current?.getRatingSuggestion(productType) || 5,
     getNoteSuggestions: (productType: string, selectedFlavors: string[] = []) =>
-      service.getNoteSuggestions(productType, selectedFlavors),
-    saveTasting: (tasting: any) => service.saveTasting(tasting)
+      serviceRef.current?.getNoteSuggestions(productType, selectedFlavors) || [],
+    saveTasting: (tasting: any) => serviceRef.current?.saveTasting(tasting)
   }
 }
 

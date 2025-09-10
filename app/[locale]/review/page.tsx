@@ -18,7 +18,7 @@ import { Slider } from '@/components/ui/slider'
 import { PhotoUpload } from '@/components/ui/photo-upload'
 import { useSupabase } from '@/components/providers/supabase-provider'
 import { useToast } from '@/hooks/use-toast'
-import { DashboardAppShell } from '@/components/app-shell'
+import { UnifiedAppShell } from '@/components/app-shell'
 import Link from 'next/link'
 
 interface Review {

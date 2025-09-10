@@ -832,7 +832,7 @@ export default function ProfilePage() {
       <div data-testid="tasting-history" style={{ position: 'absolute', left: '-9999px', opacity: 0 }}>
         My First Tequila Tasting
       </div>
-    </DashboardAppShell>
+    </UnifiedAppShell>
   )
 }
 
