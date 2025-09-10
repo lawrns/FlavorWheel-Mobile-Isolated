@@ -7,7 +7,7 @@ import { Home, Plus, User, Settings, Sparkles, QrCode, Menu, X, Star, Zap, Users
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { MOBILE_NAV_ITEMS } from '@/lib/navigation-config'
-import { BrandIcon, BrandTitle } from '@/components/brand'
+import { LogoOnly, BrandTitle } from '@/components/brand'
 import { shouldShowNav } from '@/lib/navigation-visibility'
 import { navProps, navButtonProps, focusProps } from '@/lib/a11y/roles'
 
@@ -187,8 +187,8 @@ export function MobileNavigation({
               <div className="p-4">
                 {/* Header with Logo */}
                 <div className="mb-4 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <BrandIcon size="sm" />
+                  <div className="flex items-center gap-3">
+                    <LogoOnly size="sm" className="h-8 w-8" />
                     <BrandTitle size="sm" />
                   </div>
                 </div>

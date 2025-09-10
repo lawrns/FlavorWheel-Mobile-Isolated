@@ -212,7 +212,7 @@ export function ResponsiveBrand({
   return (
     <div className={cn('flex items-center gap-2', onClick && 'cursor-pointer', className)} onClick={onClick}>
       {/* Always show icon */}
-      {showIconOnMobile && <BrandIcon size="sm" />}
+      {showIconOnMobile && <LogoOnly size="sm" className="h-8 w-8" />}
 
       {/* Responsive title */}
       <div className={cn(

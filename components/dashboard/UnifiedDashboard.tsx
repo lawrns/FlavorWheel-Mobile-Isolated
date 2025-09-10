@@ -15,7 +15,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useStatistics } from '@/hooks/use-statistics'
 import { useSupabase } from '@/components/providers/supabase-provider'
 // DashboardAppShell removed - now using UnifiedAppShell at page level
-import { BrandIcon } from '@/components/brand'
+
 import { SkeletonLoader, LoadingStates, ProgressiveLoader } from '@/components/ui/skeleton-loader'
 
 interface UserStats {

@@ -3,7 +3,7 @@
 import React from 'react'
 import { ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { BrandIcon } from '@/components/brand'
+import { LogoOnly } from '@/components/brand'
 
 interface CreateHeaderProps {
   title: string
@@ -45,7 +45,7 @@ export function CreateHeader({ title, onBack, status, showLogo = false }: Create
         {/* Logo (optional) */}
         {showLogo && (
           <div className="flex items-center gap-2 mr-2">
-            <BrandIcon size="sm" />
+            <LogoOnly size="sm" className="h-8 w-8" />
           </div>
         )}
 

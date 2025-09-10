@@ -564,7 +564,7 @@ function QuickTastingPageInner() {
         {/* Footer Actions - Fixed bottom */}
         <div className="h-24"></div>
       </div>
-    </AppShell>
+    </UnifiedAppShell>
   )
 }
 

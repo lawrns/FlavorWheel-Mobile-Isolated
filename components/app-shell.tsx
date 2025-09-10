@@ -7,7 +7,7 @@ import { Navigation } from '@/components/navigation'
 import { MobileNavigation } from '@/components/ui/mobile-navigation'
 import { cn } from '@/lib/utils'
 import { getActiveNavId, getNavigationItem } from '@/lib/navigation-config'
-import { BrandIcon, BrandTitle } from '@/components/brand'
+import { LogoOnly, BrandTitle } from '@/components/brand'
 
 // Using system fonts for compatibility with Babel configuration
 
@@ -141,8 +141,8 @@ export function AppShell({
           {/* Mobile Header */}
           <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur md:hidden">
             <div className="flex items-center justify-between px-4 py-3">
-              <div className="flex items-center gap-2">
-                <BrandIcon size="sm" />
+              <div className="flex items-center gap-3">
+                <LogoOnly size="sm" className="h-8 w-8" />
                 <BrandTitle size="sm" />
               </div>
             </div>
