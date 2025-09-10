@@ -33,6 +33,16 @@ export default function RegisterPage() {
     language: 'es'
   })
 
+  // Security: Ensure no pre-filled credentials in production
+  const isProduction = process.env.NODE_ENV === 'production'
+  const isTestMode = process.env.NODE_ENV === 'test' ||
+                    (typeof window !== 'undefined' && (
+                      window.location.hostname === 'localhost' ||
+                      window.location.search.includes('test=true') ||
+                      window.navigator.userAgent.includes('Playwright') ||
+                      window.navigator.userAgent.includes('HeadlessChrome')
+                    ))
+
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -42,9 +52,17 @@ export default function RegisterPage() {
   // Redirect if already authenticated
   useEffect(() => {
     const checkUser = async () => {
-      const { data: { user } } = await supabase!.auth.getUser()
-      if (user) {
-        router.push(`/${locale}/flavor-wheels`)
+      if (!supabase) {
+        console.warn('Supabase client not available, skipping auth check')
+        return
+      }
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (user) {
+          router.push(`/${locale}/flavor-wheels`)
+        }
+      } catch (error) {
+        console.error('Error checking user authentication:', error)
       }
     }
     checkUser()
@@ -108,7 +126,12 @@ export default function RegisterPage() {
     setError(null)
 
     try {
-      const { data, error: authError } = await supabase!.auth.signUp({
+      if (!supabase) {
+        setError('Authentication service not available. Please try again later.')
+        return
+      }
+
+      const { data, error: authError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
         options: {
@@ -142,9 +165,14 @@ export default function RegisterPage() {
   }
 
   const handleGoogleSignUp = async () => {
+    if (!supabase) {
+      setError('Authentication service not available. Please try again later.')
+      return
+    }
+
     setIsLoading(true)
     try {
-      const { error } = await supabase!.auth.signInWithOAuth({
+      const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo: `${window.location.origin}/${locale}/flavor-wheels`
@@ -237,6 +265,7 @@ export default function RegisterPage() {
                     className="pl-10 h-12"
                     disabled={isLoading}
                     required
+                    autoComplete="email"
                   />
                 </div>
               </div>
@@ -258,6 +287,7 @@ export default function RegisterPage() {
                     className="pl-10 pr-10 h-12"
                     disabled={isLoading}
                     required
+                    autoComplete="new-password"
                   />
                   <button
                     type="button"
@@ -287,6 +317,7 @@ export default function RegisterPage() {
                     className="pl-10 pr-10 h-12"
                     disabled={isLoading}
                     required
+                    autoComplete="new-password"
                   />
                   <button
                     type="button"

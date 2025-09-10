@@ -18,7 +18,7 @@ import {
   SelectLabel,
 } from '@/components/ui/select'
 import { useRouter } from 'next/navigation'
-import { AppShell } from '@/components/app-shell'
+import { UnifiedAppShell } from '@/components/app-shell'
 
 // Hooks will be loaded dynamically to avoid SSR issues
 
@@ -108,7 +108,6 @@ function QuickTastingPageInner() {
 
   // State management
   const [productType, setProductType] = useState<string>('')
-  const [selectedCategory, setSelectedCategory] = useState<string>('')
   const [flavors, setFlavors] = useState<FlavorDescriptor[]>([])
   const [items, setItems] = useState<TastingItem[]>([
     {
@@ -172,55 +171,6 @@ function QuickTastingPageInner() {
 
           if (hoursDiff < 24) {
             setProductType(parsed.productType || '')
-            setFlavors(parsed.flavors || [])
-            setItems(parsed.items || [{ id: '1', name: '', aroma: '', flavor: '', other: '', overall: 50 }])
-            setLastSaved(draftTime)
-            safeToast({
-              title: "Draft Loaded",
-              description: "Your previous tasting draft has been restored.",
-            })
-          }
-        }
-      } catch (error) {
-        console.error('Error loading draft:', error)
-      }
-    }
-    loadDraft()
-  }, [toast])
-
-  // Auto-save functionality
-  useEffect(() => {
-    const autoSave = () => {
-      if (selectedCategory && items.some(item => item.name.trim() !== '')) {
-        const draftData = {
-          selectedCategory,
-          flavors: flavors.filter(f => f.selected),
-          items,
-          timestamp: new Date().toISOString()
-        }
-        localStorage.setItem('quick-tasting-draft', JSON.stringify(draftData))
-        setLastSaved(new Date())
-      }
-    }
-
-    const timeoutId = setTimeout(autoSave, 2000) // Auto-save after 2 seconds of inactivity
-    return () => clearTimeout(timeoutId)
-  }, [selectedCategory, flavors, items])
-
-  // Load draft on component mount
-  useEffect(() => {
-    const loadDraft = () => {
-      try {
-        const draftData = localStorage.getItem('quick-tasting-draft')
-        if (draftData) {
-          const parsed = JSON.parse(draftData)
-          // Only load if it's recent (within 24 hours)
-          const draftTime = new Date(parsed.timestamp)
-          const now = new Date()
-          const hoursDiff = (now.getTime() - draftTime.getTime()) / (1000 * 60 * 60)
-
-          if (hoursDiff < 24) {
-            setSelectedCategory(parsed.selectedCategory || '')
             setFlavors(parsed.flavors || [])
             setItems(parsed.items || [{ id: '1', name: '', aroma: '', flavor: '', other: '', overall: 50 }])
             setLastSaved(draftTime)
@@ -351,12 +301,10 @@ function QuickTastingPageInner() {
 
 
   return (
-    <AppShell
-      showNavigation
-      showMobileNav
+    <UnifiedAppShell
+      variant="dashboard"
       maxWidth="create"
       backgroundStyle="fx-bg"
-      contentContainer
       header={
         <div className="flex items-center justify-between p-4 border-b">
           <button

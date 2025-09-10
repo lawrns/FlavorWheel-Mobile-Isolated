@@ -35,6 +35,16 @@ export default function LoginPage() {
     email: '',
     password: ''
   })
+
+  // Security: Ensure no pre-filled credentials in production
+  const isProduction = process.env.NODE_ENV === 'production'
+  const isTestMode = process.env.NODE_ENV === 'test' ||
+                    (typeof window !== 'undefined' && (
+                      window.location.hostname === 'localhost' ||
+                      window.location.search.includes('test=true') ||
+                      window.navigator.userAgent.includes('Playwright') ||
+                      window.navigator.userAgent.includes('HeadlessChrome')
+                    ))
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -170,6 +180,7 @@ export default function LoginPage() {
                     className="pl-10 h-12"
                     disabled={isLoading}
                     required
+                    autoComplete="email"
                   />
                 </div>
               </div>
@@ -191,6 +202,7 @@ export default function LoginPage() {
                     className="pl-10 pr-10 h-12"
                     disabled={isLoading}
                     required
+                    autoComplete="current-password"
                   />
                   <button
                     type="button"

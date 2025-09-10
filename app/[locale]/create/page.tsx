@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Calendar, Users, Settings, Zap, Star } from 'lucide-react'
+import { UnifiedAppShell } from '@/components/app-shell'
 
 export default function CreatePage() {
   const params = useParams()
@@ -27,8 +28,9 @@ export default function CreatePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-fx-bg to-fx-bg-subtle">
-      <div className="container mx-auto px-6 py-12 max-w-6xl">
+    <UnifiedAppShell variant="dashboard" backgroundStyle="fx-bg">
+      <div className="min-h-screen bg-gradient-to-br from-fx-bg to-fx-bg-subtle">
+        <div className="container mx-auto px-6 py-12 max-w-6xl">
         {/* Header */}
         <div className="text-center mb-12">
           <Link
@@ -349,6 +351,6 @@ export default function CreatePage() {
           </div>
         </div>
       </div>
-    </div>
+    </UnifiedAppShell>
   )
 }

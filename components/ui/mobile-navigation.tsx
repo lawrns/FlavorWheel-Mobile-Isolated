@@ -48,12 +48,7 @@ export function MobileNavigation({
   // Use centralized navigation visibility logic
   const shouldShowNavigation = shouldShowNav(pathname)
 
-  // Debug logging
-  console.log('MobileNavigation Debug:', {
-    pathname,
-    shouldShowNavigation,
-    isMobile: typeof window !== 'undefined' ? window.innerWidth < 768 : false
-  })
+  // Debug logging removed for production performance
 
   // Instead of returning null, render an empty div to maintain hooks consistency
   if (!shouldShowNavigation) {

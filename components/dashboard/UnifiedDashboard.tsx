@@ -14,7 +14,7 @@ import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useStatistics } from '@/hooks/use-statistics'
 import { useSupabase } from '@/components/providers/supabase-provider'
-import { DashboardAppShell } from '@/components/app-shell'
+// DashboardAppShell removed - now using UnifiedAppShell at page level
 import { BrandIcon } from '@/components/brand'
 import { SkeletonLoader, LoadingStates, ProgressiveLoader } from '@/components/ui/skeleton-loader'
 
@@ -350,8 +350,7 @@ export function UnifiedDashboard() {
 
   // Authenticated User Dashboard
   return (
-    <DashboardAppShell activeNavItem="dashboard">
-      <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100" data-testid="app-ready">
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100" data-testid="app-ready">
         {/* Welcome Header */}
         <div className="bg-white/80 backdrop-blur-sm border-b">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
@@ -538,6 +537,5 @@ export function UnifiedDashboard() {
           </section>
         </div>
       </div>
-    </DashboardAppShell>
   )
 }

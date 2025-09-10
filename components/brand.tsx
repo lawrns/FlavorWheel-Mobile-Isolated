@@ -5,9 +5,9 @@ import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
 // Centralized brand constants to prevent drift
-export const BRAND_NAME = 'FlavatiX'
-export const BRAND_TAGLINE = 'Discover the art of wine tasting! Join 10K+ tasters worldwide and unlock new flavors today!'
-export const BRAND_TAGLINE_SHORT = 'Discover the art of wine tasting!'
+export const BRAND_NAME = 'FlavorWheel México'
+export const BRAND_TAGLINE = 'Discover the art of Mexican beverage tasting! Join 10K+ tasters worldwide and unlock authentic flavors today!'
+export const BRAND_TAGLINE_SHORT = 'Discover the art of Mexican beverage tasting!'
 
 interface BrandHeaderProps {
   variant?: 'full' | 'compact' | 'minimal'
@@ -54,7 +54,7 @@ export function BrandHeader({
           >
             <img
               src="/images/flavatix_logo.png"
-              alt="FlavatiX Logo"
+              alt="FlavorWheel México Logo"
               className="h-full w-full object-contain"
             />
           </div>
@@ -131,7 +131,7 @@ export function BrandIcon({ size = 'md', className, animated = false }: BrandIco
     >
       <img
         src="/images/flavatix_logo.png"
-        alt="FlavatiX Logo"
+        alt="FlavorWheel México Logo"
         className="h-full w-full object-contain"
       />
     </div>
@@ -177,7 +177,7 @@ export function LogoOnly({ size = 'md', className, animated = false, onClick }: 
   const logo = (
     <img
       src="/images/flavatix_logo.png"
-      alt="FlavatiX Logo"
+      alt="FlavorWheel México Logo"
       className={cn('object-contain', onClick && 'cursor-pointer', sizeClasses[size], className)}
       onClick={onClick}
     />
