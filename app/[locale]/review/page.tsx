@@ -881,7 +881,7 @@ export default function ReviewPage() {
           </Tabs>
         </div>
       </div>
-    </DashboardAppShell>
+    </UnifiedAppShell>
   )
 }
 
