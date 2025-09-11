@@ -296,7 +296,7 @@ export default function StudyConfirmPageClient({ params }: StudyConfirmPageClien
           <CardHeader>
             <CardTitle className="text-lg">Evaluation Categories</CardTitle>
             <CardDescription>
-              These are the aspects you'll be evaluating for each item
+              These are the aspects you&apos;ll be evaluating for each item
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -327,7 +327,7 @@ export default function StudyConfirmPageClient({ params }: StudyConfirmPageClien
           <CardHeader>
             <CardTitle className="text-lg">Items to Taste</CardTitle>
             <CardDescription>
-              You'll be evaluating these {tasting.items.length} items
+              You&apos;ll be evaluating these {tasting.items.length} items
             </CardDescription>
           </CardHeader>
           <CardContent>

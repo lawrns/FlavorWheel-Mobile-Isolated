@@ -32,7 +32,7 @@ export function OnboardingOverlay({ isVisible, onComplete, onDismiss }: Onboardi
           </div>
           <p className="text-lg text-muted-foreground">
             Discover the art of spirits tasting with our AI-powered platform.
-            We'll guide you through creating your first tasting experience.
+            We&apos;ll guide you through creating your first tasting experience.
           </p>
         </div>
       ),
@@ -70,8 +70,8 @@ export function OnboardingOverlay({ isVisible, onComplete, onDismiss }: Onboardi
             <ChevronRight className="h-6 w-6 text-white" />
           </div>
           <p className="text-muted-foreground">
-            We'll help you create your first tasting session step by step.
-            Don't worry - you can always go back and make changes!
+            We&apos;ll help you create your first tasting session step by step.
+            Don&apos;t worry - you can always go back and make changes!
           </p>
         </div>
       ),

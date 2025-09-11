@@ -3,7 +3,7 @@
   publish = ".next"
 
 [build.environment]
-  NODE_VERSION = "18.18.0"
+  NODE_VERSION = "18"
   NEXT_PUBLIC_SITE_URL = "https://flavorwheel-mobile.netlify.app"
 
 # Headers for better performance and security

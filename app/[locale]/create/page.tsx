@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { ProgressiveDisclosure, ProgressiveForm, ContextualHelp } from '@/components/ui/progressive-disclosure'
+import { HelpTooltip } from '@/components/ui/help-tooltip'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -10,7 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Calendar, Users, Settings, Zap, Star } from 'lucide-react'
+import { Calendar, Users, Settings, Zap, Star, HelpCircle } from 'lucide-react'
 import { UnifiedAppShell } from '@/components/app-shell'
 
 export default function CreatePage() {
@@ -324,24 +325,16 @@ export default function CreatePage() {
             Our AI assistant can guide you through your first tasting or answer any questions about flavor evaluation.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <ContextualHelp
+            <HelpTooltip
               title="Quick Start Guide"
-              content={
-                <div>
-                  <p className="mb-2">Getting started is easy:</p>
-                  <ol className="list-decimal list-inside space-y-1 text-sm">
-                    <li>Choose Quick Tasting for immediate results</li>
-                    <li>Select your beverage type</li>
-                    <li>Pick the flavors you detect</li>
-                    <li>Rate your overall impression</li>
-                  </ol>
-                </div>
+              content="Getting started is easy: 1. Choose Quick Tasting for immediate results, 2. Select your beverage type, 3. Pick the flavors you detect, 4. Rate your overall impression"
+              trigger={
+                <Button variant="outline" size="sm">
+                  <HelpCircle className="h-4 w-4 mr-2" />
+                  Quick Help
+                </Button>
               }
-            >
-              <Button variant="outline">
-                💡 Quick Start Guide
-              </Button>
-            </ContextualHelp>
+            />
 
             <Link href={`/${locale}/dashboard`}>
               <Button variant="ghost">

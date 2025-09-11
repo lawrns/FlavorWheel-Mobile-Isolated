@@ -102,7 +102,7 @@ export function OfflineHandler({
           <div className="flex items-center space-x-2">
             <WifiOff className="w-4 h-4" />
             <span className="text-sm font-medium">
-              You're offline. Some features may not be available.
+              You&apos;re offline. Some features may not be available.
             </span>
           </div>
 

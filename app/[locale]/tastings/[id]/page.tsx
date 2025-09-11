@@ -222,7 +222,7 @@ export default function TastingDetailPage() {
             <CardContent className="p-6">
               <h2 className="text-xl font-semibold mb-4">Tasting not found</h2>
               <p className="text-muted-foreground mb-6">
-                The tasting session you're looking for doesn't exist or has been removed.
+                The tasting session you&apos;re looking for doesn&apos;t exist or has been removed.
               </p>
               <Link href={`/${locale}/tastings`}>
                 <Button>Back to Tastings</Button>

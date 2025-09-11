@@ -179,7 +179,7 @@ export default function CompetitionConfirmPageClient({ params, searchParams }: C
       <DashboardAppShell activeNavItem="create" maxWidth="full">
         <div className="text-center py-12">
           <h1 className="text-2xl font-bold mb-4">Competition Not Found</h1>
-          <p className="text-muted-foreground mb-6">The competition you're looking for doesn't exist.</p>
+          <p className="text-muted-foreground mb-6">The competition you&apos;re looking for doesn&apos;t exist.</p>
           <Button onClick={() => router.push(`/${params.locale}/create`)}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Create

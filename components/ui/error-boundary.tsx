@@ -370,7 +370,7 @@ function DataErrorFallback({
         Failed to load {dataType}
       </h3>
       <p className="text-gray-600 mb-6 max-w-sm">
-        We couldn't load the {dataType} you requested. This might be a temporary issue.
+        We couldn&apos;t load the {dataType} you requested. This might be a temporary issue.
       </p>
 
       {retryCount < maxRetries && (

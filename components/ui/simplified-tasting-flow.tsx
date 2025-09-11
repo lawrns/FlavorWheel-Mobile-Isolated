@@ -387,7 +387,7 @@ export function SimplifiedTastingFlow() {
 
             <div className="bg-green-50 p-4 rounded-lg border border-green-200">
               <p className="text-sm text-green-800">
-                🎉 <strong>Great job!</strong> You're about to complete your first simplified tasting.
+                🎉 <strong>Great job!</strong> You&apos;re about to complete your first simplified tasting.
                 Your feedback helps improve our AI recommendations for everyone.
               </p>
             </div>

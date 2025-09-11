@@ -291,7 +291,7 @@ export default function CompetitionResultsPage() {
             <CardContent className="p-6">
               <h2 className="text-xl font-semibold mb-4">Competition not found</h2>
               <p className="text-muted-foreground mb-6">
-                The competition results you're looking for don't exist.
+                The competition results you&apos;re looking for don&apos;t exist.
               </p>
               <Link href={`/${locale}/competition`}>
                 <Button>Back to Competitions</Button>

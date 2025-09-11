@@ -373,7 +373,7 @@ export default function CompetitionDetailPage() {
             <CardContent className="p-6">
               <h2 className="text-xl font-semibold mb-4">Competition not found</h2>
               <p className="text-muted-foreground mb-6">
-                The competition you're looking for doesn't exist or has been removed.
+                The competition you&apos;re looking for doesn&apos;t exist or has been removed.
               </p>
               <Link href={`/${locale}/competition`}>
                 <Button>Back to Competitions</Button>

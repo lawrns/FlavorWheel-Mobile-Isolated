@@ -390,7 +390,7 @@ export default function SettingsPage() {
                   <div className="space-y-1">
                     <Label>Social Activity</Label>
                     <p className="text-sm text-muted-foreground">
-                      Notifications about friends' activity
+                      Notifications about friends&apos; activity
                     </p>
                   </div>
                   <Switch

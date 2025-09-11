@@ -221,7 +221,7 @@ export default function StudySessionPage() {
             <CardContent className="p-6">
               <h2 className="text-xl font-semibold mb-4">Study session not found</h2>
               <p className="text-muted-foreground mb-6">
-                The study session you're looking for doesn't exist or has been removed.
+                The study session you&apos;re looking for doesn&apos;t exist or has been removed.
               </p>
               <Link href={`/${locale}/study`}>
                 <Button>Back to Study</Button>

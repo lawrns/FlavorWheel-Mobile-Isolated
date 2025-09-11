@@ -587,7 +587,7 @@ export default function FlavorWheelsPage() {
               onClick={() => setSelectedSection('friends')}
             >
               <Users className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-              <span className="hidden sm:inline">Friends' Tastings</span>
+              <span className="hidden sm:inline">Friends&apos; Tastings</span>
               <span className="sm:hidden">Friends</span>
               <Badge
                 variant="secondary"
@@ -761,7 +761,7 @@ export default function FlavorWheelsPage() {
                   <CardHeader className="pb-3 sm:pb-4">
                     <CardTitle className="flex items-center space-x-2 text-base sm:text-lg">
                       <Users className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
-                      <span>Friends' Tastings</span>
+                      <span>Friends&apos; Tastings</span>
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="pt-0">

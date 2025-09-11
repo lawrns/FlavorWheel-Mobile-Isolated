@@ -154,8 +154,8 @@ export default function CreateStudyPage() {
           evaluation_type: cat.evaluation_type,
           mc_options: cat.mc_options,
           scale_meta: cat.scale_meta,
-          contains_value: cat.contains_value,
-          category_notes_placeholder: cat.category_notes_placeholder
+          contains_value: (cat as any).contains_value || '',
+          category_notes_placeholder: (cat as any).category_notes_placeholder || ''
         }))
       }))
       setShowTemplatePicker(false)

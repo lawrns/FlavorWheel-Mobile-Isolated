@@ -268,7 +268,7 @@ export function NetworkAwareLoader({
             <AlertTriangle className="w-8 h-8 text-yellow-600" />
           </div>
           <h3 className="text-lg font-semibold text-foreground mb-2">
-            You're offline
+            You&apos;re offline
           </h3>
           <p className="text-sm text-muted-foreground">
             Some features may not be available. Please check your connection.
