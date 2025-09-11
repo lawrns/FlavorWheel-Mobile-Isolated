@@ -16,28 +16,27 @@ describe('Button Component', () => {
 
   it('should render different variants correctly', () => {
     const { rerender } = render(<Button variant="default">Default</Button>)
-    expect(screen.getByRole('button')).toHaveClass('bg-primary')
+    expect(screen.getByRole('button')).toHaveClass('bg-gradient-to-r', 'from-fx-primary', 'to-fx-primary-hover')
 
     rerender(<Button variant="destructive">Destructive</Button>)
-    expect(screen.getByRole('button')).toHaveClass('bg-destructive')
+    expect(screen.getByRole('button')).toHaveClass('bg-red-600')
 
     rerender(<Button variant="outline">Outline</Button>)
-    expect(screen.getByRole('button')).toHaveClass('border', 'border-input')
+    expect(screen.getByRole('button')).toHaveClass('border', 'border-fx-border-default')
 
     rerender(<Button variant="secondary">Secondary</Button>)
-    expect(screen.getByRole('button')).toHaveClass('bg-secondary')
+    expect(screen.getByRole('button')).toHaveClass('bg-fx-bg', 'text-fx-text-primary')
 
     rerender(<Button variant="ghost">Ghost</Button>)
-    expect(screen.getByRole('button')).toHaveClass('hover:bg-accent')
+    expect(screen.getByRole('button')).toHaveClass('hover:bg-fx-bg-subtle')
 
     rerender(<Button variant="link">Link</Button>)
-    expect(screen.getByRole('button')).toHaveClass('text-primary', 'underline-offset-4')
+    expect(screen.getByRole('button')).toHaveClass('text-fx-primary', 'underline-offset-4')
   })
 
   it('should render different sizes correctly', () => {
-    const { rerender } = render(<Button size="default">Default</Button>)
-    const defaultButton = screen.getByRole('button')
-    expect(defaultButton).toHaveClass('inline-flex', 'items-center', 'justify-center')
+    const { rerender } = render(<Button size="md">Medium</Button>)
+    expect(screen.getByRole('button')).toHaveClass('h-9', 'px-4')
 
     rerender(<Button size="sm">Small</Button>)
     expect(screen.getByRole('button')).toHaveClass('h-8', 'px-3')
@@ -45,9 +44,8 @@ describe('Button Component', () => {
     rerender(<Button size="lg">Large</Button>)
     expect(screen.getByRole('button')).toHaveClass('h-10', 'px-6')
 
-    rerender(<Button size="icon">Icon</Button>)
-    const iconButton = screen.getByRole('button')
-    expect(iconButton).toHaveClass('inline-flex', 'items-center', 'justify-center')
+    rerender(<Button size="xl">XL</Button>)
+    expect(screen.getByRole('button')).toHaveClass('h-12', 'px-8')
   })
 
   it('should handle click events', async () => {

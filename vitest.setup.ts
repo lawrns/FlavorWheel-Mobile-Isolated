@@ -7,6 +7,12 @@ import * as matchers from '@testing-library/jest-dom/matchers'
 // Extend Vitest's expect with Testing Library matchers
 expect.extend(matchers)
 
+// Make Jest-style globals available via Vitest
+// Map global `jest` to `vi` so tests using jest.fn() work
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+;(globalThis as any).jest = vi
+
+
 // Mock Next.js router
 const mockRouter = {
   route: '/',

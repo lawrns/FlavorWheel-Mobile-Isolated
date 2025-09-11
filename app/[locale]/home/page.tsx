@@ -1,6 +1,7 @@
 'use client'
 
 import { UnifiedDashboard } from '@/components/dashboard/UnifiedDashboard'
+import { UnifiedAppShell } from '@/components/app-shell'
 
 /**
  * Home Dashboard Page
@@ -8,6 +9,9 @@ import { UnifiedDashboard } from '@/components/dashboard/UnifiedDashboard'
  * This is the primary landing spot after login
  */
 export default function HomePage() {
-  return <UnifiedDashboard />
+  return (
+    <UnifiedAppShell variant="dashboard">
+      <UnifiedDashboard />
+    </UnifiedAppShell>
+  )
 }
-
