@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom'
+import React from 'react'
 import { expect, afterEach } from 'vitest'
 import { cleanup } from '@testing-library/react'
 import * as matchers from '@testing-library/jest-dom/matchers'
@@ -92,15 +93,16 @@ vi.mock('@supabase/supabase-js', () => ({
   })),
 }))
 
+
 // Mock framer-motion
 vi.mock('framer-motion', () => ({
   motion: {
-    div: ({ children, ...props }: any) => <div {...props}>{children}</div>,
-    span: ({ children, ...props }: any) => <span {...props}>{children}</span>,
-    button: ({ children, ...props }: any) => <button {...props}>{children}</button>,
-    img: ({ children, ...props }: any) => <img {...props}>{children}</img>,
-    svg: ({ children, ...props }: any) => <svg {...props}>{children}</svg>,
-    path: ({ children, ...props }: any) => <path {...props}>{children}</path>,
+    div: ({ children, ...props }: any) => React.createElement('div', props, children),
+    span: ({ children, ...props }: any) => React.createElement('span', props, children),
+    button: ({ children, ...props }: any) => React.createElement('button', props, children),
+    img: ({ ...props }: any) => React.createElement('img', props),
+    svg: ({ children, ...props }: any) => React.createElement('svg', props, children),
+    path: ({ children, ...props }: any) => React.createElement('path', props, children),
   },
   AnimatePresence: ({ children }: any) => children,
   useAnimation: () => ({

@@ -1,0 +1,83 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e4]:
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - generic [ref=e10]: U
+          - generic [ref=e11]:
+            - heading "Welcome back, Flavor Explorer!" [level=1] [ref=e12]
+            - paragraph [ref=e13]: Ready to discover new flavors today?
+        - generic [ref=e14]:
+          - generic [ref=e15]:
+            - img [ref=e16]
+            - generic [ref=e18]: 7 day streak
+          - generic [ref=e19]: Keep it up! 🔥
+      - generic [ref=e20]:
+        - generic [ref=e21]:
+          - heading "Quick Actions" [level=2] [ref=e22]
+          - generic [ref=e23]:
+            - generic [ref=e25] [cursor=pointer]:
+              - img [ref=e28] [cursor=pointer]
+              - heading "Quick Taste" [level=3] [ref=e30] [cursor=pointer]
+              - paragraph [ref=e31] [cursor=pointer]: Start a fast, guided tasting experience
+            - generic [ref=e33] [cursor=pointer]:
+              - img [ref=e36] [cursor=pointer]
+              - heading "Create Tasting" [level=3] [ref=e40] [cursor=pointer]
+              - paragraph [ref=e41] [cursor=pointer]: Set up a structured tasting event
+            - generic [ref=e43] [cursor=pointer]:
+              - img [ref=e46] [cursor=pointer]
+              - heading "Review" [level=3] [ref=e49] [cursor=pointer]
+              - paragraph [ref=e50] [cursor=pointer]: Write detailed reviews and share insights
+            - generic [ref=e52] [cursor=pointer]:
+              - img [ref=e55] [cursor=pointer]
+              - heading "Flavor Wheels" [level=3] [ref=e57] [cursor=pointer]
+              - paragraph [ref=e58] [cursor=pointer]: Explore and create personalized flavor visualizations
+        - generic [ref=e59]:
+          - heading "Your Progress" [level=2] [ref=e60]
+          - generic [ref=e62]:
+            - generic [ref=e65]:
+              - generic [ref=e66]:
+                - paragraph [ref=e67]: Total Tastings
+                - paragraph [ref=e68]: "12"
+              - img [ref=e69]
+            - generic [ref=e75]:
+              - generic [ref=e76]:
+                - paragraph [ref=e77]: Reviews Written
+                - paragraph [ref=e78]: "8"
+              - img [ref=e79]
+            - generic [ref=e83]:
+              - generic [ref=e84]:
+                - paragraph [ref=e85]: Avg Rating
+                - paragraph [ref=e86]: "8.2"
+              - img [ref=e87]
+            - generic [ref=e92]:
+              - generic [ref=e93]:
+                - paragraph [ref=e94]: Achievements
+                - paragraph [ref=e95]: "5"
+              - img [ref=e96]
+        - generic [ref=e102]:
+          - heading "Recent Activity" [level=2] [ref=e103]
+          - generic [ref=e107]:
+            - generic [ref=e108]:
+              - img [ref=e110]
+              - generic [ref=e114]:
+                - paragraph [ref=e115]: "Completed tasting: Premium Blanco Tequila"
+                - paragraph [ref=e116]: 9/11/2025
+              - generic [ref=e117]: +10 pts
+            - generic [ref=e118]:
+              - img [ref=e120]
+              - generic [ref=e126]:
+                - paragraph [ref=e127]: Earned "Flavor Explorer" badge
+                - paragraph [ref=e128]: 9/10/2025
+              - generic [ref=e129]: +25 pts
+            - generic [ref=e130]:
+              - img [ref=e132]
+              - generic [ref=e134]:
+                - paragraph [ref=e135]: Reviewed Aged Reposado Mezcal
+                - paragraph [ref=e136]: 9/9/2025
+              - generic [ref=e137]: +15 pts
+  - alert [ref=e139]
+```

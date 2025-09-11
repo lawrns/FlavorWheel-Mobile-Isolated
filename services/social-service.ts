@@ -164,11 +164,11 @@ export async function getNearbyEvents(
       .map((event: any) => {
         const eventLat = event.characteristics?.location?.latitude
         const eventLng = event.characteristics?.location?.longitude
-        
+
         if (!eventLat || !eventLng) return null
 
         const distance = calculateDistance(latitude, longitude, eventLat, eventLng)
-        
+
         if (distance > radiusKm) return null
 
         return {
@@ -321,10 +321,238 @@ function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: numbe
   const R = 6371 // Earth's radius in kilometers
   const dLat = (lat2 - lat1) * Math.PI / 180
   const dLon = (lon2 - lon1) * Math.PI / 180
-  const a = 
+  const a =
     Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
     Math.sin(dLon/2) * Math.sin(dLon/2)
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
   return R * c
+}
+
+
+// --- Minimal social features used in tests ---
+export async function createTastingShare(
+  share: { tastingId: string; shareType: 'public' | 'private'; expiresAt?: string; allowedUsers?: string[] },
+  userId: string
+) {
+  const payload: any = {
+    tasting_id: share.tastingId,
+    share_type: share.shareType,
+    created_by: userId,
+  }
+  if (share.expiresAt) payload.expires_at = share.expiresAt
+  if (share.allowedUsers) payload.allowed_users = share.allowedUsers
+
+  const { data, error } = await supabase
+    .from('tasting_shares')
+    .insert(payload)
+    .select()
+    .single()
+  if (error) throw error
+  return data
+}
+
+export async function getTastingShares(tastingId: string) {
+  const { data, error } = await supabase
+    .from('tasting_shares')
+    .select('*')
+    .eq('tasting_id', tastingId)
+    .order('created_at', { ascending: false })
+  if (error) throw error
+  return data || []
+}
+
+export async function createComment(
+  input: { tastingId: string; content: string; parentId?: string | null },
+  userId: string
+) {
+  const { data, error } = await supabase
+    .from('comments')
+    .insert({
+      tasting_id: input.tastingId,
+      content: input.content,
+      parent_id: input.parentId ?? null,
+      user_id: userId,
+    })
+    .select()
+    .single()
+  if (error) throw error
+  return data
+}
+
+export async function getComments(tastingId: string) {
+  const { data, error } = await supabase
+    .from('comments')
+    .select('*')
+    .eq('tasting_id', tastingId)
+    .order('created_at', { ascending: true })
+  if (error) throw error
+  return data || []
+}
+
+export async function likeComment(commentId: string, userId: string) {
+  const { data, error } = await supabase
+    .from('comment_likes')
+    .insert({ comment_id: commentId, user_id: userId })
+    .select()
+    .single()
+  if (error) throw error
+  return data
+}
+
+export async function unlikeComment(commentId: string, userId: string) {
+  const { error } = await supabase
+    .from('comment_likes')
+    .delete()
+    .eq('comment_id', commentId)
+  if (error) throw error
+}
+
+export async function followUser(targetUserId: string, followerId: string) {
+  if (targetUserId === followerId) throw new Error('Cannot follow yourself')
+  const { data, error } = await supabase
+    .from('follows')
+    .insert({ following_id: targetUserId, follower_id: followerId })
+    .select()
+    .single()
+  if (error) throw error
+  return data
+}
+
+export async function unfollowUser(targetUserId: string, followerId: string) {
+  const { error } = await supabase
+    .from('follows')
+    .delete()
+    .eq('following_id', targetUserId)
+  if (error) throw error
+}
+
+export async function getFollowers(userId: string) {
+  const { data, error } = await supabase
+    .from('follows')
+    .select('*')
+    .eq('following_id', userId)
+    .order('created_at', { ascending: false })
+  if (error) throw error
+  return data || []
+}
+
+export async function getFollowing(userId: string) {
+  const { data, error } = await supabase
+    .from('follows')
+    .select('*')
+    .eq('follower_id', userId)
+    .order('created_at', { ascending: false })
+  if (error) throw error
+  return data || []
+}
+
+export async function createTastingGroup(
+  data: { name: string; description?: string; isPrivate?: boolean; maxMembers?: number },
+  userId: string
+) {
+  const payload = {
+    name: data.name,
+    description: data.description ?? null,
+    is_private: !!data.isPrivate,
+    max_members: data.maxMembers ?? 0,
+    created_by: userId,
+  }
+  const { data: res, error } = await supabase
+    .from('tasting_groups')
+    .insert(payload)
+    .select()
+    .single()
+  if (error) throw error
+  return res
+}
+
+export async function joinTastingGroup(groupId: string, userId: string) {
+  const { data, error } = await supabase
+    .from('group_members')
+    .insert({ group_id: groupId, user_id: userId, role: 'member' })
+    .select()
+    .single()
+  if (error) throw error
+  return data
+}
+
+export async function leaveTastingGroup(groupId: string, userId: string) {
+  const { error } = await supabase
+    .from('group_members')
+    .delete()
+    .eq('group_id', groupId)
+  if (error) throw error
+}
+
+export async function inviteToGroup(
+  data: { groupId: string; inviteeEmail: string; message?: string },
+  userId: string
+) {
+  const { data: res, error } = await supabase
+    .from('group_invitations')
+    .insert({
+      group_id: data.groupId,
+      invitee_email: data.inviteeEmail,
+      message: data.message ?? null,
+      invited_by: userId,
+      status: 'pending',
+    })
+    .select()
+    .single()
+  if (error) throw error
+  return res
+}
+
+export async function getGroupMembers(groupId: string) {
+  const { data, error } = await supabase
+    .from('group_members')
+    .select('*')
+    .eq('group_id', groupId)
+    .order('joined_at', { ascending: false })
+  if (error) throw error
+  return data || []
+}
+
+export async function shareToSocialMedia(
+  data: { tastingId: string; platform: string; message?: string },
+  userId: string
+) {
+  const { data: res, error } = await supabase
+    .from('social_shares')
+    .insert({
+      tasting_id: data.tastingId,
+      platform: data.platform,
+      message: data.message ?? null,
+      user_id: userId,
+    })
+    .select()
+    .single()
+  if (error) throw error
+  return res
+}
+
+export async function getSocialFeed(userId: string, filters?: { type?: string }) {
+  let query: any = supabase.from('activities').select('*').order('created_at', { ascending: false })
+  if (filters?.type) {
+    query = query.eq('type', filters.type)
+  }
+  const { data, error } = await query.limit(50)
+  if (error) throw error
+  return data || []
+}
+
+export async function getUserActivity(userId: string, options?: { limit?: number; startDate?: string; endDate?: string }) {
+  let query: any = supabase
+    .from('activities')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+
+  if (options?.startDate) query = query.gte('created_at', options.startDate)
+  if (options?.endDate) query = query.lte('created_at', options.endDate)
+
+  const { data, error } = await query.limit(options?.limit ?? 50)
+  if (error) throw error
+  return data || []
 }

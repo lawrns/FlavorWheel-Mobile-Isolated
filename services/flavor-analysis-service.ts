@@ -601,13 +601,16 @@ export function extractFlavorsFromText(text: string): string[] {
   } catch (error) {
     console.warn('Failed to extract flavors from text, using fallback:', error)
 
-    // Fallback: simple word extraction
-    const words = text.toLowerCase()
-      .replace(/[^\w\s]/g, ' ')
-      .split(/\s+/)
-      .filter(word => word.length > 2)
-
-    return words
+    // Fallback: naive keyword scan using a basic descriptor list to ensure non-empty results for flavorful text
+    const fallbackTerms = [
+      'agave','maguey','mezcal','tequila','citrus','lemon','lime','orange','grapefruit','floral','rose','jasmine','herbal','mint','eucalyptus','smoky','smoke','woody','mineral','sweet','honey','caramel','vanilla','chocolate','spicy','pepper','cinnamon','cardamom','clove','ginger','nutmeg','fruit','fruity','apple','berry','cherry','tropical'
+    ]
+    const lc = text.toLowerCase()
+    const hits = new Set<string>()
+    for (const term of fallbackTerms) {
+      if (lc.includes(term)) hits.add(term)
+    }
+    return Array.from(hits)
   }
 }
 
@@ -620,7 +623,7 @@ export function buildFlavorHierarchy(keywords: string[], productType: string = '
   const hierarchy: FlavorWheelData = {
     name: `${productType.charAt(0).toUpperCase() + productType.slice(1)} Flavors`,
     color: '#8B4513',
-    percentage: 100,
+    percentage: keywords.length === 0 ? 0 : 100,
     intensity: 5,
     count: keywords.length,
     subcategories: []

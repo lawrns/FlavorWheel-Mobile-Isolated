@@ -97,7 +97,8 @@ export default defineConfig({
       '@/hooks': path.resolve(__dirname, './hooks'),
       '@/services': path.resolve(__dirname, './services'),
       '@/utils': path.resolve(__dirname, './lib/utils'),
-      '@/test-utils': path.resolve(__dirname, './__tests__/utils')
+      '@/test-utils': path.resolve(__dirname, './__tests__/utils'),
+      '@jest/globals': path.resolve(__dirname, './test/jest-globals-shim.ts')
     }
   },
   optimizeDeps: {

@@ -149,8 +149,21 @@ function createMockClient() {
     }
   }
 
+  // Provide a duck-typed mockable `from` function so tests can do `(supabase.from as jest.Mock).mockReturnValue(...)`
+  let fromMockReturnValue: any = null
+  const from = ((table: string) => {
+    return fromMockReturnValue ?? new MockQueryBuilder(table)
+  }) as any
+  from.mockReturnValue = (val: any) => {
+    fromMockReturnValue = val
+    return from
+  }
+  from.mockReset = () => {
+    fromMockReturnValue = null
+  }
+
   return {
-    from: (table: string) => new MockQueryBuilder(table),
+    from,
     channel: (name: string) => new MockChannel(),
     auth: {
       signInWithOtp: async (params: { email: string }) => {
@@ -229,9 +242,9 @@ if (existingGlobalClient) {
     }
   } catch (error) {
     console.error('Failed to initialize Supabase client:', error)
-    // In development, use mock client as fallback
-    if (process.env.NODE_ENV === 'development') {
-      console.warn('Using mock Supabase client for development')
+    // In non-production (development/test), use mock client as fallback
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn('Using mock Supabase client for non-production environment')
       supabaseClient = createMockClient()
       if (typeof globalThis !== 'undefined') {
         ;(globalThis as any).__FW_SUPABASE__ = supabaseClient

@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from '@jest/globals'
 import { jest } from '@jest/globals'
+import { vi } from 'vitest'
 import {
   createTastingShare,
   getTastingShares,
@@ -23,8 +24,12 @@ import {
 import { createUser, createTasting, createReview } from '@/test-utils/factories'
 // import { mockSupabaseResponse } from '@/test-utils/test-utils'
 
+
+// Local helper to mock Supabase responses
+const mockSupabaseResponse = (data: any, error?: any) => ({ data, error })
+
 // Mock Supabase
-jest.mock('@/lib/supabase', () => ({
+vi.mock('@/lib/supabase', () => ({
   supabase: {
     from: jest.fn(() => ({
       select: jest.fn().mockReturnThis(),

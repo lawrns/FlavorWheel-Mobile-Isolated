@@ -3,11 +3,12 @@
  */
 
 import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals'
-import { createQuickTasting, getUserQuickTastings, getQuickTastingById } from '../../services/quick-tasting-service'
-import { supabase } from '../../lib/supabase'
+import { createQuickTasting, getUserQuickTastings, getQuickTastingById } from '@/services/quick-tasting-service'
+import { supabase } from '@/lib/supabase'
 
 // Mock Supabase
-jest.mock('../../lib/supabase', () => ({
+import { vi } from 'vitest'
+vi.mock('@/lib/supabase', () => ({
   supabase: {
     auth: {
       getUser: jest.fn()

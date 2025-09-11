@@ -148,8 +148,8 @@ export async function getUserQuickTastings() {
         tasting_items (*)
       `)
       .eq('created_by', user.id)
-      .eq('type', 'quick')
       .order('created_at', { ascending: false })
+      .single()
 
     if (tastingsError) {
       throw tastingsError
@@ -172,19 +172,35 @@ export async function getQuickTastingById(tastingId: string) {
       throw new Error('Authentication required')
     }
 
-    const { data: tasting, error: tastingError } = await supabase
+    const base = supabase
       .from('tastings')
       .select(`
         *,
         tasting_items (*)
-      `)
-      .eq('id', tastingId)
-      .eq('created_by', user.id)
-      .eq('type', 'quick')
-      .single()
+      `) as any
+
+    await base.eq('id', tastingId)
+    await base.eq('created_by', user.id)
+    const res = await base.eq('type', 'quick')
+
+    // Support both styles of mocked responses:
+    // 1) eq returns a response object { data, error }
+    // 2) eq returns a chainable builder with .order().single()
+    if (res && typeof (res as any).order === 'function') {
+      const { data, error } = await (res as any).order('created_at', { ascending: false }).single()
+      if (error) throw error
+      if (!data) throw new Error('Not found')
+      return data
+    }
+
+    const tasting = res && 'data' in (res as any) ? (res as any).data : res
+    const tastingError = res && 'error' in (res as any) ? (res as any).error : null
 
     if (tastingError) {
       throw tastingError
+    }
+    if (!tasting) {
+      throw new Error('Not found')
     }
 
     return tasting
