@@ -1,0 +1,463 @@
+{
+  "testing_context": {
+    "version": "2.0",
+    "application": "FlavorWheel México",
+    "description": "Comprehensive E2E testing strategy for mobile-first flavor analysis platform",
+    "last_updated": "2025-09-11T00:00:00Z",
+    "architecture": {
+      "framework": "Next.js 14",
+      "ui_library": "React 18 + TypeScript",
+      "styling": "Tailwind CSS + Radix UI",
+      "database": "Supabase",
+      "testing_stack": "Vitest + Playwright + Testing Library",
+      "deployment": "Vercel/Netlify",
+      "mobile_focus": true
+    }
+  },
+  "test_categories": {
+    "unit_tests": {
+      "framework": "Vitest",
+      "location": "__tests__/unit/",
+      "coverage_target": "80%",
+      "focus": "Pure functions, utilities, business logic",
+      "examples": [
+        "flavor-utils.ts",
+        "navigation-config.ts",
+        "smart-defaults.ts",
+        "keyword-extraction-service.ts"
+      ]
+    },
+    "component_tests": {
+      "framework": "Vitest + React Testing Library",
+      "location": "__tests__/component/",
+      "coverage_target": "85%",
+      "focus": "UI components, interactions, accessibility",
+      "examples": [
+        "simplified-tasting-flow.test.tsx",
+        "mobile-navigation.tsx",
+        "flavor-wheel.tsx",
+        "ui/button.tsx"
+      ]
+    },
+    "integration_tests": {
+      "framework": "Vitest + Supertest",
+      "location": "__tests__/integration/",
+      "coverage_target": "75%",
+      "focus": "API endpoints, database operations, service interactions",
+      "examples": [
+        "analytics-service.ts",
+        "create-tasting-service.ts",
+        "social-service.ts",
+        "supabase-client.ts"
+      ]
+    },
+    "e2e_tests": {
+      "framework": "Playwright",
+      "location": "__tests__/e2e/",
+      "coverage_target": "90%",
+      "focus": "Complete user journeys, cross-browser compatibility",
+      "browsers": ["chromium", "firefox", "webkit", "mobile-chrome", "mobile-safari"],
+      "examples": [
+        "nav-visibility.spec.ts",
+        "a11y-axe.spec.ts",
+        "critical-user-journeys.spec.ts",
+        "tasting-flow.spec.ts"
+      ]
+    },
+    "visual_regression": {
+      "framework": "Playwright + custom screenshots",
+      "location": "__tests__/visual/",
+      "focus": "UI consistency, responsive design, design system compliance",
+      "threshold": "0.01%",
+      "examples": [
+        "mobile-navigation-layout",
+        "flavor-wheel-interactions",
+        "responsive-breakpoints"
+      ]
+    },
+    "performance_tests": {
+      "framework": "Lighthouse CI + Playwright",
+      "location": "__tests__/performance/",
+      "metrics": {
+        "lcp": "< 2.5s",
+        "fid": "< 100ms",
+        "cls": "< 0.1",
+        "fcp": "< 1.8s"
+      },
+      "focus": "Core Web Vitals, bundle size, runtime performance"
+    },
+    "accessibility_tests": {
+      "framework": "axe-core/playwright",
+      "location": "__tests__/e2e/a11y-axe.spec.ts",
+      "standards": ["WCAG 2.1 AA", "WCAG 2.2"],
+      "focus": "Keyboard navigation, screen reader support, color contrast",
+      "automated_checks": [
+        "color-contrast",
+        "focus-order-semantics",
+        "keyboard-accessible",
+        "aria-valid"
+      ]
+    },
+    "security_tests": {
+      "framework": "OWASP ZAP + custom scripts",
+      "location": "__tests__/security/",
+      "focus": "XSS prevention, CSRF protection, input validation",
+      "examples": [
+        "auth-service-security",
+        "input-sanitization",
+        "api-rate-limiting"
+      ]
+    }
+  },
+  "critical_user_journeys": {
+    "guest_to_taster": {
+      "steps": [
+        "Visit landing page",
+        "Sign up for account",
+        "Complete onboarding",
+        "Create first tasting",
+        "View tasting results"
+      ],
+      "pages": ["/landing", "/register", "/onboarding", "/quick-tasting", "/home"],
+      "critical_checks": [
+        "Mobile navigation visibility",
+        "Form validation",
+        "Error handling",
+        "Performance metrics"
+      ]
+    },
+    "quick_tasting_flow": {
+      "steps": [
+        "Navigate to quick tasting",
+        "Select product type",
+        "Enter product details",
+        "Rate flavors",
+        "Submit tasting",
+        "View completion screen"
+      ],
+      "pages": ["/quick-tasting", "/quick-tasting/completion"],
+      "critical_checks": [
+        "Form state persistence",
+        "Flavor selection UX",
+        "Rating slider accessibility",
+        "Success feedback"
+      ]
+    },
+    "competition_participation": {
+      "steps": [
+        "Browse competitions",
+        "Join competition",
+        "Submit tasting entry",
+        "View leaderboard",
+        "Receive results"
+      ],
+      "pages": ["/competition", "/competition/[id]", "/competition/[id]/results"],
+      "critical_checks": [
+        "Real-time updates",
+        "Form validation",
+        "Error boundaries",
+        "Performance under load"
+      ]
+    },
+    "social_features": {
+      "steps": [
+        "View social feed",
+        "Share tasting",
+        "Comment on posts",
+        "Follow users",
+        "View profiles"
+      ],
+      "pages": ["/social", "/profile/[id]"],
+      "critical_checks": [
+        "Real-time updates",
+        "Image loading",
+        "Infinite scroll performance",
+        "Privacy controls"
+      ]
+    },
+    "advanced_analytics": {
+      "steps": [
+        "Access analytics dashboard",
+        "Filter by date range",
+        "Export reports",
+        "View trend analysis",
+        "Compare tastings"
+      ],
+      "pages": ["/analytics"],
+      "critical_checks": [
+        "Data visualization performance",
+        "Large dataset handling",
+        "Export functionality",
+        "Responsive charts"
+      ]
+    }
+  },
+  "page_architecture_analysis": {
+    "app_shell_usage": {
+      "uses_app_shell": [
+        "/analytics", "/profile", "/review", "/create", "/social",
+        "/create-wheel", "/dashboard", "/competition/*", "/study/*",
+        "/tastings/*", "/settings", "/flavor-wheels"
+      ],
+      "no_app_shell": [
+        "/landing", "/login", "/register", "/home"
+      ],
+      "mixed_usage": [
+        "/quick-tasting" // Uses UnifiedDashboard directly
+      ]
+    },
+    "navigation_expectations": {
+      "mobile_nav_visible": [
+        "/home", "/quick-tasting", "/create", "/profile", "/analytics",
+        "/social", "/flavor-wheels", "/competition/*", "/study/*", "/tastings/*"
+      ],
+      "mobile_nav_hidden": [
+        "/landing", "/login", "/register"
+      ],
+      "desktop_nav_visible": "all authenticated pages"
+    },
+    "critical_elements": {
+      "always_present": [
+        "data-testid=\"app-ready\"",
+        "skip-to-content links",
+        "error boundaries"
+      ],
+      "page_specific": {
+        "/landing": ["data-testid=\"quick-taste-button\"", "data-testid=\"create-tasting-button\""],
+        "/home": ["mobile-navigation-root", "dashboard-content"],
+        "/quick-tasting": ["simplified-tasting-flow", "flavor-selector"]
+      }
+    }
+  },
+  "mobile_specific_testing": {
+    "viewport_coverage": [
+      {"name": "iPhone SE", "width": 375, "height": 667},
+      {"name": "iPhone 12", "width": 390, "height": 844},
+      {"name": "Pixel 5", "width": 393, "height": 851},
+      {"name": "Samsung Galaxy S21", "width": 360, "height": 800}
+    ],
+    "touch_interactions": [
+      "Swipe gestures",
+      "Long press",
+      "Pinch to zoom (flavor wheel)",
+      "Haptic feedback",
+      "Bottom sheet interactions"
+    ],
+    "mobile_navigation": {
+      "bottom_tab_bar": true,
+      "swipe_gestures": true,
+      "expanded_menu": true,
+      "accessibility": "WCAG 2.1 AA compliant"
+    },
+    "performance_targets": {
+      "first_contentful_paint": "< 1.8s",
+      "largest_contentful_paint": "< 2.5s",
+      "cumulative_layout_shift": "< 0.1",
+      "first_input_delay": "< 100ms",
+      "bundle_size": "< 2MB total"
+    }
+  },
+  "data_flow_testing": {
+    "authentication_flow": {
+      "providers": ["Supabase Auth"],
+      "persistence": "localStorage + secure tokens",
+      "error_handling": "custom error boundaries",
+      "loading_states": "skeleton loaders + progressive disclosure"
+    },
+    "tasting_data_flow": {
+      "creation": "client-side validation → Supabase → real-time updates",
+      "storage": "normalized tasting data + flavor analysis",
+      "retrieval": "cached queries + optimistic updates",
+      "sharing": "public URLs + social features"
+    },
+    "competition_system": {
+      "real_time_updates": "Supabase real-time subscriptions",
+      "leaderboard": "sorted queries + caching",
+      "notifications": "push notifications + in-app alerts",
+      "results_calculation": "server-side aggregation"
+    }
+  },
+  "error_scenarios": {
+    "network_failures": [
+      "Offline mode detection",
+      "Retry mechanisms",
+      "Graceful degradation",
+      "Data synchronization on reconnect"
+    ],
+    "authentication_errors": [
+      "Token expiration",
+      "Invalid credentials",
+      "Network timeouts",
+      "Session management"
+    ],
+    "validation_errors": [
+      "Form validation",
+      "Data integrity",
+      "Business rule violations",
+      "User input sanitization"
+    ],
+    "performance_issues": [
+      "Slow network detection",
+      "Large dataset handling",
+      "Memory leaks",
+      "Bundle size optimization"
+    ]
+  },
+  "cross_browser_compatibility": {
+    "desktop": ["Chrome", "Firefox", "Safari", "Edge"],
+    "mobile": ["Chrome Mobile", "Safari Mobile", "Samsung Internet"],
+    "feature_detection": [
+      "CSS Grid support",
+      "CSS Custom Properties",
+      "Intersection Observer",
+      "WebGL (flavor wheel)",
+      "Service Worker"
+    ]
+  },
+  "continuous_integration": {
+    "github_actions": {
+      "workflows": [
+        "ci.yml - Build & basic tests",
+        "ci-cd-testing.yml - Full test suite",
+        "quality-gate.yml - Styling systematization",
+        "flavorwheel-audit-v2.yml - Comprehensive audit"
+      ],
+      "quality_gates": [
+        "ESLint compliance",
+        "Stylelint validation",
+        "Lighthouse performance",
+        "Bundle size limits",
+        "Test coverage thresholds"
+      ]
+    },
+    "smart_test_runner": {
+      "features": [
+        "Configurable error threshold (default: 5)",
+        "Error pattern analysis",
+        "Auto-fix common issues",
+        "Interactive guidance",
+        "Comprehensive reporting"
+      ],
+      "usage": "npm run test:intelligent [threshold]"
+    }
+  },
+  "testing_infrastructure": {
+    "test_data_management": {
+      "fixtures": "__tests__/fixtures/",
+      "factories": "__tests__/utils/factories.ts",
+      "mock_data": "Supabase test database",
+      "cleanup": "Automated teardown scripts"
+    },
+    "environment_setup": {
+      "local_dev": "npm run dev (port 3010)",
+      "test_env": "Vitest + Playwright",
+      "ci_env": "GitHub Actions Ubuntu",
+      "staging": "Supabase staging database"
+    },
+    "reporting_and_monitoring": {
+      "test_results": "test-results/ directory",
+      "coverage_reports": "coverage/ directory",
+      "performance_metrics": "Lighthouse reports",
+      "accessibility_reports": "axe-core violations"
+    }
+  },
+  "test_execution_strategy": {
+    "smoke_tests": {
+      "frequency": "Every commit",
+      "scope": "Critical user journeys",
+      "duration": "< 2 minutes",
+      "failure_action": "Block deployment"
+    },
+    "full_regression": {
+      "frequency": "Daily / before release",
+      "scope": "Complete test suite",
+      "duration": "< 15 minutes",
+      "failure_action": "Require manual review"
+    },
+    "visual_regression": {
+      "frequency": "Weekly / design changes",
+      "scope": "UI components",
+      "duration": "< 5 minutes",
+      "failure_action": "Design review required"
+    },
+    "performance_tests": {
+      "frequency": "Daily",
+      "scope": "Core Web Vitals",
+      "duration": "< 3 minutes",
+      "failure_action": "Performance review"
+    },
+    "accessibility_tests": {
+      "frequency": "Every commit",
+      "scope": "WCAG compliance",
+      "duration": "< 2 minutes",
+      "failure_action": "Block deployment"
+    }
+  },
+  "success_criteria": {
+    "test_coverage": {
+      "unit_tests": "≥ 80%",
+      "component_tests": "≥ 85%",
+      "integration_tests": "≥ 75%",
+      "e2e_tests": "≥ 90%",
+      "accessibility": "WCAG 2.1 AA compliant"
+    },
+    "performance_targets": {
+      "lighthouse_score": "≥ 90",
+      "bundle_size": "≤ 2MB",
+      "core_web_vitals": "All green",
+      "mobile_performance": "iPhone SE ≥ 85"
+    },
+    "quality_gates": {
+      "linting": "Zero errors",
+      "typescript": "Strict mode",
+      "security": "OWASP compliant",
+      "accessibility": "Zero critical violations"
+    },
+    "user_experience": {
+      "mobile_first": "Responsive on all devices",
+      "accessibility": "Keyboard + screen reader friendly",
+      "performance": "Fast on 3G networks",
+      "error_handling": "Graceful failure modes"
+    }
+  },
+  "maintenance_and_evolution": {
+    "test_maintenance": {
+      "flaky_test_detection": "Automated monitoring",
+      "test_data_refresh": "Weekly rotation",
+      "dependency_updates": "Monthly review",
+      "browser_updates": "Quarterly compatibility checks"
+    },
+    "feature_testing": {
+      "new_feature_template": "Test-first development",
+      "integration_checklist": "Pre-deployment verification",
+      "rollback_testing": "Feature flag validation",
+      "a_b_testing": "Statistical significance validation"
+    },
+    "monitoring_and_alerts": {
+      "test_failure_alerts": "Slack/Discord notifications",
+      "performance_degradation": "Automated alerts",
+      "coverage_drops": "PR comments",
+      "security_vulnerabilities": "Immediate alerts"
+    }
+  },
+  "advanced_testing_features": {
+    "ai_powered_testing": {
+      "error_analysis": "Pattern recognition",
+      "auto_fix_suggestions": "Code generation",
+      "test_case_generation": "Behavior-driven development",
+      "visual_regression": "AI-powered diff analysis"
+    },
+    "real_user_monitoring": {
+      "session_replay": "User journey recording",
+      "error_tracking": "Production error monitoring",
+      "performance_monitoring": "Real user metrics",
+      "feature_usage": "Analytics-driven testing"
+    },
+    "chaos_engineering": {
+      "network_failures": "Connection drops simulation",
+      "service_degradation": "Slow response simulation",
+      "resource_exhaustion": "Memory/CPU stress testing",
+      "third_party_failures": "External API failure simulation"
+    }
+  }
+}
