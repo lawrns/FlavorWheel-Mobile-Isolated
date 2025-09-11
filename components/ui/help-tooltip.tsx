@@ -88,7 +88,7 @@ export function HelpTooltip({
         </div>
       ) : (
         <Button
-          ref={triggerRef}
+          ref={triggerRef as unknown as React.RefObject<HTMLButtonElement>}
           variant="ghost"
           size="sm"
           onClick={() => setIsVisible(!isVisible)}

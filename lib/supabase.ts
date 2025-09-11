@@ -242,7 +242,10 @@ if (existingGlobalClient) {
   }
 }
 
-export const supabase = supabaseClient
+export const supabase = (
+  supabaseClient ||
+  (typeof window === 'undefined' ? createMockClient() : createClient())
+) as ReturnType<typeof createClient> | ReturnType<typeof createMockClient>
 
 // Client-side only utilities
 export const getSupabaseClient = () => {

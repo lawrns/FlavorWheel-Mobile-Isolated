@@ -60,17 +60,17 @@ export default function ProfilePage() {
   }, [])
 
   // Mock data for testing
-  const mockUser = {
+  const mockUser: UserProfile = {
     id: 'test-user',
     name: 'Test User',
     email: 'test@example.com',
-    avatar_url: null,
+    avatar_url: '',
     experience_level: 'beginner',
     beverage_preferences: ['tequila', 'mezcal'],
     language: 'en',
     bio: 'Test user for E2E testing',
     location: 'Test Location',
-    website: null,
+    website: '',
     created_at: new Date().toISOString()
   }
   const [saving, setSaving] = useState(false)
@@ -130,8 +130,9 @@ export default function ProfilePage() {
         beverage_preferences: data.beverage_preferences || [],
         language: data.language || 'es'
       })
-    } catch (error) {
-      console.error('Profile loading error:', error.message)
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err)
+      console.error('Profile loading error:', msg)
     } finally {
       setLoading(false)
     }
@@ -219,16 +220,17 @@ export default function ProfilePage() {
         throw tastingError
       }
 
-      const beverageCounts = tastings?.reduce((acc, tasting) => {
-        tasting.tasting_items?.forEach(item => {
-          const type = item.mexican_beverages?.type || 'unknown'
+      const beverageCounts = (tastings as any[])?.reduce((acc, tasting) => {
+        (tasting?.tasting_items as any[])?.forEach((item: any) => {
+          const bev = (item as any).mexican_beverages
+          const type = Array.isArray(bev) ? (bev[0]?.type ?? 'unknown') : (bev?.type ?? 'unknown')
           acc[type] = (acc[type] || 0) + 1
         })
         return acc
       }, {} as Record<string, number>) || {}
 
-      const favoriteBeverage = Object.entries(beverageCounts)
-        .sort(([,a], [,b]) => b - a)[0]?.[0] || 'None'
+      const favoriteBeverage = (Object.entries(beverageCounts) as [string, number][])
+        .sort(([, a], [, b]) => b - a)[0]?.[0] || 'None'
 
       setStats({
         totalTastings: tastingsCount || 0,

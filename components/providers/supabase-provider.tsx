@@ -2,36 +2,29 @@
 
 import * as React from 'react'
 import { type SupabaseClient, type Session } from '@supabase/supabase-js'
-import { supabaseClient } from '@/lib/supabase-client'
+import { getSupabaseClient } from '@/lib/supabase'
 
 type Ctx = {
-  client: SupabaseClient | null
+  client: SupabaseClient
   session: Session | null
   user: Session['user'] | null
   initialized: boolean
   signInWithOtp: (email: string) => Promise<{ error: any } | void>
   signOut: () => Promise<void>
-  supabase?: SupabaseClient | null // Add backward compatibility
+  supabase: SupabaseClient
 }
 
 const SupabaseContext = React.createContext<Ctx | null>(null)
 
 export function SupabaseProvider({ children }: { children: React.ReactNode }) {
-  const [client, setClient] = React.useState<SupabaseClient | null>(null)
+  const [client, setClient] = React.useState<SupabaseClient>(() => getSupabaseClient() as unknown as SupabaseClient)
   const [session, setSession] = React.useState<Session | null>(null)
   const [initialized, setInitialized] = React.useState(false)
 
   React.useEffect(() => {
-    // Use the pre-configured client
-    const c = supabaseClient
+    // Use the unified Supabase client
+    const c = getSupabaseClient() as unknown as SupabaseClient
     setClient(c)
-
-    if (!c) {
-      // If no client available, mark as initialized but with no session
-      console.warn('Supabase client not available. Running in offline mode.')
-      setInitialized(true)
-      return
-    }
 
     // initial session
     c.auth.getSession().then(({ data }) => {
@@ -54,10 +47,6 @@ export function SupabaseProvider({ children }: { children: React.ReactNode }) {
 
   const value = React.useMemo<Ctx>(() => {
     async function signInWithOtp(email: string) {
-      if (!client) {
-        console.warn('Supabase client not available. Cannot sign in.')
-        return { error: { message: 'Authentication service not available' } }
-      }
       try {
         const { error } = await client.auth.signInWithOtp({ email })
         if (error) return { error }
@@ -67,10 +56,6 @@ export function SupabaseProvider({ children }: { children: React.ReactNode }) {
       }
     }
     async function signOut() {
-      if (!client) {
-        console.warn('Supabase client not available. Cannot sign out.')
-        return
-      }
       try {
         await client.auth.signOut()
       } catch (error) {

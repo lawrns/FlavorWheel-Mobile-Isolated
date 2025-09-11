@@ -116,7 +116,7 @@ export default function TastingInputPageClient({ params }: TastingInputPageClien
             console.log(`🔍 SESSIONSTORAGE CATEGORY ${index}: ${cat.name}`, {
               id: cat.id,
               name: cat.name,
-              parameterType: cat.parameterType,
+              parameterType: cat.parameter_type,
               allKeys: Object.keys(cat)
             })
           })
@@ -145,7 +145,7 @@ export default function TastingInputPageClient({ params }: TastingInputPageClien
           }))
 
           // Map items to ensure proper structure
-          const mappedItems = parsed.items.map(item => ({
+          const mappedItems = parsed.items.map((item: any) => ({
             id: item.id,
             name: item.name,
             image: item.image,
@@ -232,7 +232,7 @@ export default function TastingInputPageClient({ params }: TastingInputPageClien
           }))
 
           // Map items to ensure proper structure
-          const mappedItems = parsed.items.map(item => ({
+          const mappedItems = parsed.items.map((item: any) => ({
             id: item.id,
             name: item.name,
             image: item.image,

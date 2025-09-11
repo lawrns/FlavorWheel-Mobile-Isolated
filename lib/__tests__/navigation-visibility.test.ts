@@ -1,4 +1,6 @@
 import { shouldShowNav, getNavRules, addNavRule } from '../navigation-visibility'
+import { describe, it, expect } from 'vitest'
+
 
 describe('Navigation Visibility', () => {
   describe('shouldShowNav', () => {
@@ -18,14 +20,14 @@ describe('Navigation Visibility', () => {
       { path: '/en/quick-tasting', expect: true, description: 'quick tasting page' },
       { path: '/es/tastings', expect: true, description: 'tastings page' },
       { path: '/en/analytics', expect: true, description: 'analytics page' },
-      
+
       // Routes where navigation should be hidden
       { path: '/es/onboarding/start', expect: false, description: 'onboarding page' },
       { path: '/en/auth/login', expect: false, description: 'auth page' },
       { path: '/es/login', expect: false, description: 'login page' },
       { path: '/en/register', expect: false, description: 'register page' },
       { path: '/es/forgot-password', expect: false, description: 'forgot password page' },
-      
+
       // Edge cases
       { path: undefined, expect: true, description: 'undefined path' },
       { path: '', expect: true, description: 'empty path' },
@@ -44,11 +46,11 @@ describe('Navigation Visibility', () => {
       const rules = getNavRules()
       expect(Array.isArray(rules)).toBe(true)
       expect(rules.length).toBeGreaterThan(0)
-      
+
       // Check that we have both show and hide rules
       const showRules = rules.filter(rule => rule.show)
       const hideRules = rules.filter(rule => !rule.show)
-      
+
       expect(showRules.length).toBeGreaterThan(0)
       expect(hideRules.length).toBeGreaterThan(0)
     })
@@ -58,16 +60,16 @@ describe('Navigation Visibility', () => {
     it('should allow adding custom navigation rules', () => {
       const initialRules = getNavRules()
       const initialCount = initialRules.length
-      
-      addNavRule({ 
-        pattern: '/custom-route', 
-        show: false, 
-        description: 'Custom test route' 
+
+      addNavRule({
+        pattern: '/custom-route',
+        show: false,
+        description: 'Custom test route'
       })
-      
+
       const updatedRules = getNavRules()
       expect(updatedRules.length).toBe(initialCount + 1)
-      
+
       // Test that the new rule works
       expect(shouldShowNav('/en/custom-route')).toBe(false)
     })

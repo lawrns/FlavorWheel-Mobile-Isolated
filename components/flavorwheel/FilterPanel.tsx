@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Slider } from '@/components/ui/slider'
 import { Users, MapPin, Calendar, Filter, X } from 'lucide-react'
+import type { FlavorWheelConfig } from '@/services/flavor-analysis-service'
 
 interface DemographicFilters {
   gender?: 'male' | 'female' | 'other' | 'prefer_not_to_say'
@@ -17,19 +18,7 @@ interface DemographicFilters {
   geographicRadius?: number
 }
 
-interface FlavorWheelConfig {
-  wheelType: 'aroma' | 'flavor' | 'combined' | 'metaphor'
-  scope: 'personal' | 'universal'
-  userId?: string
-  beverageType?: string
-  region?: string
-  timeRange?: {
-    start: string
-    end: string
-  }
-  useMultilingualExtraction?: boolean
-  demographicFilters?: DemographicFilters
-}
+
 
 interface FilterPanelProps {
   config: FlavorWheelConfig

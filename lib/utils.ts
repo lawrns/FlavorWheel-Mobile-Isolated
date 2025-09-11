@@ -114,19 +114,17 @@ export function useTranslations(locale: string = 'en') {
   return { t }
 }
 
-export function transformFlavorDataToNode(data: { name?: string; children?: Array<{ name: string; children?: unknown[]; color?: string }> } | null) {
+import type { FlavorNode } from '@/lib/flavorwheel/types'
+
+export function transformFlavorDataToNode(data: FlavorNode[] | null): FlavorNode {
   // Transform flavor data for sunburst visualization
-  if (!data || !data.children) {
+  if (!data || data.length === 0) {
     return { name: 'No Data', children: [] }
   }
 
   return {
-    name: data.name || 'Flavors',
-          children: data.children.map((category) => ({
-      name: category.name,
-      children: (category.children as unknown[]) || [],
-      color: category.color
-    }))
+    name: 'Flavors',
+    children: data
   }
 }
 

@@ -1,4 +1,4 @@
-import type { FlavorDescriptorWithMetadata, MexicanFlavorDictionary } from '@/types/flavor-types'
+import type { FlavorDescriptorWithMetadata, MexicanFlavorDictionary, FlavorSubcategory } from '@/types/flavor-types'
 import type { MexicanBeverageType } from '@/types/mexican-types'
 import {
   getMexicanFlavorDictionary,
@@ -200,11 +200,12 @@ export function getMexicanFlavorProfile(
   const profile: FlavorDescriptorWithMetadata[] = []
 
   Object.values(mexicanDict).forEach(category => {
-    if (category.mexicanBeverageTypes.includes(beverageType)) {
-      Object.values(category.subcategories).forEach(subcategory => {
-        subcategory.descriptors.forEach(descriptor => {
-          if (!region || descriptor.region === region) {
-            profile.push(descriptor)
+    if (category.mexicanBeverageTypes?.includes(beverageType)) {
+      (Object.values(category.subcategories) as FlavorSubcategory[]).forEach((subcategory) => {
+        (subcategory.descriptors || []).forEach((descriptor: any) => {
+          if (typeof descriptor === 'string') return
+          if (!region || descriptor.region === region || descriptor.regions?.includes(region)) {
+            profile.push(descriptor as FlavorDescriptorWithMetadata)
           }
         })
       })
@@ -225,14 +226,15 @@ export function getTerroirCharacteristics(region: string): FlavorDescriptorWithM
 
   // Look for terroir-specific descriptors
   Object.values(mexicanDict).forEach(category => {
-    Object.values(category.subcategories).forEach(subcategory => {
+    (Object.values(category.subcategories) as FlavorSubcategory[]).forEach((subcategory) => {
       if (
         subcategory.name.toLowerCase().includes('terroir') ||
         subcategory.name.toLowerCase().includes('regional')
       ) {
-        subcategory.descriptors.forEach(descriptor => {
-          if (descriptor.region === region) {
-            characteristics.push(descriptor)
+        (subcategory.descriptors || []).forEach((descriptor: any) => {
+          if (typeof descriptor === 'string') return
+          if (descriptor.region === region || descriptor.regions?.includes(region)) {
+            characteristics.push(descriptor as FlavorDescriptorWithMetadata)
           }
         })
       }
@@ -253,17 +255,18 @@ export function getAgaveFlavorProfile(agaveVariety: string): FlavorDescriptorWit
 
   // Look for agave variety descriptors
   Object.values(mexicanDict).forEach(category => {
-    Object.values(category.subcategories).forEach(subcategory => {
+    (Object.values(category.subcategories) as FlavorSubcategory[]).forEach((subcategory) => {
       if (
         subcategory.name.toLowerCase().includes('agave') ||
         subcategory.name.toLowerCase().includes('varieties')
       ) {
-        subcategory.descriptors.forEach(descriptor => {
+        (subcategory.descriptors || []).forEach((descriptor: any) => {
+          if (typeof descriptor === 'string') return
           if (
             descriptor.name.toLowerCase().includes(agaveVariety.toLowerCase()) ||
-            descriptor.agaveType === agaveVariety
+            (descriptor as any).agaveType === agaveVariety
           ) {
-            profile.push(descriptor)
+            profile.push(descriptor as FlavorDescriptorWithMetadata)
           }
         })
       }

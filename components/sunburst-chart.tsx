@@ -36,19 +36,19 @@ export function SunburstChart({
       .size([2 * Math.PI, radius])
 
     // Create arc generator
-    const arc = d3.arc<d3.HierarchyNode<SunburstNode>>()
+    const arc = d3.arc<d3.HierarchyRectangularNode<SunburstNode>>()
       .startAngle(d => d.x0)
       .endAngle(d => d.x1)
       .innerRadius(d => d.y0)
       .outerRadius(d => d.y1)
 
     // Convert data to hierarchy
-    const root = d3.hierarchy(data)
+    const root = d3.hierarchy<SunburstNode>(data)
       .sum(d => d.value || 1)
       .sort((a, b) => (b.value || 0) - (a.value || 0))
 
     // Apply partition
-    partition(root)
+    const rootPartitioned = partition(root as d3.HierarchyNode<SunburstNode>)
 
     // Create color scale
     const color = d3.scaleOrdinal(d3.schemeCategory10)
@@ -59,7 +59,7 @@ export function SunburstChart({
 
     // Add paths for each segment
     const path = g.selectAll('path')
-      .data(root.descendants().filter(d => d.depth > 0))
+      .data(rootPartitioned.descendants().filter(d => d.depth > 0))
       .enter().append('path')
       .attr('d', arc as any)
       .attr('fill', d => {
@@ -89,7 +89,7 @@ export function SunburstChart({
 
     // Add labels for larger segments
     const label = g.selectAll('text')
-      .data(root.descendants().filter(d => (d as any).depth > 0 && ((d as any).y1 - (d as any).y0) > 20))
+      .data(rootPartitioned.descendants().filter(d => (d as any).depth > 0 && ((d as any).y1 - (d as any).y0) > 20))
       .enter().append('text')
       .attr('transform', d => {
         const angle = ((d as any).x0 + (d as any).x1) / 2

@@ -86,7 +86,7 @@ export async function getUserReviews(userId: string, limit = 10, offset = 0): Pr
     }
 
     // Map database fields to interface fields
-    return (data || []).map((review) => ({
+    return (data || []).map((review: any) => ({
       id: review.id,
       tasting_id: review.tasting_id,
       item_id: review.item_id,

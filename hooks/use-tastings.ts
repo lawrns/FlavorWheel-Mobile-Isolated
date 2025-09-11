@@ -23,30 +23,34 @@ export function useTastingDetail(tastingId: string) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    // Simulate API call
-    const fetchTastingDetail = async () => {
-      try {
-        setLoading(true)
-        // Mock API delay
-        await new Promise(resolve => setTimeout(resolve, 500))
+  const fetchTastingDetail = async () => {
+    try {
+      setLoading(true)
+      // Mock API delay
+      await new Promise(resolve => setTimeout(resolve, 500))
 
-        // Return mock data
-        setData(mockTastingData)
-        setError(null)
-      } catch (err) {
-        setError('Failed to load tasting details')
-      } finally {
-        setLoading(false)
-      }
+      // Return mock data
+      setData(mockTastingData)
+      setError(null)
+    } catch (err) {
+      setError('Failed to load tasting details')
+    } finally {
+      setLoading(false)
     }
+  }
 
+  useEffect(() => {
     if (tastingId) {
       fetchTastingDetail()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tastingId])
 
-  return { data, loading, error }
+  const refresh = async () => {
+    await fetchTastingDetail()
+  }
+
+  return { data, loading, error, refresh }
 }
 
 export function useTastings() {

@@ -51,7 +51,7 @@ function SchedulingModal({
             <CalendarComponent
               mode="single"
               selected={selectedDate || undefined}
-              onSelect={(date) => onDateChange(date || null)}
+              onSelect={((date?: Date) => onDateChange(date ?? null)) as any}
               disabled={(date) => date < today}
               className="rounded-md border"
             />
@@ -422,6 +422,7 @@ export default function TastingDetailPage() {
       {showSharing && (
         <TastingSharing
           tastingId={id}
+          tastingName={data?.name || 'Tasting'}
           onClose={() => setShowSharing(false)}
           mode="join"
         />

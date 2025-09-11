@@ -211,7 +211,7 @@ export function AppShell({
 // ===== UNIFIED APPSHELL VARIANTS =====
 // These provide convenient presets while maintaining flexibility
 
-export interface UnifiedAppShellProps extends Omit<AppShellProps, 'showNavigation' | 'showMobileNav' | 'applyGradient' | 'maxWidth' | 'padding' | 'contentContainer'> {
+export interface UnifiedAppShellProps extends Omit<AppShellProps, 'showNavigation' | 'showMobileNav' | 'applyGradient' | 'padding' | 'contentContainer'> {
   variant?: 'dashboard' | 'minimal' | 'landing' | 'auth' | 'fullscreen'
 }
 

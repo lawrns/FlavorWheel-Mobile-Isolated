@@ -251,7 +251,7 @@ export default function ReviewPage() {
           acidity_level: newReview.acidity_level,
           sweetness_level: newReview.sweetness_level,
           texture_rating: newReview.texture_rating,
-          typicity_score: newReview.typicicty_score,
+          typicity_score: newReview.typicity_score,
           complexity_score: newReview.complexity_score,
           review_data: {
             created_at: new Date().toISOString(),
@@ -306,7 +306,7 @@ export default function ReviewPage() {
     try {
       const { error } = await supabase
         .from('user_reviews')
-        .update({ helpful_count: supabase.raw('helpful_count + 1') })
+        .update({ helpful_count: (supabase as any).raw('helpful_count + 1') }) // TODO: replace with server-side increment or RPC
         .eq('id', reviewId)
 
       if (error) throw error
@@ -438,7 +438,7 @@ export default function ReviewPage() {
               {/* Comprehensive Review Details */}
               {(review.salt_level || review.umami_level || review.spiciness_level ||
                 review.acidity_level || review.sweetness_level || review.texture_rating ||
-                review.typicicty_score || review.complexity_score) && (
+                review.typicity_score || review.complexity_score) && (
                 <div className="mb-3 p-3 bg-muted/50 rounded-lg">
                   <h5 className="font-medium text-sm mb-2">Tasting Profile</h5>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs">
@@ -460,8 +460,8 @@ export default function ReviewPage() {
                     {review.texture_rating && (
                       <div>Texture: {review.texture_rating}</div>
                     )}
-                    {review.typicicty_score !== undefined && (
-                      <div>Typicity: {review.typicicty_score}/100</div>
+                    {review.typicity_score !== undefined && (
+                      <div>Typicity: {review.typicity_score}/100</div>
                     )}
                     {review.complexity_score !== undefined && (
                       <div>Complexity: {review.complexity_score}/100</div>
@@ -697,9 +697,9 @@ export default function ReviewPage() {
                       {/* Quality Scores */}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div>
-                          <Label>Typicity (How representative): {newReview.typicicty_score}/100</Label>
+                          <Label>Typicity (How representative): {newReview.typicity_score}/100</Label>
                           <Slider
-                            value={[newReview.typicicty_score]}
+                            value={[newReview.typicity_score]}
                             onValueChange={(value) => setNewReview(prev => ({ ...prev, typicity_score: value[0] }))}
                             min={0}
                             max={100}

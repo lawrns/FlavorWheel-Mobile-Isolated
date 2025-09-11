@@ -16,7 +16,7 @@ export function Toaster() {
                 ? 'border-red-500 bg-red-600 text-white'
                 : 'border border-fx-border-default bg-fx-card text-fx-text-primary'
             }`}
-            {...props}
+
           >
             <div className="grid gap-1">
               {title && <div className="text-sm font-semibold">{title}</div>}

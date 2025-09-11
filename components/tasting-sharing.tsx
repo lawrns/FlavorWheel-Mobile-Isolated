@@ -9,6 +9,7 @@ interface TastingSharingProps {
   tastingName: string
   onClose?: () => void
   locale?: string
+  mode?: 'join' | 'invite'
 }
 
 export function TastingSharing({ tastingId, tastingName, onClose, locale = 'en' }: TastingSharingProps) {

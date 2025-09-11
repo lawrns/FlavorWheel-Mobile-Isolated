@@ -682,7 +682,7 @@ export function buildFlavorHierarchy(keywords: string[], productType: string = '
 
   // Build subcategory structure
   Object.entries(categoryMap).forEach(([category, terms]) => {
-    const subcategory: FlavorWheelData['subcategories'][0] = {
+    const subcategory = {
       name: category.charAt(0).toUpperCase() + category.slice(1),
       percentage: (terms.length / keywords.length) * 100,
       intensity: 4,
@@ -690,12 +690,12 @@ export function buildFlavorHierarchy(keywords: string[], productType: string = '
         name: term,
         percentage: 100 / terms.length,
         intensity: 3,
-        regions: [],
-        beverageTypes: []
+        regions: [] as string[],
+        beverageTypes: [] as any[]
       }))
-    }
+    } as any
 
-    hierarchy.subcategories?.push(subcategory)
+    ;(hierarchy.subcategories as any[])?.push(subcategory)
   })
 
   console.log('🎨 BUILT HIERARCHY:', hierarchy)

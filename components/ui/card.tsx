@@ -45,6 +45,7 @@ const MotionCard = motion.div
 
 const Card = React.forwardRef<HTMLDivElement, CardProps>(
   ({ className, animate = true, variant, padding, interactive, ...props }, ref) => {
+    const { onAnimationStart: _omitOnAnimationStart, onAnimationEnd: _omitOnAnimationEnd, ...restProps } = props as any
     const classes = cn(cardStyles({ variant, padding, interactive }), className)
 
     if (!animate) {
@@ -53,7 +54,7 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
           ref={ref}
           className={classes}
           suppressHydrationWarning
-          {...props}
+          {...restProps}
         />
       )
     }
@@ -72,7 +73,7 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
           damping: 25,
           duration: 0.3
         }}
-        {...props}
+        {...restProps}
       />
     )
   }

@@ -30,6 +30,8 @@ interface QuickTastingData {
     flavor?: string
     other?: string
   }
+  categories?: any[]
+  items?: any[]
 }
 
 export default function QuickTastingConfirmPageClient({ params }: QuickTastingConfirmPageClientProps) {
@@ -95,7 +97,7 @@ export default function QuickTastingConfirmPageClient({ params }: QuickTastingCo
       ...tasting,
       // Ensure proper data structure for input screen
       categories: tasting.categories || [],
-      items: tasting.items.map((item: any) => ({
+      items: ((tasting.items || []) as any[]).map((item: any) => ({
         id: item.id,
         name: item.name,
         image: item.image,

@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
 
 export interface FlavorWheelConfig {
-  wheelType: 'personal' | 'universal' | 'combined'
+  // Accept both page/service and hook variants for wheel type
+  wheelType: 'personal' | 'universal' | 'combined' | 'aroma' | 'flavor' | 'metaphor'
   scope: 'personal' | 'universal' | 'sku' | 'category' | 'gender' | 'place' | 'age_range'
   userId?: string
   useMultilingualExtraction?: boolean

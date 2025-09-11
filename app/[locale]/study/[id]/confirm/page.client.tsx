@@ -32,13 +32,23 @@ interface TastingData {
   categories: Array<{
     id: string
     name: string
-    parameterType: string
-    rankOption: boolean
+    parameterType?: string
+    parameter_type?: string
+    options?: any
+    minValue?: number
+    min_value?: number
+    maxValue?: number
+    max_value?: number
+    containsText?: boolean
+    contains_text?: boolean
+    rankOption?: boolean
+    rank_option?: boolean
   }>
   items: Array<{
     id: string
     name: string
     description?: string
+    image?: string
   }>
 }
 
@@ -304,11 +314,11 @@ export default function StudyConfirmPageClient({ params }: StudyConfirmPageClien
               {tasting.categories.map((category) => (
                 <div key={category.id} className="flex items-center justify-between p-3 border rounded-lg">
                   <div className="flex items-center gap-3">
-                    <span className="text-lg">{getParameterTypeIcon(category.parameterType)}</span>
+                    <span className="text-lg">{getParameterTypeIcon(category.parameterType ?? category.parameter_type ?? 'subjective_input')}</span>
                     <div>
                       <p className="font-medium">{category.name}</p>
                       <p className="text-sm text-gray-600">
-                        {category.parameterType.replace('_', ' ').toUpperCase()}
+                        {(category.parameterType ?? category.parameter_type ?? '').replace('_', ' ').toUpperCase()}
                         {category.rankOption && ' (Ranked)'}
                       </p>
                     </div>

@@ -49,7 +49,7 @@ export function SocialFeed({ filter = 'all', userId }: SocialFeedProps) {
   const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(1)
   const { user } = useAuth()
-  const { state: realtimeState } = useRealtimeContext()
+  useRealtimeContext()
   const { toast } = useToast()
 
   useEffect(() => {

@@ -796,7 +796,7 @@ export function getFlavorDictionary(): FlavorDictionary {
  * @returns Array of Mexican beverage category names
  */
 export function getMexicanBeverageCategories(): string[] {
-  return Object.keys(mexicanFlavorDictionary)
+  return Object.keys(mexicanFlavorDictionary.categories)
 }
 
 /**
@@ -807,6 +807,7 @@ export function getAgaveVarieties(): FlavorDescriptorWithMetadata[] {
   const mezcalCategory = mexicanFlavorDictionary.categories.mezcal
   if (mezcalCategory?.subcategories?.agave_varieties) {
     return mezcalCategory.subcategories.agave_varieties.descriptors
+      .map((d: any) => (typeof d === 'string' ? { name: d } : d))
   }
   return []
 }
@@ -819,6 +820,7 @@ export function getTerroirDescriptors(): FlavorDescriptorWithMetadata[] {
   const mezcalCategory = mexicanFlavorDictionary.categories.mezcal
   if (mezcalCategory?.subcategories?.terroir) {
     return mezcalCategory.subcategories.terroir.descriptors
+      .map((d: any) => (typeof d === 'string' ? { name: d } : d))
   }
   return []
 }
@@ -876,8 +878,8 @@ export function getMexicanSpanishTranslations(
   locale: 'es-MX' | 'en' = 'es-MX'
 ): string {
   // Search through all Mexican descriptors for the translation
-  for (const category of Object.values(mexicanFlavorDictionary)) {
-    for (const subcategory of Object.values(category.subcategories)) {
+  for (const category of Object.values(mexicanFlavorDictionary.categories)) {
+    for (const subcategory of Object.values(category.subcategories) as any[]) {
       const descriptor = subcategory.descriptors.find(
         (d: any) =>
           d.name === descriptorName ||
@@ -904,9 +906,10 @@ export function getDescriptorsForMexicanBeverage(
   const descriptors: FlavorDescriptorWithMetadata[] = []
 
   Object.values(mexicanFlavorDictionary.categories).forEach(category => {
-    if (category.mexicanBeverageTypes.includes(beverageType)) {
+    if (category.mexicanBeverageTypes?.includes(beverageType)) {
       Object.values(category.subcategories).forEach((subcategory: any) => {
-        descriptors.push(...subcategory.descriptors)
+        const list = (subcategory.descriptors || []).map((d: any) => typeof d === 'string' ? { name: d } : d)
+        descriptors.push(...(list as FlavorDescriptorWithMetadata[]))
       })
     }
   })
@@ -955,12 +958,13 @@ export function searchDescriptorsByCharacteristics(
  * @returns Array of Mexican food flavor descriptors
  */
 export function getMexicanFoodDescriptors(): FlavorDescriptorWithMetadata[] {
-  const mexicanFoodCategory = mexicanFlavorDictionary.mexican_food
+  const mexicanFoodCategory = mexicanFlavorDictionary.categories.mexican_food
   const descriptors: FlavorDescriptorWithMetadata[] = []
 
   if (mexicanFoodCategory) {
-    Object.values(mexicanFoodCategory.subcategories).forEach(subcategory => {
-      descriptors.push(...subcategory.descriptors)
+    Object.values(mexicanFoodCategory.subcategories).forEach((subcategory: any) => {
+      const list = (subcategory.descriptors || []).map((d: any) => typeof d === 'string' ? { name: d } : d)
+      descriptors.push(...(list as FlavorDescriptorWithMetadata[]))
     })
   }
 
@@ -1006,11 +1010,11 @@ export function getFlavorCategory(flavor: string): string | null {
   const dictionary = getMexicanFlavorDictionary()
   const lowerFlavor = flavor.toLowerCase()
 
-  for (const [categoryKey, category] of Object.entries(dictionary)) {
-    if (category.subcategories) {
-      for (const [subKey, subcategory] of Object.entries(category.subcategories)) {
-        if (subcategory.descriptors &&
-            subcategory.descriptors.some((desc: any) => desc.toLowerCase().includes(lowerFlavor))) {
+  for (const [categoryKey, category] of Object.entries(dictionary.categories)) {
+    if ((category as any).subcategories) {
+      for (const [subKey, subcategory] of Object.entries((category as any).subcategories)) {
+        const descs = (subcategory as any).descriptors || []
+        if (descs.some((desc: any) => (typeof desc === 'string' ? desc : desc.name).toLowerCase().includes(lowerFlavor))) {
           return categoryKey
         }
       }
@@ -1036,11 +1040,11 @@ export function validateFlavorTerm(term: string): {
   const lowerTerm = term.toLowerCase()
 
   // Check exact matches
-  for (const [categoryKey, category] of Object.entries(dictionary)) {
-    if (category.subcategories) {
-      for (const subcategory of Object.values(category.subcategories)) {
-        if (subcategory.descriptors &&
-            subcategory.descriptors.some((desc: any) => desc.toLowerCase() === lowerTerm)) {
+  for (const [categoryKey, category] of Object.entries(dictionary.categories)) {
+    if ((category as any).subcategories) {
+      for (const subcategory of Object.values((category as any).subcategories)) {
+        const descs = (subcategory as any).descriptors || []
+        if (descs.some((desc: any) => (typeof desc === 'string' ? desc : desc.name).toLowerCase() === lowerTerm)) {
           return { isValid: true, category: categoryKey }
         }
       }
@@ -1049,14 +1053,11 @@ export function validateFlavorTerm(term: string): {
 
   // Find suggestions (terms that contain the query)
   const suggestions: string[] = []
-  for (const category of Object.values(dictionary)) {
+  for (const category of Object.values(dictionary.categories) as any[]) {
     if (category.subcategories) {
-      for (const subcategory of Object.values(category.subcategories)) {
-        if (subcategory.descriptors) {
-          suggestions.push(...subcategory.descriptors.filter((desc: any) =>
-            desc.toLowerCase().includes(lowerTerm)
-          ))
-        }
+      for (const subcategory of Object.values(category.subcategories) as any[]) {
+        const descs = (subcategory.descriptors || []).map((d: any) => typeof d === 'string' ? d : d.name)
+        suggestions.push(...descs.filter((desc: string) => desc.toLowerCase().includes(lowerTerm)))
       }
     }
   }
@@ -1082,13 +1083,14 @@ export function getSynonyms(term: string): string[] {
   }
 
   const dictionary = getMexicanFlavorDictionary()
-  const categoryData = dictionary[category as keyof typeof dictionary]
+  const categoryData = (dictionary.categories as any)[category]
 
   if (categoryData && categoryData.subcategories) {
     const allDescriptors: string[] = []
-    Object.values(categoryData.subcategories).forEach(subcategory => {
+    Object.values(categoryData.subcategories).forEach((subcategory: any) => {
       if (subcategory.descriptors) {
-        allDescriptors.push(...subcategory.descriptors)
+        const descs = subcategory.descriptors.map((d: any) => typeof d === 'string' ? d : d.name)
+        allDescriptors.push(...descs)
       }
     })
     return allDescriptors.filter(desc => desc.toLowerCase() !== term.toLowerCase()).slice(0, 10)

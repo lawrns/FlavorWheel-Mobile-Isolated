@@ -22,44 +22,30 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/components/auth-provider'
 import { MobileFlavorSelector } from '@/components/ui/mobile-flavor-selector'
 import { useSmartDefaults } from '@/lib/smart-defaults'
+import { createQuickTasting } from '@/services/quick-tasting-service'
+import { useToast } from '@/hooks/use-toast'
 
-interface TastingData {
-  productType: string
-  productName: string
-  selectedFlavors: string[]
-  overallRating: number
-  notes: string
-  image?: string
-}
+import type {
+  QuickTastingData,
+  ProductType,
+  FlavorCategory,
+  TastingStep
+} from '@/types/quick-tasting'
+import { PRODUCT_TYPE_OPTIONS, FLAVOR_CATEGORIES, TASTING_STEPS } from '@/types/quick-tasting'
 
-const PRODUCT_TYPES = [
-  { value: 'wine', label: 'Wine', emoji: '🍷' },
-  { value: 'beer', label: 'Beer', emoji: '🍺' },
-  { value: 'spirits', label: 'Spirits', emoji: '🥃' },
-  { value: 'coffee', label: 'Coffee', emoji: '☕' },
-  { value: 'tea', label: 'Tea', emoji: '🍵' },
-  { value: 'other', label: 'Other', emoji: '🥤' },
-]
-
-const FLAVOR_CATEGORIES = {
-  wine: ['Berry', 'Citrus', 'Oak', 'Vanilla', 'Spice', 'Mineral', 'Floral', 'Herbal'],
-  beer: ['Hoppy', 'Malty', 'Citrus', 'Roasted', 'Fruity', 'Spice'],
-  spirits: ['Oak', 'Smoke', 'Vanilla', 'Herbal', 'Citrus', 'Caramel'],
-  coffee: ['Chocolate', 'Nutty', 'Citrus', 'Floral', 'Caramel', 'Spice'],
-  tea: ['Herbal', 'Floral', 'Citrus', 'Sweet', 'Bitter', 'Nutty'],
-  other: ['Sweet', 'Sour', 'Bitter', 'Salty', 'Umami', 'Spicy'],
-}
+// Product types and flavor categories are now imported from unified types
 
 export function SimplifiedTastingFlow() {
   const router = useRouter()
   const { user } = useAuth()
   const smartDefaults = useSmartDefaults()
+  const { toast } = useToast()
   const locale = (typeof window !== 'undefined' ? window.location.pathname.split('/')[1] : 'en') || 'en'
 
   const [currentStep, setCurrentStep] = useState(0)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [tastingData, setTastingData] = useState<TastingData>({
-    productType: '',
+  const [tastingData, setTastingData] = useState<QuickTastingData>({
+    productType: 'other',
     productName: '',
     selectedFlavors: [],
     overallRating: 5,
@@ -68,7 +54,7 @@ export function SimplifiedTastingFlow() {
 
   // Initialize with smart defaults
   useEffect(() => {
-    const recommendedType = smartDefaults.getRecommendedBeverageType()
+    const recommendedType = smartDefaults.getRecommendedBeverageType() as ProductType
     const ratingSuggestion = smartDefaults.getRatingSuggestion(recommendedType)
 
     setTastingData(prev => {
@@ -92,11 +78,7 @@ export function SimplifiedTastingFlow() {
     }
   }, [tastingData.productType])
 
-  const steps = [
-    { id: 'product', title: 'What are you tasting?', icon: '🥤' },
-    { id: 'flavors', title: 'What flavors do you detect?', icon: '👃' },
-    { id: 'rating', title: 'Your overall impression', icon: '⭐' },
-  ]
+  const steps = TASTING_STEPS
 
   const progress = ((currentStep + 1) / steps.length) * 100
 
@@ -123,16 +105,56 @@ export function SimplifiedTastingFlow() {
 
   const handleSubmit = async () => {
     if (!user) {
-      // Redirect to login if not authenticated
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to save your tasting.",
+        variant: "destructive",
+      })
       router.push('/login')
+      return
+    }
+
+    // Validate required fields
+    if (!tastingData.productType || !tastingData.productName.trim()) {
+      toast({
+        title: "Missing Information",
+        description: "Please provide both product type and name.",
+        variant: "destructive",
+      })
+      return
+    }
+
+    if (tastingData.selectedFlavors.length === 0) {
+      toast({
+        title: "No Flavors Selected",
+        description: "Please select at least one flavor you detected.",
+        variant: "destructive",
+      })
       return
     }
 
     setIsSubmitting(true)
 
     try {
-      // Save tasting data and update smart defaults
+      // Prepare tasting data for API
       const tastingPayload = {
+        productType: tastingData.productType,
+        productName: tastingData.productName.trim(),
+        selectedFlavors: tastingData.selectedFlavors,
+        overallRating: tastingData.overallRating,
+        notes: tastingData.notes.trim(),
+        image: tastingData.image
+      }
+
+      // Save tasting data via API
+      const result = await createQuickTasting(tastingPayload)
+
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to save tasting')
+      }
+
+      // Save to smart defaults for future recommendations
+      smartDefaults.saveTasting({
         name: `${tastingData.productName} Tasting`,
         productType: tastingData.productType,
         productName: tastingData.productName,
@@ -141,21 +163,26 @@ export function SimplifiedTastingFlow() {
         notes: tastingData.notes,
         createdAt: new Date().toISOString(),
         userId: user?.id
-      }
+      })
 
-      // Save to smart defaults for future recommendations
-      smartDefaults.saveTasting(tastingPayload)
+      // Show success message
+      toast({
+        title: "Tasting Saved Successfully! 🎉",
+        description: "Your quick tasting has been recorded and will help improve recommendations.",
+        variant: "default",
+      })
 
-      // TODO: Implement actual API call to save tasting
-      console.log('Submitting tasting data:', tastingPayload)
+      // Redirect to dashboard with success indicator
+      router.push(`/${locale}/dashboard?tasting=success&tastingId=${result.tastingId}`)
 
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000))
-
-      // Redirect to results or dashboard
-      router.push(`/${locale}/dashboard`)
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error submitting tasting:', error)
+
+      toast({
+        title: "Failed to Save Tasting",
+        description: error.message || "Something went wrong. Please try again.",
+        variant: "destructive",
+      })
     } finally {
       setIsSubmitting(false)
     }
@@ -175,39 +202,39 @@ export function SimplifiedTastingFlow() {
               <Label htmlFor="productType" className="text-lg font-medium mb-4 block">
                 Choose your beverage type
               </Label>
-              <Select
-                value={tastingData.productType}
-                onValueChange={(value) => setTastingData(prev => ({ ...prev, productType: value }))}
-              >
-                <SelectTrigger className="w-full h-14 text-lg">
-                  <SelectValue placeholder="Select a beverage type" />
-                </SelectTrigger>
-                <SelectContent>
-                  {PRODUCT_TYPES.map((type) => {
-                    const recommendedType = smartDefaults.getRecommendedBeverageType()
-                    const isRecommended = type.value === recommendedType
+                <Select
+                  value={tastingData.productType}
+                  onValueChange={(value) => setTastingData(prev => ({ ...prev, productType: value as ProductType }))}
+                >
+                  <SelectTrigger className="w-full h-14 text-lg">
+                    <SelectValue placeholder="Select a beverage type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {PRODUCT_TYPE_OPTIONS.map((type) => {
+                      const recommendedType = smartDefaults.getRecommendedBeverageType()
+                      const isRecommended = type.value === recommendedType
 
-                    return (
-                      <SelectItem key={type.value} value={type.value} className="h-12">
-                        <span className="flex items-center gap-3">
-                          <span className="text-2xl">{type.emoji}</span>
-                          <span>{type.label}</span>
-                          {isRecommended && (
-                            <span className="ml-auto text-xs bg-fx-accent/10 text-fx-accent px-2 py-1 rounded-full">
-                              Recommended
-                            </span>
-                          )}
-                        </span>
-                      </SelectItem>
-                    )
-                  })}
-                </SelectContent>
-              </Select>
+                      return (
+                        <SelectItem key={type.value} value={type.value} className="h-12">
+                          <span className="flex items-center gap-3">
+                            <span className="text-2xl">{type.emoji}</span>
+                            <span>{type.label}</span>
+                            {isRecommended && (
+                              <span className="ml-auto text-xs bg-fx-accent/10 text-fx-accent px-2 py-1 rounded-full">
+                                Recommended
+                              </span>
+                            )}
+                          </span>
+                        </SelectItem>
+                      )
+                    })}
+                  </SelectContent>
+                </Select>
 
               {/* Smart recommendation hint */}
               {(() => {
                 const recommendedType = smartDefaults.getRecommendedBeverageType()
-                const recommendedLabel = PRODUCT_TYPES.find(t => t.value === recommendedType)?.label
+                const recommendedLabel = PRODUCT_TYPE_OPTIONS.find(t => t.value === recommendedType)?.label
                 return recommendedType && recommendedType !== tastingData.productType ? (
                   <div className="mt-3 p-3 bg-fx-accent/5 rounded-lg border border-fx-accent/20">
                     <p className="text-sm text-fx-accent">
@@ -225,7 +252,7 @@ export function SimplifiedTastingFlow() {
                 className="space-y-4"
               >
                 <Label htmlFor="productName" className="text-lg font-medium">
-                  What specific {PRODUCT_TYPES.find(t => t.value === tastingData.productType)?.label.toLowerCase()} is it?
+                  What specific {PRODUCT_TYPE_OPTIONS.find(t => t.value === tastingData.productType)?.label.toLowerCase()} is it?
                 </Label>
                 <Input
                   id="productName"
@@ -247,7 +274,7 @@ export function SimplifiedTastingFlow() {
 
       case 1: // Flavor Selection
         const availableFlavors = tastingData.productType
-          ? FLAVOR_CATEGORIES[tastingData.productType as keyof typeof FLAVOR_CATEGORIES] || FLAVOR_CATEGORIES.other
+          ? FLAVOR_CATEGORIES[tastingData.productType as ProductType] || FLAVOR_CATEGORIES.other
           : []
 
         // Get smart flavor suggestions

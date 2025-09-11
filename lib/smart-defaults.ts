@@ -225,8 +225,8 @@ export class SmartDefaultsService {
     }, {} as Record<string, number>)
 
     // Return most frequent type, or fallback to user preference
-    const mostFrequent = Object.entries(typeCounts)
-      .sort(([,a], [,b]) => b - a)[0]?.[0]
+    const entries = Object.entries(typeCounts) as [string, number][]
+    const mostFrequent = entries.sort(([,a], [,b]) => b - a)[0]?.[0]
 
     return mostFrequent || this.userPreferences.favoriteBeverageTypes[0] || 'wine'
   }
@@ -419,8 +419,8 @@ export function useSmartDefaults() {
   React.useEffect(() => {
     // Reload preferences when user changes
     if (user && serviceRef.current) {
-      serviceRef.current.loadUserPreferences()
-      serviceRef.current.loadTastingHistory()
+      // Recreate service to reload preferences/history without accessing private methods
+      serviceRef.current = new SmartDefaultsService()
     }
   }, [user]) // Remove service from dependencies
 

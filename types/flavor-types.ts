@@ -4,8 +4,10 @@ import type { MexicanBeverageType } from './mexican-types'
 export interface FlavorDescriptorWithMetadata {
   name: string
   description?: string
-  intensity?: number
+  intensity?: number | { min: number; max: number }
   characteristics?: string[]
+  // Backward-compat single region property used in some seeds
+  region?: string
   regions?: string[]
   beverageTypes?: string[]
   mexicanBeverageTypes?: MexicanBeverageType[]
@@ -14,6 +16,8 @@ export interface FlavorDescriptorWithMetadata {
 
 export interface MexicanFlavorDictionary {
   categories: Record<string, FlavorCategory>
+  terms?: Array<string | Record<string, any>>
+  translations?: Record<string, any>
 }
 
 export interface FlavorDictionary {
@@ -22,12 +26,15 @@ export interface FlavorDictionary {
 
 export interface FlavorCategory {
   name: string
+  description?: string
+  culturalContext?: string
+  mexicanBeverageTypes?: MexicanBeverageType[]
   subcategories: Record<string, FlavorSubcategory>
 }
 
 export interface FlavorSubcategory {
   name: string
-  descriptors: FlavorDescriptorWithMetadata[]
+  descriptors: (string | FlavorDescriptorWithMetadata)[]
 }
 
 export interface TastingNote {

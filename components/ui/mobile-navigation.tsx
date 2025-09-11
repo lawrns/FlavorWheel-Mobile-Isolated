@@ -75,10 +75,9 @@ export function MobileNavigation({
           backgroundColor: 'var(--fx-card, rgba(255, 255, 255, 0.95))',
           borderColor: 'var(--fx-border-default, #e5e7eb)',
           borderTop: '1px solid var(--fx-border-default, #e5e7eb)',
-          // Force visibility
-          display: 'block !important',
-          visibility: 'visible !important',
-          opacity: '1 !important'
+          display: 'block',
+          visibility: 'visible',
+          opacity: 1
         }}
       >
         <div className="flex items-center justify-around px-4 py-3">

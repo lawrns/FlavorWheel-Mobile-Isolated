@@ -178,6 +178,27 @@
   border: 0 !important;
 }
 
+/* Skip to content link */
+.skip-to-content {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--fx-bg);
+  color: var(--fx-text-primary);
+  padding: 8px;
+  text-decoration: none;
+  border: 2px solid var(--fx-focus-ring-color);
+  border-radius: 4px;
+  z-index: 1000;
+  font-weight: 600;
+  transition: top 0.3s ease;
+}
+
+.skip-to-content:focus {
+  top: 6px;
+}
+
+
 /* ===== TYPOGRAPHY - FLUID SCALE ===== */
 :root {
   /* Premium Typography System */
@@ -218,6 +239,55 @@ body {
   line-height: var(--fx-line-height-normal);
   background-color: var(--fx-bg);
   color: var(--fx-text-primary);
+}
+
+/* ===== BEVERAGE THEMES ===== */
+[data-beverage="mezcal"] {
+  --fx-primary: #2E6E5B;
+  --fx-accent: #B0A55B;
+  --fx-text-primary: #FEFCF8;
+}
+
+[data-beverage="wine"] {
+  --fx-primary: #6E2E2E;
+  --fx-accent: #B08A5B;
+}
+
+[data-beverage="coffee"] {
+  --fx-primary: #5A3E2B;
+  --fx-accent: #C38F5A;
+}
+
+[data-beverage="beer"] {
+  --fx-primary: #A06C2E;
+  --fx-accent: #6E2E2E;
+}
+
+[data-beverage="tea"] {
+  --fx-primary: #3E6E2E;
+  --fx-accent: #B08A5B;
+}
+
+
+
+/* ===== DARK MODE ===== */
+[data-theme="dark"] {
+  --fx-neutral-0: #11110F;
+  --fx-neutral-50: #161614;
+  --fx-neutral-100: #1E1D1A;
+  --fx-neutral-200: #2A2824;
+  --fx-neutral-700: #CFCAC0;
+  --fx-text-primary: #FAF7F2;
+  --fx-card: #1A1916;
+  --fx-focus-ring-color: #85B88A;
+}
+
+/* ===== HIGH CONTRAST MODE ===== */
+[data-theme="high-contrast"] {
+  --fx-focus-ring-color: #000000;
+  --fx-text-primary: #000000;
+  --fx-bg: #FFFFFF;
+  --fx-neutral-200: #000000;
 }
 
 /* ===== COMPONENT UTILITIES ===== */

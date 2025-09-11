@@ -325,16 +325,19 @@ export async function generateTemplatePDF(
     doc.setFontSize(10)
     doc.setFont('helvetica', 'normal')
 
-    if (template.nom_classifications?.length > 0) {
-      doc.text(`Clasificaciones NOM: ${template.nom_classifications.join(', ')}`, 20, yPosition)
+    const nom = template.nom_classifications ?? []
+    if (nom.length > 0) {
+      doc.text(`Clasificaciones NOM: ${nom.join(', ')}`, 20, yPosition)
       yPosition += 6
     }
-    if (template.terroir_regions?.length > 0) {
-      doc.text(`Regiones: ${template.terroir_regions.join(', ')}`, 20, yPosition)
+    const regions = template.terroir_regions ?? []
+    if (regions.length > 0) {
+      doc.text(`Regiones: ${regions.join(', ')}`, 20, yPosition)
       yPosition += 6
     }
-    if (template.production_methods?.length > 0) {
-      doc.text(`Métodos de Producción: ${template.production_methods.join(', ')}`, 20, yPosition)
+    const methods = template.production_methods ?? []
+    if (methods.length > 0) {
+      doc.text(`Métodos de Producción: ${methods.join(', ')}`, 20, yPosition)
       yPosition += 6
     }
 

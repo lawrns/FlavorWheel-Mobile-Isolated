@@ -11,6 +11,7 @@ const base = 'inline-flex items-center justify-center gap-2 whitespace-nowrap ro
 export const buttonVariants = cva(base, {
   variants: {
     variant: {
+      default: 'bg-gradient-to-r from-fx-primary to-fx-primary-hover text-fx-text-inverse hover:shadow-fx-lg active:shadow-fx-sm transform hover:-translate-y-1 transition-all duration-base',
       primary: 'bg-gradient-to-r from-fx-primary to-fx-primary-hover text-fx-text-inverse hover:shadow-fx-lg active:shadow-fx-sm transform hover:-translate-y-1 transition-all duration-base',
       secondary: 'bg-fx-bg text-fx-text-primary border border-fx-border-default hover:bg-fx-bg-subtle hover:border-fx-accent shadow-fx-xs hover:shadow-fx-sm',
       accent: 'bg-gradient-to-r from-fx-accent to-fx-accent-hover text-fx-text-inverse hover:shadow-fx-lg active:shadow-fx-sm transform hover:-translate-y-1 transition-all duration-base',
@@ -55,6 +56,7 @@ const MotionButton = motion.button
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   function Button({ className, variant, size, haptic: hapticVariant, hapticType = 'light', onClick, ...props }, ref) {
+    const { onAnimationStart: _omitOnAnimationStart, onAnimationEnd: _omitOnAnimationEnd, ...restProps } = props as any
     const { trigger } = useHaptic()
 
     const handleClick = React.useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
@@ -89,7 +91,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           damping: 17,
           duration: 0.15
         }}
-        {...props}
+        {...restProps}
       />
     )
   }

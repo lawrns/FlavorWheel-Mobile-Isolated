@@ -183,7 +183,13 @@ export function FlavorWheelVisualization({ data, title, reduceMotion }: Props) {
       .attr('fill', d => {
         // Use contrasting color for text
         const backgroundColor = d3.color(colorForNode(d))
-        return backgroundColor ? (backgroundColor.l > 0.5 ? '#000' : '#fff') : '#000'
+        if (!backgroundColor) return '#000'
+        if ('l' in backgroundColor && typeof (backgroundColor as any).l === 'number') {
+          return (backgroundColor as any).l > 0.5 ? '#000' : '#fff'
+        }
+        const rgb = d3.rgb(backgroundColor as any)
+        const yiq = (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000
+        return yiq >= 128 ? '#000' : '#fff'
       })
       .attr('pointer-events', 'none')
       .text(d => d.data.name)
