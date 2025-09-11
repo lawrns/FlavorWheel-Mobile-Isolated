@@ -1,0 +1,549 @@
+{
+  "project": {
+    "name": "FlavorWheel México",
+    "description": "Mobile-first flavor analysis platform for professional tasters",
+    "repository": "https://github.com/lawrns/FlavorWheel-Mobile-Isolated.git",
+    "branch": "mobile-deploy-v1",
+    "last_commit": "c135a7c - feat: comprehensive E2E testing analysis and fixes",
+    "architecture": {
+      "framework": "Next.js 14",
+      "ui_library": "React 18 + TypeScript",
+      "styling": "Tailwind CSS + Radix UI",
+      "database": "Supabase",
+      "testing_stack": "Vitest + Playwright + Testing Library"
+    }
+  },
+  "current_status": {
+    "testing_analysis_complete": true,
+    "test_pass_rate": "53% (30/57 core tests)",
+    "critical_issues_identified": 4,
+    "accessibility_compliance": "33% (needs WCAG AA fixes)",
+    "core_functionality": "Navigation working, tasting flow incomplete"
+  },
+  "priority_todos": {
+    "critical_immediate": [
+      {
+        "id": "ARIA_ROLE_VIOLATIONS",
+        "title": "Fix ARIA role violations in mobile navigation",
+        "priority": "CRITICAL",
+        "effort": "2-4 hours",
+        "files": [
+          "components/ui/mobile-navigation.tsx"
+        ],
+        "issue": "Button with role='tab' without required tablist parent container",
+        "solution": "Remove role='tab' or wrap in proper tablist container",
+        "test_files": [
+          "__tests__/e2e/a11y-axe.spec.ts"
+        ],
+        "acceptance_criteria": [
+          "No ARIA role violations in axe-core tests",
+          "Mobile navigation passes accessibility audit",
+          "Screen reader compatibility verified"
+        ]
+      },
+      {
+        "id": "COLOR_CONTRAST_WCAG",
+        "title": "Improve color contrast to meet WCAG AA standards",
+        "priority": "CRITICAL",
+        "effort": "3-6 hours",
+        "files": [
+          "app/globals.css",
+          "tailwind.config.ts"
+        ],
+        "issue": "Multiple elements with 3.97:1 contrast ratio (below required 4.5:1)",
+        "solution": "Update secondary button colors and design tokens",
+        "affected_elements": [
+          ".bg-secondary.text-secondary-foreground",
+          "Secondary buttons with #2e8b57 background and #2c1810 text"
+        ],
+        "test_files": [
+          "__tests__/e2e/a11y-axe.spec.ts"
+        ],
+        "acceptance_criteria": [
+          "All elements meet 4.5:1 contrast ratio minimum",
+          "Accessibility tests pass color contrast checks",
+          "Visual design maintains brand consistency"
+        ]
+      }
+    ],
+    "high_priority": [
+      {
+        "id": "MISSING_TEST_IDS",
+        "title": "Add missing data-testid attributes for test compatibility",
+        "priority": "HIGH",
+        "effort": "4-8 hours",
+        "files": [
+          "app/[locale]/landing/page.tsx",
+          "components/ui/mobile-navigation.tsx",
+          "components/ui/simplified-tasting-flow.tsx"
+        ],
+        "missing_test_ids": [
+          "quick-taste-button",
+          "create-tasting-button",
+          "mobile-menu-button",
+          "mobile-menu",
+          "mobile-create-tasting",
+          "flavor-wheel-svg"
+        ],
+        "test_files": [
+          "__tests__/e2e/realistic-site-tests.spec.ts",
+          "__tests__/e2e/tasting-flow.spec.ts",
+          "__tests__/e2e/verification-test.spec.ts"
+        ],
+        "acceptance_criteria": [
+          "All expected test IDs implemented",
+          "E2E tests can locate elements reliably",
+          "Test pass rate improves to >80%"
+        ]
+      },
+      {
+        "id": "COMPLETE_TASTING_FLOW",
+        "title": "Complete tasting creation flow implementation",
+        "priority": "HIGH",
+        "effort": "1-2 days",
+        "files": [
+          "components/ui/simplified-tasting-flow.tsx",
+          "app/api/tastings/route.ts",
+          "lib/supabase-queries.ts"
+        ],
+        "missing_functionality": [
+          "Actual tasting creation API endpoint",
+          "Database insertion logic",
+          "Flavor wheel generation",
+          "Export functionality",
+          "Social sharing"
+        ],
+        "test_files": [
+          "__tests__/e2e/tasting-flow.spec.ts"
+        ],
+        "acceptance_criteria": [
+          "Users can create and save tastings",
+          "Flavor wheel generates from tasting data",
+          "Export and sharing features work",
+          "Tasting flow tests pass"
+        ]
+      }
+    ],
+    "medium_priority": [
+      {
+        "id": "UPDATE_TEST_EXPECTATIONS",
+        "title": "Update remaining test content expectations to match current app",
+        "priority": "MEDIUM",
+        "effort": "6-12 hours",
+        "files": [
+          "__tests__/e2e/verification-test.spec.ts",
+          "__tests__/e2e/a11y-axe.spec.ts"
+        ],
+        "content_mismatches": [
+          "Expected 'FLAVATIX' → Actual 'FlavorWheel México'",
+          "Expected 'Start Your Flavor Journey' → Actual 'Start Free Trial'",
+          "Expected 'Discover the World' → Actual 'Professional Flavor'",
+          "Expected 'Sign In' button → Not implemented",
+          "Expected 'Start Free Today' → Actual 'Start Free Trial Now'"
+        ],
+        "acceptance_criteria": [
+          "All test expectations match actual app content",
+          "Verification tests pass rate >90%",
+          "No false failures due to content mismatches"
+        ]
+      },
+      {
+        "id": "ACCESSIBILITY_LANDMARKS",
+        "title": "Add missing accessibility landmarks and ARIA attributes",
+        "priority": "MEDIUM",
+        "effort": "3-6 hours",
+        "files": [
+          "app/[locale]/landing/page.tsx",
+          "components/app-shell.tsx"
+        ],
+        "missing_landmarks": [
+          "role='main' on main content areas",
+          "Proper heading hierarchy",
+          "Skip navigation links functionality",
+          "ARIA live regions for dynamic content"
+        ],
+        "test_files": [
+          "__tests__/e2e/a11y-axe.spec.ts",
+          "__tests__/e2e/verification-test.spec.ts"
+        ],
+        "acceptance_criteria": [
+          "All required ARIA landmarks present",
+          "Screen reader navigation works properly",
+          "Accessibility tests pass landmark checks"
+        ]
+      }
+    ],
+    "low_priority": [
+      {
+        "id": "MOBILE_NAVIGATION_IMPLEMENTATION",
+        "title": "Implement missing mobile navigation menu functionality",
+        "priority": "LOW",
+        "effort": "1-2 days",
+        "files": [
+          "components/ui/mobile-navigation.tsx",
+          "components/app-shell.tsx"
+        ],
+        "missing_features": [
+          "Mobile menu toggle functionality",
+          "Menu overlay/drawer",
+          "Touch gesture support",
+          "Proper focus management"
+        ],
+        "test_files": [
+          "__tests__/e2e/tasting-flow.spec.ts"
+        ],
+        "acceptance_criteria": [
+          "Mobile menu opens and closes properly",
+          "Touch interactions work smoothly",
+          "Focus management follows accessibility guidelines"
+        ]
+      },
+      {
+        "id": "COMPONENT_TEST_COMPATIBILITY",
+        "title": "Fix Radix UI compatibility issues in component tests",
+        "priority": "LOW",
+        "effort": "4-8 hours",
+        "files": [
+          "__tests__/component/quick-tasting-flow.test.tsx",
+          "vitest.setup.ts"
+        ],
+        "issues": [
+          "Radix UI pointer events incompatible with jsdom",
+          "Portal rendering issues in test environment",
+          "Mock implementation gaps"
+        ],
+        "current_status": "20/29 component tests passing (69%)",
+        "acceptance_criteria": [
+          "Component test pass rate >90%",
+          "Radix UI components test properly",
+          "No jsdom compatibility issues"
+        ]
+      }
+    ]
+  },
+  "test_analysis": {
+    "summary": {
+      "total_test_files": 18,
+      "total_tests": 1720,
+      "core_tests_analyzed": 57,
+      "current_pass_rate": "53%",
+      "target_pass_rate": "90%"
+    },
+    "by_category": {
+      "navigation_visibility": {
+        "file": "__tests__/e2e/nav-visibility.spec.ts",
+        "tests": 7,
+        "passing": 7,
+        "pass_rate": "100%",
+        "status": "✅ WORKING"
+      },
+      "realistic_site": {
+        "file": "__tests__/e2e/realistic-site-tests.spec.ts",
+        "tests": 16,
+        "passing": 16,
+        "pass_rate": "100%",
+        "status": "✅ FIXED",
+        "changes_made": [
+          "Updated selectors to match current page structure",
+          "Fixed header element expectations (h1 vs h2)",
+          "Corrected responsive design test targeting",
+          "Updated navigation tests for actual link structures"
+        ]
+      },
+      "accessibility": {
+        "file": "__tests__/e2e/a11y-axe.spec.ts",
+        "tests": 6,
+        "passing": 2,
+        "pass_rate": "33%",
+        "status": "❌ CRITICAL ISSUES",
+        "blocking_issues": [
+          "ARIA role violations",
+          "Color contrast failures",
+          "Invalid axe rule references"
+        ]
+      },
+      "verification": {
+        "file": "__tests__/e2e/verification-test.spec.ts",
+        "tests": 16,
+        "passing": 4,
+        "pass_rate": "25%",
+        "status": "❌ CONTENT MISMATCHES",
+        "issues": [
+          "Outdated content expectations",
+          "Missing button implementations",
+          "Branding inconsistencies"
+        ]
+      },
+      "tasting_flow": {
+        "file": "__tests__/e2e/tasting-flow.spec.ts",
+        "tests": 12,
+        "passing": 1,
+        "pass_rate": "8%",
+        "status": "❌ INCOMPLETE FUNCTIONALITY",
+        "issues": [
+          "Missing tasting creation implementation",
+          "No mobile menu functionality",
+          "Flavor wheel not implemented"
+        ]
+      },
+      "component_tests": {
+        "files": [
+          "__tests__/component/Button.test.tsx",
+          "__tests__/component/FlavorWheel.test.tsx",
+          "__tests__/component/quick-tasting-flow.test.tsx"
+        ],
+        "tests": 29,
+        "passing": 20,
+        "pass_rate": "69%",
+        "status": "⚠️ RADIX UI COMPATIBILITY",
+        "issues": [
+          "jsdom pointer events incompatibility",
+          "Portal rendering issues",
+          "Mock implementation gaps"
+        ]
+      }
+    }
+  },
+  "file_references": {
+    "core_application_files": {
+      "landing_page": {
+        "path": "app/[locale]/landing/page.tsx",
+        "description": "Main landing page with hero section and CTAs",
+        "current_content": "FlavorWheel México branding, Professional Flavor Analysis Platform",
+        "needed_changes": [
+          "Add missing data-testid attributes",
+          "Ensure proper ARIA landmarks",
+          "Verify color contrast compliance"
+        ]
+      },
+      "mobile_navigation": {
+        "path": "components/ui/mobile-navigation.tsx",
+        "description": "Bottom mobile navigation component",
+        "current_issues": [
+          "ARIA role='tab' without tablist parent",
+          "Missing mobile menu functionality",
+          "Incomplete touch gesture support"
+        ],
+        "needed_changes": [
+          "Fix ARIA role violations",
+          "Implement mobile menu toggle",
+          "Add proper focus management"
+        ]
+      },
+      "tasting_flow": {
+        "path": "components/ui/simplified-tasting-flow.tsx",
+        "description": "Quick tasting creation component",
+        "current_status": "UI implemented, functionality incomplete",
+        "needed_changes": [
+          "Connect to actual API endpoints",
+          "Implement flavor wheel generation",
+          "Add export and sharing features"
+        ]
+      },
+      "app_shell": {
+        "path": "components/app-shell.tsx",
+        "description": "Unified app shell with navigation variants",
+        "current_status": "Working for navigation visibility",
+        "needed_changes": [
+          "Add role='main' to main content areas",
+          "Improve accessibility landmarks"
+        ]
+      }
+    },
+    "styling_and_design": {
+      "global_css": {
+        "path": "app/globals.css",
+        "description": "Global styles and CSS custom properties",
+        "needed_changes": [
+          "Update secondary button colors for WCAG AA compliance",
+          "Ensure 4.5:1 contrast ratio minimum",
+          "Verify fx- design token consistency"
+        ]
+      },
+      "tailwind_config": {
+        "path": "tailwind.config.ts",
+        "description": "Tailwind CSS configuration with custom design tokens",
+        "needed_changes": [
+          "Update color values for accessibility compliance",
+          "Verify fx- token definitions",
+          "Ensure consistent color system"
+        ]
+      }
+    },
+    "api_and_backend": {
+      "tastings_api": {
+        "path": "app/api/tastings/route.ts",
+        "description": "API endpoint for tasting operations",
+        "current_status": "Likely incomplete or missing",
+        "needed_implementation": [
+          "POST endpoint for creating tastings",
+          "GET endpoint for retrieving tastings",
+          "Proper error handling",
+          "Supabase integration"
+        ]
+      },
+      "supabase_queries": {
+        "path": "lib/supabase-queries.ts",
+        "description": "Database query functions",
+        "needed_changes": [
+          "Add tasting creation functions",
+          "Implement flavor extraction logic",
+          "Add social sharing functions"
+        ]
+      }
+    },
+    "test_files": {
+      "working_tests": [
+        {
+          "path": "__tests__/e2e/nav-visibility.spec.ts",
+          "status": "✅ 100% passing",
+          "description": "Navigation visibility across different pages"
+        },
+        {
+          "path": "__tests__/e2e/realistic-site-tests.spec.ts",
+          "status": "✅ 100% passing (after fixes)",
+          "description": "Basic site functionality and responsive design"
+        }
+      ],
+      "failing_tests": [
+        {
+          "path": "__tests__/e2e/a11y-axe.spec.ts",
+          "status": "❌ 33% passing",
+          "critical_issues": [
+            "ARIA role violations",
+            "Color contrast failures",
+            "Invalid focusable-content rule"
+          ]
+        },
+        {
+          "path": "__tests__/e2e/verification-test.spec.ts",
+          "status": "❌ 25% passing",
+          "issues": [
+            "Outdated content expectations",
+            "Missing button implementations",
+            "Branding mismatches"
+          ]
+        },
+        {
+          "path": "__tests__/e2e/tasting-flow.spec.ts",
+          "status": "❌ 8% passing",
+          "issues": [
+            "Incomplete tasting functionality",
+            "Missing mobile menu",
+            "No flavor wheel implementation"
+          ]
+        }
+      ],
+      "component_tests": [
+        {
+          "path": "__tests__/component/Button.test.tsx",
+          "status": "✅ Passing",
+          "description": "Button component with fx- design tokens"
+        },
+        {
+          "path": "__tests__/component/FlavorWheel.test.tsx",
+          "status": "✅ Passing",
+          "description": "FlavorWheel component with mock implementation"
+        },
+        {
+          "path": "__tests__/component/quick-tasting-flow.test.tsx",
+          "status": "⚠️ Mostly skipped",
+          "issues": [
+            "Radix UI jsdom incompatibility",
+            "Pointer events not supported",
+            "Portal rendering issues"
+          ]
+        }
+      ]
+    },
+    "configuration_files": {
+      "playwright_config": {
+        "path": "playwright.config.ts",
+        "description": "Playwright E2E test configuration",
+        "current_status": "Working with global setup/teardown",
+        "features": [
+          "Multi-browser testing (chromium, firefox, webkit)",
+          "Mobile device simulation",
+          "HTML reporting",
+          "Global audit setup"
+        ]
+      },
+      "vitest_config": {
+        "path": "vitest.config.ts",
+        "description": "Vitest component test configuration",
+        "current_status": "Working with Jest compatibility layer"
+      },
+      "package_json": {
+        "path": "package.json",
+        "description": "Project dependencies and scripts",
+        "recent_additions": [
+          "@axe-core/playwright for accessibility testing",
+          "Comprehensive test scripts"
+        ]
+      }
+    }
+  },
+  "implementation_roadmap": {
+    "phase_1_critical": {
+      "timeline": "1-2 days",
+      "focus": "Fix blocking accessibility issues",
+      "tasks": [
+        "Fix ARIA role violations in mobile navigation",
+        "Update color contrast for WCAG AA compliance",
+        "Add missing data-testid attributes"
+      ],
+      "success_metrics": [
+        "Accessibility tests pass rate >80%",
+        "No critical ARIA violations",
+        "Color contrast meets 4.5:1 minimum"
+      ]
+    },
+    "phase_2_functionality": {
+      "timeline": "3-5 days",
+      "focus": "Complete core tasting functionality",
+      "tasks": [
+        "Implement tasting creation API endpoints",
+        "Connect UI to backend functionality",
+        "Add flavor wheel generation",
+        "Implement export and sharing features"
+      ],
+      "success_metrics": [
+        "Tasting flow tests pass rate >80%",
+        "Users can create and save tastings",
+        "Flavor wheel generates properly"
+      ]
+    },
+    "phase_3_polish": {
+      "timeline": "1-2 weeks",
+      "focus": "Test coverage and user experience",
+      "tasks": [
+        "Update all test expectations to match current app",
+        "Implement mobile navigation menu",
+        "Fix Radix UI component test compatibility",
+        "Add comprehensive error handling"
+      ],
+      "success_metrics": [
+        "Overall test pass rate >90%",
+        "Mobile navigation fully functional",
+        "Component tests pass rate >90%"
+      ]
+    }
+  },
+  "success_criteria": {
+    "immediate_goals": [
+      "Fix all critical accessibility violations",
+      "Achieve 80%+ test pass rate on core functionality",
+      "Complete tasting creation flow"
+    ],
+    "short_term_goals": [
+      "90%+ overall E2E test pass rate",
+      "Full WCAG AA accessibility compliance",
+      "Complete mobile navigation implementation"
+    ],
+    "long_term_goals": [
+      "Comprehensive test coverage across all features",
+      "Performance optimization and monitoring",
+      "Cross-browser compatibility verification"
+    ]
+  }
+}
