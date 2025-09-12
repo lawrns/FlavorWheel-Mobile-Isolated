@@ -705,6 +705,72 @@ body {
 /* ===== UNUSED LEGACY CLASSES REMOVED ===== */
 /* Removed unused fw- utility classes to reduce bundle size */
 
+/* ===== RESPONSIVE CONTAINER SYSTEM ===== */
+/* Mobile-first responsive containers */
+.container-mobile {
+  width: 100%;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.container-tablet {
+  width: 100%;
+  max-width: 768px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.container-desktop {
+  width: 100%;
+  max-width: 1024px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.container-wide {
+  width: 100%;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .container-tablet,
+  .container-desktop,
+  .container-wide {
+    max-width: 100%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .container-desktop,
+  .container-wide {
+    max-width: 100%;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .container-wide {
+    max-width: 100%;
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
 /* ===== MOBILE OPTIMIZATIONS ===== */
 @media (width <= 768px) {
   /* Touch-friendly interactions */
@@ -782,6 +848,34 @@ body {
   /* Optimized mobile navigation */
   .mobile-nav-safe {
     padding-bottom: calc(80px + env(safe-area-inset-bottom));
+  }
+
+  /* Prevent horizontal overflow on mobile */
+  .mobile-overflow-fix {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  /* Mobile-friendly grid layouts */
+  .mobile-grid-fix {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+
+  /* Ensure images don't overflow on mobile */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Mobile-friendly flex layouts */
+  .mobile-flex-col {
+    flex-direction: column !important;
+  }
+
+  /* Better mobile form spacing */
+  .mobile-form-spacing > * + * {
+    margin-top: 1rem;
   }
 }
 
