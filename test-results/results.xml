@@ -1,0 +1,191 @@
+<testsuites id="" name="" tests="5" failures="5" skipped="0" errors="0" time="9.618965">
+<testsuite name="verification-test.spec.ts" timestamp="2025-09-11T20:39:11.617Z" hostname="chromium" tests="1" failures="1" skipped="0" time="0.161" errors="0">
+<testcase name="Comprehensive Landing Page Verification - Deep E2E Testing › should display complete landing page content" classname="verification-test.spec.ts" time="0.161">
+<failure message="verification-test.spec.ts:108:7 should display complete landing page content" type="FAILURE">
+<![CDATA[  [chromium] › verification-test.spec.ts:108:7 › Comprehensive Landing Page Verification - Deep E2E Testing › should display complete landing page content 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3010/en/landing
+    Call log:
+      - navigating to "http://localhost:3010/en/landing", waiting until "load"
+
+
+      3 | test.describe('Comprehensive Landing Page Verification - Deep E2E Testing', () => {
+      4 |   test.beforeEach(async ({ page }) => {
+    > 5 |     await page.goto('/en/landing')
+        |                ^
+      6 |     await page.waitForLoadState('networkidle')
+      7 |     await page.waitForSelector('h1', { timeout: 30000 })
+      8 |   })
+        at /Users/lukatenbosch/Downloads/flava/__tests__/e2e/verification-test.spec.ts:5:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/verification-test-Comprehe-926c3-mplete-landing-page-content-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/verification-test-Comprehe-926c3-mplete-landing-page-content-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|verification-test-Comprehe-926c3-mplete-landing-page-content-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|verification-test-Comprehe-926c3-mplete-landing-page-content-chromium/video.webm]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="verification-test.spec.ts" timestamp="2025-09-11T20:39:11.617Z" hostname="firefox" tests="1" failures="1" skipped="0" time="0.725" errors="0">
+<testcase name="Comprehensive Landing Page Verification - Deep E2E Testing › should display complete landing page content" classname="verification-test.spec.ts" time="0.725">
+<failure message="verification-test.spec.ts:108:7 should display complete landing page content" type="FAILURE">
+<![CDATA[  [firefox] › verification-test.spec.ts:108:7 › Comprehensive Landing Page Verification - Deep E2E Testing › should display complete landing page content 
+
+    Error: page.goto: NS_ERROR_CONNECTION_REFUSED
+    Call log:
+      - navigating to "http://localhost:3010/en/landing", waiting until "load"
+
+
+      3 | test.describe('Comprehensive Landing Page Verification - Deep E2E Testing', () => {
+      4 |   test.beforeEach(async ({ page }) => {
+    > 5 |     await page.goto('/en/landing')
+        |                ^
+      6 |     await page.waitForLoadState('networkidle')
+      7 |     await page.waitForSelector('h1', { timeout: 30000 })
+      8 |   })
+        at /Users/lukatenbosch/Downloads/flava/__tests__/e2e/verification-test.spec.ts:5:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/verification-test-Comprehe-926c3-mplete-landing-page-content-firefox/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/verification-test-Comprehe-926c3-mplete-landing-page-content-firefox/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/verification-test-Comprehe-926c3-mplete-landing-page-content-firefox/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|verification-test-Comprehe-926c3-mplete-landing-page-content-firefox/test-failed-1.png]]
+
+[[ATTACHMENT|verification-test-Comprehe-926c3-mplete-landing-page-content-firefox/video.webm]]
+
+[[ATTACHMENT|verification-test-Comprehe-926c3-mplete-landing-page-content-firefox/error-context.md]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="verification-test.spec.ts" timestamp="2025-09-11T20:39:11.617Z" hostname="webkit" tests="1" failures="1" skipped="0" time="0.696" errors="0">
+<testcase name="Comprehensive Landing Page Verification - Deep E2E Testing › should display complete landing page content" classname="verification-test.spec.ts" time="0.696">
+<failure message="verification-test.spec.ts:108:7 should display complete landing page content" type="FAILURE">
+<![CDATA[  [webkit] › verification-test.spec.ts:108:7 › Comprehensive Landing Page Verification - Deep E2E Testing › should display complete landing page content 
+
+    Error: page.goto: Could not connect to the server.
+    Call log:
+      - navigating to "http://localhost:3010/en/landing", waiting until "load"
+
+
+      3 | test.describe('Comprehensive Landing Page Verification - Deep E2E Testing', () => {
+      4 |   test.beforeEach(async ({ page }) => {
+    > 5 |     await page.goto('/en/landing')
+        |                ^
+      6 |     await page.waitForLoadState('networkidle')
+      7 |     await page.waitForSelector('h1', { timeout: 30000 })
+      8 |   })
+        at /Users/lukatenbosch/Downloads/flava/__tests__/e2e/verification-test.spec.ts:5:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/verification-test-Comprehe-926c3-mplete-landing-page-content-webkit/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/verification-test-Comprehe-926c3-mplete-landing-page-content-webkit/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|verification-test-Comprehe-926c3-mplete-landing-page-content-webkit/test-failed-1.png]]
+
+[[ATTACHMENT|verification-test-Comprehe-926c3-mplete-landing-page-content-webkit/video.webm]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="verification-test.spec.ts" timestamp="2025-09-11T20:39:11.617Z" hostname="Mobile Chrome" tests="1" failures="1" skipped="0" time="0.166" errors="0">
+<testcase name="Comprehensive Landing Page Verification - Deep E2E Testing › should display complete landing page content" classname="verification-test.spec.ts" time="0.166">
+<failure message="verification-test.spec.ts:108:7 should display complete landing page content" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › verification-test.spec.ts:108:7 › Comprehensive Landing Page Verification - Deep E2E Testing › should display complete landing page content 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3010/en/landing
+    Call log:
+      - navigating to "http://localhost:3010/en/landing", waiting until "load"
+
+
+      3 | test.describe('Comprehensive Landing Page Verification - Deep E2E Testing', () => {
+      4 |   test.beforeEach(async ({ page }) => {
+    > 5 |     await page.goto('/en/landing')
+        |                ^
+      6 |     await page.waitForLoadState('networkidle')
+      7 |     await page.waitForSelector('h1', { timeout: 30000 })
+      8 |   })
+        at /Users/lukatenbosch/Downloads/flava/__tests__/e2e/verification-test.spec.ts:5:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/verification-test-Comprehe-926c3-mplete-landing-page-content-Mobile-Chrome/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/verification-test-Comprehe-926c3-mplete-landing-page-content-Mobile-Chrome/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|verification-test-Comprehe-926c3-mplete-landing-page-content-Mobile-Chrome/test-failed-1.png]]
+
+[[ATTACHMENT|verification-test-Comprehe-926c3-mplete-landing-page-content-Mobile-Chrome/video.webm]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="verification-test.spec.ts" timestamp="2025-09-11T20:39:11.617Z" hostname="Mobile Safari" tests="1" failures="1" skipped="0" time="0.694" errors="0">
+<testcase name="Comprehensive Landing Page Verification - Deep E2E Testing › should display complete landing page content" classname="verification-test.spec.ts" time="0.694">
+<failure message="verification-test.spec.ts:108:7 should display complete landing page content" type="FAILURE">
+<![CDATA[  [Mobile Safari] › verification-test.spec.ts:108:7 › Comprehensive Landing Page Verification - Deep E2E Testing › should display complete landing page content 
+
+    Error: page.goto: Could not connect to the server.
+    Call log:
+      - navigating to "http://localhost:3010/en/landing", waiting until "load"
+
+
+      3 | test.describe('Comprehensive Landing Page Verification - Deep E2E Testing', () => {
+      4 |   test.beforeEach(async ({ page }) => {
+    > 5 |     await page.goto('/en/landing')
+        |                ^
+      6 |     await page.waitForLoadState('networkidle')
+      7 |     await page.waitForSelector('h1', { timeout: 30000 })
+      8 |   })
+        at /Users/lukatenbosch/Downloads/flava/__tests__/e2e/verification-test.spec.ts:5:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/verification-test-Comprehe-926c3-mplete-landing-page-content-Mobile-Safari/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/verification-test-Comprehe-926c3-mplete-landing-page-content-Mobile-Safari/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|verification-test-Comprehe-926c3-mplete-landing-page-content-Mobile-Safari/test-failed-1.png]]
+
+[[ATTACHMENT|verification-test-Comprehe-926c3-mplete-landing-page-content-Mobile-Safari/video.webm]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+</testsuites>

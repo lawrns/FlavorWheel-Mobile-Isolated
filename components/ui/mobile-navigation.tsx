@@ -140,7 +140,7 @@ export function MobileNavigation({
           <motion.button
             onClick={() => setIsExpanded(!isExpanded)}
             aria-label="More options"
-            role="tab"
+            aria-expanded={isExpanded}
             tabIndex={0}
             data-testid="mobile-menu-button"
             className={cn(

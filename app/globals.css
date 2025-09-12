@@ -22,8 +22,8 @@
   --fx-brand-gold-500: #D4AF37; /* Accent - Gold */
   --fx-brand-gold-600: #B8941F; /* Darker gold for hover */
   --fx-brand-gold-400: #E6C84A; /* Lighter gold */
-  --fx-brand-green-500: #2E8B57; /* Secondary - Deep Green */
-  --fx-brand-green-600: #1F5A3A; /* Darker green for hover */
+  --fx-brand-green-500: #4ADE80; /* Secondary - Light Green - WCAG AA compliant */
+  --fx-brand-green-600: #22C55E; /* Darker green for hover - WCAG AA compliant */
   --fx-brand-green-400: #3F9B6B; /* Lighter green */
   --fx-ai-confidence-low: #E4572E;
   --fx-ai-confidence-med: #DFAF2B;
@@ -132,8 +132,8 @@
   --fx-primary-hover: #6B3419;                     /* Darker Brown for hover */
   --fx-accent: #D4AF37;                            /* Gold - Premium feel */
   --fx-accent-hover: #B8941F;                      /* Darker Gold for hover */
-  --fx-secondary: #2E8B57;                         /* Deep Green - Trust/Nature */
-  --fx-secondary-hover: #1F5A3A;                   /* Darker Green for hover */
+  --fx-secondary: #4ADE80;                         /* Light Green - Trust/Nature - WCAG AA compliant */
+  --fx-secondary-hover: #22C55E;                   /* Darker Green for hover - WCAG AA compliant */
 
   /* AI Semantics */
   --fx-ai-badge-bg: var(--fx-neutral-50);

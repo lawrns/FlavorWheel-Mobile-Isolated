@@ -45,7 +45,7 @@ export default function LandingPage() {
       </header>
 
       {/* Main Content */}
-      <section id="main-content" className="relative z-10 px-6 py-12 text-center" tabIndex={-1}>
+      <main id="main-content" className="relative z-10 px-6 py-12 text-center" tabIndex={-1} role="main">
         {/* Enhanced Hero Section */}
         <div className="mb-20">
           {/* Value Proposition Badge */}
@@ -104,6 +104,7 @@ export default function LandingPage() {
 
             <Link
               href={`/${locale}/quick-tasting`}
+              data-testid="quick-taste-button"
               className="group px-8 py-4 bg-fx-card border-2 border-fx-accent text-fx-accent font-semibold text-lg rounded-xl hover:bg-fx-accent hover:text-fx-text-inverse transition-all duration-300 min-w-[220px] shadow-lg hover:shadow-xl"
             >
               <span className="flex items-center justify-center gap-3">
@@ -151,12 +152,12 @@ export default function LandingPage() {
         </div>
 
         {/* Enhanced Statistics Section */}
-        <div className="mb-20">
+        <section className="mb-20" aria-labelledby="statistics-heading">
           <div className="bg-fx-card/90 backdrop-blur-sm rounded-3xl p-8 md:p-12 shadow-2xl border border-fx-border-default max-w-5xl mx-auto">
             <div className="text-center mb-8">
-              <h3 className="text-2xl md:text-3xl font-bold text-fx-text-primary mb-4 font-heading">
+              <h2 id="statistics-heading" className="text-2xl md:text-3xl font-bold text-fx-text-primary mb-4 font-heading">
                 Trusted by Industry Professionals
-              </h3>
+              </h2>
               <p className="text-fx-text-secondary max-w-2xl mx-auto">
                 Join sommeliers, beverage directors, and flavor experts who rely on our AI-powered platform
               </p>
@@ -213,14 +214,14 @@ export default function LandingPage() {
               </blockquote>
             </div>
           </div>
-        </div>
+        </section>
 
         {/* Feature Comparison Grid */}
-        <section className="w-full max-w-7xl mx-auto mb-24">
+        <section className="w-full max-w-7xl mx-auto mb-24" aria-labelledby="features-heading">
           <div className="text-center mb-16">
-            <h3 className="text-3xl md:text-4xl font-bold text-fx-text-primary mb-6 font-heading">
+            <h2 id="features-heading" className="text-3xl md:text-4xl font-bold text-fx-text-primary mb-6 font-heading">
               Why Professional Tasters Choose FlavorWheel
-            </h3>
+            </h2>
             <p className="text-lg text-fx-text-secondary max-w-3xl mx-auto">
               See how our AI-powered platform compares to traditional tasting methods
             </p>
@@ -321,6 +322,7 @@ export default function LandingPage() {
                 </p>
                 <Link
                   href={`/${locale}/register`}
+                  data-testid="create-tasting-button"
                   className="inline-block px-8 py-4 bg-gradient-to-r from-fx-accent to-fx-accent-hover text-fx-text-inverse font-semibold text-lg rounded-xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
                 >
                   Start Free Trial Today
@@ -331,7 +333,7 @@ export default function LandingPage() {
         </section>
 
         {/* Final CTA Section */}
-        <section className="text-center">
+        <section className="text-center" aria-labelledby="cta-heading">
           <div className="bg-gradient-to-br from-fx-card/95 to-fx-card/90 backdrop-blur-sm rounded-3xl p-8 md:p-12 shadow-2xl border border-fx-border-default max-w-5xl mx-auto">
             <div className="mb-8">
               <div className="inline-flex items-center gap-2 bg-fx-accent/10 text-fx-accent px-4 py-2 rounded-full text-sm font-medium mb-6">
@@ -340,9 +342,9 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <h3 className="text-3xl md:text-4xl font-bold text-fx-text-primary mb-6 font-heading">
+            <h2 id="cta-heading" className="text-3xl md:text-4xl font-bold text-fx-text-primary mb-6 font-heading">
               Start Your Professional Tasting Journey Today
-            </h3>
+            </h2>
 
             <p className="text-lg text-fx-text-secondary mb-8 max-w-3xl mx-auto">
               Join 2,847+ professional tasters who trust FlavorWheel for accurate, data-driven flavor analysis.
@@ -376,6 +378,7 @@ export default function LandingPage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
               <Link
                 href={`/${locale}/register`}
+                data-testid="create-tasting-button"
                 className="px-10 py-4 bg-gradient-to-r from-fx-accent to-fx-accent-hover text-fx-text-inverse font-bold text-lg rounded-2xl shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 min-w-[240px] text-center"
               >
                 🚀 Start Free Trial Now
@@ -383,6 +386,7 @@ export default function LandingPage() {
 
               <Link
                 href={`/${locale}/quick-tasting`}
+                data-testid="quick-taste-button"
                 className="px-10 py-4 bg-fx-card border-2 border-fx-accent text-fx-accent font-bold text-lg rounded-2xl hover:bg-fx-accent hover:text-fx-text-inverse transition-all duration-300 min-w-[240px] shadow-lg hover:shadow-xl text-center"
               >
                 Try Quick Tasting
@@ -399,7 +403,7 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
-      </section>
+      </main>
 
       {/* Test elements for E2E */}
       <div data-testid="app-ready" className="sr-only">App Ready</div>

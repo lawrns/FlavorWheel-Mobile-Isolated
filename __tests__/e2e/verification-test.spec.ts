@@ -107,41 +107,39 @@ test.describe('Comprehensive Landing Page Verification - Deep E2E Testing', () =
 
   test('should display complete landing page content', async ({ page }) => {
     // Verify main hero content
-    await expect(page.locator('h1')).toContainText('Discover the World')
-    await expect(page.locator('h1')).toContainText('In Every Sip')
+    await expect(page.locator('h1')).toContainText('Professional Flavor')
+    await expect(page.locator('h1')).toContainText('Analysis Platform')
 
     // Verify branding (h2 in header)
-    await expect(page.locator('header h2')).toContainText('FLAVATIX')
+    await expect(page.locator('header h2')).toContainText('FlavorWheel México')
 
     // Verify main CTA buttons
-    await expect(page.locator('text=Start Your Flavor Journey')).toBeVisible()
+    await expect(page.locator('text=Start Free Trial')).toBeVisible()
+    await expect(page.locator('text=Try Quick Tasting')).toBeVisible()
     await expect(page.locator('text=Watch Demo')).toBeVisible()
 
     // Verify statistics section
-    await expect(page.locator('h2').filter({ hasText: 'Join 10,000+ Passionate Tasters' })).toBeVisible()
-    await expect(page.locator('text=Passionate Tasters')).toBeVisible()
+    await expect(page.locator('h2').filter({ hasText: 'Trusted by Industry Professionals' })).toBeVisible()
+    await expect(page.locator('text=Active Tasters')).toBeVisible()
 
     // Verify feature sections
-    await expect(page.locator('text=AI Flavor Analysis')).toBeVisible()
-    await expect(page.locator('text=Expert Community')).toBeVisible()
-    await expect(page.locator('text=Mobile-First Design')).toBeVisible()
-    await expect(page.locator('text=Professional Tools')).toBeVisible()
+    await expect(page.locator('text=AI-powered analysis')).toBeVisible()
+    await expect(page.locator('text=Expert community')).toBeVisible()
+    await expect(page.locator('text=Mobile-first design')).toBeVisible()
 
     // Verify testimonials section
-    await expect(page.locator('text=Sarah Martinez')).toBeVisible()
-    await expect(page.locator('text=Marco Rodriguez')).toBeVisible()
-    await expect(page.locator('text=Jennifer Chen')).toBeVisible()
+    await expect(page.locator('text=Maria Sanchez')).toBeVisible()
 
     // Verify bottom CTA section
-    await expect(page.locator('text=Start Free Today')).toBeVisible()
-    await expect(page.locator('text=Sign In')).toBeVisible()
+    await expect(page.locator('text=Start Free Trial Now')).toBeVisible()
+    // Note: Sign In button is not implemented in current design
   })
 
   test('CRITICAL: should test primary navigation buttons work correctly', async ({ page }) => {
-    // Test "Start Your Flavor Journey" button
-    const startJourneyButton = page.locator('text=Start Your Flavor Journey')
-    await expect(startJourneyButton).toBeVisible()
-    await startJourneyButton.click()
+    // Test "Start Free Trial" button
+    const startTrialButton = page.locator('text=Start Free Trial')
+    await expect(startTrialButton).toBeVisible()
+    await startTrialButton.click()
 
     // Should navigate to create page
     await expect(page).toHaveURL(/.*\/create/)
@@ -153,13 +151,13 @@ test.describe('Comprehensive Landing Page Verification - Deep E2E Testing', () =
   })
 
   test('should test secondary navigation buttons work correctly', async ({ page }) => {
-    // Test "Watch Demo" button
-    const watchDemoButton = page.locator('text=Watch Demo')
-    await expect(watchDemoButton).toBeVisible()
-    await watchDemoButton.click()
+    // Test "Try Quick Tasting" button
+    const quickTastingButton = page.locator('text=Try Quick Tasting')
+    await expect(quickTastingButton).toBeVisible()
+    await quickTastingButton.click()
 
-    // Should navigate to create page
-    await expect(page).toHaveURL(/.*\/create/)
+    // Should navigate to quick tasting page
+    await expect(page).toHaveURL(/.*\/quick-tasting/)
     await expect(page.locator('body')).toBeVisible()
 
     // Go back to landing for next test
@@ -169,10 +167,10 @@ test.describe('Comprehensive Landing Page Verification - Deep E2E Testing', () =
 
   test('should test bottom CTA button works correctly', async ({ page }) => {
     // Test bottom CTA button
-    await page.locator('text=Start Free Today').scrollIntoViewIfNeeded()
-    const startFreeButton = page.locator('text=Start Free Today')
-    await expect(startFreeButton).toBeVisible()
-    await startFreeButton.click()
+    await page.locator('text=Start Free Trial Now').scrollIntoViewIfNeeded()
+    const startTrialButton = page.locator('text=Start Free Trial Now')
+    await expect(startTrialButton).toBeVisible()
+    await startTrialButton.click()
 
     // Should navigate to register page
     await expect(page).toHaveURL(/.*\/register/)
@@ -185,10 +183,10 @@ test.describe('Comprehensive Landing Page Verification - Deep E2E Testing', () =
 
     // Verify content is visible and properly sized
     await expect(page.locator('h1')).toBeVisible()
-    await expect(page.locator('text=Start Your Flavor Journey')).toBeVisible()
+    await expect(page.locator('text=Start Free Trial')).toBeVisible()
 
     // Check that buttons are properly sized for mobile
-    const startButton = page.locator('text=Start Your Flavor Journey')
+    const startButton = page.locator('text=Start Free Trial')
     const buttonBox = await startButton.boundingBox()
     expect(buttonBox?.width).toBeGreaterThan(200) // Should be reasonably wide for mobile
 
@@ -199,7 +197,7 @@ test.describe('Comprehensive Landing Page Verification - Deep E2E Testing', () =
 
     // Test that navigation works on mobile
     await startButton.click()
-    await expect(page).toHaveURL(/.*\/create/)
+    await expect(page).toHaveURL(/.*\/register/)
   })
 
   test('CRITICAL: should be desktop responsive (1280px)', async ({ page }) => {
@@ -208,7 +206,7 @@ test.describe('Comprehensive Landing Page Verification - Deep E2E Testing', () =
 
     // Verify layout expands properly
     await expect(page.locator('h1')).toBeVisible()
-    await expect(page.locator('text=Start Your Flavor Journey')).toBeVisible()
+    await expect(page.locator('text=Start Free Trial')).toBeVisible()
 
     // Check hero section uses full width
     const heroSection = page.locator('h1').locator('..').locator('..')
@@ -216,8 +214,8 @@ test.describe('Comprehensive Landing Page Verification - Deep E2E Testing', () =
     expect(heroBox?.width).toBeGreaterThan(800) // Should use most of the screen width
 
     // Test navigation on desktop
-    await page.locator('text=Start Your Flavor Journey').click()
-    await expect(page).toHaveURL(/.*\/create/)
+    await page.locator('text=Start Free Trial').click()
+    await expect(page).toHaveURL(/.*\/register/)
   })
 
   test('should handle keyboard navigation properly', async ({ page }) => {
@@ -231,14 +229,14 @@ test.describe('Comprehensive Landing Page Verification - Deep E2E Testing', () =
     let attempts = 0
     while (attempts < 15) {
       focusedText = await page.evaluate(() => document.activeElement?.textContent || '')
-      if (focusedText.includes('Start Your Flavor Journey') || focusedText.includes('Watch Demo')) {
+      if (focusedText.includes('Start Free Trial') || focusedText.includes('Try Quick Tasting') || focusedText.includes('Watch Demo')) {
         break
       }
       await page.keyboard.press('Tab')
       attempts++
     }
 
-    expect(focusedText).toMatch(/(Start Your Flavor Journey|Watch Demo)/)
+    expect(focusedText).toMatch(/(Start Free Trial|Try Quick Tasting|Watch Demo)/)
   })
 
   test('should have proper ARIA labels and accessibility', async ({ page }) => {
@@ -278,28 +276,30 @@ test.describe('Comprehensive Landing Page Verification - Deep E2E Testing', () =
   })
 
   test('should handle button interactions', async ({ page }) => {
-    // Click Start Your Flavor Journey button
-    await page.locator('text=Start Your Flavor Journey').click()
+    // Click Start Free Trial button
+    await page.locator('text=Start Free Trial').click()
 
     // Wait for navigation to complete
-    await page.waitForURL('**/create', { timeout: 10000 })
+    await page.waitForURL('**/register', { timeout: 10000 })
 
-    // Verify we successfully navigated to create page
-    await expect(page).toHaveURL(/.*\/create/)
+    // Verify we successfully navigated to register page
+    await expect(page).toHaveURL(/.*\/register/)
 
     // Verify the page loads (different pages have different elements)
     await expect(page.locator('body')).toBeVisible()
   })
 
-  test('should handle sign in button', async ({ page }) => {
-    // Click Sign In button
-    await page.locator('text=Sign In').click()
+  test('should handle quick tasting button', async ({ page }) => {
+    // Click Try Quick Tasting button
+    await page.locator('text=Try Quick Tasting').click()
 
-    // Wait a moment to see what happens
-    await page.waitForTimeout(1000)
+    // Wait for navigation to complete
+    await page.waitForURL('**/quick-tasting', { timeout: 10000 })
 
-    // Sign In might open a modal or navigate - either is acceptable
-    // Just verify the page is still functional
+    // Verify we successfully navigated to quick tasting page
+    await expect(page).toHaveURL(/.*\/quick-tasting/)
+
+    // Verify the page loads
     await expect(page.locator('body')).toBeVisible()
   })
 
@@ -308,12 +308,12 @@ test.describe('Comprehensive Landing Page Verification - Deep E2E Testing', () =
     // This is a basic check - the actual contrast fix was in the code
 
     // Verify main CTA buttons exist and are visible
-    const startButton = page.locator('text=Start Your Flavor Journey')
-    const signInButton = page.locator('text=Sign In')
+    const startButton = page.locator('text=Start Free Trial')
+    const quickTastingButton = page.locator('text=Try Quick Tasting')
     const demoButton = page.locator('text=Watch Demo')
 
     await expect(startButton).toBeVisible()
-    await expect(signInButton).toBeVisible()
+    await expect(quickTastingButton).toBeVisible()
     await expect(demoButton).toBeVisible()
 
     // Verify buttons have proper styling (not implemented as visual regression test)
@@ -331,7 +331,7 @@ test.describe('Comprehensive Landing Page Verification - Deep E2E Testing', () =
     // Check if we can navigate back to landing
     await page.goto('/en/landing')
     await expect(page.locator('header h2')).toBeVisible()
-    await expect(page.locator('header h2')).toContainText('FLAVATIX')
+    await expect(page.locator('header h2')).toContainText('FlavorWheel México')
   })
 
   test('should handle direct navigation to review page', async ({ page }) => {
@@ -345,6 +345,6 @@ test.describe('Comprehensive Landing Page Verification - Deep E2E Testing', () =
     // Check if we can navigate back to landing
     await page.goto('/en/landing')
     await expect(page.locator('header h2')).toBeVisible()
-    await expect(page.locator('header h2')).toContainText('FLAVATIX')
+    await expect(page.locator('header h2')).toContainText('FlavorWheel México')
   })
 })

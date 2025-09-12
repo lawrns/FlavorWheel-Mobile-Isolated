@@ -214,6 +214,7 @@ export function FlavorWheelVisualization({ data, title, reduceMotion }: Props) {
         width={dimensions.width}
         height={dimensions.height}
         className="flavor-wheel-svg"
+        data-testid="flavor-wheel-svg"
         style={{ maxWidth: '100%', height: 'auto' }}
       />
     </div>

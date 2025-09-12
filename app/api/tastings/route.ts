@@ -1,0 +1,198 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { supabase } from '@/lib/supabase'
+import type {
+  QuickTastingData,
+  QuickTastingResponse
+} from '@/types/quick-tasting'
+
+// POST /api/tastings - Create a new tasting (for both quick and full tastings)
+export async function POST(request: NextRequest) {
+  try {
+    // Get user from request (server-side auth)
+    const authHeader = request.headers.get('Authorization')
+    if (!authHeader) {
+      return NextResponse.json(
+        { success: false, error: 'Authentication required' },
+        { status: 401 }
+      )
+    }
+
+    const token = authHeader.replace('Bearer ', '')
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token)
+
+    if (authError || !user) {
+      return NextResponse.json(
+        { success: false, error: 'Invalid authentication' },
+        { status: 401 }
+      )
+    }
+
+    // Parse request body
+    const tastingData: QuickTastingData = await request.json()
+
+    // Validate required fields
+    if (!tastingData.productType || !tastingData.productName) {
+      return NextResponse.json(
+        { success: false, error: 'Product type and name are required' },
+        { status: 400 }
+      )
+    }
+
+    if (!tastingData.selectedFlavors || tastingData.selectedFlavors.length === 0) {
+      return NextResponse.json(
+        { success: false, error: 'At least one flavor must be selected' },
+        { status: 400 }
+      )
+    }
+
+    // Create the tasting record
+    const tastingPayload = {
+      name: `${tastingData.productName} Tasting`,
+      description: `Tasting of ${tastingData.productName}`,
+      type: 'quick',
+      status: 'completed', // Quick tastings are completed immediately
+      created_by: user.id,
+      date: new Date().toISOString(),
+      tasting_data: {
+        productType: tastingData.productType,
+        productName: tastingData.productName,
+        selectedFlavors: tastingData.selectedFlavors,
+        overallRating: tastingData.overallRating,
+        notes: tastingData.notes,
+        image: tastingData.image,
+        completedAt: new Date().toISOString()
+      },
+      characteristics: {
+        product_type: tastingData.productType,
+        flavors: tastingData.selectedFlavors,
+        rating: tastingData.overallRating
+      }
+    }
+
+    const { data: tasting, error: tastingError } = await supabase
+      .from('tastings')
+      .insert(tastingPayload)
+      .select()
+      .single()
+
+    if (tastingError) {
+      console.error('Error creating tasting:', tastingError)
+      return NextResponse.json(
+        { success: false, error: 'Failed to create tasting record' },
+        { status: 500 }
+      )
+    }
+
+    // Create a tasting item for the beverage
+    const itemPayload = {
+      tasting_id: tasting.id,
+      name: tastingData.productName,
+      type: tastingData.productType,
+      details: {
+        flavors: tastingData.selectedFlavors,
+        rating: tastingData.overallRating,
+        notes: tastingData.notes,
+        image: tastingData.image
+      }
+    }
+
+    const { error: itemError } = await supabase
+      .from('tasting_items')
+      .insert(itemPayload)
+
+    if (itemError) {
+      console.error('Error creating tasting item:', itemError)
+      // Don't fail the entire operation for item creation error
+    }
+
+    // Create flavor wheel entry if flavors are provided
+    if (tastingData.selectedFlavors.length > 0) {
+      const flavorWheelPayload = {
+        tasting_id: tasting.id,
+        item_id: tasting.id, // Using tasting.id as item_id for now
+        user_id: user.id,
+        wheel_type: 'combined',
+        wheel_data: {
+          flavors: tastingData.selectedFlavors,
+          rating: tastingData.overallRating,
+          notes: tastingData.notes
+        }
+      }
+
+      const { error: wheelError } = await supabase
+        .from('flavor_wheels')
+        .insert(flavorWheelPayload)
+
+      if (wheelError) {
+        console.error('Error creating flavor wheel:', wheelError)
+        // Don't fail the entire operation for flavor wheel creation error
+      }
+    }
+
+    return NextResponse.json({
+      success: true,
+      tastingId: tasting.id,
+      message: 'Tasting created successfully'
+    })
+
+  } catch (error) {
+    console.error('Unexpected error in tasting creation:', error)
+    return NextResponse.json(
+      { success: false, error: 'Internal server error' },
+      { status: 500 }
+    )
+  }
+}
+
+// GET /api/tastings - Get user's tastings
+export async function GET(request: NextRequest) {
+  try {
+    // Get user from request (server-side auth)
+    const authHeader = request.headers.get('Authorization')
+    if (!authHeader) {
+      return NextResponse.json(
+        { success: false, error: 'Authentication required' },
+        { status: 401 }
+      )
+    }
+
+    const token = authHeader.replace('Bearer ', '')
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token)
+
+    if (authError || !user) {
+      return NextResponse.json(
+        { success: false, error: 'Invalid authentication' },
+        { status: 401 }
+      )
+    }
+
+    const { data: tastings, error: tastingsError } = await supabase
+      .from('tastings')
+      .select(`
+        *,
+        tasting_items (*)
+      `)
+      .eq('created_by', user.id)
+      .order('created_at', { ascending: false })
+
+    if (tastingsError) {
+      console.error('Error fetching tastings:', tastingsError)
+      return NextResponse.json(
+        { success: false, error: 'Failed to fetch tastings' },
+        { status: 500 }
+      )
+    }
+
+    return NextResponse.json({
+      success: true,
+      tastings: tastings || []
+    })
+
+  } catch (error) {
+    console.error('Unexpected error fetching tastings:', error)
+    return NextResponse.json(
+      { success: false, error: 'Internal server error' },
+      { status: 500 }
+    )
+  }
+}
