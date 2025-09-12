@@ -489,16 +489,6 @@ const flavorDictionary: any = {
 const mexicanFlavorDictionary: MexicanFlavorDictionary = {
   categories: {
     // Classic flavor categories expected by tests
-    Frutal: {
-      name: 'Frutal',
-      culturalContext: 'Sabores frutales comunes en vinos y destilados mexicanos, desde cítricos hasta frutos rojos.',
-      subcategories: {
-        general: {
-          name: 'General',
-          descriptors: ['Cítrico', 'Manzana', 'Frutos rojos']
-        }
-      }
-    },
     Floral: {
       name: 'Floral',
       culturalContext: 'Notas florales como azahar, jazmín y rosas presentes en bebidas y licores.',

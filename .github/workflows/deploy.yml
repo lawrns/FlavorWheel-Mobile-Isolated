@@ -320,20 +320,20 @@ jobs:
     needs: [deploy-staging, deploy-production]
     if: always() && (needs.deploy-staging.result == 'success' || needs.deploy-production.result == 'success')
     steps:
-      - name: Wait for application to be ready
-        run: sleep 60
+  - name: Wait for application to be ready
+    run: sleep 60
 
-      - name: Run health checks
-        run: |
-          if [[ "${{ needs.deploy-production.result }}" == "success" ]]; then
-            curl -f https://flavorwheel.mx/api/health || exit 1
-          elif [[ "${{ needs.deploy-staging.result }}" == "success" ]]; then
-            curl -f https://staging.flavorwheel.mx/api/health || exit 1
-          fi
+  - name: Run health checks
+    run: |
+      if [[ "${{ needs.deploy-production.result }}" == "success" ]]; then
+        curl -f https://flavorwheel.mx/api/health || exit 1
+      elif [[ "${{ needs.deploy-staging.result }}" == "success" ]]; then
+        curl -f https://staging.flavorwheel.mx/api/health || exit 1
+      fi
 
-      - name: Trigger performance tests
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          event-type: performance-test
-          client-payload: '{"environment": "${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}"}'
+  - name: Trigger performance tests
+    uses: peter-evans/repository-dispatch@v2
+    with:
+      token: ${{ secrets.GITHUB_TOKEN }}
+      event-type: performance-test
+      client-payload: '{"environment": "${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}"}'

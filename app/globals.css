@@ -284,10 +284,10 @@ body {
 
 /* ===== HIGH CONTRAST MODE ===== */
 [data-theme="high-contrast"] {
-  --fx-focus-ring-color: #000000;
-  --fx-text-primary: #000000;
-  --fx-bg: #FFFFFF;
-  --fx-neutral-200: #000000;
+  --fx-focus-ring-color: #000;
+  --fx-text-primary: #000;
+  --fx-bg: #FFF;
+  --fx-neutral-200: #000;
 }
 
 /* ===== COMPONENT UTILITIES ===== */
@@ -538,7 +538,6 @@ body {
 .text-gradient-gold {
   background: linear-gradient(180deg, #F5EFE6 0%, #E4C983 100%);
   background-clip: text;
-  background-clip: text;
   color: transparent;
 }
 
@@ -558,10 +557,6 @@ body {
   .touch-manipulation {
     touch-action: manipulation;
     -webkit-touch-callout: none;
-    user-select: none;
-    user-select: none;
-    user-select: none;
-    user-select: none;
     user-select: none;
   }
 
@@ -662,7 +657,6 @@ select:focus-visible,
 
 /* Disable text selection on interactive elements */
 button, input, textarea, select {
-  user-select: text;
   user-select: text;
 }
 

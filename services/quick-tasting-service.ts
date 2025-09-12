@@ -29,10 +29,18 @@ export async function createQuickTasting(tastingData: QuickTastingData): Promise
       token = 'test-user-token'
     } else {
       // Get real Supabase session
-      const { data: { session }, error: authError } = await supabase.auth.getSession()
+      const sessionResult = await supabase.auth.getSession()
 
-      if (authError || !session?.access_token) {
-        const errorResponse = createErrorResponse(authError || new Error('No session'), 'createQuickTasting')
+      if (('error' in sessionResult && sessionResult.error) || !sessionResult.data?.session) {
+        const error = ('error' in sessionResult && sessionResult.error) ? sessionResult.error : new Error('No session')
+        const errorResponse = createErrorResponse(error, 'createQuickTasting')
+        logQuickTastingError(errorResponse, { tastingData })
+        return { success: false, error: errorResponse.userMessage }
+      }
+
+      const session = sessionResult.data.session
+      if (!('access_token' in session) || !session.access_token) {
+        const errorResponse = createErrorResponse(new Error('No access token'), 'createQuickTasting')
         logQuickTastingError(errorResponse, { tastingData })
         return { success: false, error: errorResponse.userMessage }
       }
@@ -73,11 +81,6 @@ export async function createQuickTasting(tastingData: QuickTastingData): Promise
       success: true,
       tastingId: result.tastingId,
       message: result.message || 'Tasting created successfully!'
-    }
-
-    return {
-      success: true,
-      tastingId: tasting.id
     }
 
   } catch (error) {

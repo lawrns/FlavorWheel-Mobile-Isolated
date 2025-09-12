@@ -4,7 +4,7 @@
  * Extracts flavor descriptors and tasting terms from free-form text
  */
 
-import { extractFlavorsFromText, buildFlavorHierarchy } from './flavor-analysis-service'
+import { extractFlavorsFromText, buildFlavorHierarchy, FlavorWheelData } from './flavor-analysis-service'
 
 export interface KeywordExtractionOptions {
   productType?: string
@@ -143,7 +143,7 @@ export interface FlavorWheelViews {
  */
 export async function processTastingForFlavorWheel(
   inputData: TastingInputData | { id?: string; notes?: string; productType?: string }
-): Promise<{ flavorWheelViews: SunburstData[] }> {
+): Promise<FlavorWheelViews> {
   const startTime = Date.now()
 
   // Validate input data
@@ -165,17 +165,16 @@ export async function processTastingForFlavorWheel(
 
   const toSunburst = (h: FlavorWheelData): SunburstData => ({
     name: h.name,
-    children: (h.subcategories || []).map(sc => ({ name: sc.name }))
+    children: (h.subcategories || []).map((sc: { name: string; percentage: number; intensity: number; descriptors?: any[] }) => ({ name: sc.name }))
   })
 
-  return { flavorWheelViews: [toSunburst(hierarchy)] }
   let hasValidData = false
 
   // Process subjective inputs (Study Mode)
-  if (inputData.subjectiveInputs && inputData.subjectiveInputs.length > 0) {
-    const validInputs = inputData.subjectiveInputs
-      .filter(input => input && input.trim().length > 0)
-      .map(input => input.trim())
+  if ((inputData as TastingInputData).subjectiveInputs && (inputData as TastingInputData).subjectiveInputs!.length > 0) {
+    const validInputs = (inputData as TastingInputData).subjectiveInputs!
+      .filter((input: string) => input && input.trim().length > 0)
+      .map((input: string) => input.trim())
 
     if (validInputs.length > 0) {
       allTexts.push(...validInputs)
@@ -184,8 +183,8 @@ export async function processTastingForFlavorWheel(
   }
 
   // Process pre-loaded data (Competition Mode)
-  if (inputData.preLoadedData && inputData.preLoadedData.length > 0) {
-    inputData.preLoadedData.forEach(item => {
+  if ((inputData as TastingInputData).preLoadedData && (inputData as TastingInputData).preLoadedData!.length > 0) {
+    (inputData as TastingInputData).preLoadedData!.forEach((item: any) => {
       if (item.subjectiveInput && item.subjectiveInput.trim().length > 0) {
         allTexts.push(item.subjectiveInput.trim())
         hasValidData = true
@@ -199,7 +198,7 @@ export async function processTastingForFlavorWheel(
         hasValidData = true
       }
       if (item.multipleChoice && item.multipleChoice.length > 0) {
-        const validChoices = item.multipleChoice.filter(choice => choice && choice.trim().length > 0)
+        const validChoices = item.multipleChoice.filter((choice: string) => choice && choice.trim().length > 0)
         if (validChoices.length > 0) {
           allTexts.push(...validChoices)
           hasValidData = true
@@ -209,8 +208,8 @@ export async function processTastingForFlavorWheel(
   }
 
   // Process quick tasting notes
-  if (inputData.quickNotes) {
-    const notes = inputData.quickNotes
+  if ((inputData as TastingInputData).quickNotes) {
+    const notes = (inputData as TastingInputData).quickNotes!
 
     if (notes.aroma && notes.aroma.trim().length > 0) {
       allTexts.push(notes.aroma.trim())
@@ -228,12 +227,12 @@ export async function processTastingForFlavorWheel(
     }
 
     if (notes.selectedFlavors && notes.selectedFlavors.length > 0) {
-      const validFlavors = notes.selectedFlavors.filter(flavor =>
+      const validFlavors = notes.selectedFlavors.filter((flavor: { name: string; intensity: number }) =>
         flavor.name && flavor.name.trim().length > 0
       )
 
       if (validFlavors.length > 0) {
-        validFlavors.forEach(flavor => {
+        validFlavors.forEach((flavor: { name: string; intensity: number }) => {
           allTexts.push(`${flavor.name.trim()} (${flavor.intensity || 5}/10)`)
         })
         hasValidData = true
@@ -343,7 +342,7 @@ export async function processTastingForFlavorWheel(
     if (error instanceof Error) {
       throw new Error(`Flavor wheel generation failed: ${error.message}`)
     }
-    throw new Error('Flavor wheel generation failed due to an unexpected error')
+    throw new Error(`Flavor wheel generation failed: ${String(error)}`)
   }
 }
 
