@@ -45,7 +45,7 @@ export default function LandingPage() {
       </header>
 
       {/* Main Content */}
-      <main id="main-content" className="relative z-10 px-6 py-12 text-center" tabIndex={-1} role="main">
+      <section id="main-content" className="relative z-10 px-6 py-12 text-center" tabIndex={-1}>
         {/* Enhanced Hero Section */}
         <div className="mb-20">
           {/* Value Proposition Badge */}
@@ -403,7 +403,7 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
-      </main>
+      </section>
 
       {/* Test elements for E2E */}
       <div data-testid="app-ready" className="sr-only">App Ready</div>

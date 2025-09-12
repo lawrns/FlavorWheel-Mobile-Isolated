@@ -114,8 +114,8 @@ test.describe('Comprehensive Landing Page Verification - Deep E2E Testing', () =
     await expect(page.locator('header h2')).toContainText('FlavorWheel México')
 
     // Verify main CTA buttons
-    await expect(page.locator('text=Start Free Trial')).toBeVisible()
-    await expect(page.locator('text=Try Quick Tasting')).toBeVisible()
+    await expect(page.locator('[data-testid="create-tasting-button"]').first()).toBeVisible()
+    await expect(page.locator('[data-testid="quick-taste-button"]').first()).toBeVisible()
     await expect(page.locator('text=Watch Demo')).toBeVisible()
 
     // Verify statistics section
@@ -123,7 +123,7 @@ test.describe('Comprehensive Landing Page Verification - Deep E2E Testing', () =
     await expect(page.locator('text=Active Tasters')).toBeVisible()
 
     // Verify feature sections
-    await expect(page.locator('text=AI-powered analysis')).toBeVisible()
+    await expect(page.locator('h4').filter({ hasText: 'AI-Powered Analysis' })).toBeVisible()
     await expect(page.locator('text=Expert community')).toBeVisible()
     await expect(page.locator('text=Mobile-first design')).toBeVisible()
 
@@ -137,12 +137,12 @@ test.describe('Comprehensive Landing Page Verification - Deep E2E Testing', () =
 
   test('CRITICAL: should test primary navigation buttons work correctly', async ({ page }) => {
     // Test "Start Free Trial" button
-    const startTrialButton = page.locator('text=Start Free Trial')
+    const startTrialButton = page.locator('[data-testid="create-tasting-button"]').first()
     await expect(startTrialButton).toBeVisible()
     await startTrialButton.click()
 
-    // Should navigate to create page
-    await expect(page).toHaveURL(/.*\/create/)
+    // Should navigate to register page (correct behavior - registration required first)
+    await expect(page).toHaveURL(/.*\/register/)
     await expect(page.locator('body')).toBeVisible()
 
     // Go back to landing for next test
@@ -152,7 +152,7 @@ test.describe('Comprehensive Landing Page Verification - Deep E2E Testing', () =
 
   test('should test secondary navigation buttons work correctly', async ({ page }) => {
     // Test "Try Quick Tasting" button
-    const quickTastingButton = page.locator('text=Try Quick Tasting')
+    const quickTastingButton = page.locator('[data-testid="quick-taste-button"]').first()
     await expect(quickTastingButton).toBeVisible()
     await quickTastingButton.click()
 
@@ -183,10 +183,10 @@ test.describe('Comprehensive Landing Page Verification - Deep E2E Testing', () =
 
     // Verify content is visible and properly sized
     await expect(page.locator('h1')).toBeVisible()
-    await expect(page.locator('text=Start Free Trial')).toBeVisible()
+    await expect(page.locator('[data-testid="create-tasting-button"]').first()).toBeVisible()
 
     // Check that buttons are properly sized for mobile
-    const startButton = page.locator('text=Start Free Trial')
+    const startButton = page.locator('[data-testid="create-tasting-button"]').first()
     const buttonBox = await startButton.boundingBox()
     expect(buttonBox?.width).toBeGreaterThan(200) // Should be reasonably wide for mobile
 
@@ -206,7 +206,7 @@ test.describe('Comprehensive Landing Page Verification - Deep E2E Testing', () =
 
     // Verify layout expands properly
     await expect(page.locator('h1')).toBeVisible()
-    await expect(page.locator('text=Start Free Trial')).toBeVisible()
+    await expect(page.locator('[data-testid="create-tasting-button"]').first()).toBeVisible()
 
     // Check hero section uses full width
     const heroSection = page.locator('h1').locator('..').locator('..')
@@ -214,7 +214,7 @@ test.describe('Comprehensive Landing Page Verification - Deep E2E Testing', () =
     expect(heroBox?.width).toBeGreaterThan(800) // Should use most of the screen width
 
     // Test navigation on desktop
-    await page.locator('text=Start Free Trial').click()
+    await page.locator('[data-testid="create-tasting-button"]').first().click()
     await expect(page).toHaveURL(/.*\/register/)
   })
 
@@ -243,8 +243,8 @@ test.describe('Comprehensive Landing Page Verification - Deep E2E Testing', () =
     // Check for banner landmark
     await expect(page.locator('[role="banner"]')).toBeVisible()
 
-    // Check for main content landmark
-    await expect(page.locator('[role="main"]')).toBeVisible()
+    // Check for main content landmark (by ID since app shell has the main role)
+    await expect(page.locator('#main-content')).toBeVisible()
 
     // Check for proper alt text on images (if any exist)
     const images = page.locator('img')
@@ -277,7 +277,7 @@ test.describe('Comprehensive Landing Page Verification - Deep E2E Testing', () =
 
   test('should handle button interactions', async ({ page }) => {
     // Click Start Free Trial button
-    await page.locator('text=Start Free Trial').click()
+    await page.locator('[data-testid="create-tasting-button"]').first().click()
 
     // Wait for navigation to complete
     await page.waitForURL('**/register', { timeout: 10000 })
@@ -291,7 +291,7 @@ test.describe('Comprehensive Landing Page Verification - Deep E2E Testing', () =
 
   test('should handle quick tasting button', async ({ page }) => {
     // Click Try Quick Tasting button
-    await page.locator('text=Try Quick Tasting').click()
+    await page.locator('[data-testid="quick-taste-button"]').first().click()
 
     // Wait for navigation to complete
     await page.waitForURL('**/quick-tasting', { timeout: 10000 })
@@ -308,8 +308,8 @@ test.describe('Comprehensive Landing Page Verification - Deep E2E Testing', () =
     // This is a basic check - the actual contrast fix was in the code
 
     // Verify main CTA buttons exist and are visible
-    const startButton = page.locator('text=Start Free Trial')
-    const quickTastingButton = page.locator('text=Try Quick Tasting')
+    const startButton = page.locator('[data-testid="create-tasting-button"]').first()
+    const quickTastingButton = page.locator('[data-testid="quick-taste-button"]').first()
     const demoButton = page.locator('text=Watch Demo')
 
     await expect(startButton).toBeVisible()
