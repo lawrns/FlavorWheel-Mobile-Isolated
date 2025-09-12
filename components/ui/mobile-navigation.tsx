@@ -167,7 +167,7 @@ export function MobileNavigation({
           <>
             {/* Backdrop */}
             <motion.div
-              className="fixed inset-0 z-40 bg-black/30 supports-[backdrop-filter]:backdrop-blur-sm will-change-transform md:hidden"
+              className="fixed inset-0 z-[45] bg-black/30 supports-[backdrop-filter]:backdrop-blur-sm will-change-transform md:hidden"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -176,7 +176,7 @@ export function MobileNavigation({
 
             {/* Expanded Menu */}
             <motion.div
-              className="fixed bottom-20 left-4 right-4 z-[11] rounded-xl border border-fx-border-default bg-fx-card shadow-fx-lg md:hidden"
+              className="fixed bottom-20 left-4 right-4 z-[50] rounded-xl border border-fx-border-default bg-fx-card shadow-fx-lg md:hidden"
               data-testid="mobile-menu"
               initial={{ opacity: 0, y: 20, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}

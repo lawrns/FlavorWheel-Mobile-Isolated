@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, type ReactNode } from 'react'
+import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'
 import { useSupabase } from '@/components/providers/supabase-provider'
 
 interface User {
@@ -26,11 +26,16 @@ interface AuthContextType {
   ) => Promise<{ success: boolean; user?: User; needsConfirmation?: boolean } | void>
   logout: () => void
   updateUser: (userData: Partial<User>) => Promise<void>
+  loginAsTestUser: () => void
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  // Test user state for development
+  const [testUser, setTestUser] = useState<User | null>(null)
+  const isTestMode = process.env.NODE_ENV === 'development'
+
   // Get auth state and functions from SupabaseProvider
   const supabaseContext = useSupabase() // This will now work because SupabaseProvider waits for initialization
 
@@ -41,8 +46,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     signOut,
   } = supabaseContext
 
-  // Transform Supabase user to our User interface
-  const user: User | null = supabaseUser ? {
+  // Transform Supabase user to our User interface, or use test user
+  const user: User | null = testUser || (supabaseUser ? {
     id: supabaseUser.id,
     name: supabaseUser.user_metadata?.name || supabaseUser.email?.split('@')[0] || 'User',
     email: supabaseUser.email || '',
@@ -51,7 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       darkMode: false,
       notifications: true
     }
-  } : null
+  } : null)
 
   const login = async (email: string, password: string) => {
     if (!supabaseContext.client) {
@@ -98,7 +103,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   const logout = async () => {
-    await signOut()
+    if (testUser) {
+      setTestUser(null)
+      // Clear test user flag
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('test-user')
+      }
+    } else {
+      await signOut()
+    }
+  }
+
+  const loginAsTestUser = () => {
+    if (isTestMode) {
+      const testUserData = {
+        id: '00000000-0000-0000-0000-000000000001', // Valid UUID format for test user
+        name: 'Test User',
+        email: 'test@flavorwheel.com',
+        avatar: undefined,
+        preferences: {
+          darkMode: false,
+          notifications: true
+        }
+      }
+      setTestUser(testUserData)
+      // Set flag in localStorage for the service to detect
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('test-user', 'true')
+      }
+    }
   }
 
   const updateUser = async (userData: Partial<User>) => {
@@ -116,6 +149,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signup,
         logout,
         updateUser,
+        loginAsTestUser,
       }}
     >
       {children}

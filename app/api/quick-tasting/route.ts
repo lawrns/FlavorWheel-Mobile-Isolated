@@ -18,13 +18,25 @@ export async function POST(request: NextRequest) {
     }
 
     const token = authHeader.replace('Bearer ', '')
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token)
 
-    if (authError || !user) {
-      return NextResponse.json(
-        { success: false, error: 'Invalid authentication' },
-        { status: 401 }
-      )
+    // Handle test user in development mode
+    let user: any
+    if (process.env.NODE_ENV === 'development' && token === 'test-user-token') {
+      user = {
+        id: '00000000-0000-0000-0000-000000000001', // Valid UUID format for test user
+        email: 'test@flavorwheel.com'
+      }
+    } else {
+      const { data: { user: supabaseUser }, error: authError } = await supabase.auth.getUser(token)
+
+      if (authError || !supabaseUser) {
+        return NextResponse.json(
+          { success: false, error: 'Invalid authentication' },
+          { status: 401 }
+        )
+      }
+
+      user = supabaseUser
     }
 
     // Parse request body
@@ -45,15 +57,16 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create the tasting record
+    // Create the tasting record using actual database schema
     const tastingPayload = {
+      code: `QT-${Date.now()}`, // Required field
       name: `${tastingData.productName} Quick Tasting`,
       description: `Quick tasting of ${tastingData.productName}`,
       type: 'quick',
-      status: 'completed', // Quick tastings are completed immediately
       created_by: user.id,
       date: new Date().toISOString(),
-      tasting_data: {
+      // Store tasting data in the 'notes' jsonb field (which exists)
+      notes: {
         productType: tastingData.productType,
         productName: tastingData.productName,
         selectedFlavors: tastingData.selectedFlavors,
@@ -62,11 +75,13 @@ export async function POST(request: NextRequest) {
         image: tastingData.image,
         completedAt: new Date().toISOString()
       },
-      characteristics: {
-        product_type: tastingData.productType,
-        flavors: tastingData.selectedFlavors,
-        rating: tastingData.overallRating
-      }
+      // Store flavors in the 'characteristics' array field (which exists)
+      characteristics: tastingData.selectedFlavors,
+      completed_at: new Date().toISOString(),
+      mode: 'study', // Default value
+      review_type: 'quick',
+      product_type: tastingData.productType,
+      is_public: false
     }
 
     const { data: tasting, error: tastingError } = await supabase

@@ -18,13 +18,26 @@ import {
 // Create a new quick tasting
 export async function createQuickTasting(tastingData: QuickTastingData): Promise<QuickTastingResponse> {
   try {
-    // Get current user
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    // Get authentication token
+    let token: string | null = null
 
-    if (authError || !user) {
-      const errorResponse = createErrorResponse(authError || new Error('No user'), 'createQuickTasting')
-      logQuickTastingError(errorResponse, { tastingData })
-      return { success: false, error: errorResponse.userMessage }
+    // Check if we're using a test user (development mode)
+    const isTestUser = typeof window !== 'undefined' &&
+      localStorage.getItem('test-user') === 'true'
+
+    if (isTestUser && process.env.NODE_ENV === 'development') {
+      token = 'test-user-token'
+    } else {
+      // Get real Supabase session
+      const { data: { session }, error: authError } = await supabase.auth.getSession()
+
+      if (authError || !session?.access_token) {
+        const errorResponse = createErrorResponse(authError || new Error('No session'), 'createQuickTasting')
+        logQuickTastingError(errorResponse, { tastingData })
+        return { success: false, error: errorResponse.userMessage }
+      }
+
+      token = session.access_token
     }
 
     // Validate input data
@@ -34,90 +47,32 @@ export async function createQuickTasting(tastingData: QuickTastingData): Promise
       return { success: false, error: validationError.userMessage }
     }
 
-    // Create the tasting record
-    const tastingPayload = {
-      name: `${tastingData.productName} Quick Tasting`,
-      description: `Quick tasting of ${tastingData.productName}`,
-      type: 'quick',
-      status: 'completed', // Quick tastings are completed immediately
-      created_by: user.id,
-      date: new Date().toISOString(),
-      tasting_data: {
-        productType: tastingData.productType,
-        productName: tastingData.productName,
-        selectedFlavors: tastingData.selectedFlavors,
-        overallRating: tastingData.overallRating,
-        notes: tastingData.notes,
-        image: tastingData.image,
-        completedAt: new Date().toISOString()
+    // Call the API endpoint to create the tasting
+    const response = await fetch('/api/quick-tasting', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
       },
-      characteristics: {
-        product_type: tastingData.productType,
-        flavors: tastingData.selectedFlavors,
-        rating: tastingData.overallRating
-      }
-    }
+      body: JSON.stringify(tastingData)
+    })
 
-    const { data: tasting, error: tastingError } = await supabase
-      .from('tastings')
-      .insert(tastingPayload)
-      .select()
-      .single()
+    const result = await response.json()
 
-    if (tastingError) {
-      const errorResponse = createErrorResponse(tastingError, 'createQuickTasting')
-      logQuickTastingError(errorResponse, { tastingData, tastingPayload })
+    if (!response.ok || !result.success) {
+      const errorResponse = createErrorResponse(
+        new Error(result.error || 'API request failed'),
+        'createQuickTasting'
+      )
+      logQuickTastingError(errorResponse, { tastingData, status: response.status })
       return { success: false, error: errorResponse.userMessage }
     }
 
-    // Create a tasting item for the beverage
-    const itemPayload = {
-      tasting_id: tasting.id,
-      name: tastingData.productName,
-      type: tastingData.productType,
-      details: {
-        flavors: tastingData.selectedFlavors,
-        rating: tastingData.overallRating,
-        notes: tastingData.notes,
-        image: tastingData.image
-      }
-    }
-
-    const { error: itemError } = await supabase
-      .from('tasting_items')
-      .insert(itemPayload)
-
-    if (itemError) {
-      console.warn('Warning: Error creating tasting item:', itemError)
-      // Log the error but don't fail the entire operation for item creation error
-      const errorResponse = createErrorResponse(itemError, 'createTastingItem')
-      logQuickTastingError(errorResponse, { tastingData, tastingId: tasting.id })
-    }
-
-    // Create flavor wheel entry if flavors are provided
-    if (tastingData.selectedFlavors.length > 0) {
-      const flavorWheelPayload = {
-        tasting_id: tasting.id,
-        item_id: tasting.id, // Using tasting.id as item_id for now
-        user_id: user.id,
-        wheel_type: 'combined',
-        wheel_data: {
-          flavors: tastingData.selectedFlavors,
-          rating: tastingData.overallRating,
-          notes: tastingData.notes
-        }
-      }
-
-      const { error: wheelError } = await supabase
-        .from('flavor_wheels')
-        .insert(flavorWheelPayload)
-
-      if (wheelError) {
-        console.warn('Warning: Error creating flavor wheel:', wheelError)
-        // Log the error but don't fail the entire operation for flavor wheel creation error
-        const errorResponse = createErrorResponse(wheelError, 'createFlavorWheel')
-        logQuickTastingError(errorResponse, { tastingData, tastingId: tasting.id })
-      }
+    // Return the successful result from the API
+    return {
+      success: true,
+      tastingId: result.tastingId,
+      message: result.message || 'Tasting created successfully!'
     }
 
     return {

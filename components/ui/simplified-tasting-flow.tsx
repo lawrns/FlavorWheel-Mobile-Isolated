@@ -103,6 +103,18 @@ export function SimplifiedTastingFlow() {
     }))
   }
 
+  const getProductPlaceholder = (productType: ProductType): string => {
+    const placeholders = {
+      wine: 'Premium Cabernet Sauvignon',
+      beer: 'Craft IPA',
+      spirits: 'Single Malt Whiskey',
+      coffee: 'Ethiopian Single Origin',
+      tea: 'Earl Grey Premium',
+      other: 'Your favorite beverage'
+    }
+    return `e.g., "${placeholders[productType] || placeholders.other}"`
+  }
+
   const handleSubmit = async () => {
     if (!user) {
       toast({
@@ -258,7 +270,7 @@ export function SimplifiedTastingFlow() {
                   id="productName"
                   value={tastingData.productName}
                   onChange={(e) => setTastingData(prev => ({ ...prev, productName: e.target.value }))}
-                  placeholder={`e.g., "Premium Cabernet Sauvignon"`}
+                  placeholder={getProductPlaceholder(tastingData.productType)}
                   className="h-14 text-lg"
                 />
               </motion.div>
@@ -543,6 +555,7 @@ export function SimplifiedTastingFlow() {
             <Button
               onClick={handleSubmit}
               disabled={isSubmitting}
+              data-testid="complete-tasting-button"
               className="px-8 bg-green-600 hover:bg-green-700"
             >
               {isSubmitting ? (
