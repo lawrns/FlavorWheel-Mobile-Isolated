@@ -19,7 +19,7 @@ export function SkeletonLoader({
   showAvatar = false,
   animate = true
 }: SkeletonLoaderProps) {
-  const baseClasses = 'bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 rounded'
+  const baseClasses = 'bg-gradient-to-r from-fx-bg-subtle via-fx-bg-muted to-fx-bg-subtle rounded'
 
   const animationClasses = animate
     ? 'animate-pulse'
@@ -28,7 +28,7 @@ export function SkeletonLoader({
   switch (variant) {
     case 'card':
       return (
-        <div className={cn('bg-white rounded-lg shadow-sm border border-gray-200 p-4', className)}>
+        <div className={cn('bg-fx-bg-primary rounded-lg shadow-sm border border-fx-border-subtle p-4', className)}>
           {showAvatar && (
             <div className="flex items-center space-x-3 mb-4">
               <div className={cn('w-10 h-10 rounded-full', baseClasses, animationClasses)} />
@@ -101,15 +101,15 @@ export function SkeletonLoader({
 // Specialized skeleton for flavor wheel loading
 export function FlavorWheelSkeleton() {
   return (
-    <div className="flex flex-col items-center justify-center h-96 bg-gray-50 rounded-lg">
+    <div className="flex flex-col items-center justify-center h-96 bg-fx-bg-muted rounded-lg">
       <div className="relative w-64 h-64 mb-6">
         {/* Outer ring */}
-        <div className="absolute inset-0 rounded-full border-4 border-gray-200" />
-        <div className="absolute inset-2 rounded-full border-4 border-transparent border-t-gray-300 animate-spin" />
+        <div className="absolute inset-0 rounded-full border-4 border-fx-border-subtle" />
+        <div className="absolute inset-2 rounded-full border-4 border-transparent border-t-fx-border-primary animate-spin" />
 
         {/* Center circle */}
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-16 h-16 bg-gray-200 rounded-full animate-pulse" />
+          <div className="w-16 h-16 bg-fx-bg-subtle rounded-full animate-pulse" />
         </div>
 
         {/* Flavor segments */}
@@ -122,7 +122,7 @@ export function FlavorWheelSkeleton() {
               transformOrigin: 'center'
             }}
           >
-            <div className="w-1 h-20 bg-gray-200 rounded-full mx-auto mt-4" />
+            <div className="w-1 h-20 bg-fx-bg-subtle rounded-full mx-auto mt-4" />
           </div>
         ))}
       </div>
@@ -158,7 +158,7 @@ export function DashboardStatsSkeleton() {
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
       {Array.from({ length: 4 }).map((_, index) => (
-        <div key={index} className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+        <div key={index} className="bg-fx-bg-primary p-6 rounded-lg shadow-sm border border-fx-border-subtle">
           <div className="flex items-center justify-between mb-4">
             <SkeletonLoader className="h-8 w-8 rounded" />
             <SkeletonLoader className="h-6 w-16" />
@@ -236,9 +236,9 @@ export function ProgressiveLoader({
 // Shimmer effect for more sophisticated loading
 export function ShimmerLoader({ className = '' }: { className?: string }) {
   return (
-    <div className={cn('relative overflow-hidden bg-gray-200 rounded', className)}>
+    <div className={cn('relative overflow-hidden bg-fx-bg-subtle rounded', className)}>
       <motion.div
-        className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent"
+        className="absolute inset-0 bg-gradient-to-r from-transparent via-fx-bg-primary to-transparent"
         animate={{
           x: ['-100%', '100%']
         }}

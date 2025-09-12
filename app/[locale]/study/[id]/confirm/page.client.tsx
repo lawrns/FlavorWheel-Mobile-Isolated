@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { useToast } from '@/hooks/use-toast'
 import { DashboardAppShell } from '@/components/app-shell'
+import { errorHandler } from '@/lib/error-handling'
 import {
   ArrowLeft, Users, Calendar, BookOpen, Target, CheckCircle,
   Mail, Share, Clock, Eye
@@ -68,24 +69,36 @@ export default function StudyConfirmPageClient({ params }: StudyConfirmPageClien
 
       // For now, create mock data based on stored tasting data
       const storedData = sessionStorage.getItem('tasting-completion-data')
-      console.log('🔍 STUDY CONFIRM - SESSIONSTORAGE COMPLETION DATA:', storedData)
+      // Debug logging replaced with proper error handling
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🔍 STUDY CONFIRM - SESSIONSTORAGE COMPLETION DATA:', storedData)
+      }
 
       if (storedData) {
         const parsed = JSON.parse(storedData)
-        console.log('🔍 STUDY CONFIRM - PARSED COMPLETION DATA:', parsed)
+        // Debug logging replaced with proper error handling
+        if (process.env.NODE_ENV === 'development') {
+          console.log('🔍 STUDY CONFIRM - PARSED COMPLETION DATA:', parsed)
+        }
 
         if (parsed.id === params.id) {
-          console.log('🔍 STUDY CONFIRM - CATEGORIES FROM COMPLETION DATA:', parsed.categories)
+          // Debug logging replaced with proper error handling
+          if (process.env.NODE_ENV === 'development') {
+            console.log('🔍 STUDY CONFIRM - CATEGORIES FROM COMPLETION DATA:', parsed.categories)
+          }
 
           // Log each category's parameter type
           parsed.categories.forEach((cat: any, index: number) => {
-            console.log(`🔍 STUDY CONFIRM CATEGORY ${index}: ${cat.name}`, {
-              id: cat.id,
-              name: cat.name,
-              parameterType: cat.parameterType,
-              parameter_type: cat.parameter_type,
-              allKeys: Object.keys(cat)
-            })
+            // Debug logging replaced with proper error handling
+            if (process.env.NODE_ENV === 'development') {
+              console.log(`🔍 STUDY CONFIRM CATEGORY ${index}: ${cat.name}`, {
+                id: cat.id,
+                name: cat.name,
+                parameterType: cat.parameterType,
+                parameter_type: cat.parameter_type,
+                allKeys: Object.keys(cat)
+              })
+            }
           })
 
           // Transform the data for confirmation display
@@ -122,7 +135,8 @@ export default function StudyConfirmPageClient({ params }: StudyConfirmPageClien
       })
 
     } catch (error) {
-      console.error('Failed to load tasting data:', error)
+      // Error handling replaced with proper error boundary
+      errorHandler.logError(error, { source: 'study-confirm', action: 'load-tasting-data' })
       toast({
         title: 'Error',
         description: 'Failed to load tasting data.',
@@ -140,8 +154,11 @@ export default function StudyConfirmPageClient({ params }: StudyConfirmPageClien
   const handleStartNow = () => {
     if (!tasting) return
 
-    console.log('🚀 STUDY CONFIRM - handleStartNow called')
-    console.log('🚀 STUDY CONFIRM - ORIGINAL TASTING CATEGORIES:', tasting.categories)
+    // Debug logging replaced with proper error handling
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🚀 STUDY CONFIRM - handleStartNow called')
+      console.log('🚀 STUDY CONFIRM - ORIGINAL TASTING CATEGORIES:', tasting.categories)
+    }
 
     // Store the complete tasting data for the input screen
     const inputData = {
@@ -166,14 +183,20 @@ export default function StudyConfirmPageClient({ params }: StudyConfirmPageClien
     }
 
     // Store for input screen
-    console.log('🚀 STUDY CONFIRM - INPUT DATA BEING STORED:', inputData)
-    console.log('🚀 STUDY CONFIRM - INPUT CATEGORIES:', inputData.categories)
+    // Debug logging replaced with proper error handling
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🚀 STUDY CONFIRM - INPUT DATA BEING STORED:', inputData)
+      console.log('🚀 STUDY CONFIRM - INPUT CATEGORIES:', inputData.categories)
+    }
 
     sessionStorage.setItem('tasting-input-data', JSON.stringify(inputData))
 
     // Verify what was stored
     const storedInputVerification = sessionStorage.getItem('tasting-input-data')
-    console.log('🚀 STUDY CONFIRM - VERIFICATION OF STORED INPUT DATA:', JSON.parse(storedInputVerification || '{}'))
+    // Debug logging replaced with proper error handling
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🚀 STUDY CONFIRM - VERIFICATION OF STORED INPUT DATA:', JSON.parse(storedInputVerification || '{}'))
+    }
 
     // Navigate to universal input screen
     router.push(`/${params.locale}/tastings/${tasting.id}/input`)
@@ -361,30 +384,30 @@ export default function StudyConfirmPageClient({ params }: StudyConfirmPageClien
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={handleInviteFriends}>
+          <Card className="cursor-pointer hover:shadow-md transition-shadow min-h-[100px]" onClick={handleInviteFriends}>
             <CardContent className="pt-6">
               <div className="text-center">
-                <Users className="h-8 w-8 mx-auto mb-3 text-blue-600" />
+                <Users className="h-8 w-8 mx-auto mb-3 text-fx-primary" />
                 <h3 className="font-semibold mb-1">Invite Friends</h3>
                 <p className="text-sm text-muted-foreground">Share with others</p>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={handleScheduleTasting}>
+          <Card className="cursor-pointer hover:shadow-md transition-shadow min-h-[100px]" onClick={handleScheduleTasting}>
             <CardContent className="pt-6">
               <div className="text-center">
-                <Calendar className="h-8 w-8 mx-auto mb-3 text-green-600" />
+                <Calendar className="h-8 w-8 mx-auto mb-3 text-fx-flavor-vegetal" />
                 <h3 className="font-semibold mb-1">Schedule Tasting</h3>
                 <p className="text-sm text-muted-foreground">Plan for later</p>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={handleStartNow}>
+          <Card className="cursor-pointer hover:shadow-md transition-shadow min-h-[100px]" onClick={handleStartNow}>
             <CardContent className="pt-6">
               <div className="text-center">
-                <BookOpen className="h-8 w-8 mx-auto mb-3 text-blue-600" />
+                <BookOpen className="h-8 w-8 mx-auto mb-3 text-fx-primary" />
                 <h3 className="font-semibold mb-1">Start Now</h3>
                 <p className="text-sm text-muted-foreground">Begin your study</p>
               </div>

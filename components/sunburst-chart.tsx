@@ -119,7 +119,7 @@ export function SunburstChart({
       .attr('text-anchor', 'middle')
       .attr('dy', '0.35em')
       .attr('font-size', '12px')
-      .attr('fill', '#495057')
+      .attr('fill', 'var(--fx-text-secondary)')
       .style('pointer-events', 'none')
       .text('Center')
 
@@ -137,22 +137,22 @@ export function SunburstChart({
 
       {/* Info Panel */}
       {(selectedNode || hoveredNode) && (
-        <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-          <h4 className="font-semibold text-sm mb-2">
+        <div className="mt-4 p-3 bg-fx-bg-muted rounded-lg">
+          <h4 className="font-semibold text-sm mb-2 text-fx-text-primary">
             {selectedNode ? 'Selected' : 'Hovered'}: {(selectedNode || hoveredNode)?.name}
           </h4>
           {(selectedNode || hoveredNode)?.value && (
-            <p className="text-xs text-gray-600">
+            <p className="text-xs text-fx-text-secondary">
               Value: {(selectedNode || hoveredNode)?.value}
             </p>
           )}
           {(selectedNode || hoveredNode)?.intensity && (
-            <p className="text-xs text-gray-600">
+            <p className="text-xs text-fx-text-secondary">
               Intensity: {(selectedNode || hoveredNode)?.intensity}/10
             </p>
           )}
           {(selectedNode || hoveredNode)?.children && (
-            <p className="text-xs text-gray-600">
+            <p className="text-xs text-fx-text-secondary">
               Sub-items: {(selectedNode || hoveredNode)?.children?.length || 0}
             </p>
           )}
@@ -160,7 +160,7 @@ export function SunburstChart({
       )}
 
       {/* Instructions */}
-      <div className="mt-2 text-xs text-gray-500 text-center">
+      <div className="mt-2 text-xs text-fx-text-muted text-center">
         Tap segments to explore • Tap center to reset
       </div>
     </div>

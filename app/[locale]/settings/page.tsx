@@ -543,9 +543,9 @@ export default function SettingsPage() {
             </Card>
 
             {/* Account Actions */}
-            <Card className="border-red-200">
+            <Card className="border-fx-ai-confidence-low/50">
               <CardHeader>
-                <CardTitle className="flex items-center text-red-600">
+                <CardTitle className="flex items-center text-fx-ai-confidence-low">
                   <SettingsIcon className="h-5 w-5 mr-2" />
                   Account Actions
                 </CardTitle>
@@ -553,7 +553,7 @@ export default function SettingsPage() {
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
-                    <Label className="text-red-600">Sign Out</Label>
+                    <Label className="text-fx-ai-confidence-low">Sign Out</Label>
                     <p className="text-sm text-muted-foreground">
                       Sign out of your account
                     </p>
@@ -561,7 +561,7 @@ export default function SettingsPage() {
                   <Button
                     variant="outline"
                     onClick={handleSignOut}
-                    className="border-red-200 text-red-600 hover:bg-red-50"
+                    className="border-fx-ai-confidence-low/50 text-fx-ai-confidence-low hover:bg-fx-ai-confidence-low/10"
                   >
                     <LogOut className="h-4 w-4 mr-2" />
                     Sign Out
@@ -572,7 +572,7 @@ export default function SettingsPage() {
 
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
-                    <Label className="text-red-600">Delete Account</Label>
+                    <Label className="text-fx-ai-confidence-low">Delete Account</Label>
                     <p className="text-sm text-muted-foreground">
                       Permanently delete your account and all data
                     </p>
@@ -586,7 +586,7 @@ export default function SettingsPage() {
                     </DialogTrigger>
                     <DialogContent>
                       <DialogHeader>
-                        <DialogTitle className="text-red-600">Delete Account</DialogTitle>
+                        <DialogTitle className="text-fx-ai-confidence-low">Delete Account</DialogTitle>
                       </DialogHeader>
                       <div className="space-y-4">
                         <Alert variant="destructive">

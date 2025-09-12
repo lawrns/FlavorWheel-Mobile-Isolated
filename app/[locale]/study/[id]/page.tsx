@@ -15,6 +15,7 @@ import { Label } from '@/components/ui/label'
 import { PhotoUpload } from '@/components/ui/photo-upload'
 import { useSupabase } from '@/components/providers/supabase-provider'
 import { useToast } from '@/hooks/use-toast'
+import { errorHandler } from '@/lib/error-handling'
 import { DashboardAppShell } from '@/components/app-shell'
 import Link from 'next/link'
 
@@ -115,7 +116,8 @@ export default function StudySessionPage() {
         setPhotoUrl(currentItem.photo_url || '')
       }
     } catch (error) {
-      console.error('Error loading study session:', error)
+      // Error handling replaced with proper error boundary
+      errorHandler.logError(error, { source: 'study-page', action: 'load-study-session' })
       toast({
         title: 'Error',
         description: 'Failed to load study session',
@@ -154,7 +156,8 @@ export default function StudySessionPage() {
         description: 'Your tasting notes have been saved successfully.',
       })
     } catch (error) {
-      console.error('Error saving progress:', error)
+      // Error handling replaced with proper error boundary
+      errorHandler.logError(error, { source: 'study-page', action: 'save-progress' })
       toast({
         title: 'Error',
         description: 'Failed to save progress',
@@ -238,14 +241,14 @@ export default function StudySessionPage() {
       <button
         key={i}
         onClick={interactive ? () => setRating(i + 1) : undefined}
-        className={`${interactive ? 'cursor-pointer hover:scale-110' : ''} transition-transform`}
+        className={`min-h-[44px] min-w-[44px] flex items-center justify-center ${interactive ? 'cursor-pointer hover:scale-110' : ''} transition-transform`}
         disabled={!interactive}
       >
         <Star
           className={`h-6 w-6 ${
             i < currentRating
-              ? 'text-yellow-400 fill-current'
-              : 'text-gray-300'
+              ? 'text-fx-flavor-sweet fill-current'
+              : 'text-fx-border-subtle'
           }`}
         />
       </button>

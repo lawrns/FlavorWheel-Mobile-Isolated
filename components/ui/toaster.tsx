@@ -13,7 +13,7 @@ export function Toaster() {
             key={id}
             className={`group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-md border p-6 pr-8 shadow-lg transition-all ${
               variant === 'destructive'
-                ? 'border-red-500 bg-red-600 text-white'
+                ? 'border-fx-ai-confidence-low bg-fx-ai-confidence-low text-fx-text-inverse'
                 : 'border border-fx-border-default bg-fx-card text-fx-text-primary'
             }`}
 
@@ -24,7 +24,7 @@ export function Toaster() {
             </div>
             {action}
             <button
-              className="absolute right-2 top-2 rounded-md p-1 text-foreground/50 opacity-0 transition-opacity hover:text-foreground focus:opacity-100 focus:outline-none focus:ring-2 group-hover:opacity-100"
+              className="absolute right-2 top-2 rounded-md p-1 text-foreground/50 opacity-0 transition-opacity hover:text-foreground focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fx-accent group-hover:opacity-100"
               onClick={() => dismiss(id)}
             >
               <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">

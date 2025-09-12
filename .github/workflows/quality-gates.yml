@@ -1,0 +1,162 @@
+name: Quality Gates
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  quality-checks:
+    name: Quality Gates
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      # ===== CODE QUALITY GATES =====
+      - name: Run ESLint
+        run: npm run lint
+        continue-on-error: false
+
+      - name: Run TypeScript check
+        run: npm run type-check
+        continue-on-error: false
+
+      # ===== BUILD QUALITY GATES =====
+      - name: Build application
+        run: npm run build
+        continue-on-error: false
+
+      # ===== VISUAL REGRESSION GATES =====
+      - name: Start application for testing
+        run: npm run dev &
+        env:
+          PORT: 3010
+
+      - name: Wait for application to be ready
+        run: |
+          timeout 60 bash -c 'until curl -f http://localhost:3010/en/test/visual-regression > /dev/null 2>&1; do sleep 2; done' || (echo "Application failed to start" && exit 1)
+
+      - name: Run visual regression tests
+        run: npm run test:visual
+        env:
+          PLAYWRIGHT_BASE_URL: http://localhost:3010
+        continue-on-error: false
+
+      - name: Run accessibility tests
+        run: npm run test:a11y:ci
+        env:
+          PLAYWRIGHT_BASE_URL: http://localhost:3010
+        continue-on-error: false
+
+      # ===== PERFORMANCE GATES =====
+      - name: Performance audit with Lighthouse
+        uses: treosh/lighthouse-ci-action@v10
+        with:
+          urls: |
+            http://localhost:3010/en
+            http://localhost:3010/en/flavor-wheels
+            http://localhost:3010/en/test/visual-regression
+          configPath: .lighthouserc.js
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+        continue-on-error: false
+
+      # ===== BUNDLE SIZE GATES =====
+      - name: Check bundle size
+        run: |
+          # Get bundle size
+          BUNDLE_SIZE=$(find .next/static -name "*.js" -exec wc -c {} \; | awk '{sum += $1} END {print sum}')
+          BUNDLE_SIZE_MB=$(echo "scale=2; $BUNDLE_SIZE / 1048576" | bc)
+
+          echo "Bundle size: $BUNDLE_SIZE_MB MB"
+
+          # Check against budget (200MB limit)
+          if (( $(echo "$BUNDLE_SIZE_MB > 200" | bc -l) )); then
+            echo "❌ Bundle size exceeds budget: $BUNDLE_SIZE_MB MB > 200 MB"
+            exit 1
+          else
+            echo "✅ Bundle size within budget: $BUNDLE_SIZE_MB MB"
+          fi
+        continue-on-error: false
+
+      # ===== ARTIFACTS =====
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: quality-gate-results
+          path: |
+            test-results/
+            playwright-report/
+            .lighthouseci/
+            lighthouse-results.html
+
+  # ===== DEPLOYMENT GATE =====
+  deployment-gate:
+    name: Deployment Gate
+    runs-on: ubuntu-latest
+    needs: quality-checks
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: All quality gates passed
+        run: echo "🎉 All quality gates passed! Ready for deployment."
+
+      - name: Create deployment notification
+        run: |
+          echo "## 🚀 Deployment Ready" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "All quality gates have passed successfully:" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Code quality (ESLint, TypeScript)" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Build integrity" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Visual regression tests" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Accessibility compliance (WCAG 2.1 AA)" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Performance metrics (Core Web Vitals)" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Bundle size budget" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "The application is ready for deployment to production." >> $GITHUB_STEP_SUMMARY
+
+  # ===== FAILURE NOTIFICATION =====
+  failure-notification:
+    name: Quality Gate Failure
+    runs-on: ubuntu-latest
+    needs: quality-checks
+    if: failure()
+
+    steps:
+      - name: Notify of quality gate failure
+        run: |
+          echo "## ❌ Quality Gates Failed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "One or more quality gates have failed. Please review:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Failed Checks:" >> $GITHUB_STEP_SUMMARY
+          echo "- ESLint errors" >> $GITHUB_STEP_SUMMARY
+          echo "- TypeScript compilation errors" >> $GITHUB_STEP_SUMMARY
+          echo "- Build failures" >> $GITHUB_STEP_SUMMARY
+          echo "- Visual regression test failures" >> $GITHUB_STEP_SUMMARY
+          echo "- Accessibility test failures" >> $GITHUB_STEP_SUMMARY
+          echo "- Performance budget violations" >> $GITHUB_STEP_SUMMARY
+          echo "- Bundle size limit exceeded" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps:" >> $GITHUB_STEP_SUMMARY
+          echo "1. Check the uploaded artifacts for detailed error reports" >> $GITHUB_STEP_SUMMARY
+          echo "2. Fix all failing checks" >> $GITHUB_STEP_SUMMARY
+          echo "3. Re-run the CI pipeline" >> $GITHUB_STEP_SUMMARY
+          echo "4. Ensure all quality gates pass before merging" >> $GITHUB_STEP_SUMMARY

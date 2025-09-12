@@ -119,7 +119,7 @@ export function MobileFlavorSelector({
             placeholder="Search flavors..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-12 px-4 pr-10 text-base border border-fx-border-default rounded-lg focus:outline-none focus:ring-2 focus:ring-fx-accent focus:border-transparent"
+            className="w-full h-12 px-4 pr-10 text-base border border-fx-border-default rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fx-accent focus-visible:border-transparent"
           />
           <svg
             className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-fx-text-secondary"
@@ -211,13 +211,13 @@ export function MobileFlavorSelector({
                   onClick={() => canSelect && onFlavorToggle(flavor.id)}
                   disabled={!canSelect}
                   className={`
-                    min-h-[60px] w-full p-4 rounded-xl border-2 text-left transition-all duration-200
+                    min-h-[60px] w-full p-4 rounded-xl border-2 text-left transition-colors duration-200
                     touch-manipulation active:scale-95
                     ${isSelected
                       ? 'bg-fx-accent text-white border-fx-accent shadow-lg'
                       : canSelect
                         ? 'bg-white text-fx-text-primary border-fx-border-default hover:border-fx-accent hover:shadow-md'
-                        : 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
+                        : 'bg-fx-bg-subtle text-fx-text-muted border-fx-border-subtle cursor-not-allowed'
                     }
                   `}
                 >
@@ -253,7 +253,7 @@ export function MobileFlavorSelector({
         {/* No Results */}
         {searchedFlavors.length === 0 && (
           <div className="text-center py-8 text-fx-text-secondary">
-            <svg className="w-12 h-12 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-12 h-12 mx-auto mb-4 text-fx-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             <p>No flavors found matching &ldquo;{searchQuery}&rdquo;</p>
@@ -273,9 +273,9 @@ export function MobileFlavorSelector({
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-amber-50 p-4 rounded-lg border border-amber-200"
+            className="bg-fx-ai-confidence-med/10 p-4 rounded-lg border border-fx-ai-confidence-med/20"
           >
-            <div className="flex items-center gap-2 text-amber-800">
+            <div className="flex items-center gap-2 text-fx-ai-confidence-med">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
               </svg>
@@ -283,7 +283,7 @@ export function MobileFlavorSelector({
                 Maximum {maxSelection} flavors selected
               </span>
             </div>
-            <p className="text-xs text-amber-700 mt-1">
+            <p className="text-xs text-fx-ai-confidence-med mt-1">
               Deselect some flavors to choose others, or proceed with your current selection.
             </p>
           </motion.div>
@@ -313,12 +313,12 @@ export function TouchFlavorButton({
       disabled={disabled}
       whileTap={{ scale: 0.95 }}
       className={`
-        min-h-[48px] min-w-[48px] p-3 rounded-lg border-2 transition-all duration-200
+        min-h-[48px] min-w-[48px] p-3 rounded-lg border-2 transition-colors duration-200
         touch-manipulation
         ${isSelected
           ? 'bg-fx-accent text-white border-fx-accent shadow-md'
           : disabled
-            ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
+            ? 'bg-fx-bg-subtle text-fx-text-muted border-fx-border-subtle cursor-not-allowed'
             : 'bg-white text-fx-text-primary border-fx-border-default hover:border-fx-accent hover:shadow-sm'
         }
       `}

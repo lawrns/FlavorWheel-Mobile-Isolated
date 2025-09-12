@@ -4,15 +4,15 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
 const alertVariants = cva(
-  'relative w-full rounded-2xl border border-border p-6 [&>svg~*]:pl-7 [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-6 [&>svg]:top-6 [&>svg]:text-foreground shadow-sm',
+  'relative w-full rounded-2xl border border-border p-6 [&>svg~*]:pl-7 [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-6 [&>svg]:top-6 [&>svg]:text-foreground shadow-sm focus-within:ring-2 focus-within:ring-fx-accent focus-within:ring-offset-2',
   {
     variants: {
       variant: {
         default: 'bg-surface text-foreground',
         destructive:
-          'border-red-500/50 text-red-700 bg-red-50 dark:border-red-500 dark:text-red-400 dark:bg-red-950 [&>svg]:text-red-600',
-        success: 'border-accent/50 text-accent bg-accent/10 [&>svg]:text-accent',
-        warning: 'border-yellow-500/50 text-yellow-700 bg-yellow-50 dark:border-yellow-500 dark:text-yellow-400 dark:bg-yellow-950 [&>svg]:text-yellow-600',
+          'border-fx-ai-confidence-low/50 text-fx-ai-confidence-low bg-fx-ai-confidence-low/10 dark:border-fx-ai-confidence-low dark:text-fx-ai-confidence-med dark:bg-fx-ai-confidence-low/20 [&>svg]:text-fx-ai-confidence-low',
+        success: 'border-fx-flavor-vegetal/50 text-fx-flavor-vegetal bg-fx-flavor-vegetal/10 [&>svg]:text-fx-flavor-vegetal',
+        warning: 'border-fx-ai-confidence-med/50 text-fx-ai-confidence-med bg-fx-ai-confidence-med/10 dark:border-fx-ai-confidence-med dark:text-fx-ai-confidence-med dark:bg-fx-ai-confidence-med/20 [&>svg]:text-fx-ai-confidence-med',
       },
     },
     defaultVariants: {

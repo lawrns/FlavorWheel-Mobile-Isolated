@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge'
 import { NAVIGATION_ITEMS, getNavigationItem } from '@/lib/navigation-config'
 import { useAuth } from '@/components/auth-provider'
 import { LogoOnly, BrandTitle } from '@/components/brand'
+import { ThemeToggle } from '@/components/ui/loading-states'
 
 // Navigation types
 export interface NavigationProps {
@@ -69,6 +70,7 @@ export function Navigation({
 
     return (
       <nav
+        data-testid="mobile-navigation"
         className={cn(
           'fixed bottom-0 left-0 right-0 z-sticky border-t-2',
           'border-border bg-background/95 shadow-lg backdrop-blur-md',
@@ -85,7 +87,7 @@ export function Navigation({
                 <button
                   key={item.id}
                   className={cn(
-                    'relative flex min-h-[48px] min-w-[48px] flex-1 flex-col items-center justify-center rounded-lg px-3 py-3 transition-all duration-normal ease-standard focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
+                    'relative flex min-h-[48px] min-w-[48px] flex-1 flex-col items-center justify-center rounded-lg px-3 py-3 transition-colors duration-normal ease-standard focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
                     isActive && 'bg-primary text-primary-foreground',
                     !isActive && 'text-muted-foreground hover:bg-muted hover:text-foreground',
                     item.disabled && 'cursor-not-allowed opacity-50'
@@ -108,6 +110,12 @@ export function Navigation({
                 </button>
               )
             })}
+
+            {/* Theme Toggle for Mobile */}
+            <div className="relative flex min-h-[48px] min-w-[48px] flex-col items-center justify-center rounded-lg px-3 py-3">
+              <ThemeToggle variant="minimal" className="p-0" />
+              <span className="text-xs font-medium text-muted-foreground">Theme</span>
+            </div>
           </div>
         </div>
       </nav>
@@ -126,7 +134,7 @@ export function Navigation({
       <div className="pointer-events-none fixed inset-x-0 top-4 z-40 hidden md:block">
         <motion.nav
           id="navigation"
-          data-testid="desktop-navigation-root"
+          data-testid="desktop-navigation"
           className={cn('pointer-events-auto mx-auto w-full max-w-[1100px] px-4', className)}
           initial={{ y: -100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -158,7 +166,7 @@ export function Navigation({
                     aria-current={isActive ? 'page' : undefined}
                     data-testid={`nav-${item.id}-link`}
                     className={cn(
-                      'inline-flex h-10 items-center gap-2 rounded-full px-4 leading-none transition-all duration-normal ease-standard',
+                      'inline-flex h-10 items-center gap-2 rounded-full px-4 leading-none transition-colors duration-normal ease-standard',
                       isActive
                         ? 'bg-primary text-primary-foreground shadow-sm'
                         : 'text-foreground hover:bg-muted hover:text-foreground',
@@ -180,6 +188,11 @@ export function Navigation({
                 </motion.div>
               )
             })}
+
+            {/* Theme Toggle */}
+            <div className="ml-4 border-l border-border pl-4">
+              <ThemeToggle variant="minimal" />
+            </div>
           </div>
         </motion.nav>
       </div>

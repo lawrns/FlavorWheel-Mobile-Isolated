@@ -31,6 +31,9 @@ export default defineConfig({
     /* Take screenshot on failure */
     screenshot: 'only-on-failure',
 
+    /* Visual regression testing */
+    snapshotPathTemplate: '{testDir}/__screenshots__/{testFilePath}/{arg}{ext}',
+
     /* Record video on failure */
     video: 'retain-on-failure',
 

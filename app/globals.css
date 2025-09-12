@@ -1,4 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300..700;1,14..32,300..700&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+/* ===== OPTIMIZED FONT LOADING ===== */
+/* Only load fonts and weights that are actually used */
+/* Inter: body font (weights 400, 500, 600, 700) */
+/* Crimson Text: heading font (weights 400, 600, 700) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Crimson+Text:wght@400;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -28,6 +32,46 @@
   --fx-ai-confidence-low: #E4572E;
   --fx-ai-confidence-med: #DFAF2B;
   --fx-ai-confidence-high: #57A773;
+
+  /* Primary Design Tokens - Light Mode */
+  --fx-primary: #2E7D32;      /* fx-brand-green-600 */
+  --fx-primary-hover: #3F9B6B; /* fx-brand-green-500 */
+  --fx-secondary: #D4AF37;    /* fx-brand-gold-600 */
+  --fx-secondary-hover: #E6C84A; /* fx-brand-gold-500 */
+  --fx-accent: #8B4513;       /* fx-brand-brown-600 */
+  --fx-accent-hover: #A0552B;  /* fx-brand-brown-500 */
+
+  /* Surface System - Light Mode */
+  --fx-bg: #FEFCF8;          /* fx-neutral-0 */
+  --fx-bg-subtle: #F7F3EA;   /* fx-neutral-50 */
+  --fx-bg-muted: #EDE7DA;    /* fx-neutral-100 */
+  --fx-card: #FAF7F2;        /* Light cream */
+  --fx-elevated: #F7F3EA;    /* fx-neutral-50 */
+
+  /* Text Hierarchy - Light Mode */
+  --fx-text-primary: #2C1810;   /* fx-black */
+  --fx-text-secondary: #8B4513; /* fx-neutral-700 */
+  --fx-text-muted: #6B5B95;    /* Darker muted */
+  --fx-text-inverse: #FEFCF8;  /* fx-neutral-0 */
+
+  /* Border System - Light Mode */
+  --fx-border-subtle: #E0D8C7;  /* fx-neutral-200 */
+  --fx-border-default: #EDE7DA; /* fx-neutral-100 */
+  --fx-border-strong: #D4C7B0;  /* Even stronger */
+
+  /* Focus & Interaction - Light Mode */
+  --fx-focus-ring-color: #57A773;
+  --fx-focus-ring-width: 2px;
+  --fx-focus-ring-offset: 2px;
+
+  /* Shadows - Light Mode */
+  --fx-shadow-xs: 0 1px 2px rgba(0,0,0,0.05);
+  --fx-shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+  --fx-shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+  --fx-shadow-lg: 0 10px 15px rgba(0,0,0,0.15);
+  --fx-shadow-xl: 0 20px 25px rgba(0,0,0,0.2);
+  --fx-shadow-2xl: 0 25px 50px rgba(0,0,0,0.25);
+
   --fx-gradient-subtle: linear-gradient(180deg, rgb(255 255 255 / 10%) 0%, transparent 100%);
 
   /* ===== FLAVOR WHEEL VISUALIZATION COLORS ===== */
@@ -45,16 +89,8 @@
   --fx-flavor-nutty: #C29F6D;
   --fx-flavor-mineral: #7A8A8C;
   --fx-flavor-earthy: #6D7F4B;
+  /* Metaphor Categories (only used ones) */
   --fx-flavor-molecule: #2F4858;
-
-  /* Metaphor Categories */
-  --fx-flavor-mood-emotion: #6B5B95;
-  --fx-flavor-setting-place: #3B9ED8;
-  --fx-flavor-texture-material: #8C5A3A;
-  --fx-flavor-color-light: #DFAF2B;
-  --fx-flavor-movement-shape: #57A773;
-  --fx-flavor-character-persona: #E9A2AD;
-  --fx-flavor-temporal-time: #7A8A8C;
 
   /* Spacing Primitives */
   --fx-spacing-0: 0px;
@@ -202,9 +238,9 @@
 /* ===== TYPOGRAPHY - FLUID SCALE ===== */
 :root {
   /* Premium Typography System */
+  /* ===== OPTIMIZED TYPOGRAPHY SYSTEM ===== */
   --fx-font-heading: 'Crimson Text', serif;        /* Elegant serif for headings */
-  --fx-font-subheading: 'Fraunces Variable', serif; /* Sophisticated serif for subheadings */
-  --fx-font-body: 'Inter Variable', system-ui, -apple-system, sans-serif; /* Clean sans-serif for body */
+  --fx-font-body: 'Inter', system-ui, -apple-system, sans-serif; /* Clean sans-serif for body */
 
   /* Fluid Typography Scale */
   --fx-text-h1: clamp(28px, 4.5vw, 40px);
@@ -272,14 +308,87 @@ body {
 
 /* ===== DARK MODE ===== */
 [data-theme="dark"] {
-  --fx-neutral-0: #11110F;
-  --fx-neutral-50: #161614;
-  --fx-neutral-100: #1E1D1A;
-  --fx-neutral-200: #2A2824;
-  --fx-neutral-700: #CFCAC0;
-  --fx-text-primary: #FAF7F2;
-  --fx-card: #1A1916;
-  --fx-focus-ring-color: #85B88A;
+  /* Core Colors */
+  --fx-white: #FAF7F2;
+  --fx-black: #0E0E0C;
+
+  /* Neutral Scale - Dark Mode */
+  --fx-neutral-0: #0E0E0C;   /* Background */
+  --fx-neutral-50: #161614;  /* Surface subtle */
+  --fx-neutral-100: #1E1D1A; /* Surface */
+  --fx-neutral-200: #2A2824; /* Border */
+  --fx-neutral-700: #CFCAC0; /* Text secondary */
+  --fx-neutral-800: #E0D8C7; /* Text muted */
+
+  /* Brand Colors - Dark Mode */
+  --fx-brand-brown-500: #A0552B; /* Lighter brown for dark bg */
+  --fx-brand-brown-600: #8B4513; /* Primary brown */
+  --fx-brand-brown-400: #C29F6D; /* Even lighter */
+  --fx-brand-gold-500: #E6C84A;  /* Lighter gold for dark bg */
+  --fx-brand-gold-600: #D4AF37;  /* Primary gold */
+  --fx-brand-gold-400: #F5D76E;  /* Even lighter */
+  --fx-brand-green-500: #3F9B6B; /* Darker green for dark bg */
+  --fx-brand-green-600: #2E7D32; /* Primary green */
+  --fx-brand-green-400: #57A773; /* Lighter */
+
+  /* AI Confidence - Dark Mode */
+  --fx-ai-confidence-low: #FF6B6B;   /* Lighter red for dark bg */
+  --fx-ai-confidence-med: #FFD93D;  /* Lighter yellow */
+  --fx-ai-confidence-high: #6BCF7F; /* Lighter green */
+
+  /* Primary Design Tokens - Dark Mode */
+  --fx-primary: #3F9B6B;      /* fx-brand-green-500 */
+  --fx-primary-hover: #57A773; /* fx-brand-green-400 */
+  --fx-secondary: #E6C84A;    /* fx-brand-gold-500 */
+  --fx-secondary-hover: #F5D76E; /* fx-brand-gold-400 */
+  --fx-accent: #A0552B;       /* fx-brand-brown-500 */
+  --fx-accent-hover: #C29F6D;  /* fx-brand-brown-400 */
+
+  /* Surface System - Dark Mode */
+  --fx-bg: #0E0E0C;          /* fx-neutral-0 */
+  --fx-bg-subtle: #161614;   /* fx-neutral-50 */
+  --fx-bg-muted: #1A1916;    /* fx-card */
+  --fx-card: #161614;        /* fx-neutral-50 */
+  --fx-elevated: #1E1D1A;    /* fx-neutral-100 */
+
+  /* Text Hierarchy - Dark Mode */
+  --fx-text-primary: #FAF7F2;   /* fx-white */
+  --fx-text-secondary: #CFCAC0; /* fx-neutral-700 */
+  --fx-text-muted: #E0D8C7;    /* fx-neutral-800 */
+  --fx-text-inverse: #0E0E0C;  /* fx-black */
+
+  /* Border System - Dark Mode */
+  --fx-border-subtle: #2A2824;  /* fx-neutral-200 */
+  --fx-border-default: #3A3A3E; /* Darker border */
+  --fx-border-strong: #4A4A4E;  /* Even stronger */
+
+  /* Flavor Visualization - Dark Mode (slightly brighter for contrast) */
+  --fx-flavor-fruity: #FF6B6B;
+  --fx-flavor-floral: #FFB3BA;
+  --fx-flavor-vegetal: #6BCF7F;
+  --fx-flavor-smoky: #9B87E8;
+  --fx-flavor-sweet: #FFD93D;
+  --fx-flavor-spicy: #FF8B8B;
+  --fx-flavor-bitter: #5A7A8C;
+  --fx-flavor-sour: #4FC3F7;
+  --fx-flavor-roasted: #BC8A5A;
+  --fx-flavor-nutty: #E6B86A;
+  --fx-flavor-mineral: #9CA3AF;
+  --fx-flavor-earthy: #8FA86B;
+  --fx-flavor-molecule: #5A7A8C;
+
+  /* Focus & Interaction - Dark Mode */
+  --fx-focus-ring-color: #6BCF7F;
+  --fx-focus-ring-width: 2px;
+  --fx-focus-ring-offset: 2px;
+
+  /* Shadows - Dark Mode */
+  --fx-shadow-xs: 0 1px 2px rgba(0,0,0,0.3);
+  --fx-shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
+  --fx-shadow-md: 0 4px 6px rgba(0,0,0,0.4);
+  --fx-shadow-lg: 0 10px 15px rgba(0,0,0,0.4);
+  --fx-shadow-xl: 0 20px 25px rgba(0,0,0,0.4);
+  --fx-shadow-2xl: 0 25px 50px rgba(0,0,0,0.4);
 }
 
 /* ===== HIGH CONTRAST MODE ===== */
@@ -290,7 +399,54 @@ body {
   --fx-neutral-200: #000;
 }
 
-/* ===== COMPONENT UTILITIES ===== */
+/* ===== SHARED UTILITIES ===== */
+
+/* Common transition for smooth interactions - performance optimized */
+.transition-standard {
+  transition: all var(--fx-duration-base) var(--fx-easing-standard);
+}
+
+/* ===== WEB VITALS OPTIMIZATIONS ===== */
+
+/* Optimize for Cumulative Layout Shift (CLS) */
+.cls-optimize {
+  contain: layout style paint;
+}
+
+/* Optimize for First Input Delay (FID) */
+.fid-optimize {
+  contain: layout style;
+}
+
+/* Performance-optimized animations for Core Web Vitals */
+.animate-performant {
+  will-change: transform, opacity;
+  contain: layout style paint;
+}
+
+/* Critical resource hints */
+.critical-resource {
+  font-display: swap;
+  contain: layout style;
+}
+
+/* Optimize for Largest Contentful Paint (LCP) */
+.lcp-optimize {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 500px;
+}
+
+/* Performance-optimized animation utilities (merged with above) */
+
+.animate-transform-only {
+  transition: transform var(--fx-duration-base) var(--fx-easing-standard);
+  will-change: transform;
+}
+
+.animate-opacity-only {
+  transition: opacity var(--fx-duration-base) var(--fx-easing-standard);
+  will-change: opacity;
+}
 
 /* Loading states */
 .loading {
@@ -310,10 +466,22 @@ body {
   outline-offset: var(--fx-focus-ring-offset);
 }
 
+/* Standardized focus ring utility */
+.focus-ring {
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fx-accent focus-visible:ring-offset-2;
+}
+
+/* Premium focus ring for important elements */
+.focus-ring-premium {
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
+  box-shadow: 0 0 0 2px var(--fx-focus-ring-color), 0 0 0 4px rgb(255 255 255 / 50%);
+}
+
 /* ===== HAPTIC FEEDBACK ===== */
 @media (pointer: coarse) {
   .haptic-light {
     transition: transform var(--fx-duration-fast) var(--fx-easing-standard);
+    will-change: transform;
   }
 
   .haptic-light:active {
@@ -342,7 +510,7 @@ body {
   color: var(--fx-text-inverse);
   font-weight: var(--fx-weight-semibold);
   padding: var(--fx-spacing-3) var(--fx-spacing-5);
-  transition: all var(--fx-duration-base) var(--fx-easing-standard);
+  @apply transition-standard;
   box-shadow: var(--fx-shadow-sm);
   min-height: 48px;
   display: inline-flex;
@@ -371,7 +539,7 @@ body {
   color: var(--fx-text-primary);
   font-weight: var(--fx-weight-medium);
   padding: var(--fx-spacing-3) var(--fx-spacing-5);
-  transition: all var(--fx-duration-base) var(--fx-easing-standard);
+  @apply transition-standard;
   min-height: 48px;
   display: inline-flex;
   align-items: center;
@@ -394,7 +562,7 @@ body {
   color: var(--fx-text-inverse);
   font-weight: var(--fx-weight-semibold);
   padding: var(--fx-spacing-3) var(--fx-spacing-5);
-  transition: all var(--fx-duration-base) var(--fx-easing-standard);
+  @apply transition-standard;
   box-shadow: var(--fx-shadow-sm);
   min-height: 48px;
   display: inline-flex;
@@ -416,7 +584,7 @@ body {
   border: 1px solid var(--fx-border-default);
   border-radius: var(--fx-radius-lg);
   box-shadow: var(--fx-shadow-sm);
-  transition: all var(--fx-duration-base) var(--fx-easing-standard);
+  @apply transition-standard;
 }
 
 .card-beautiful:hover {
@@ -438,7 +606,7 @@ body {
   border: 1px solid var(--fx-border-subtle);
   border-radius: var(--fx-radius-lg);
   box-shadow: var(--fx-shadow-sm);
-  transition: all var(--fx-duration-base) var(--fx-easing-standard);
+  @apply transition-standard;
 }
 
 /* ===== FORMS ===== */
@@ -449,7 +617,7 @@ body {
   padding: var(--fx-spacing-3) var(--fx-spacing-4);
   color: var(--fx-text-primary);
   font-size: var(--fx-text-body);
-  transition: all var(--fx-duration-base) var(--fx-easing-standard);
+  @apply transition-standard;
   min-height: 48px;
 }
 
@@ -465,8 +633,10 @@ body {
 }
 
 /* ===== ANIMATIONS ===== */
+/* Performance optimized animations using only transform/opacity */
 .card-enter {
   animation: cardEnter var(--fx-duration-base) var(--fx-easing-entrance);
+  will-change: transform, opacity;
 }
 
 @keyframes cardEnter {
@@ -483,6 +653,7 @@ body {
 
 .animate-fade-in-up {
   animation: fadeInUp var(--fx-duration-base) var(--fx-easing-entrance);
+  will-change: transform, opacity;
 }
 
 @keyframes fadeInUp {
@@ -499,6 +670,7 @@ body {
 
 .animate-slide-in-left {
   animation: slideInLeft var(--fx-duration-base) var(--fx-easing-entrance);
+  will-change: transform, opacity;
 }
 
 @keyframes slideInLeft {
@@ -515,6 +687,7 @@ body {
 
 .animate-slide-in-right {
   animation: slideInRight var(--fx-duration-base) var(--fx-easing-entrance);
+  will-change: transform, opacity;
 }
 
 @keyframes slideInRight {
@@ -529,27 +702,8 @@ body {
   }
 }
 
-/* FlavorWheel brand typography */
-.font-brand {
-  font-family: var(--fw-brand-wordmark);
-}
-
-/* Gradient text effects */
-.text-gradient-gold {
-  background: linear-gradient(180deg, #F5EFE6 0%, #E4C983 100%);
-  background-clip: text;
-  color: transparent;
-}
-
-/* FlavorWheel text shadow */
-.fw-text-shadow {
-  filter: drop-shadow(0 2px 12px rgb(0 0 0 / 45%));
-}
-
-/* FlavorWheel gold glow */
-.fw-gold-glow {
-  filter: drop-shadow(0 0 18px rgb(215 183 110 / 28%));
-}
+/* ===== UNUSED LEGACY CLASSES REMOVED ===== */
+/* Removed unused fw- utility classes to reduce bundle size */
 
 /* ===== MOBILE OPTIMIZATIONS ===== */
 @media (width <= 768px) {
@@ -580,8 +734,8 @@ body {
 
   /* Better focus indicators for mobile */
   button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
-    outline: 2px solid var(--fx-accent);
-    outline-offset: 2px;
+    outline: var(--fx-focus-ring-width) solid var(--fx-focus-ring-color);
+    outline-offset: var(--fx-focus-ring-offset);
   }
 
   /* Safe area support for notched devices */
@@ -651,8 +805,8 @@ select:focus-visible,
 [role="button"]:focus-visible,
 [role="tab"]:focus-visible,
 [role="menuitem"]:focus-visible {
-  outline: 2px solid var(--fx-primary);
-  outline-offset: 2px;
+  outline: var(--fx-focus-ring-width) solid var(--fx-focus-ring-color);
+  outline-offset: var(--fx-focus-ring-offset);
 }
 
 /* Disable text selection on interactive elements */

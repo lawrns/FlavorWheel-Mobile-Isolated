@@ -35,7 +35,7 @@ const ProductTypeSelect: React.FC<ProductTypeSelectProps> = ({
   return (
     <Select onValueChange={onChange} value={value}>
       <SelectTrigger
-        className="h-12 w-full rounded-md border border-fx-border bg-white px-3 text-sm text-fx-text focus:border-fx-primary focus:ring-2 focus:ring-primary"
+        className="h-12 w-full rounded-md border border-fx-border bg-white px-3 text-sm text-fx-text focus-visible:border-fx-primary focus-visible:ring-2 focus-visible:ring-fx-accent"
         data-testid={dataTestId}
         aria-label="Product Type"
       >

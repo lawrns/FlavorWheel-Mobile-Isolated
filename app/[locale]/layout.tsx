@@ -1,4 +1,6 @@
 import type React from 'react'
+import { PageErrorBoundary } from '@/components/error-boundary'
+import { PerformanceMonitor } from '@/components/ui/performance-monitor'
 
 export default function LocaleLayout({
   children,
@@ -7,7 +9,10 @@ export default function LocaleLayout({
 }>) {
   return (
     <div className="locale-layout">
-      {children}
+      <PageErrorBoundary>
+        {children}
+      </PageErrorBoundary>
+      <PerformanceMonitor showMetrics={true} />
     </div>
   )
 }

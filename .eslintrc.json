@@ -5,7 +5,36 @@
   "rules": {
     // ===== DESIGN SYSTEM COMPLIANCE RULES =====
 
-    // Prevent legacy fw- classes (simplified to work without TypeScript plugin)
+    // Prevent design system violations
+    "no-restricted-syntax": [
+      "error",
+      // Hardcoded hex colors
+      {
+        "selector": "Literal[value=/^#[0-9a-fA-F]{3,8}$/]",
+        "message": "Hardcoded hex colors are not allowed. Use fx-* semantic tokens instead."
+      },
+      // Hardcoded RGB/RGBA/HSL/HSLA values in inline styles
+      {
+        "selector": "JSXAttribute[name.name='style'] Literal[value=/rgb\\(|rgba\\(|hsl\\(|hsla\\(/]",
+        "message": "Hardcoded color functions are not allowed. Use fx-* semantic tokens instead."
+      },
+      // Non-semantic Tailwind color classes
+      {
+        "selector": "JSXAttribute[name.name='className'] Literal[value=/\\b(text|bg|border)-(red|green|blue|yellow|purple|pink|indigo|gray)-(50|100|200|300|400|500|600|700|800|900)\\b/]",
+        "message": "Non-semantic Tailwind color classes are not allowed. Use fx-* semantic tokens instead."
+      },
+      // Legacy fw- classes
+      {
+        "selector": "JSXAttribute[name.name='className'] Literal[value=/\\bfw-[a-zA-Z-]+\\b/]",
+        "message": "Legacy fw- classes are deprecated. Use fx-* semantic tokens instead."
+      },
+      // Performance: transition-all
+      {
+        "selector": "JSXAttribute[name.name='className'] Literal[value=/\\btransition-all\\b/]",
+        "message": "transition-all is not allowed for performance reasons. Use specific transition properties instead."
+      }
+    ],
+
     "no-console": "off", // Allow console for debugging
 
     // ===== STYLING CONSISTENCY RULES =====

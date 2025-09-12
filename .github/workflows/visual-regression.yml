@@ -1,0 +1,72 @@
+name: Visual Regression Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'app/**'
+      - 'components/**'
+      - 'tailwind.config.ts'
+      - 'app/globals.css'
+
+jobs:
+  visual-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Build application
+        run: npm run build
+
+      - name: Start application
+        run: npm run dev &
+        env:
+          PORT: 3010
+
+      - name: Wait for application to be ready
+        run: |
+          timeout 60 bash -c 'until curl -f http://localhost:3010/en/test/visual-regression > /dev/null 2>&1; do sleep 2; done' || (echo "Application failed to start" && exit 1)
+
+      - name: Run visual regression tests
+        run: npm run test:visual
+        env:
+          PLAYWRIGHT_BASE_URL: http://localhost:3010
+
+      - name: Upload visual regression results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: visual-regression-results
+          path: |
+            __tests__/__screenshots__/
+            playwright-report/
+            test-results/
+
+      - name: Comment on PR with visual changes
+        if: github.event_name == 'pull_request' && failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '🚨 **Visual Regression Tests Failed**\n\nThe visual regression tests have detected changes in the UI. Please review the visual differences in the uploaded artifacts.\n\n- Check the `visual-regression-results` artifact for screenshots\n- Review the `playwright-report` for detailed test results\n\nIf these changes are intentional, update the baseline snapshots by running:\n```bash\nnpm run test:visual:update\n```'
+            })

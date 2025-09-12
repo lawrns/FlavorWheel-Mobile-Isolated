@@ -130,28 +130,28 @@ function ErrorFallback({
   const canRetry = retryCount < maxRetries
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-fx-ai-confidence-low/10 to-fx-accent/10 flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-4 w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
-            <AlertTriangle className="w-8 h-8 text-red-600" />
+          <div className="mx-auto mb-4 w-16 h-16 bg-fx-ai-confidence-low/20 rounded-full flex items-center justify-center">
+            <AlertTriangle className="w-8 h-8 text-fx-ai-confidence-low" />
           </div>
-          <CardTitle className="text-xl text-gray-900">
+          <CardTitle className="text-xl text-fx-text-primary">
             Oops! Something went wrong
           </CardTitle>
         </CardHeader>
 
         <CardContent className="space-y-4">
-          <p className="text-center text-gray-600">
+          <p className="text-center text-fx-text-secondary">
             We encountered an unexpected error. Don&apos;t worry, our team has been notified.
           </p>
 
           {error && process.env.NODE_ENV === 'development' && (
-            <details className="bg-gray-100 p-3 rounded-lg text-sm">
-              <summary className="cursor-pointer font-medium text-gray-700">
+            <details className="bg-fx-bg-subtle p-3 rounded-lg text-sm">
+              <summary className="cursor-pointer font-medium text-fx-text-primary">
                 Error Details (Development)
               </summary>
-              <pre className="mt-2 text-xs text-gray-600 overflow-auto">
+              <pre className="mt-2 text-xs text-fx-text-secondary overflow-auto">
                 {error.message}
                 {error.stack && '\n\n' + error.stack}
               </pre>
@@ -162,7 +162,7 @@ function ErrorFallback({
             {canRetry && (
               <Button
                 onClick={onRetry}
-                className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
+                className="w-full bg-gradient-to-r from-fx-primary to-fx-primary-hover hover:from-fx-primary-hover hover:to-fx-primary"
               >
                 <RefreshCw className="w-4 h-4 mr-2" />
                 Try Again ({retryCount}/{maxRetries})
@@ -182,7 +182,7 @@ function ErrorFallback({
               <Button
                 onClick={onReport}
                 variant="ghost"
-                className="w-full text-gray-600"
+                className="w-full text-fx-text-secondary"
               >
                 <Bug className="w-4 h-4 mr-2" />
                 Report This Error
@@ -190,7 +190,7 @@ function ErrorFallback({
             )}
           </div>
 
-          <div className="text-center text-xs text-gray-500">
+          <div className="text-center text-xs text-fx-text-muted">
             Error ID: {Date.now().toString(36)}
           </div>
         </CardContent>
@@ -220,10 +220,10 @@ export function ComponentErrorBoundary({ children }: { children: React.ReactNode
       showReportButton={false}
       maxRetries={1}
       fallback={({ error, retry }) => (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+        <div className="p-4 bg-fx-ai-confidence-low/10 border border-fx-ai-confidence-low/20 rounded-lg">
           <div className="flex items-center space-x-2">
-            <AlertTriangle className="w-5 h-5 text-red-600" />
-            <span className="text-sm text-red-800">Component error occurred</span>
+            <AlertTriangle className="w-5 h-5 text-fx-ai-confidence-low" />
+            <span className="text-sm text-fx-ai-confidence-low">Component error occurred</span>
           </div>
           <Button
             onClick={retry}
@@ -264,11 +264,11 @@ export function ErrorMessage({ error, onRetry, className = '' }: ErrorMessagePro
   const config = errorHandler.getUserFriendlyError(error)
 
   return (
-    <div className={`p-4 bg-red-50 border border-red-200 rounded-lg ${className}`}>
+    <div className={`p-4 bg-fx-ai-confidence-low/10 border border-fx-ai-confidence-low/20 rounded-lg ${className}`}>
       <div className="flex items-start space-x-3">
-        <AlertTriangle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+        <AlertTriangle className="w-5 h-5 text-fx-ai-confidence-low flex-shrink-0 mt-0.5" />
         <div className="flex-1">
-          <p className="text-sm font-medium text-red-800">
+          <p className="text-sm font-medium text-fx-ai-confidence-low">
             {config.userMessage}
           </p>
           {config.actionMessage && onRetry && config.retryable && (

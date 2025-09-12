@@ -10,12 +10,7 @@ const config: Config = {
     './stories/**/*.{ts,tsx,mdx}',
   ],
   safelist: [
-    'fw-bg-overlay',
-    'fw-gradient-cream-gold',
-    'fw-text-shadow',
-    'fw-rot-word',
-    'font-poetic',
-    'fw-gold-glow',
+    // Removed unused fw- classes to reduce bundle size
   ],
   prefix: '',
 
@@ -125,15 +120,18 @@ const config: Config = {
         'fx-flavor-temporal-time': 'var(--fx-flavor-temporal-time)',
 
         // ===== LEGACY SUPPORT =====
-        // Minimal support for existing fw- tokens (will be removed in future)
+        // DEPRECATED: fw- tokens are legacy and should be replaced with fx-* tokens
+        // These will be removed in a future major version
         fw: {
-          fruity: 'var(--fw-fruity)',
-          floral: 'var(--fw-floral)',
-          vegetal: 'var(--fw-vegetal)',
-          // ... other fw tokens kept for compatibility
+          fruity: 'var(--fx-flavor-fruity)',
+          floral: 'var(--fx-flavor-floral)',
+          vegetal: 'var(--fx-flavor-vegetal)',
+          // Map legacy fw- tokens to fx- equivalents for backward compatibility
         },
 
-        // Shadcn/ui compatibility (deprecated - use semantic tokens above)
+        // ===== DEPRECATED: Shadcn/ui compatibility =====
+        // These tokens are deprecated and should be replaced with fx-* semantic tokens
+        // They will be removed in a future major version
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',

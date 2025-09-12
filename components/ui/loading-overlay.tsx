@@ -71,7 +71,7 @@ export function LoadingOverlay({
 
       case 'bar':
         return (
-          <div className="w-48 h-2 bg-gray-200 rounded-full overflow-hidden">
+          <div className="w-48 h-2 bg-fx-bg-subtle rounded-full overflow-hidden">
             <motion.div
               className="h-full bg-current rounded-full"
               animate={{ x: ['-100%', '100%'] }}
@@ -102,7 +102,7 @@ export function LoadingOverlay({
   }
 
   const backdropClasses = {
-    blur: 'backdrop-blur-sm bg-white/80',
+    blur: 'backdrop-blur-sm bg-fx-bg-primary/80',
     dark: 'bg-black/50',
     none: 'bg-transparent'
   }
@@ -124,18 +124,18 @@ export function LoadingOverlay({
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
-            className="bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full mx-4 text-center"
+            className="bg-fx-bg-primary rounded-2xl shadow-2xl p-8 max-w-sm w-full mx-4 text-center"
           >
             <div className="flex justify-center mb-4">
               {renderLoader()}
             </div>
 
             {message && (
-              <p className="text-gray-600 mb-4">{message}</p>
+              <p className="text-fx-text-secondary mb-4">{message}</p>
             )}
 
             {progress !== undefined && (
-              <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+              <div className="w-full bg-fx-bg-subtle rounded-full h-2 mb-4">
                 <motion.div
                   className="bg-current h-2 rounded-full"
                   initial={{ width: 0 }}
@@ -146,7 +146,7 @@ export function LoadingOverlay({
             )}
 
             {progress !== undefined && (
-              <p className="text-sm text-gray-500">{Math.round(progress)}%</p>
+              <p className="text-sm text-fx-text-muted">{Math.round(progress)}%</p>
             )}
           </motion.div>
         </motion.div>
@@ -233,18 +233,18 @@ export function StatusIndicator({
             }}
             className={iconClasses}
           >
-            <Loader2 className="w-full h-full text-blue-600" />
+            <Loader2 className="w-full h-full text-fx-accent" />
           </motion.div>
         )
 
       case 'success':
-        return <CheckCircle className={cn(iconClasses, 'text-green-600')} />
+        return <CheckCircle className={cn(iconClasses, 'text-fx-flavor-vegetal')} />
 
       case 'error':
-        return <XCircle className={cn(iconClasses, 'text-red-600')} />
+        return <XCircle className={cn(iconClasses, 'text-fx-ai-confidence-low')} />
 
       case 'warning':
-        return <AlertCircle className={cn(iconClasses, 'text-yellow-600')} />
+        return <AlertCircle className={cn(iconClasses, 'text-fx-ai-confidence-med')} />
 
       default:
         return null
@@ -255,7 +255,7 @@ export function StatusIndicator({
     <div className={cn('flex items-center gap-3', className)}>
       {renderIcon()}
       {message && (
-        <span className="text-sm text-gray-600">{message}</span>
+        <span className="text-sm text-fx-text-secondary">{message}</span>
       )}
     </div>
   )
@@ -334,7 +334,7 @@ export function LoadingButton({
       onClick={onClick}
       disabled={disabled || isLoading}
       className={cn(
-        'inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all',
+        'inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors',
         'disabled:opacity-50 disabled:cursor-not-allowed',
         {
           'px-3 py-2 text-sm': size === 'sm',

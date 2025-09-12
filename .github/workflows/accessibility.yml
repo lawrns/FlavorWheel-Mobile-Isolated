@@ -1,0 +1,71 @@
+name: Accessibility Testing
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'app/**'
+      - 'components/**'
+      - 'tailwind.config.ts'
+      - 'app/globals.css'
+
+jobs:
+  accessibility:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Build application
+        run: npm run build
+
+      - name: Start application
+        run: npm run dev &
+        env:
+          PORT: 3010
+
+      - name: Wait for application to be ready
+        run: |
+          timeout 60 bash -c 'until curl -f http://localhost:3010/en/test/visual-regression > /dev/null 2>&1; do sleep 2; done' || (echo "Application failed to start" && exit 1)
+
+      - name: Run accessibility tests
+        run: npm run test:a11y:ci
+        env:
+          PLAYWRIGHT_BASE_URL: http://localhost:3010
+
+      - name: Upload accessibility test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: accessibility-test-results
+          path: |
+            test-results/
+            playwright-report/
+
+      - name: Comment on PR with accessibility issues
+        if: github.event_name == 'pull_request' && failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '⚠️ **Accessibility Test Failures Detected**\n\nThe accessibility tests have found WCAG 2.1 AA compliance issues. Please review the test results and fix the following:\n\n- Check the `accessibility-test-results` artifact for detailed test output\n- Review the `playwright-report` for specific accessibility violations\n\n**Common Issues to Address:**\n- Color contrast ratios below 4.5:1 for normal text\n- Missing alt text on images\n- Form elements without proper labels\n- Keyboard navigation issues\n- Touch targets smaller than 44px\n- Missing ARIA attributes\n\nRun `npm run test:a11y` locally to debug issues.'
+            })

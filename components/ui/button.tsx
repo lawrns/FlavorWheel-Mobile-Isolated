@@ -5,7 +5,7 @@ import { useHaptic } from '@/lib/haptic'
 import { cn } from '@/lib/utils'
 
 // Base button styles using unified design tokens
-const base = 'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-body-sm font-medium transition-all duration-fast ease-standard focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 active:scale-98 min-h-[44px]'
+const base = 'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-body-sm font-medium transition-all duration-fast ease-standard focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fx-accent focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 active:scale-98 min-h-[44px]'
 
 // Enhanced button variants using fx- design tokens
 export const buttonVariants = cva(base, {
@@ -16,8 +16,8 @@ export const buttonVariants = cva(base, {
       secondary: 'bg-fx-bg text-fx-text-primary border border-fx-border-default hover:bg-fx-bg-subtle hover:border-fx-accent shadow-fx-xs hover:shadow-fx-sm',
       accent: 'bg-gradient-to-r from-fx-accent to-fx-accent-hover text-fx-text-inverse hover:shadow-fx-lg active:shadow-fx-sm transform hover:-translate-y-1 transition-all duration-base',
       ghost: 'text-fx-text-primary hover:bg-fx-bg-subtle hover:text-fx-text-primary',
-      destructive: 'bg-red-600 text-white hover:bg-red-700 shadow-fx-sm',
-      success: 'bg-green-600 text-white hover:bg-green-700 shadow-fx-sm',
+      destructive: 'bg-fx-ai-confidence-low text-fx-text-inverse hover:bg-fx-ai-confidence-med shadow-fx-sm',
+      success: 'bg-fx-flavor-vegetal text-fx-text-inverse hover:bg-fx-secondary shadow-fx-sm',
       outline: 'border border-fx-border-default bg-transparent text-fx-text-primary hover:bg-fx-bg-subtle hover:border-fx-accent',
       link: 'text-fx-primary underline-offset-4 hover:underline hover:text-fx-primary bg-transparent shadow-none hover:shadow-none',
 
@@ -27,11 +27,11 @@ export const buttonVariants = cva(base, {
       'beautiful-accent': 'btn-accent-beautiful'
     },
     size: {
-      xs: 'h-6 px-2 text-xs',
-      sm: 'h-8 px-3 text-sm',
-      md: 'h-9 px-4 text-sm',
-      lg: 'h-10 px-6 text-base',
-      xl: 'h-12 px-8 text-lg'
+      xs: 'h-11 px-3 text-xs min-h-[44px]', // 44px minimum touch target
+      sm: 'h-11 px-4 text-sm min-h-[44px]', // 44px minimum touch target
+      md: 'h-11 px-6 text-sm min-h-[44px]', // 44px minimum touch target
+      lg: 'h-12 px-8 text-base min-h-[44px]', // 48px > 44px minimum
+      xl: 'h-14 px-10 text-lg min-h-[44px]' // 56px > 44px minimum
     },
     haptic: {
       light: 'haptic-light',

@@ -15,6 +15,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Input } from '@/components/ui/input'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { ErrorBoundary } from '@/components/error-boundary'
+import { errorHandler } from '@/lib/error-handling'
 import {
   Target,
   Share2,
@@ -182,7 +183,8 @@ export default function FlavorWheelsPage() {
       try {
         setWheelData(transformFlavorDataToNode(flavorData))
       } catch (e) {
-        console.error('Transform error:', e)
+        // Error handling replaced with proper error boundary
+        errorHandler.logError(e, { source: 'flavor-wheels', action: 'transform-flavor-data' })
       }
     }
   }, [flavorData])
@@ -317,7 +319,8 @@ export default function FlavorWheelsPage() {
       console.log('🎯 DEBUGGING: All results:', results)
       setTastingResults(results)
     } catch (error) {
-      console.error('🎯 DEBUGGING: Error loading tasting results:', error)
+      // Error handling replaced with proper error boundary
+      errorHandler.logError(error, { source: 'flavor-wheels', action: 'load-tasting-results' })
     } finally {
       setLoadingResults(false)
     }
@@ -338,7 +341,8 @@ export default function FlavorWheelsPage() {
         setUserReviews(reviews as UserReview[])
         setReviewsCount(reviewsCount)
       } catch (reviewError) {
-        console.error('Error loading user reviews:', reviewError)
+        // Error handling replaced with proper error boundary
+        errorHandler.logError(reviewError, { source: 'flavor-wheels', action: 'load-user-reviews' })
         hasErrors = true
         setUserReviews([])
         setReviewsCount(0)
@@ -393,7 +397,8 @@ export default function FlavorWheelsPage() {
       }
 
     } catch (error) {
-      console.error('Critical error loading social data:', error)
+      // Error handling replaced with proper error boundary
+      errorHandler.logError(error, { source: 'flavor-wheels', action: 'load-social-data-critical' })
       hasErrors = true
 
       // Show user-friendly error message only for critical errors
@@ -537,7 +542,7 @@ export default function FlavorWheelsPage() {
             <Button
               variant={selectedSection === 'reviews' ? 'default' : 'outline'}
               size="sm"
-              className={`w-full sm:w-auto rounded-full px-3 sm:px-4 py-2 fx-text-xs sm:fx-text-sm transition-all duration-normal ease-standard ${
+              className={`w-full sm:w-auto rounded-full px-3 sm:px-4 py-2 fx-text-xs sm:fx-text-sm transition-colors duration-normal ease-standard ${
                 selectedSection === 'reviews'
                   ? 'bg-fx-primary hover:bg-fx-primary-hover text-fx-text-inverse'
                   : 'bg-fx-bg border-fx-border-subtle text-fx-text-primary hover:bg-fx-bg-subtle'
@@ -558,7 +563,7 @@ export default function FlavorWheelsPage() {
             <Button
               variant={selectedSection === 'events' ? 'default' : 'outline'}
               size="sm"
-              className={`w-full sm:w-auto rounded-full px-3 sm:px-4 py-2 fx-text-xs sm:fx-text-sm transition-all duration-normal ease-standard ${
+              className={`w-full sm:w-auto rounded-full px-3 sm:px-4 py-2 fx-text-xs sm:fx-text-sm transition-colors duration-normal ease-standard ${
                 selectedSection === 'events'
                   ? 'bg-fx-primary hover:bg-fx-primary-hover text-fx-text-inverse'
                   : 'bg-fx-bg border-fx-border-subtle text-fx-text-primary hover:bg-fx-bg-subtle'
@@ -579,7 +584,7 @@ export default function FlavorWheelsPage() {
             <Button
               variant={selectedSection === 'friends' ? 'default' : 'outline'}
               size="sm"
-              className={`w-full sm:w-auto rounded-full px-3 sm:px-4 py-2 fx-text-xs sm:fx-text-sm transition-all duration-normal ease-standard ${
+              className={`w-full sm:w-auto rounded-full px-3 sm:px-4 py-2 fx-text-xs sm:fx-text-sm transition-colors duration-normal ease-standard ${
                 selectedSection === 'friends'
                   ? 'bg-fx-primary hover:bg-fx-primary-hover text-fx-text-inverse'
                   : 'bg-fx-bg border-fx-border-subtle text-fx-text-primary hover:bg-fx-bg-subtle'
@@ -600,7 +605,7 @@ export default function FlavorWheelsPage() {
             <Button
               variant={selectedSection === 'create' ? 'default' : 'outline'}
               size="sm"
-              className={`w-full sm:w-auto rounded-full px-3 sm:px-4 py-2 fx-text-xs sm:fx-text-sm transition-all duration-normal ease-standard ${
+              className={`w-full sm:w-auto rounded-full px-3 sm:px-4 py-2 fx-text-xs sm:fx-text-sm transition-colors duration-normal ease-standard ${
                 selectedSection === 'create'
                   ? 'bg-fx-primary hover:bg-fx-primary-hover text-fx-text-inverse'
                   : 'bg-fx-bg border-fx-border-subtle text-fx-text-primary hover:bg-fx-bg-subtle'
@@ -1169,12 +1174,14 @@ export default function FlavorWheelsPage() {
                     <div className="w-full h-full flex items-center justify-center relative overflow-hidden">
                       {/* Mobile-optimized container with proper scaling */}
                       <div className="w-full h-full max-w-full max-h-full flex items-center justify-center px-2 sm:px-4">
-                        <div className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl aspect-square flex items-center justify-center">
-                          <FlavorWheel
-                            data={wheelData}
-                            title="Rueda de Sabores"
-                            reduceMotion={false}
-                          />
+                        <div className="w-full max-w-[280px] sm:max-w-sm md:max-w-md lg:max-w-lg flex items-center justify-center">
+                          <div className="w-full aspect-square max-w-full max-h-full flex items-center justify-center">
+                            <FlavorWheel
+                              data={wheelData}
+                              title="Rueda de Sabores"
+                              reduceMotion={false}
+                            />
+                          </div>
                         </div>
                       </div>
 

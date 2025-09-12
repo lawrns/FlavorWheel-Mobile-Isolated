@@ -84,14 +84,32 @@ function colorForNode(node: d3.HierarchyRectangularNode<FlavorNode>) {
 
 export function FlavorWheelVisualization({ data, title, reduceMotion }: Props) {
   const svgRef = React.useRef<SVGSVGElement>(null)
-  const [dimensions, setDimensions] = React.useState({ width: 800, height: 800 })
+  const [dimensions, setDimensions] = React.useState({ width: 280, height: 280 })
 
-  // Responsive dimensions
+  // Responsive dimensions with mobile-first approach
   React.useEffect(() => {
     const updateDimensions = () => {
       const container = svgRef.current?.parentElement
       if (container) {
-        const size = Math.min(container.clientWidth, 800)
+        const containerWidth = container.clientWidth
+        const containerHeight = container.clientHeight
+
+        // Mobile-first responsive sizing
+        let size: number
+        if (containerWidth <= 375) { // iPhone SE and smaller
+          size = Math.min(containerWidth - 16, 280) // Account for padding, max 280px
+        } else if (containerWidth <= 640) { // Mobile landscape/small tablets
+          size = Math.min(containerWidth - 32, 320) // Account for padding
+        } else if (containerWidth <= 768) { // Tablets
+          size = Math.min(containerWidth - 48, 400) // Account for padding
+        } else if (containerWidth <= 1024) { // Small desktops
+          size = Math.min(containerWidth - 64, 500) // Account for padding
+        } else { // Large screens
+          size = Math.min(containerWidth - 80, 600) // Account for padding, reasonable max
+        }
+
+        // Ensure square dimensions and minimum size
+        size = Math.max(size, 200) // Minimum 200px for usability
         setDimensions({ width: size, height: size })
       }
     }
@@ -141,7 +159,7 @@ export function FlavorWheelVisualization({ data, title, reduceMotion }: Props) {
       .append('path')
       .attr('d', arc)
       .attr('fill', colorForNode)
-      .attr('stroke', '#fff')
+      .attr('stroke', 'var(--fx-text-inverse)')
       .attr('stroke-width', 1)
       .style('cursor', 'pointer')
 
@@ -152,14 +170,14 @@ export function FlavorWheelVisualization({ data, title, reduceMotion }: Props) {
           .transition()
           .duration(reduceMotion ? 0 : 200)
           .attr('stroke-width', 3)
-          .attr('stroke', '#333')
+          .attr('stroke', 'var(--fx-text-primary)')
       })
       .on('mouseout', function(event, d) {
         d3.select(this)
           .transition()
           .duration(reduceMotion ? 0 : 200)
           .attr('stroke-width', 1)
-          .attr('stroke', '#fff')
+          .attr('stroke', 'var(--fx-text-inverse)')
       })
 
     // Add labels
@@ -181,15 +199,15 @@ export function FlavorWheelVisualization({ data, title, reduceMotion }: Props) {
         return Math.min(Math.max(Math.sqrt(area) * 0.15, 8), 16) + 'px'
       })
       .attr('fill', d => {
-        // Use contrasting color for text
+        // Use contrasting color for text with semantic tokens
         const backgroundColor = d3.color(colorForNode(d))
-        if (!backgroundColor) return '#000'
+        if (!backgroundColor) return 'var(--fx-text-primary)'
         if ('l' in backgroundColor && typeof (backgroundColor as any).l === 'number') {
-          return (backgroundColor as any).l > 0.5 ? '#000' : '#fff'
+          return (backgroundColor as any).l > 0.5 ? 'var(--fx-text-primary)' : 'var(--fx-text-inverse)'
         }
         const rgb = d3.rgb(backgroundColor as any)
         const yiq = (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000
-        return yiq >= 128 ? '#000' : '#fff'
+        return yiq >= 128 ? 'var(--fx-text-primary)' : 'var(--fx-text-inverse)'
       })
       .attr('pointer-events', 'none')
       .text(d => d.data.name)
@@ -202,6 +220,7 @@ export function FlavorWheelVisualization({ data, title, reduceMotion }: Props) {
         .attr('text-anchor', 'middle')
         .attr('font-size', '18px')
         .attr('font-weight', 'bold')
+        .attr('fill', 'var(--fx-text-primary)')
         .text(title)
     }
 
