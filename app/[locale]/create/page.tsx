@@ -25,7 +25,7 @@ export default function CreatePage() {
 
   const handleAdvancedSetup = () => {
     // Navigate to advanced creation flow
-    window.location.href = `/${locale}/create/advanced`
+    window.location.href = `/${locale}/create/study`
   }
 
   return (
@@ -120,6 +120,7 @@ export default function CreatePage() {
                 onClick={handleAdvancedSetup}
                 variant="outline"
                 className="w-full border-fx-secondary text-fx-secondary hover:bg-fx-secondary hover:text-white font-semibold py-3"
+                data-testid="btn-advanced-options"
                 size="lg"
               >
                 Explore Advanced Options

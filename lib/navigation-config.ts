@@ -35,16 +35,16 @@ export interface NavigationItem {
 export const NAVIGATION_ITEMS: NavigationItem[] = [
   // Core 4-button navigation (only working pages)
   {
-    id: 'dashboard',
-    label: 'Dashboard',
-    icon: HiHome,
-    emoji: '🏠',
-    href: '/dashboard',
+    id: 'quick-taste',
+    label: 'Quick Taste',
+    icon: HiLightningBolt,
+    emoji: '⚡',
+    href: '/quick-tasting',
     color: 'wine-green',
   },
   {
     id: 'create',
-    label: 'Create',
+    label: 'Create Tasting',
     icon: HiPlus,
     emoji: '➕',
     href: '/create',
@@ -59,11 +59,11 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     color: 'elegant-brown',
   },
   {
-    id: 'profile',
-    label: 'Profile',
-    icon: HiUser,
-    emoji: '👤',
-    href: '/profile',
+    id: 'flavor-wheels',
+    label: 'Flavor Wheels',
+    icon: HiChartBar,
+    emoji: '📊',
+    href: '/flavor-wheels',
     color: 'neutral-gray',
   },
 ]
@@ -75,18 +75,19 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
  */
 export const ROUTE_TO_NAV_MAPPING: Record<string, string> = {
   // Core pages (only working ones)
-  '/': 'dashboard',
-  '/landing': 'dashboard',
-  '/home': 'dashboard',
-  '/dashboard': 'dashboard',
+  '/': 'quick-taste',
+  '/landing': 'quick-taste',
+  '/home': 'quick-taste',
+  '/dashboard': 'quick-taste',
+  '/quick-tasting': 'quick-taste',
   '/create': 'create',
   '/review': 'review',
-  '/profile': 'profile',
+  '/flavor-wheels': 'flavor-wheels',
 
   // Feature pages that map to core navigation
-  '/tastings': 'dashboard',
-  '/create-wheel': 'review',
-  '/test-sunburst-wheel': 'review',
+  '/tastings': 'quick-taste',
+  '/create-wheel': 'flavor-wheels',
+  '/test-sunburst-wheel': 'flavor-wheels',
 }
 
 /**
@@ -114,7 +115,7 @@ export function getNavigationItemForRoute(route: string): NavigationItem | undef
   // Remove locale prefix and normalize route
   const normalizedRoute = route.replace(/^\/([a-z]{2})(-[A-Z]{2})?\b/, '') || '/'
   const navId = ROUTE_TO_NAV_MAPPING[normalizedRoute]
-  return navId ? getNavigationItem(navId) : getNavigationItem('home')
+  return navId ? getNavigationItem(navId) : getNavigationItem('quick-taste')
 }
 
 /**
@@ -122,7 +123,7 @@ export function getNavigationItemForRoute(route: string): NavigationItem | undef
  */
 export function getActiveNavId(route: string): string {
   const normalizedRoute = route.replace(/^\/([a-z]{2})(-[A-Z]{2})?\b/, '') || '/'
-  return ROUTE_TO_NAV_MAPPING[normalizedRoute] || 'home'
+  return ROUTE_TO_NAV_MAPPING[normalizedRoute] || 'quick-taste'
 }
 
 /**

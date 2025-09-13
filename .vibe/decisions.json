@@ -1,0 +1,58 @@
+{
+  "decisions": [
+    {
+      "id": "quick-tasting-notes-flow",
+      "title": "Quick Tasting Notes-Based Flow",
+      "decision": "Replace flavor selection with notes input (aroma, flavor, other); allow either notes OR selected flavors; map 0-100 score to 1-10 rating",
+      "never_allow": ["forced flavor selection only", "no notes alternative"],
+      "reference": "DECISIONS.md#2025-09-13-quick-tasting-notes-based-flow"
+    },
+    {
+      "id": "review-modes-quick-prose",
+      "title": "Review Modes (Quick vs Prose)",
+      "decision": "Add tabs for Quick Review (stars + sliders) vs Prose Review (title + content); shared base metadata",
+      "never_allow": ["mixed review fields", "no mode separation"],
+      "reference": "DECISIONS.md#2025-09-13-review-modes-quick-vs-prose"
+    },
+    {
+      "id": "constitutional-layer",
+      "title": "Constitutional Layer Implementation",
+      "decision": "Enforce design system rules via ESLint; no raw HTML forms, no inline styles, no hardcoded colors; Prettier for formatting",
+      "never_allow": ["raw <input>", "inline style attributes", "hardcoded hex colors"],
+      "reference": "DECISIONS.md#2025-09-13-constitutional-layer-implementation"
+    },
+    {
+      "id": "api-schema-alignment",
+      "title": "API Schema Alignment",
+      "decision": "Remove unsupported fields from API payload; use tasting_data jsonb for quick tasting data; maintain database compatibility",
+      "never_allow": ["mismatched API payload fields", "unsupported database fields"],
+      "reference": "DECISIONS.md#2025-09-13-api-schema-alignment"
+    },
+    {
+      "id": "design-token-enforcement",
+      "title": "Design System Token Enforcement",
+      "decision": "ESLint rules prevent hardcoded colors/RGB/HSL; ban raw form elements; require fx-* semantic tokens",
+      "never_allow": ["bg-red-500", "rgb(255,0,0)", "<input>"],
+      "reference": "DECISIONS.md#2025-09-13-design-system-token-enforcement"
+    }
+  ],
+  "patterns": {
+    "form_components": {
+      "allowed": ["<Input>", "<Textarea>", "<Select>"],
+      "forbidden": ["<input>", "<textarea>", "<select>"]
+    },
+    "styling": {
+      "allowed": ["fx-* tokens", "Tailwind utilities", "component props"],
+      "forbidden": ["style={{}}", "hardcoded colors", "raw CSS classes"]
+    },
+    "navigation": {
+      "allowed": ["/quick-tasting", "/create", "/review", "/flavor-wheels"],
+      "forbidden": ["/dashboard", "/landing"]
+    }
+  },
+  "validation": {
+    "pre_commit": ["prettier", "eslint", "tsc"],
+    "ci": ["type-check", "lint", "prettier", "design-token-analysis"],
+    "manual": ["component tests", "e2e tests", "accessibility audit"]
+  }
+}

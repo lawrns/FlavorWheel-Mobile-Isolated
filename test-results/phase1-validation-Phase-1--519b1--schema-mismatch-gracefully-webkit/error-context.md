@@ -1,0 +1,93 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - link "Skip to main content" [ref=e5]:
+          - /url: "#main-content"
+        - link "Skip to navigation" [ref=e6]:
+          - /url: "#navigation"
+        - navigation "Primary" [ref=e8]:
+          - navigation "Navegación principal" [ref=e9]:
+            - generic [ref=e10]:
+              - img "FlavorWheel México Logo" [ref=e12]
+              - generic [ref=e14]:
+                - button "Navigate to Quick Taste" [ref=e15] [cursor=pointer]:
+                  - img [ref=e16] [cursor=pointer]
+                  - generic [ref=e18] [cursor=pointer]: Quick Taste
+                - button "Navigate to Create Tasting" [ref=e19] [cursor=pointer]:
+                  - img [ref=e20] [cursor=pointer]
+                  - generic [ref=e21] [cursor=pointer]: Create Tasting
+                - button "Navigate to Review" [ref=e22] [cursor=pointer]:
+                  - img [ref=e23] [cursor=pointer]
+                  - generic [ref=e25] [cursor=pointer]: Review
+                - button "Navigate to Flavor Wheels" [ref=e26] [cursor=pointer]:
+                  - img [ref=e27] [cursor=pointer]
+                  - generic [ref=e29] [cursor=pointer]: Flavor Wheels
+              - button "Switch to dark mode" [ref=e32] [cursor=pointer]:
+                - img [ref=e33] [cursor=pointer]
+        - main "Main content" [ref=e36]:
+          - generic [ref=e37]:
+            - generic [ref=e39]:
+              - generic [ref=e40]:
+                - button "Back" [ref=e41] [cursor=pointer]:
+                  - img [ref=e42] [cursor=pointer]
+                  - text: Back
+                - heading "Quick Tasting" [level=1] [ref=e44]
+              - generic [ref=e45]:
+                - generic [ref=e46]:
+                  - generic [ref=e47]: Step 2 of 3
+                  - generic [ref=e48]: 67% complete
+                - progressbar [ref=e49]
+            - generic [ref=e51]:
+              - generic [ref=e53]:
+                - img [ref=e55]
+                - generic [ref=e59]: 👃
+                - generic [ref=e62]: ⭐
+              - generic [ref=e63]:
+                - heading "Aroma, Flavor & Other notes" [level=2] [ref=e64]
+                - paragraph [ref=e65]: Trust your palate - select what you taste
+              - generic [ref=e67]:
+                - generic [ref=e68]:
+                  - generic [ref=e69]: Aroma
+                  - textbox "Describe the aroma (e.g., citrus, floral, herbal)" [ref=e70]
+                - generic [ref=e71]:
+                  - generic [ref=e72]: Flavor
+                  - textbox "Describe the flavor/palate (e.g., sweet, smoky, vanilla)" [ref=e73]
+                - generic [ref=e74]:
+                  - generic [ref=e75]: Other Notes
+                  - textbox "Finish, texture, structure, or any other notes" [ref=e76]
+              - generic [ref=e77]:
+                - button "Previous" [ref=e78] [cursor=pointer]:
+                  - img
+                  - text: Previous
+                - button "Next Step" [disabled]:
+                  - text: Next Step
+                  - img
+          - generic [ref=e79]:
+            - generic [ref=e80]: DEV MODE
+            - button "Login as Test User" [ref=e81] [cursor=pointer]:
+              - img
+              - text: Login as Test User
+        - navigation "Bottom Navigation" [ref=e82]:
+          - generic [ref=e83]:
+            - button "Navigate to Quick Taste (current page)" [ref=e84] [cursor=pointer]:
+              - img [ref=e85] [cursor=pointer]
+              - generic [ref=e87] [cursor=pointer]: Quick Taste
+            - button "Navigate to Create Tasting" [ref=e89] [cursor=pointer]:
+              - img [ref=e90] [cursor=pointer]
+              - generic [ref=e91] [cursor=pointer]: Create Tasting
+            - button "Navigate to Review" [ref=e92] [cursor=pointer]:
+              - img [ref=e93] [cursor=pointer]
+              - generic [ref=e95] [cursor=pointer]: Review
+            - button "Navigate to Flavor Wheels" [ref=e96] [cursor=pointer]:
+              - img [ref=e97] [cursor=pointer]
+              - generic [ref=e99] [cursor=pointer]: Flavor Wheels
+            - button "Open navigation menu" [ref=e100] [cursor=pointer]:
+              - img [ref=e102] [cursor=pointer]
+              - generic [ref=e103] [cursor=pointer]: Menu
+      - button "Toggle performance metrics" [ref=e104] [cursor=pointer]: 📊
+  - alert [ref=e106]
+```

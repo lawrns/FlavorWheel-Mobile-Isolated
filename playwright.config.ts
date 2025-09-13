@@ -32,7 +32,7 @@ export default defineConfig({
     screenshot: 'only-on-failure',
 
     /* Visual regression testing */
-    snapshotPathTemplate: '{testDir}/__screenshots__/{testFilePath}/{arg}{ext}',
+    // snapshotPathTemplate: '{testDir}/__screenshots__/{testFilePath}/{arg}{ext}',
 
     /* Record video on failure */
     video: 'retain-on-failure',
@@ -89,13 +89,12 @@ export default defineConfig({
   ],
 
   /* Run your local dev server before starting the tests */
-  // Temporarily disabled to use manually started server
-  // webServer: {
-  //   command: 'npm run dev -- -p 3010',
-  //   url: 'http://localhost:3010',
-  //   reuseExistingServer: !process.env.CI,
-  //   timeout: 120000,
-  // },
+  webServer: {
+    command: 'npm run dev -- -p 3010',
+    url: 'http://localhost:3010',
+    reuseExistingServer: !process.env.CI,
+    timeout: 120000,
+  },
 
   /* Global setup and teardown */
   globalSetup: require.resolve('./__tests__/global-setup.ts'),

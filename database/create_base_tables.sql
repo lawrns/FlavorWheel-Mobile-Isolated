@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS profiles (
     website text,
     experience_level text CHECK (experience_level IN ('beginner', 'intermediate', 'professional')) DEFAULT 'beginner',
     beverage_preferences text[] DEFAULT '{}',
-    language text DEFAULT 'es',
+    language text DEFAULT 'en',
     last_login timestamp with time zone,
     account_status text CHECK (account_status IN ('active', 'suspended', 'banned')) DEFAULT 'active',
     preferences jsonb DEFAULT '{

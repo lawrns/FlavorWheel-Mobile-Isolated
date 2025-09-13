@@ -115,6 +115,7 @@ export async function generateFlavorWheelData(
       id,
       tasting_type,
       notes,
+      tasting_data,
       ratings,
       created_at,
       tasting_items(*)
@@ -252,6 +253,10 @@ function analyzeTastingData(
             Array.isArray(tasting.notes?.taste || tasting.notes?.flavor)
               ? (tasting.notes?.taste || tasting.notes?.flavor).join(', ')
               : String(tasting.notes?.taste || tasting.notes?.flavor || ''),
+            // Fallback consolidated fields
+            String(tasting.tasting_data?.aroma || ''),
+            String(tasting.tasting_data?.flavor || ''),
+            String(tasting.tasting_data?.other || ''),
           ].join(', ')
           break
         case 'metaphor':
@@ -409,6 +414,15 @@ function extractAromaFlavors(tasting: any): string[] {
     }
   }
 
+  // Fallback to free-form aroma in tasting_data for note-based quick tastings
+  if (flavors.length === 0 && tasting.tasting_data?.aroma && typeof tasting.tasting_data.aroma === 'string') {
+    const tokens = tasting.tasting_data.aroma
+      .split(/[\,\n]/)
+      .map((s: string) => s.trim())
+      .filter(Boolean)
+    flavors.push(...tokens)
+  }
+
   // beverage-derived notes can be merged later via tasting_items if desired
 
   return flavors.filter(f => f && f.length > 0)
@@ -424,6 +438,15 @@ function extractTasteFlavors(tasting: any): string[] {
     } else if (typeof tasteNotes === 'string') {
       flavors.push(...tasteNotes.split(',').map((f: string) => f.trim()))
     }
+  }
+
+  // Fallback to free-form flavor in tasting_data for note-based quick tastings
+  if (flavors.length === 0 && tasting.tasting_data?.flavor && typeof tasting.tasting_data.flavor === 'string') {
+    const tokens = tasting.tasting_data.flavor
+      .split(/[\,\n]/)
+      .map((s: string) => s.trim())
+      .filter(Boolean)
+    flavors.push(...tokens)
   }
 
   // beverage-derived notes can be merged later via tasting_items if desired

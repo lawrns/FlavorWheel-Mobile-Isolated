@@ -476,6 +476,15 @@ export function Sunburst({
 
     console.log(`🚀 SUNBURST: Rendering ${visibleNodes.length} nodes across ${Math.max(...visibleNodes.map(d => d.depth))} levels`)
 
+    type ArcDatum = {
+      node: d3.HierarchyRectangularNode<WheelNode>
+      path: string
+      color: string
+      opacity: number
+      intensity: number
+      isGuidance: boolean
+    }
+
     const arcData = visibleNodes.map(d => {
       // Defensive programming: ensure d exists and has required properties
       if (!d || !d.data) {
@@ -506,7 +515,7 @@ export function Sunburst({
         intensity,
         isGuidance
       }
-    }).filter(d => d && d.path) // Filter out null entries and empty paths
+    }).filter((d): d is ArcDatum => Boolean(d && (d as any).path)) // Filter and narrow type
 
     console.log('🚀 SUNBURST: Arc data generated:', arcData.length, 'arcs ready to render')
 
@@ -594,9 +603,8 @@ export function Sunburst({
       viewBox={`0 0 ${currentWidth} ${currentHeight}`}
       role="img"
       aria-label="Flavor wheel sunburst chart"
-      className="w-full h-auto max-w-full"
+      className="w-full h-auto max-w-full block"
       preserveAspectRatio="xMidYMid meet"
-      style={{ display: 'block' }}
     >
         <title>Flavor Wheel</title>
         <desc>Interactive sunburst chart showing flavor distribution</desc>
@@ -628,11 +636,7 @@ export function Sunburst({
                 strokeWidth={strokeWidth}
                 strokeDasharray={strokeDashArray}
                 opacity={finalOpacity}
-                style={{
-                  cursor: 'pointer',
-                  transition: 'opacity 0.2s ease, stroke-width 0.2s ease',
-                  fontVariationSettings: `'wght' ${confidence > 0.7 ? 700 : confidence > 0.4 ? 400 : 300}`
-                }}
+                className="cursor-pointer transition-opacity duration-200 ease-standard"
                 onClick={() => handleNodeClick(arc.node.data)}
                 onMouseEnter={() => {}} // Disabled hover tooltips - all info shown in click popup
                 onMouseLeave={() => {}} // Disabled hover tooltips - all info shown in click popup
@@ -651,7 +655,7 @@ export function Sunburst({
             fill="#f8f9fa"
             stroke="#dee2e6"
             strokeWidth={2}
-            style={{ cursor: 'pointer' }}
+            className="cursor-pointer"
             onClick={() => {
               // Removed: Don't trigger onNodeClick from center circle
               // This prevents unwanted focus changes when clicking the center

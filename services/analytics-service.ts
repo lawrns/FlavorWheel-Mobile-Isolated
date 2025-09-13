@@ -612,66 +612,55 @@ function extractProseExcerpt(reviews: any[]): string | null {
  * Generate sample tasting results for new users or demo mode
  */
 function generateSampleTastingResults(): TastingResult[] {
+  const now = new Date().toISOString()
+  const wheelData: FlavorNode = {
+    name: 'Sample Tequila Blanco',
+    children: [
+      {
+        name: 'Agave',
+        value: 0.4,
+        children: [
+          { name: 'Fresh Agave', value: 0.25 },
+          { name: 'Cooked Agave', value: 0.15 }
+        ]
+      },
+      {
+        name: 'Citrus',
+        value: 0.3,
+        children: [
+          { name: 'Lime', value: 0.2 },
+          { name: 'Lemon', value: 0.1 }
+        ]
+      },
+      {
+        name: 'Herbal',
+        value: 0.3,
+        children: [
+          { name: 'Mint', value: 0.15 },
+          { name: 'Pepper', value: 0.15 }
+        ]
+      }
+    ]
+  }
+
+  const item: TastingResultItem = {
+    id: 'sample-wheel-1',
+    item_id: 'sample-item-1',
+    item_name: 'Premium Tequila Blanco',
+    wheel_data: wheelData,
+    prose_excerpt: 'A crisp and clean tequila with bright agave notes and subtle citrus undertones.',
+    picture_url: null as any,
+    wheel_type: 'combined'
+  }
+
   return [
     {
       id: 'sample-1',
       tasting_id: 'sample-tasting-1',
-      item_id: 'sample-item-1',
-      wheel_type: 'combined',
-      wheel_data: {
-        name: 'Sample Tequila Blanco',
-        children: [
-          {
-            name: 'Agave',
-            value: 0.4,
-            children: [
-              { name: 'Fresh Agave', value: 0.25 },
-              { name: 'Cooked Agave', value: 0.15 }
-            ]
-          },
-          {
-            name: 'Citrus',
-            value: 0.3,
-            children: [
-              { name: 'Lime', value: 0.2 },
-              { name: 'Lemon', value: 0.1 }
-            ]
-          },
-          {
-            name: 'Herbal',
-            value: 0.3,
-            children: [
-              { name: 'Mint', value: 0.15 },
-              { name: 'Pepper', value: 0.15 }
-            ]
-          }
-        ]
-      },
-      prose_excerpt: 'A crisp and clean tequila with bright agave notes and subtle citrus undertones.',
-      picture_url: null,
-      group_id: null,
-      created_at: new Date().toISOString(),
-      tasting: {
-        id: 'sample-tasting-1',
-        name: 'Sample Tequila Tasting',
-        date: new Date().toISOString(),
-        created_at: new Date().toISOString(),
-        description: 'Your first tasting experience'
-      },
-      item: {
-        id: 'sample-item-1',
-        name: 'Premium Tequila Blanco',
-        picture_url: null,
-        details: { type: 'Tequila', region: 'Jalisco' },
-        producer: 'Sample Distillery',
-        region: 'Jalisco, Mexico'
-      },
-      review: {
-        id: 'sample-review-1',
-        response_value: 8.5,
-        response_data: { notes: 'Excellent balance and smooth finish' },
-        submitted_at: new Date().toISOString()
-      }
+      tasting_name: 'Sample Tequila Tasting',
+      date: now,
+      items: [item],
+      group_id: undefined
     }
   ]
 }

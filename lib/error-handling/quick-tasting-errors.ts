@@ -48,8 +48,8 @@ export const QUICK_TASTING_ERRORS = {
 
   INVALID_RATING: {
     code: 'INVALID_RATING',
-    message: 'Rating must be between 1 and 10',
-    userMessage: 'Please provide a valid rating between 1 and 10.',
+    message: 'Rating must be between 1 and 10 or score between 0 and 100',
+    userMessage: 'Please provide a valid rating (1–10) or score (0–100).',
     statusCode: 400,
     retryable: false
   },
@@ -184,6 +184,9 @@ export function validateQuickTastingData(data: {
   productName?: string
   selectedFlavors?: string[]
   overallRating?: number
+  overallScore?: number
+  aroma?: string
+  flavor?: string
 }): QuickTastingError | null {
   if (!data.productType || data.productType.trim() === '') {
     return QUICK_TASTING_ERRORS.INVALID_PRODUCT_TYPE
@@ -193,12 +196,20 @@ export function validateQuickTastingData(data: {
     return QUICK_TASTING_ERRORS.INVALID_PRODUCT_NAME
   }
 
-  if (!data.selectedFlavors || data.selectedFlavors.length === 0) {
+  const hasSelectedFlavors = Array.isArray(data.selectedFlavors) && data.selectedFlavors.length > 0
+  const hasNoteBased = Boolean(data.aroma?.trim?.() || data.flavor?.trim?.())
+  if (!hasSelectedFlavors && !hasNoteBased) {
     return QUICK_TASTING_ERRORS.NO_FLAVORS_SELECTED
   }
 
-  if (!data.overallRating || data.overallRating < 1 || data.overallRating > 10) {
-    return QUICK_TASTING_ERRORS.INVALID_RATING
+  if (typeof data.overallScore === 'number') {
+    if (data.overallScore < 0 || data.overallScore > 100) {
+      return QUICK_TASTING_ERRORS.INVALID_RATING
+    }
+  } else {
+    if (!data.overallRating || data.overallRating < 1 || data.overallRating > 10) {
+      return QUICK_TASTING_ERRORS.INVALID_RATING
+    }
   }
 
   return null

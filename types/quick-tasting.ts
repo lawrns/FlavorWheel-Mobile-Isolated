@@ -30,6 +30,12 @@ export interface QuickTastingData {
   overallRating: number
   notes: string
   image?: string
+  // New note-based quick tasting fields
+  aroma?: string
+  flavor?: string
+  other?: string
+  // New UI score on a 0–100 scale (mapped to overallRating 1–10 on submit)
+  overallScore?: number
 }
 
 // Database Tasting Record
@@ -130,8 +136,8 @@ export interface TastingStep {
 
 export const TASTING_STEPS: TastingStep[] = [
   { id: 'product', title: 'What are you tasting?', icon: '🥤', required: true },
-  { id: 'flavors', title: 'What flavors do you detect?', icon: '👃', required: true },
-  { id: 'rating', title: 'Your overall impression', icon: '⭐', required: true },
+  { id: 'notes', title: 'Aroma, Flavor & Other notes', icon: '👃', required: true },
+  { id: 'overall', title: 'Overall (0–100) & summary', icon: '⭐', required: true },
 ]
 
 // Product Type Options
@@ -180,12 +186,20 @@ export function validateQuickTastingData(data: QuickTastingData): ValidationErro
     errors.push({ field: 'productName', message: 'Product name is required' })
   }
 
-  if (!data.selectedFlavors || data.selectedFlavors.length === 0) {
-    errors.push({ field: 'selectedFlavors', message: 'At least one flavor must be selected' })
+  const hasSelectedFlavors = Array.isArray(data.selectedFlavors) && data.selectedFlavors.length > 0
+  const hasNoteBased = Boolean(data.aroma?.trim?.() || data.flavor?.trim?.())
+  if (!hasSelectedFlavors && !hasNoteBased) {
+    errors.push({ field: 'selectedFlavors', message: 'Provide at least one flavor (selected or entered in notes)' })
   }
 
-  if (data.overallRating < 1 || data.overallRating > 10) {
-    errors.push({ field: 'overallRating', message: 'Rating must be between 1 and 10' })
+  if (typeof data.overallScore === 'number') {
+    if (data.overallScore < 0 || data.overallScore > 100) {
+      errors.push({ field: 'overallRating', message: 'Score must be between 0 and 100' })
+    }
+  } else {
+    if (data.overallRating < 1 || data.overallRating > 10) {
+      errors.push({ field: 'overallRating', message: 'Rating must be between 1 and 10' })
+    }
   }
 
   return errors

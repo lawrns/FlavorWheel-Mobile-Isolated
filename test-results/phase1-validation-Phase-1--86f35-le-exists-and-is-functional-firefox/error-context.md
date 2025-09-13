@@ -1,0 +1,116 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - link "Skip to main content" [ref=e5] [cursor=pointer]:
+          - /url: "#main-content"
+        - link "Skip to navigation" [ref=e6] [cursor=pointer]:
+          - /url: "#navigation"
+        - navigation "Primary" [ref=e8]:
+          - navigation "Navegación principal" [ref=e9]:
+            - generic [ref=e10]:
+              - img "FlavorWheel México Logo" [ref=e12]
+              - generic [ref=e14]:
+                - button "Navigate to Quick Taste" [ref=e15] [cursor=pointer]:
+                  - img [ref=e16] [cursor=pointer]
+                  - generic [ref=e18] [cursor=pointer]: Quick Taste
+                - button "Navigate to Create Tasting" [ref=e19] [cursor=pointer]:
+                  - img [ref=e20] [cursor=pointer]
+                  - generic [ref=e23] [cursor=pointer]: Create Tasting
+                - button "Navigate to Review" [ref=e24] [cursor=pointer]:
+                  - img [ref=e25] [cursor=pointer]
+                  - generic [ref=e27] [cursor=pointer]: Review
+                - button "Navigate to Flavor Wheels" [ref=e28] [cursor=pointer]:
+                  - img [ref=e29] [cursor=pointer]
+                  - generic [ref=e34] [cursor=pointer]: Flavor Wheels
+              - button "Switch to dark mode" [ref=e37] [cursor=pointer]:
+                - img [ref=e38] [cursor=pointer]
+        - main "Main content" [ref=e41]:
+          - generic [ref=e43]:
+            - generic [ref=e44]:
+              - link "← Back to Home" [ref=e45] [cursor=pointer]:
+                - /url: /en/landing
+              - heading "Create Your Tasting Experience" [level=1] [ref=e46]
+              - paragraph [ref=e47]: Choose how you'd like to explore flavors. Start simple or dive deep with our AI-powered tools.
+            - generic [ref=e48]:
+              - generic [ref=e49] [cursor=pointer]:
+                - generic [ref=e50] [cursor=pointer]:
+                  - img [ref=e52] [cursor=pointer]
+                  - generic [ref=e54] [cursor=pointer]: Quick Tasting
+                  - paragraph [ref=e55] [cursor=pointer]: Get started in under 2 minutes with our streamlined tasting experience
+                - generic [ref=e56] [cursor=pointer]:
+                  - generic [ref=e57] [cursor=pointer]:
+                    - generic [ref=e58] [cursor=pointer]: 3 simple steps
+                    - generic [ref=e60] [cursor=pointer]: AI flavor suggestions
+                    - generic [ref=e62] [cursor=pointer]: Instant results
+                  - button "Start Quick Tasting" [ref=e64] [cursor=pointer]
+              - generic [ref=e65] [cursor=pointer]:
+                - generic [ref=e66] [cursor=pointer]:
+                  - img [ref=e68] [cursor=pointer]
+                  - generic [ref=e71] [cursor=pointer]: Advanced Options
+                  - paragraph [ref=e72] [cursor=pointer]: Full control with professional tools and detailed customization
+                - generic [ref=e73] [cursor=pointer]:
+                  - generic [ref=e74] [cursor=pointer]:
+                    - generic [ref=e75] [cursor=pointer]: Study mode for learning
+                    - generic [ref=e77] [cursor=pointer]: Competition challenges
+                    - generic [ref=e79] [cursor=pointer]: Custom templates
+                  - button "Explore Advanced Options" [ref=e81] [cursor=pointer]
+            - generic [ref=e82]:
+              - button "New to Tasting? Start Here Beginner Learn the basics and get comfortable with flavor evaluation" [ref=e84] [cursor=pointer]:
+                - generic [ref=e85] [cursor=pointer]:
+                  - img [ref=e87] [cursor=pointer]
+                  - generic [ref=e89] [cursor=pointer]:
+                    - generic [ref=e90] [cursor=pointer]:
+                      - heading "New to Tasting? Start Here" [level=3] [ref=e91] [cursor=pointer]
+                      - generic [ref=e92] [cursor=pointer]: Beginner
+                    - paragraph [ref=e93] [cursor=pointer]: Learn the basics and get comfortable with flavor evaluation
+                - img [ref=e96] [cursor=pointer]
+              - button "Advanced Tasting Features Pro Professional tools for experienced tasters and competitions" [ref=e99] [cursor=pointer]:
+                - generic [ref=e100] [cursor=pointer]:
+                  - img [ref=e102] [cursor=pointer]
+                  - generic [ref=e105] [cursor=pointer]:
+                    - generic [ref=e106] [cursor=pointer]:
+                      - heading "Advanced Tasting Features" [level=3] [ref=e107] [cursor=pointer]
+                      - generic [ref=e108] [cursor=pointer]: Pro
+                    - paragraph [ref=e109] [cursor=pointer]: Professional tools for experienced tasters and competitions
+                - img [ref=e112] [cursor=pointer]
+              - button "Connect with the Community Share experiences and learn from fellow tasters" [ref=e115] [cursor=pointer]:
+                - generic [ref=e116] [cursor=pointer]:
+                  - img [ref=e118] [cursor=pointer]
+                  - generic [ref=e123] [cursor=pointer]:
+                    - heading "Connect with the Community" [level=3] [ref=e125] [cursor=pointer]
+                    - paragraph [ref=e126] [cursor=pointer]: Share experiences and learn from fellow tasters
+                - img [ref=e129] [cursor=pointer]
+            - generic [ref=e131]:
+              - heading "Need Help Getting Started?" [level=3] [ref=e132]
+              - paragraph [ref=e133]: Our AI assistant can guide you through your first tasting or answer any questions about flavor evaluation.
+              - generic [ref=e134]:
+                - button "Quick Help" [ref=e137] [cursor=pointer]:
+                  - img
+                  - text: Quick Help
+                - link "View My Dashboard" [ref=e138] [cursor=pointer]:
+                  - /url: /en/dashboard
+                  - button "View My Dashboard" [ref=e139] [cursor=pointer]
+        - navigation "Bottom Navigation" [ref=e140]:
+          - generic [ref=e141]:
+            - button "Navigate to Quick Taste" [ref=e142] [cursor=pointer]:
+              - img [ref=e143] [cursor=pointer]
+              - generic [ref=e145] [cursor=pointer]: Quick Taste
+            - button "Navigate to Create Tasting (current page)" [ref=e146] [cursor=pointer]:
+              - img [ref=e147] [cursor=pointer]
+              - generic [ref=e150] [cursor=pointer]: Create Tasting
+            - button "Navigate to Review" [ref=e152] [cursor=pointer]:
+              - img [ref=e153] [cursor=pointer]
+              - generic [ref=e155] [cursor=pointer]: Review
+            - button "Navigate to Flavor Wheels" [ref=e156] [cursor=pointer]:
+              - img [ref=e157] [cursor=pointer]
+              - generic [ref=e162] [cursor=pointer]: Flavor Wheels
+            - button "Open navigation menu" [ref=e163] [cursor=pointer]:
+              - img [ref=e165] [cursor=pointer]
+              - generic [ref=e169] [cursor=pointer]: Menu
+      - button "Toggle performance metrics" [ref=e170] [cursor=pointer]: 📊
+  - alert [ref=e172]
+```

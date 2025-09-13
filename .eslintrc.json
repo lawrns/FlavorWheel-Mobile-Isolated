@@ -8,6 +8,24 @@
     // Prevent design system violations
     "no-restricted-syntax": [
       "error",
+      // Disallow raw HTML form elements — enforce design-system Form components
+      {
+        "selector": "JSXOpeningElement[name.name='input']",
+        "message": "Raw <input> is not allowed. Use our Form/Input components instead."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='textarea']",
+        "message": "Raw <textarea> is not allowed. Use our Form/Textarea components instead."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='select']",
+        "message": "Raw <select> is not allowed. Use our Select component instead."
+      },
+      // Disallow any inline style usage for maintainability and token adherence
+      {
+        "selector": "JSXAttribute[name.name='style']",
+        "message": "Inline styles are not allowed. Use tokens, utility classes, or component props."
+      },
       // Hardcoded hex colors
       {
         "selector": "Literal[value=/^#[0-9a-fA-F]{3,8}$/]",
@@ -70,7 +88,8 @@
       "rules": {
         // Relax rules for test files
         "import/order": "off",
-        "react/no-unescaped-entities": "off"
+        "react/no-unescaped-entities": "off",
+        "no-restricted-syntax": "off"
       }
     }
   ]

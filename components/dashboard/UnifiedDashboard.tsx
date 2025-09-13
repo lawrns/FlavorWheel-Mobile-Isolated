@@ -13,6 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useStatistics } from '@/hooks/use-statistics'
+import { getUserMetrics } from '@/services/user-metrics'
 import { useSupabase } from '@/components/providers/supabase-provider'
 // DashboardAppShell removed - now using UnifiedAppShell at page level
 
@@ -120,10 +121,23 @@ export function UnifiedDashboard() {
     setIsLoadingStats(true)
 
     try {
-      // Simulate API delay for better loading demonstration
-      await new Promise(resolve => setTimeout(resolve, 1500))
+      // If real user exists, fetch centralized metrics for consistency across views
+      if (user) {
+        const metrics = await getUserMetrics(user.id)
+        setUserStats({
+          totalTastings: metrics.totalTastings,
+          totalReviews: metrics.totalReviews,
+          averageRating: Number(metrics.averageRating || 0),
+          achievements: 0,
+          streakDays: 0,
+          favoriteBeverage: metrics.favoriteBeverage || 'Unknown',
+          recentActivity: []
+        })
+        return
+      }
 
-      // Mock data for demonstration - replace with actual API calls
+      // Test mode / fallback mock data
+      await new Promise(resolve => setTimeout(resolve, 500))
       setUserStats({
         totalTastings: 12,
         totalReviews: 8,
@@ -137,18 +151,6 @@ export function UnifiedDashboard() {
             title: 'Completed tasting: Premium Blanco Tequila',
             timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
             points: 10
-          },
-          {
-            type: 'achievement',
-            title: 'Earned "Flavor Explorer" badge',
-            timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-            points: 25
-          },
-          {
-            type: 'review',
-            title: 'Reviewed Aged Reposado Mezcal',
-            timestamp: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString(),
-            points: 15
           }
         ]
       })

@@ -101,6 +101,7 @@ export default function CreateCompetitionPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [lastSaved, setLastSaved] = useState<string | null>(null)
   const [categoriesExpanded, setCategoriesExpanded] = useState(false)
+  const [rankParticipants, setRankParticipants] = useState<boolean>(false)
 
   // Flow state management
   const [flowStep, setFlowStep] = useState<'create' | 'confirm' | 'input' | 'complete'>('create')
@@ -276,19 +277,21 @@ export default function CreateCompetitionPage() {
       }
     }
 
-    // Validate preloaded answers for ranking categories
-    const rankingCategories = formData.categories.filter(cat => cat.include_in_ranking)
-    for (const category of rankingCategories) {
-      for (const item of formData.items) {
-        const preloadedAnswer = item.preloaded_answers?.[category.id]
-        if (!preloadedAnswer) {
-          // Find the preloaded answer input for this item and category
-          const answerInput = document.querySelector(`[data-category-id="${category.id}"][data-item-id="${item.id}"]`) as HTMLElement
-          if (answerInput) {
-            answerInput.focus()
-            answerInput.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    // Validate preloaded answers for ranking categories (only when ranking is enabled)
+    if (rankParticipants) {
+      const rankingCategories = formData.categories.filter(cat => cat.include_in_ranking)
+      for (const category of rankingCategories) {
+        for (const item of formData.items) {
+          const preloadedAnswer = item.preloaded_answers?.[category.id]
+          if (!preloadedAnswer) {
+            // Find the preloaded answer input for this item and category
+            const answerInput = document.querySelector(`[data-category-id="${category.id}"][data-item-id="${item.id}"]`) as HTMLElement
+            if (answerInput) {
+              answerInput.focus()
+              answerInput.scrollIntoView({ behavior: 'smooth', block: 'center' })
+            }
+            return `Missing preloaded answer for "${item.item_name}" in category "${category.category_name}"`
           }
-          return `Missing preloaded answer for "${item.item_name}" in category "${category.category_name}"`
         }
       }
     }
@@ -404,9 +407,9 @@ export default function CreateCompetitionPage() {
     const hasValidCategories = formData.categories.every(cat => cat.category_name.trim())
     const hasValidItems = formData.items.every(item => item.item_name.trim())
 
-    // Check if ranking categories have preloaded answers
+    // Check if ranking categories have preloaded answers (only when ranking is enabled)
     const rankingCategories = formData.categories.filter(cat => cat.include_in_ranking)
-    const hasRankingAnswers = rankingCategories.every(category =>
+    const hasRankingAnswers = !rankParticipants || rankingCategories.every(category =>
       formData.items.every(item => item.preloaded_answers?.[category.id])
     )
 
@@ -703,6 +706,19 @@ export default function CreateCompetitionPage() {
                   data-testid="switch-blind-tasting"
                   checked={formData.blind_toggle}
                   onCheckedChange={(checked) => updateFormData({ blind_toggle: checked })}
+                  className="h-6 w-11"
+                />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <Label htmlFor="rank_toggle" className="text-sm font-medium text-fx-text2">
+                  Rank Participants (by accuracy)
+                </Label>
+                <Switch
+                  id="rank_toggle"
+                  data-testid="switch-rank-participants"
+                  checked={rankParticipants}
+                  onCheckedChange={setRankParticipants}
                   className="h-6 w-11"
                 />
               </div>

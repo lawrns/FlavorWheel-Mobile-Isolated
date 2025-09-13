@@ -20,7 +20,6 @@ import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/components/auth-provider'
-import { MobileFlavorSelector } from '@/components/ui/mobile-flavor-selector'
 import { useSmartDefaults } from '@/lib/smart-defaults'
 import { createQuickTasting } from '@/services/quick-tasting-service'
 import { useToast } from '@/hooks/use-toast'
@@ -28,10 +27,9 @@ import { useToast } from '@/hooks/use-toast'
 import type {
   QuickTastingData,
   ProductType,
-  FlavorCategory,
   TastingStep
 } from '@/types/quick-tasting'
-import { PRODUCT_TYPE_OPTIONS, FLAVOR_CATEGORIES, TASTING_STEPS } from '@/types/quick-tasting'
+import { PRODUCT_TYPE_OPTIONS, TASTING_STEPS } from '@/types/quick-tasting'
 
 // Product types and flavor categories are now imported from unified types
 
@@ -49,6 +47,10 @@ export function SimplifiedTastingFlow() {
     productName: '',
     selectedFlavors: [],
     overallRating: 5,
+    overallScore: 50,
+    aroma: '',
+    flavor: '',
+    other: '',
     notes: '',
   })
 
@@ -115,7 +117,7 @@ export function SimplifiedTastingFlow() {
     return `e.g., "${placeholders[productType] || placeholders.other}"`
   }
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (navigateAfter: boolean = true) => {
     if (!user) {
       toast({
         title: "Authentication Required",
@@ -136,10 +138,12 @@ export function SimplifiedTastingFlow() {
       return
     }
 
-    if (tastingData.selectedFlavors.length === 0) {
+    const hasSelectedFlavors = Array.isArray(tastingData.selectedFlavors) && tastingData.selectedFlavors.length > 0
+    const hasNoteBased = Boolean(tastingData.aroma?.trim() || tastingData.flavor?.trim())
+    if (!hasSelectedFlavors && !hasNoteBased) {
       toast({
-        title: "No Flavors Selected",
-        description: "Please select at least one flavor you detected.",
+        title: "Add Notes",
+        description: "Please provide aroma or flavor notes (or selected flavors).",
         variant: "destructive",
       })
       return
@@ -149,19 +153,81 @@ export function SimplifiedTastingFlow() {
 
     try {
       // Prepare tasting data for API
+      const mappedRating = typeof tastingData.overallScore === 'number'
+        ? Math.max(1, Math.min(10, Math.round((tastingData.overallScore as number) / 10)))
+        : tastingData.overallRating
       const tastingPayload = {
         productType: tastingData.productType,
         productName: tastingData.productName.trim(),
         selectedFlavors: tastingData.selectedFlavors,
-        overallRating: tastingData.overallRating,
+        overallRating: mappedRating,
+        overallScore: tastingData.overallScore,
+        aroma: tastingData.aroma,
+        flavor: tastingData.flavor,
+        other: tastingData.other,
         notes: tastingData.notes.trim(),
         image: tastingData.image
       }
 
-      // Save tasting data via API
-      const result = await createQuickTasting(tastingPayload)
+      // Show loading toast
+      toast({
+        title: "Saving your tasting...",
+        description: "Please wait while we process your tasting notes.",
+        variant: "default",
+      })
+
+      // Save tasting data via API with retry logic
+      let result: any
+      let retryCount = 0
+      const maxRetries = 2
+
+      while (retryCount <= maxRetries) {
+        try {
+          result = await createQuickTasting(tastingPayload)
+          break // Success, exit retry loop
+        } catch (error: any) {
+          if (retryCount < maxRetries && (error.code === 'NETWORK_ERROR' || error.message?.includes('network'))) {
+            retryCount++
+            await new Promise(resolve => setTimeout(resolve, 1000 * retryCount)) // Exponential backoff
+            continue
+          }
+          throw error // Re-throw if not retryable or max retries reached
+        }
+      }
+
+      // Ensure result is defined
+      if (!result) {
+        throw new Error('Failed to get response from server')
+      }
 
       if (!result.success) {
+        // Handle specific error codes from API (check if code property exists)
+        const errorCode = (result as any).code
+        if (errorCode === 'AUTH_MISSING') {
+          toast({
+            title: "Session Expired",
+            description: "Please sign in again to continue.",
+            variant: "destructive",
+          })
+          router.push('/login')
+          return
+        } else if (errorCode === 'AUTH_ERROR') {
+          toast({
+            title: "Authentication Failed",
+            description: "There was a problem with your sign-in. Please try signing in again.",
+            variant: "destructive",
+          })
+          router.push('/login')
+          return
+        } else if (errorCode === 'INVALID_USER_ID') {
+          toast({
+            title: "Account Issue",
+            description: "There seems to be an issue with your account. Please contact support.",
+            variant: "destructive",
+          })
+          return
+        }
+
         throw new Error(result.error || 'Failed to save tasting')
       }
 
@@ -184,15 +250,32 @@ export function SimplifiedTastingFlow() {
         variant: "default",
       })
 
-      // Redirect to dashboard with success indicator
-      router.push(`/${locale}/dashboard?tasting=success&tastingId=${result.tastingId}`)
+      // Navigate only when requested (End Tasting)
+      if (navigateAfter) {
+        router.push(`/${locale}/flavor-wheels`)
+      }
 
     } catch (error: any) {
       console.error('Error submitting tasting:', error)
 
+      // Handle different types of errors
+      let errorTitle = "Failed to Save Tasting"
+      let errorDescription = "Something went wrong. Please try again."
+
+      if (error.message?.includes('network') || error.message?.includes('fetch')) {
+        errorTitle = "Connection Problem"
+        errorDescription = "Please check your internet connection and try again."
+      } else if (error.message?.includes('timeout')) {
+        errorTitle = "Request Timed Out"
+        errorDescription = "The request took too long. Please try again."
+      } else if (error.code === 'AUTH_MISSING') {
+        errorTitle = "Authentication Required"
+        errorDescription = "Please sign in to save your tasting."
+      }
+
       toast({
-        title: "Failed to Save Tasting",
-        description: error.message || "Something went wrong. Please try again.",
+        title: errorTitle,
+        description: errorDescription,
         variant: "destructive",
       })
     } finally {
@@ -218,7 +301,7 @@ export function SimplifiedTastingFlow() {
                   value={tastingData.productType}
                   onValueChange={(value) => setTastingData(prev => ({ ...prev, productType: value as ProductType }))}
                 >
-                  <SelectTrigger className="w-full h-14 text-lg">
+                  <SelectTrigger className="w-full h-14 text-lg" data-testid="select-product-type-qt">
                     <SelectValue placeholder="Select a beverage type" />
                   </SelectTrigger>
                   <SelectContent>
@@ -272,6 +355,7 @@ export function SimplifiedTastingFlow() {
                   onChange={(e) => setTastingData(prev => ({ ...prev, productName: e.target.value }))}
                   placeholder={getProductPlaceholder(tastingData.productType)}
                   className="h-14 text-lg"
+                  data-testid="input-product-name"
                 />
               </motion.div>
             )}
@@ -284,68 +368,7 @@ export function SimplifiedTastingFlow() {
           </motion.div>
         )
 
-      case 1: // Flavor Selection
-        const availableFlavors = tastingData.productType
-          ? FLAVOR_CATEGORIES[tastingData.productType as ProductType] || FLAVOR_CATEGORIES.other
-          : []
-
-        // Get smart flavor suggestions
-        const smartSuggestions = smartDefaults.getFlavorSuggestions(
-          tastingData.productType,
-          tastingData.selectedFlavors
-        )
-
-        // Combine available flavors with smart suggestions
-        const allFlavorOptions = [...new Set([...availableFlavors, ...smartSuggestions])]
-
-        // Convert flavor names to objects for the mobile selector
-        const flavorObjects = allFlavorOptions.map((flavorName, index) => ({
-          id: `flavor-${index}`,
-          name: flavorName,
-          category: smartSuggestions.includes(flavorName) ? 'recommended' : 'general',
-          color: smartSuggestions.includes(flavorName) ? '#10B981' : '#8B4513'
-        }))
-
-        return (
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            className="space-y-6"
-          >
-            <MobileFlavorSelector
-              flavors={flavorObjects}
-              selectedFlavors={tastingData.selectedFlavors}
-              onFlavorToggle={(flavorId) => {
-                const flavorName = flavorObjects.find(f => f.id === flavorId)?.name
-                if (flavorName) {
-                  toggleFlavor(flavorName)
-                }
-              }}
-              maxSelection={6}
-              title={`Flavors in your ${tastingData.productName || 'beverage'}`}
-              subtitle="Select all flavors you can detect - trust your palate!"
-            />
-
-            {smartSuggestions.length > 0 && (
-              <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                <p className="text-sm text-green-800">
-                  💡 <strong>Smart suggestions:</strong> Based on your tasting history and this beverage type,
-                  you might also detect: {smartSuggestions.slice(0, 3).join(', ')}
-                </p>
-              </div>
-            )}
-
-            <div className="bg-fx-bg-subtle p-4 rounded-lg">
-              <p className="text-sm text-fx-text-secondary">
-                💡 <strong>Pro tip:</strong> Take small sips and let the flavors develop on your palate.
-                Start with the most prominent flavors you notice.
-              </p>
-            </div>
-          </motion.div>
-        )
-
-      case 2: // Rating & Notes
+      case 1: // Notes (Aroma, Flavor, Other)
         return (
           <motion.div
             initial={{ opacity: 0, x: 20 }}
@@ -354,24 +377,61 @@ export function SimplifiedTastingFlow() {
             className="space-y-6"
           >
             <div>
-              <Label className="text-lg font-medium mb-4 block">
-                Overall Rating
-              </Label>
+              <Label className="text-lg font-medium mb-2 block">Aroma</Label>
+              <Textarea
+                value={tastingData.aroma || ''}
+                onChange={(e) => setTastingData(prev => ({ ...prev, aroma: e.target.value }))}
+                placeholder="Describe the aroma (e.g., citrus, floral, herbal)"
+                className="min-h-[88px] text-base"
+                data-testid="textarea-aroma"
+              />
+            </div>
+            <div>
+              <Label className="text-lg font-medium mb-2 block">Flavor</Label>
+              <Textarea
+                value={tastingData.flavor || ''}
+                onChange={(e) => setTastingData(prev => ({ ...prev, flavor: e.target.value }))}
+                placeholder="Describe the flavor/palate (e.g., sweet, smoky, vanilla)"
+                className="min-h-[88px] text-base"
+                data-testid="textarea-flavor"
+              />
+            </div>
+            <div>
+              <Label className="text-lg font-medium mb-2 block">Other Notes</Label>
+              <Textarea
+                value={tastingData.other || ''}
+                onChange={(e) => setTastingData(prev => ({ ...prev, other: e.target.value }))}
+                placeholder="Finish, texture, structure, or any other notes"
+                className="min-h-[88px] text-base"
+                data-testid="textarea-other"
+              />
+            </div>
+          </motion.div>
+        )
+
+      case 2: // Overall (0–100) & Summary
+        return (
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            className="space-y-6"
+          >
+            <div>
+              <Label className="text-lg font-medium mb-4 block">Overall Score (0–100)</Label>
               <div className="space-y-4">
                 <Slider
-                  value={[tastingData.overallRating]}
-                  onValueChange={(value) => setTastingData(prev => ({ ...prev, overallRating: value[0] }))}
-                  min={1}
-                  max={10}
-                  step={1}
+                  value={[tastingData.overallScore || 50]}
+                  onValueChange={(value) => setTastingData(prev => ({ ...prev, overallScore: value[0] }))}
+                  min={0}
+                  max={100}
+                  step={5}
                   className="w-full"
                 />
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-fx-text-secondary">1 - Poor</span>
-                  <span className="text-2xl font-bold text-fx-accent">
-                    {tastingData.overallRating}/10
-                  </span>
-                  <span className="text-sm text-fx-text-secondary">10 - Excellent</span>
+                  <span className="text-sm text-fx-text-secondary">0 - Poor</span>
+                  <span className="text-2xl font-bold text-fx-accent">{tastingData.overallScore}</span>
+                  <span className="text-sm text-fx-text-secondary">100 - Excellent</span>
                 </div>
               </div>
             </div>
@@ -386,6 +446,7 @@ export function SimplifiedTastingFlow() {
                 onChange={(e) => setTastingData(prev => ({ ...prev, notes: e.target.value }))}
                 placeholder="Any specific observations, pairing suggestions, or memorable characteristics?"
                 className="min-h-[100px] text-base"
+                data-testid="textarea-notes"
               />
 
               {/* Smart note suggestions */}
@@ -418,8 +479,10 @@ export function SimplifiedTastingFlow() {
                 <h4 className="font-medium mb-2">Your Tasting Summary:</h4>
                 <div className="space-y-1 text-sm">
                   <p><strong>Product:</strong> {tastingData.productName || 'Not specified'}</p>
-                  <p><strong>Flavors:</strong> {tastingData.selectedFlavors.join(', ') || 'None selected'}</p>
-                  <p><strong>Rating:</strong> {tastingData.overallRating}/10</p>
+                  <p><strong>Aroma:</strong> {tastingData.aroma || '—'}</p>
+                  <p><strong>Flavor:</strong> {tastingData.flavor || '—'}</p>
+                  <p><strong>Other:</strong> {tastingData.other || '—'}</p>
+                  <p><strong>Score:</strong> {tastingData.overallScore ?? 50}/100</p>
                 </div>
               </CardContent>
             </Card>
@@ -443,7 +506,7 @@ export function SimplifiedTastingFlow() {
       case 0:
         return tastingData.productType && tastingData.productName.trim()
       case 1:
-        return tastingData.selectedFlavors.length > 0
+        return Boolean(tastingData.aroma?.trim() || tastingData.flavor?.trim())
       case 2:
         return true // Always allow completion on final step
       default:
@@ -547,29 +610,53 @@ export function SimplifiedTastingFlow() {
               onClick={handleNext}
               disabled={!canProceed()}
               className="px-8 bg-fx-accent hover:bg-fx-accent-hover"
+              data-testid="btn-next-step"
             >
               Next Step
               <ChevronRight className="h-4 w-4 ml-2" />
             </Button>
           ) : (
-            <Button
-              onClick={handleSubmit}
-              disabled={isSubmitting}
-              data-testid="complete-tasting-button"
-              className="px-8 bg-green-600 hover:bg-green-700"
-            >
-              {isSubmitting ? (
-                <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  Saving...
-                </>
-              ) : (
-                <>
-                  Complete Tasting
-                  <Check className="h-4 w-4 ml-2" />
-                </>
-              )}
-            </Button>
+            <div className="flex gap-3">
+              <Button
+                onClick={async () => {
+                  await handleSubmit(false)
+                  // Reset fields for quick multi-add
+                  setTastingData(prev => ({
+                    ...prev,
+                    productName: '',
+                    aroma: '',
+                    flavor: '',
+                    other: '',
+                    notes: '',
+                    overallScore: 50,
+                    selectedFlavors: [],
+                  }))
+                  setCurrentStep(0)
+                }}
+                disabled={isSubmitting}
+                className="px-6 bg-blue-600 hover:bg-blue-700"
+              >
+                {isSubmitting ? 'Saving…' : 'Add Item'}
+              </Button>
+              <Button
+                onClick={() => handleSubmit(true)}
+                disabled={isSubmitting}
+                data-testid="complete-tasting-button"
+                className="px-8 bg-green-600 hover:bg-green-700"
+              >
+                {isSubmitting ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    End Tasting
+                    <Check className="h-4 w-4 ml-2" />
+                  </>
+                )}
+              </Button>
+            </div>
           )}
         </div>
       </div>

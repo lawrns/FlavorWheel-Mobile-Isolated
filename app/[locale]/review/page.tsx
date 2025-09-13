@@ -96,6 +96,14 @@ export default function ReviewPage() {
   const [availableTastings, setAvailableTastings] = useState<any[]>([])
   const [availableItems, setAvailableItems] = useState<any[]>([])
   const [selectedTasting, setSelectedTasting] = useState<any>(null)
+  // Review mode and base metadata
+  const [reviewMode, setReviewMode] = useState<'quick' | 'prose'>('quick')
+  const [reviewMeta, setReviewMeta] = useState<{ itemName: string; batchId: string; category: string; productionDate: string }>({
+    itemName: '',
+    batchId: '',
+    category: '',
+    productionDate: ''
+  })
 
   useEffect(() => {
     if (user) {
@@ -256,7 +264,14 @@ export default function ReviewPage() {
           review_data: {
             created_at: new Date().toISOString(),
             version: '2.0',
-            comprehensive: true
+            comprehensive: true,
+            review_mode: reviewMode,
+            base: {
+              item_name_override: reviewMeta.itemName,
+              batch_id: reviewMeta.batchId,
+              category: reviewMeta.category,
+              production_date: reviewMeta.productionDate
+            }
           }
         })
 
@@ -541,6 +556,15 @@ export default function ReviewPage() {
                   <DialogHeader>
                     <DialogTitle>Write a Review</DialogTitle>
                   </DialogHeader>
+                  {/* Review Mode Selection */}
+                  <div className="mt-2">
+                    <Tabs value={reviewMode} onValueChange={(v) => setReviewMode(v as 'quick' | 'prose')}>
+                      <TabsList>
+                        <TabsTrigger value="quick">Quick Review</TabsTrigger>
+                        <TabsTrigger value="prose">Prose Review</TabsTrigger>
+                      </TabsList>
+                    </Tabs>
+                  </div>
                   <div className="space-y-6">
                     {/* Tasting Selection */}
                     <div>
@@ -561,7 +585,7 @@ export default function ReviewPage() {
                         </SelectContent>
                       </Select>
                     </div>
-
+                    
                     {/* Item Selection */}
                     {selectedTasting && availableItems.length > 0 && (
                       <div>
@@ -584,29 +608,76 @@ export default function ReviewPage() {
                       </div>
                     )}
 
-                    {/* Rating */}
-                    <div>
-                      <Label>Overall Rating</Label>
-                      <div className="flex items-center space-x-1 mt-2">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <button
-                            key={star}
-                            onClick={() => setNewReview(prev => ({ ...prev, rating: star }))}
-                            className="focus:outline-none"
-                          >
-                            <Star
-                              className={`h-6 w-6 ${
-                                star <= newReview.rating
-                                  ? 'text-yellow-400 fill-current'
-                                  : 'text-gray-300'
-                              }`}
-                            />
-                          </button>
-                        ))}
+                    {/* Base Review Info */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label>Item Name (override)</Label>
+                        <Input
+                          value={reviewMeta.itemName}
+                          onChange={(e) => setReviewMeta(prev => ({ ...prev, itemName: e.target.value }))}
+                          placeholder="e.g., Cabernet Napa"
+                        />
+                      </div>
+                      <div>
+                        <Label>Batch / Lot / Bar Code (optional)</Label>
+                        <Input
+                          value={reviewMeta.batchId}
+                          onChange={(e) => setReviewMeta(prev => ({ ...prev, batchId: e.target.value }))}
+                          placeholder="e.g., Lot 12345"
+                        />
+                      </div>
+                      <div>
+                        <Label>Category</Label>
+                        <Select
+                          value={reviewMeta.category}
+                          onValueChange={(v) => setReviewMeta(prev => ({ ...prev, category: v }))}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Choose category" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {['White Wine','Red Wine','Beer','Coffee','Gin','Whisky','Scotch','Bourbon','Rum','Mezcal','Sotol','Raicilla','Perfume','Olive Oil','Chips','Snacks','Chocolate','Dessert'].map(c => (
+                              <SelectItem key={c} value={c}>{c}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label>Production Date</Label>
+                        <Input
+                          type="date"
+                          value={reviewMeta.productionDate}
+                          onChange={(e) => setReviewMeta(prev => ({ ...prev, productionDate: e.target.value }))}
+                        />
                       </div>
                     </div>
 
-                    {/* Comprehensive Review Fields */}
+                    {/* Rating (Quick only) */}
+                    {reviewMode === 'quick' && (
+                      <div>
+                        <Label>Overall Rating</Label>
+                        <div className="flex items-center space-x-1 mt-2">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <button
+                              key={star}
+                              onClick={() => setNewReview(prev => ({ ...prev, rating: star }))}
+                              className="focus:outline-none"
+                            >
+                              <Star
+                                className={`h-6 w-6 ${
+                                  star <= newReview.rating
+                                    ? 'text-yellow-400 fill-current'
+                                    : 'text-gray-300'
+                                }`}
+                              />
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Comprehensive Review Fields (Quick only) */}
+                    {reviewMode === 'quick' && (
                     <div className="border-t pt-4">
                       <Label className="text-base font-semibold mb-4 block">Detailed Tasting Profile</Label>
 
@@ -721,6 +792,7 @@ export default function ReviewPage() {
                         </div>
                       </div>
                     </div>
+                    )}
 
                     {/* Title */}
                     <div>

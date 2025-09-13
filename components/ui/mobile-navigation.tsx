@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { MOBILE_NAV_ITEMS } from '@/lib/navigation-config'
 import { LogoOnly, BrandTitle } from '@/components/brand'
+import { ThemeToggle } from '@/components/ui/loading-states'
 import { shouldShowNav } from '@/lib/navigation-visibility'
 import { navProps, navButtonProps, focusProps } from '@/lib/a11y/roles'
 
