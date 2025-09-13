@@ -1,9 +1,14 @@
 'use client'
 
-import React from 'react'
+import React, { Suspense } from 'react'
 import { motion } from 'framer-motion'
 import { User, LogOut } from 'lucide-react'
 import Link from 'next/link'
+
+// Lazy load motion components for better performance
+const MotionDiv = motion.div
+const MotionButton = motion.button
+const MotionNav = motion.nav
 import { usePathname, useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
@@ -73,7 +78,7 @@ export function Navigation({
         data-testid="mobile-navigation"
         className={cn(
           'fixed bottom-0 left-0 right-0 z-sticky border-t-2',
-          'border-border bg-background/95 shadow-lg backdrop-blur-md',
+          'border-fx-border-default bg-fx-card/95 shadow-fx-lg backdrop-blur-md',
           className
         )}
       >
@@ -88,8 +93,8 @@ export function Navigation({
                   key={item.id}
                   className={cn(
                     'relative flex min-h-[48px] min-w-[48px] flex-1 flex-col items-center justify-center rounded-lg px-3 py-3 transition-colors duration-normal ease-standard focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
-                    isActive && 'bg-primary text-primary-foreground',
-                    !isActive && 'text-muted-foreground hover:bg-muted hover:text-foreground',
+                    isActive && 'bg-fx-primary text-fx-text-inverse',
+                    !isActive && 'text-fx-text-secondary hover:bg-fx-bg-subtle hover:text-fx-text-primary',
                     item.disabled && 'cursor-not-allowed opacity-50'
                   )}
                   onClick={() => handleNavigation(item.id)}
@@ -100,13 +105,13 @@ export function Navigation({
                     {item.badge && (
                       <Badge
                         variant="secondary"
-                        className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center p-0 text-xs"
+                        className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center p-0 text-fx-text-inverse text-xs"
                       >
                         {item.badge}
                       </Badge>
                     )}
                   </div>
-                  <span className="text-xs font-medium">{item.label}</span>
+                  <span className="text-fx-text-primary text-xs font-medium">{item.label}</span>
                 </button>
               )
             })}
@@ -114,7 +119,7 @@ export function Navigation({
             {/* Theme Toggle for Mobile */}
             <div className="relative flex min-h-[48px] min-w-[48px] flex-col items-center justify-center rounded-lg px-3 py-3">
               <ThemeToggle variant="minimal" className="p-0" />
-              <span className="text-xs font-medium text-muted-foreground">Theme</span>
+              <span className="text-fx-text-secondary text-xs font-medium">Theme</span>
             </div>
           </div>
         </div>
@@ -124,7 +129,7 @@ export function Navigation({
 
   // Desktop Navigation (Top Bar) - Use unified variant for consistency
   if (variant === 'desktop') {
-    variant = 'unified'
+    variant = 'unified';
   }
 
   // Unified Navigation (Desktop Only)
@@ -132,69 +137,90 @@ export function Navigation({
     <>
       {/* Desktop Navigation */}
       <div className="pointer-events-none fixed inset-x-0 top-4 z-40 hidden md:block">
-        <motion.nav
+        <MotionNav
           id="navigation"
           data-testid="desktop-navigation"
-          className={cn('pointer-events-auto mx-auto w-full max-w-[1100px] px-4', className)}
-          initial={{ y: -100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
+          className={cn(
+            'pointer-events-auto mx-auto w-full max-w-[1100px] px-4',
+            'animate-in slide-in-from-top-4 fade-in duration-700 ease-out',
+            className
+          )}
           role="navigation"
           aria-label="Navegación principal"
         >
-          <div className="flex items-center justify-center gap-2 overflow-x-auto rounded-full border border-border bg-background/90 px-4 py-2 shadow-md backdrop-blur-md">
-            {/* Brand Logo */}
-            <div className="flex items-center pr-4 mr-4 border-r border-border">
-              <LogoOnly size="md" className="h-20 w-20 md:h-14 md:w-14 lg:h-16 lg:w-16" />
+          <div className="flex items-center justify-between gap-6 overflow-x-auto rounded-full border border-fx-border-default bg-fx-card/95 px-6 py-3 shadow-fx-lg backdrop-blur-md">
+            {/* Brand Logo Section */}
+            <div className="flex items-center gap-4 flex-shrink-0">
+              <LogoOnly size="md" className="h-12 w-12" />
+              <div className="h-8 w-px bg-fx-border-default" />
             </div>
 
-            {getVisibleItems().map((item, index) => {
-              const Icon = item.icon
-              const isActive = currentSection === item.id
+            {/* Navigation Items */}
+            <div className="flex items-center gap-1">
 
-              return (
-                <motion.div
-                  key={item.id}
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                >
-                  <button
+              {getVisibleItems().map((item, index) => {
+                const Icon = item.icon
+                const isActive = currentSection === item.id
+
+                return (
+                  <MotionButton
+                    key={item.id}
                     onClick={() => handleNavigation(item.id)}
                     disabled={item.disabled}
-                    aria-label={`Navegar a ${item.label}${item.disabled ? ' (no disponible)' : ''}${item.premium ? ' (premium)' : ''}`}
+                    aria-label={`Navigate to ${item.label}${item.disabled ? ' (currently unavailable)' : ''}${item.premium ? ' (premium feature)' : ''}${isActive ? ' (current page)' : ''}`}
                     aria-current={isActive ? 'page' : undefined}
                     data-testid={`nav-${item.id}-link`}
+                    style={{
+                      animationDelay: `${index * 50}ms`
+                    }}
                     className={cn(
-                      'inline-flex h-10 items-center gap-2 rounded-full px-4 leading-none transition-colors duration-normal ease-standard',
+                      'group relative inline-flex h-11 items-center gap-3 rounded-full px-5 leading-none transition-all duration-200 ease-out',
+                      'focus-visible:ring-2 focus-visible:ring-fx-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-fx-bg',
+                      'animate-in fade-in slide-in-from-top-2 duration-300',
                       isActive
-                        ? 'bg-primary text-primary-foreground shadow-sm'
-                        : 'text-foreground hover:bg-muted hover:text-foreground',
+                        ? 'bg-fx-primary text-fx-text-inverse shadow-fx-md transform scale-[1.02]'
+                        : 'text-fx-text-primary hover:bg-fx-bg-subtle/80 hover:text-fx-text-primary hover:shadow-fx-sm hover:scale-[1.02]',
                       item.disabled && 'cursor-not-allowed opacity-50',
-                      item.premium && 'bg-gradient-to-r from-accent to-accent/80 text-accent-foreground'
+                      item.premium && 'bg-gradient-to-r from-fx-accent to-fx-accent/80 text-fx-text-inverse shadow-fx-md'
                     )}
                   >
-                    <Icon className="h-4 w-4" />
-                    <span className="font-medium">{item.label}</span>
+                    {/* Active indicator dot */}
+                    {isActive && (
+                      <MotionDiv
+                        className="absolute -top-1 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-fx-text-inverse"
+                        layoutId="activeIndicator"
+                        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                      />
+                    )}
+
+                    <Icon className={cn(
+                      'h-5 w-5 transition-transform duration-200',
+                      isActive ? 'scale-110' : 'group-hover:scale-105'
+                    )} />
+                    <span className="font-medium text-sm tracking-wide">{item.label}</span>
                     {item.badge && (
                       <Badge
                         variant="secondary"
-                        className="relative top-[1px] ml-1 h-5 px-2 text-xs"
+                        className={cn(
+                          'relative ml-1 h-5 px-2 text-xs font-medium',
+                          isActive ? 'bg-fx-text-inverse/20 text-fx-text-inverse' : 'bg-fx-bg-subtle text-fx-text-primary'
+                        )}
                       >
                         {item.badge}
                       </Badge>
                     )}
-                  </button>
-                </motion.div>
-              )
-            })}
+                  </MotionButton>
+                )
+              })}
+            </div>
 
-            {/* Theme Toggle */}
-            <div className="ml-4 border-l border-border pl-4">
+            {/* Theme Toggle Section */}
+            <div className="flex items-center gap-3 flex-shrink-0">
+              <div className="h-8 w-px bg-fx-border-default" />
               <ThemeToggle variant="minimal" />
             </div>
           </div>
-        </motion.nav>
+        </MotionNav>
       </div>
     </>
   )

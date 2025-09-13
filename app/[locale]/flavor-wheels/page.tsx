@@ -117,14 +117,14 @@ export default function FlavorWheelsPage() {
 
   // Filter tasting results based on search query
   const filteredTastingResults = useMemo(() => {
-    if (!searchQuery.trim()) return tastingResults
+    if (!searchQuery.trim()) return tastingResults || []
 
-    return tastingResults.filter(result =>
-      result.tasting_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      result.items.some(item =>
-        item.item_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (item.prose_excerpt && item.prose_excerpt.toLowerCase().includes(searchQuery.toLowerCase()))
-      )
+    return (tastingResults || []).filter(result =>
+      result?.tasting_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (Array.isArray(result?.items) && result.items.some(item =>
+        item?.item_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (item?.prose_excerpt && item.prose_excerpt.toLowerCase().includes(searchQuery.toLowerCase()))
+      ))
     )
   }, [tastingResults, searchQuery])
 
@@ -314,10 +314,20 @@ export default function FlavorWheelsPage() {
     setLoadingResults(true)
     try {
       const results = await getTastingResults(user.id)
-      console.log('🎯 DEBUGGING: Loaded tasting results:', results.length, 'results')
-      console.log('🎯 DEBUGGING: Sample result:', results[0])
-      console.log('🎯 DEBUGGING: All results:', results)
-      setTastingResults(results)
+      const resultCount = Array.isArray(results) ? results.length : 0
+      const sampleResult = Array.isArray(results) && results.length > 0 ? results[0] : undefined
+      console.log('🎯 DEBUGGING: Loaded tasting results:', resultCount, 'results')
+      console.log('🎯 DEBUGGING: Sample result:', sampleResult || 'No results')
+      console.log('🎯 DEBUGGING: All results:', Array.isArray(results) ? results : [])
+
+      // Ensure results is always an array and filter out any invalid entries, and normalize items to arrays
+      const safeResults = Array.isArray(results)
+        ? results
+            .filter((result) => result && typeof result === 'object' && result.id)
+            .map((r: any) => ({ ...r, items: Array.isArray(r.items) ? r.items : [] }))
+        : []
+
+      setTastingResults(safeResults)
     } catch (error) {
       // Error handling replaced with proper error boundary
       errorHandler.logError(error, { source: 'flavor-wheels', action: 'load-tasting-results' })
@@ -897,9 +907,9 @@ export default function FlavorWheelsPage() {
                   )}
 
                   {/* Results Display */}
-                  {!loadingResults && filteredTastingResults.length > 0 && (
+                  {!loadingResults && Array.isArray(filteredTastingResults) && filteredTastingResults.length > 0 && (
                     <div className="space-y-4">
-                      {filteredTastingResults.map((result) => (
+                      {filteredTastingResults.filter(result => result && typeof result === 'object').map((result) => (
                         result.group_id ? (
                           // Multi-item tasting (grouped)
                           <Accordion key={result.id} type="single" collapsible>
@@ -915,7 +925,7 @@ export default function FlavorWheelsPage() {
                                         year: 'numeric',
                                         month: 'short',
                                         day: 'numeric'
-                                      })} • {result.items.length} items
+                                      })} • {Array.isArray(result.items) ? result.items.length : 0} items
                                     </p>
                                   </div>
                                   <Badge variant="outline" className="text-xs">
@@ -925,7 +935,7 @@ export default function FlavorWheelsPage() {
                               </AccordionTrigger>
                               <AccordionContent>
                                 <div className="space-y-3 pt-2">
-                                  {result.items.map((item) => (
+                                  {Array.isArray(result.items) && result.items.map((item) => (
                                     <div key={item.id} className="border rounded-lg p-3 bg-fx-bg-subtle">
                                       <div className="flex items-start space-x-3">
                                         {item.picture_url && (
@@ -968,7 +978,7 @@ export default function FlavorWheelsPage() {
                           <Card key={result.id} className="border">
                             <CardContent className="p-4">
                               <div className="flex items-start space-x-3">
-                                {result.items[0]?.picture_url && (
+                                {Array.isArray(result.items) && result.items.length > 0 && result.items[0]?.picture_url && (
                                   <img
                                     src={result.items[0].picture_url}
                                     alt={result.items[0].item_name}
@@ -980,7 +990,7 @@ export default function FlavorWheelsPage() {
                                     {result.tasting_name}
                                   </h3>
                                   <p className="text-sm text-fx-text-muted">
-                                    {result.items[0]?.item_name}
+                                    {Array.isArray(result.items) && result.items.length > 0 ? result.items[0]?.item_name : 'No items'}
                                   </p>
                                   <p className="text-xs text-fx-text-muted">
                                     {new Date(result.date).toLocaleDateString('en-US', {
@@ -989,20 +999,20 @@ export default function FlavorWheelsPage() {
                                       day: 'numeric'
                                     })}
                                   </p>
-                                  {result.items[0]?.prose_excerpt && (
+                                  {Array.isArray(result.items) && result.items.length > 0 && result.items[0]?.prose_excerpt && (
                                     <p className="text-xs text-fx-text-muted mt-2">
                                       {result.items[0].prose_excerpt}
                                     </p>
                                   )}
                                   <div className="flex items-center space-x-2 mt-3">
                                     <Badge variant="secondary" className="text-xs">
-                                      {result.items[0]?.wheel_type}
+                                      {Array.isArray(result.items) && result.items.length > 0 ? result.items[0]?.wheel_type : 'Unknown'}
                                     </Badge>
                                     <Button
                                       size="sm"
                                       variant="outline"
                                       className="text-xs min-h-[44px]"
-                                      onClick={() => handleShowWheel(result.items[0]?.wheel_data, result.items[0]?.item_name)}
+                                      onClick={() => Array.isArray(result.items) && result.items.length > 0 && handleShowWheel(result.items[0]?.wheel_data, result.items[0]?.item_name)}
                                     >
                                       View Wheel
                                     </Button>

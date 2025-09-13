@@ -52,25 +52,44 @@ const FLAVORWHEEL_COLORS: Record<string, string> = {
   'woody': 'var(--fx-flavor-roasted)'       // Woody -> Roasted
 }
 
+function resolveCssVariable(colorToken: string): string {
+  // If it's a CSS variable like var(--token), try to resolve it from computed styles
+  if (typeof window !== 'undefined' && colorToken?.startsWith('var(')) {
+    const match = colorToken.match(/var\((--[^)]+)\)/)
+    const varName = match?.[1]
+    if (varName) {
+      const value = getComputedStyle(document.documentElement).getPropertyValue(varName).trim()
+      if (value) return value
+    }
+  }
+  return colorToken || '#888888'
+}
+
 function colorForNode(node: d3.HierarchyRectangularNode<FlavorNode>) {
   // Get the top-level category (first child of root)
   const ancestors = node.ancestors().reverse()
   const topCategory = ancestors[1]?.data.name || node.data.name
 
   // Use new CVD-safe color palette with fallback chain
-  const base = FLAVORWHEEL_COLORS[topCategory] ||
+  const baseToken = FLAVORWHEEL_COLORS[topCategory] ||
                (MEXICAN_FLAVOR_CATEGORIES as Record<string, { color: string }>)[topCategory]?.color ||
                'var(--fx-flavor-mineral)' // Default to mineral gray
 
   // For CSS custom properties, return as-is for depth 0 and 1
   const depth = node.depth
   if (depth === 0 || depth === 1) {
-    return base // Root and top-level category - use design token
+    return baseToken // Root and top-level category - use design token
   }
 
   // For deeper levels, compute variations while preserving CVD-safety
-  const hsl = d3.color(base) as d3.HSLColor
-  const baseL = typeof (hsl as d3.HSLColor).l === 'number' ? (hsl as d3.HSLColor).l : 0.55
+  const baseResolved = resolveCssVariable(baseToken)
+  const parsed = d3.color(baseResolved)
+  if (!parsed) {
+    // Fallback if the token cannot be parsed (e.g., unknown value)
+    return baseResolved
+  }
+  const hsl = d3.hsl(parsed)
+  const baseL = typeof hsl.l === 'number' ? hsl.l : 0.55
 
   if (depth === 2) {
     // Family level - slight variation for hierarchy

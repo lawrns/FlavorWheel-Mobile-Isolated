@@ -477,7 +477,18 @@ export function Sunburst({
     console.log(`🚀 SUNBURST: Rendering ${visibleNodes.length} nodes across ${Math.max(...visibleNodes.map(d => d.depth))} levels`)
 
     const arcData = visibleNodes.map(d => {
+      // Defensive programming: ensure d exists and has required properties
+      if (!d || !d.data) {
+        console.warn('🚨 SUNBURST: Invalid node data detected, skipping:', d)
+        return null
+      }
+
       const path = arc(d) || ''
+      if (!path) {
+        console.warn('🚨 SUNBURST: Arc generation failed for node:', d.data.name)
+        return null
+      }
+
       const color = getNodeColor(d.data, d.depth)
       const opacity = getNodeOpacity(d.data)
       const intensity = d.data.intensity ?? getNodeWeight(d.data)
@@ -495,7 +506,7 @@ export function Sunburst({
         intensity,
         isGuidance
       }
-    }).filter(d => d.path)
+    }).filter(d => d && d.path) // Filter out null entries and empty paths
 
     console.log('🚀 SUNBURST: Arc data generated:', arcData.length, 'arcs ready to render')
 

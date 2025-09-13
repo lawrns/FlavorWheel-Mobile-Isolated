@@ -26,102 +26,130 @@ export function SunburstChart({
   useEffect(() => {
     if (!svgRef.current || !data) return
 
-    const svg = d3.select(svgRef.current)
-    svg.selectAll('*').remove()
+    try {
+      const svg = d3.select(svgRef.current)
+      svg.selectAll('*').remove()
 
-    const radius = Math.min(width, height) / 2
+      const radius = Math.min(width, height) / 2
 
-    // Create partition layout
-    const partition = d3.partition<SunburstNode>()
-      .size([2 * Math.PI, radius])
+      // Create partition layout
+      const partition = d3.partition<SunburstNode>()
+        .size([2 * Math.PI, radius])
 
-    // Create arc generator
-    const arc = d3.arc<d3.HierarchyRectangularNode<SunburstNode>>()
-      .startAngle(d => d.x0)
-      .endAngle(d => d.x1)
-      .innerRadius(d => d.y0)
-      .outerRadius(d => d.y1)
+      // Create arc generator
+      const arc = d3.arc<d3.HierarchyRectangularNode<SunburstNode>>()
+        .startAngle(d => d.x0)
+        .endAngle(d => d.x1)
+        .innerRadius(d => d.y0)
+        .outerRadius(d => d.y1)
 
-    // Convert data to hierarchy
-    const root = d3.hierarchy<SunburstNode>(data)
-      .sum(d => d.value || 1)
-      .sort((a, b) => (b.value || 0) - (a.value || 0))
+      // Convert data to hierarchy
+      const root = d3.hierarchy<SunburstNode>(data)
+        .sum(d => d.value || 1)
+        .sort((a, b) => (b.value || 0) - (a.value || 0))
 
-    // Apply partition
-    const rootPartitioned = partition(root as d3.HierarchyNode<SunburstNode>)
+      // Apply partition
+      const rootPartitioned = partition(root as d3.HierarchyNode<SunburstNode>)
 
-    // Create color scale
-    const color = d3.scaleOrdinal(d3.schemeCategory10)
+      // Create color scale
+      const color = d3.scaleOrdinal(d3.schemeCategory10)
 
-    // Create main group
-    const g = svg.append('g')
-      .attr('transform', `translate(${width / 2},${height / 2})`)
+      // Create main group
+      const g = svg.append('g')
+        .attr('transform', `translate(${width / 2},${height / 2})`)
 
-    // Add paths for each segment
-    const path = g.selectAll('path')
-      .data(rootPartitioned.descendants().filter(d => d.depth > 0))
-      .enter().append('path')
-      .attr('d', arc as any)
-      .attr('fill', d => {
-        if (d.data.color) return d.data.color
-        return color(d.data.name)
-      })
-      .attr('stroke', '#fff')
-      .attr('stroke-width', 1)
-      .style('cursor', 'pointer')
-      .on('click', function(event, d) {
-        event.stopPropagation()
-        setSelectedNode(d.data)
-        if (onSegmentClick) onSegmentClick(d.data)
-      })
-      .on('mouseover', function(event, d) {
-        setHoveredNode(d.data)
-        d3.select(this)
-          .attr('stroke-width', 3)
-          .attr('stroke', '#333')
-      })
-      .on('mouseout', function() {
-        setHoveredNode(null)
-        d3.select(this)
-          .attr('stroke-width', 1)
-          .attr('stroke', '#fff')
-      })
+      // Add paths for each segment
+      const path = g.selectAll('path')
+        .data(rootPartitioned.descendants().filter(d => d.depth > 0))
+        .enter().append('path')
+        .attr('d', arc as any)
+        .attr('fill', d => {
+          if (d.data.color) return d.data.color
+          return color(d.data.name)
+        })
+        .attr('stroke', '#fff')
+        .attr('stroke-width', 1)
+        .style('cursor', 'pointer')
+        .on('click', function(event, d) {
+          if (!d || !d.data) return
+          event.stopPropagation()
+          setSelectedNode(d.data)
+          if (onSegmentClick) onSegmentClick(d.data)
+        })
+        .on('mouseover', function(event, d) {
+          if (!d || !d.data) return
+          setHoveredNode(d.data)
+          d3.select(this)
+            .attr('stroke-width', 3)
+            .attr('stroke', '#333')
+        })
+        .on('mouseout', function() {
+          setHoveredNode(null)
+          d3.select(this)
+            .attr('stroke-width', 1)
+            .attr('stroke', '#fff')
+        })
 
-    // Add labels for larger segments
-    const label = g.selectAll('text')
-      .data(rootPartitioned.descendants().filter(d => (d as any).depth > 0 && ((d as any).y1 - (d as any).y0) > 20))
-      .enter().append('text')
-      .attr('transform', d => {
-        const angle = ((d as any).x0 + (d as any).x1) / 2
-        const radius = ((d as any).y0 + (d as any).y1) / 2
-        return `rotate(${(angle * 180 / Math.PI - 90)})translate(${radius},0)${angle > Math.PI ? 'rotate(180)' : ''}`
-      })
-      .attr('text-anchor', d => ((d as any).x0 + (d as any).x1) / 2 > Math.PI ? 'end' : 'start')
-      .attr('font-size', d => Math.max(8, Math.min(12, ((d as any).y1 - (d as any).y0) / 4)))
-      .attr('fill', '#fff')
-      .attr('font-weight', 'bold')
-      .style('pointer-events', 'none')
-      .text(d => d.data.name.length > 10 ? d.data.name.substring(0, 10) + '...' : d.data.name)
+      // Add labels for larger segments
+      const label = g.selectAll('text')
+        .data(rootPartitioned.descendants().filter(d => (d as any).depth > 0 && ((d as any).y1 - (d as any).y0) > 20))
+        .enter().append('text')
+        .attr('transform', d => {
+          if (!d) return ''
+          const angle = ((d as any).x0 + (d as any).x1) / 2
+          const radius = ((d as any).y0 + (d as any).y1) / 2
+          return `rotate(${(angle * 180 / Math.PI - 90)})translate(${radius},0)${angle > Math.PI ? 'rotate(180)' : ''}`
+        })
+        .attr('text-anchor', d => {
+          if (!d) return 'start'
+          return ((d as any).x0 + (d as any).x1) / 2 > Math.PI ? 'end' : 'start'
+        })
+        .attr('font-size', d => {
+          if (!d) return '10px'
+          return Math.max(8, Math.min(12, ((d as any).y1 - (d as any).y0) / 4))
+        })
+        .attr('fill', '#fff')
+        .attr('font-weight', 'bold')
+        .style('pointer-events', 'none')
+        .text(d => {
+          if (!d || !d.data || !d.data.name) return ''
+          return d.data.name.length > 10 ? d.data.name.substring(0, 10) + '...' : d.data.name
+        })
 
-    // Add center circle for navigation
-    g.append('circle')
-      .attr('r', radius / 8)
-      .attr('fill', '#f8f9fa')
-      .attr('stroke', '#dee2e6')
-      .attr('stroke-width', 2)
-      .style('cursor', 'pointer')
-      .on('click', () => {
-        setSelectedNode(null)
-        if (onSegmentClick) onSegmentClick(data)
-      })
+      // Add center circle for navigation
+      g.append('circle')
+        .attr('r', radius / 8)
+        .attr('fill', '#f8f9fa')
+        .attr('stroke', '#dee2e6')
+        .attr('stroke-width', 2)
+        .style('cursor', 'pointer')
+        .on('click', () => {
+          if (!data) return
+          setSelectedNode(null)
+          if (onSegmentClick) onSegmentClick(data)
+        })
 
-    g.append('text')
-      .attr('text-anchor', 'middle')
-      .attr('dy', '0.35em')
-      .attr('font-size', '12px')
-      .attr('fill', 'var(--fx-text-secondary)')
-      .style('pointer-events', 'none')
-      .text('Center')
+      g.append('text')
+        .attr('text-anchor', 'middle')
+        .attr('dy', '0.35em')
+        .attr('font-size', '12px')
+        .attr('fill', 'var(--fx-text-secondary)')
+        .style('pointer-events', 'none')
+        .text('Center')
+    } catch (error) {
+      console.error('Error rendering sunburst chart:', error)
+      // Clear SVG on error to prevent corrupted state
+      if (svgRef.current) {
+        const svg = d3.select(svgRef.current)
+        svg.selectAll('*').remove()
+        svg.append('text')
+          .attr('x', width / 2)
+          .attr('y', height / 2)
+          .attr('text-anchor', 'middle')
+          .attr('fill', '#666')
+          .text('Chart rendering failed')
+      }
+    }
 
   }, [data, width, height, onSegmentClick])
 

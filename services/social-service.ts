@@ -201,7 +201,7 @@ export async function getNearbyEventsCount(latitude: number, longitude: number, 
 }
 
 /**
- * Get friends' tastings feed
+ * Get friends' tastings feed with proper error handling
  */
 export async function getFriendsTastings(userId: string, limit = 10, offset = 0): Promise<FriendTasting[]> {
   try {
@@ -216,9 +216,7 @@ export async function getFriendsTastings(userId: string, limit = 10, offset = 0)
         tasting_type,
         created_at,
         created_by,
-        characteristics,
-        profiles:created_by(name, avatar_url),
-        tasting_items(count)
+        characteristics
       `)
       .neq('created_by', userId)
       .eq('is_public', true)
@@ -234,16 +232,37 @@ export async function getFriendsTastings(userId: string, limit = 10, offset = 0)
       throw error // Re-throw other errors to be caught by catch block
     }
 
-    return (data || []).map((tasting: any) => ({
+    const tastingsList = data || []
+
+    // Fetch author profiles in a separate query to avoid PostgREST join syntax issues
+    const authorIds = Array.from(new Set(tastingsList.map((t: any) => t.created_by).filter(Boolean)))
+    let profilesById: Record<string, any> = {}
+    if (authorIds.length > 0) {
+      try {
+        const { data: profilesData } = await supabase
+          .from('profiles')
+          .select('id, name, avatar_url')
+          .in('id', authorIds)
+        profilesById = (profilesData || []).reduce((acc: any, p: any) => {
+          acc[p.id] = { name: p.name, avatar_url: p.avatar_url }
+          return acc
+        }, {})
+      } catch (e) {
+        // If profiles fetch fails, proceed without profile data
+        profilesById = {}
+      }
+    }
+
+    return tastingsList.map((tasting: any) => ({
       id: tasting.id,
       name: tasting.name,
       description: tasting.description,
       tasting_type: tasting.tasting_type,
       created_at: tasting.created_at,
       created_by: tasting.created_by,
-      user_profile: tasting.profiles,
+      user_profile: profilesById[tasting.created_by] || null,
       preview_image: tasting.characteristics?.preview_image,
-      item_count: tasting.tasting_items?.[0]?.count || 0
+      item_count: 0 // Note: Item count aggregation removed due to PostgREST syntax limitations
     }))
   } catch (error) {
     // Handle gracefully without console spam
@@ -274,6 +293,50 @@ export async function getFriendsTastingsCount(userId: string): Promise<number> {
   } catch (error) {
     // Handle gracefully without console spam
     return 0
+  }
+}
+
+/**
+ * Get friends' tastings with item counts (proper implementation)
+ * This function properly handles the item count aggregation that was causing 400 errors
+ */
+export async function getFriendsTastingsWithCounts(userId: string, limit = 10, offset = 0): Promise<FriendTasting[]> {
+  try {
+    // Get tastings first
+    const tastings = await getFriendsTastings(userId, limit, offset)
+
+    // If no tastings, return empty array
+    if (!tastings || tastings.length === 0) {
+      return []
+    }
+
+    // Get item counts for each tasting separately to avoid PostgREST syntax issues
+    const tastingsWithCounts = await Promise.all(
+      tastings.map(async (tasting) => {
+        try {
+          const { count, error } = await supabase
+            .from('tasting_items')
+            .select('*', { count: 'exact', head: true })
+            .eq('tasting_id', tasting.id)
+
+          return {
+            ...tasting,
+            item_count: error ? 0 : (count || 0)
+          }
+        } catch (error) {
+          // If item count fails, just return 0
+          return {
+            ...tasting,
+            item_count: 0
+          }
+        }
+      })
+    )
+
+    return tastingsWithCounts
+  } catch (error) {
+    console.error('Error loading friends tastings with counts:', error)
+    return []
   }
 }
 

@@ -706,7 +706,7 @@ body {
 /* Removed unused fw- utility classes to reduce bundle size */
 
 /* ===== RESPONSIVE CONTAINER SYSTEM ===== */
-/* Mobile-first responsive containers */
+/* Mobile-first responsive containers with enhanced small screen support */
 .container-mobile {
   width: 100%;
   max-width: 480px;
@@ -714,6 +714,9 @@ body {
   margin-right: auto;
   padding-left: 1rem;
   padding-right: 1rem;
+  /* Prevent horizontal overflow on very small screens */
+  min-width: 0;
+  overflow-x: hidden;
 }
 
 .container-tablet {
@@ -743,7 +746,39 @@ body {
   padding-right: 2.5rem;
 }
 
-/* Responsive adjustments */
+/* Responsive adjustments with enhanced mobile support */
+@media (max-width: 360px) {
+  /* Very small screens (iPhone SE, older Android) */
+  .container-mobile {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  /* Ensure all content has proper bottom spacing for navigation */
+  main {
+    padding-bottom: 6rem !important;
+  }
+
+  /* Improve touch targets on very small screens */
+  button, .btn, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0.75rem 1rem;
+  }
+
+  /* Prevent horizontal overflow */
+  * {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Improve typography readability */
+  body {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+}
+
 @media (max-width: 640px) {
   .container-tablet,
   .container-desktop,

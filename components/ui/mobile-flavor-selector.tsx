@@ -194,7 +194,7 @@ export function MobileFlavorSelector({
         )}
 
         {/* Flavor Grid */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-2">
           <AnimatePresence>
             {searchedFlavors.map((flavor, index) => {
               const isSelected = selectedFlavors.includes(flavor.id)
@@ -211,34 +211,24 @@ export function MobileFlavorSelector({
                   onClick={() => canSelect && onFlavorToggle(flavor.id)}
                   disabled={!canSelect}
                   className={`
-                    min-h-[60px] w-full p-4 rounded-xl border-2 text-left transition-colors duration-200
+                    min-h-[44px] w-full px-3 py-2.5 rounded-lg border text-left transition-colors duration-200
                     touch-manipulation active:scale-95
                     ${isSelected
-                      ? 'bg-fx-accent text-white border-fx-accent shadow-lg'
+                      ? 'bg-fx-accent text-white border-fx-accent shadow-md'
                       : canSelect
-                        ? 'bg-white text-fx-text-primary border-fx-border-default hover:border-fx-accent hover:shadow-md'
+                        ? 'bg-white text-fx-text-primary border-fx-border-default hover:border-fx-accent hover:shadow-sm'
                         : 'bg-fx-bg-subtle text-fx-text-muted border-fx-border-subtle cursor-not-allowed'
                     }
                   `}
                 >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="font-medium text-base leading-tight">
-                        {flavor.name}
-                      </div>
-                      <div className={`text-xs mt-1 ${
-                        isSelected ? 'text-white/80' : 'text-fx-text-secondary'
-                      }`}>
-                        {getCategoryEmoji(category)}
-                      </div>
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="font-medium text-base truncate">{flavor.name}</span>
+                      <span className={`${isSelected ? 'text-white/90' : 'text-fx-text-secondary'} text-sm`}>{getCategoryEmoji(category)}</span>
                     </div>
                     {isSelected && (
-                      <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center"
-                      >
-                        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
+                        <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7"></path>
                         </svg>
                       </motion.div>

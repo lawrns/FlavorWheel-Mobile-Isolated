@@ -142,7 +142,7 @@ export function AppShell({
           <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur md:hidden">
             <div className="flex items-center justify-between px-4 py-3">
               <div className="flex items-center">
-                <LogoOnly size="sm" className="h-20 w-20 md:h-14 md:w-14" />
+                <LogoOnly size="sm" className="h-12 w-12" />
               </div>
             </div>
           </header>
