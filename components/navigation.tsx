@@ -15,7 +15,7 @@ import { Badge } from '@/components/ui/badge'
 import { NAVIGATION_ITEMS, getNavigationItem } from '@/lib/navigation-config'
 import { useAuth } from '@/components/auth-provider'
 import { LogoOnly, BrandTitle } from '@/components/brand'
-import { ThemeToggle } from '@/components/ui/loading-states'
+import { ThemeToggle } from '@/components/ui/theme-toggle'
 
 // Navigation types
 export interface NavigationProps {
@@ -78,49 +78,56 @@ export function Navigation({
         data-testid="mobile-navigation"
         className={cn(
           'fixed bottom-0 left-0 right-0 z-sticky border-t-2',
-          'border-fx-border-default bg-fx-card/95 shadow-fx-lg backdrop-blur-md',
+          'border-nav-border bg-nav-bg/95 shadow-card backdrop-blur-md',
+          'h-nav-height pb-nav-safe-area',
           className
         )}
       >
-        <div className="pb-safe">
-          <div className="flex items-center justify-around px-2 py-1">
-            {mobileItems.map(item => {
-              const Icon = item.icon
-              const isActive = activeItem === item.id
+        <div className="flex items-center justify-around px-nav-padding py-1">
+          {mobileItems.map(item => {
+            const Icon = item.icon
+            const isActive = activeItem === item.id
 
-              return (
-                <button
-                  key={item.id}
-                  className={cn(
-                    'relative flex min-h-[48px] min-w-[48px] flex-1 flex-col items-center justify-center rounded-lg px-3 py-3 transition-colors duration-normal ease-standard focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
-                    isActive && 'bg-fx-primary text-fx-text-inverse',
-                    !isActive && 'text-fx-text-secondary hover:bg-fx-bg-subtle hover:text-fx-text-primary',
-                    item.disabled && 'cursor-not-allowed opacity-50'
+            return (
+              <button
+                key={item.id}
+                className={cn(
+                  'relative flex flex-1 flex-col items-center justify-center rounded-lg px-nav-padding py-nav-padding transition-colors duration-fast ease-standard focus-visible:ring-2 focus-visible:ring-offset-2 min-h-[44px] min-w-[44px]',
+                  isActive && 'bg-nav-icon-active text-nav-text-active',
+                  !isActive && 'text-nav-text-inactive hover:bg-nav-bg hover:text-nav-text-active',
+                  item.disabled && 'cursor-not-allowed opacity-50',
+                  'focus-visible:border-input-focus-border focus-visible:ring-input-focus-border'
+                )}
+                onClick={() => handleNavigation(item.id)}
+                disabled={item.disabled}
+              >
+                <div className="relative">
+                  <Icon className="h-nav-icon-size w-nav-icon-size" />
+                  {item.badge && (
+                    <Badge
+                      variant="secondary"
+                      className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center p-0 text-nav-text-active text-xs"
+                    >
+                      {item.badge}
+                    </Badge>
                   )}
-                  onClick={() => handleNavigation(item.id)}
-                  disabled={item.disabled}
-                >
-                  <div className="relative">
-                    <Icon className="h-5 w-5" />
-                    {item.badge && (
-                      <Badge
-                        variant="secondary"
-                        className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center p-0 text-fx-text-inverse text-xs"
-                      >
-                        {item.badge}
-                      </Badge>
-                    )}
-                  </div>
-                  <span className="text-fx-text-primary text-xs font-medium">{item.label}</span>
-                </button>
-              )
-            })}
+                </div>
+                <span className={cn(
+                  'font-[var(--fw-typography-nav-label-family)] font-[var(--fw-typography-nav-label-weight)] text-[var(--fw-typography-nav-label-size)] leading-[var(--fw-typography-nav-label-line-height)]',
+                  isActive ? 'text-nav-text-active' : 'text-nav-text-inactive'
+                )}>
+                  {item.label}
+                </span>
+              </button>
+            )
+          })}
 
-            {/* Theme Toggle for Mobile */}
-            <div className="relative flex min-h-[48px] min-w-[48px] flex-col items-center justify-center rounded-lg px-3 py-3">
-              <ThemeToggle variant="minimal" className="p-0" />
-              <span className="text-fx-text-secondary text-xs font-medium">Theme</span>
-            </div>
+          {/* Theme Toggle for Mobile */}
+          <div className="relative flex flex-col items-center justify-center rounded-lg px-nav-padding py-nav-padding min-h-[44px] min-w-[44px]">
+            <ThemeToggle variant="minimal" className="p-0" />
+            <span className="font-[var(--fw-typography-nav-label-family)] font-[var(--fw-typography-nav-label-weight)] text-[var(--fw-typography-nav-label-size)] leading-[var(--fw-typography-nav-label-line-height)] text-nav-text-inactive">
+              Theme
+            </span>
           </div>
         </div>
       </nav>
@@ -149,9 +156,13 @@ export function Navigation({
           aria-label="Navegación principal"
         >
           <div className="flex items-center justify-between gap-6 overflow-x-auto rounded-full border border-fx-border-default bg-fx-card/95 px-6 py-3 shadow-fx-lg backdrop-blur-md">
-            {/* Brand Logo Section */}
+            {/* Brand Logo Section - Enhanced for Mexican Culture */}
             <div className="flex items-center gap-4 flex-shrink-0">
-              <LogoOnly size="md" className="h-12 w-12" />
+              <LogoOnly size="lg" className="h-14 w-14" animated />
+              <div className="hidden sm:flex flex-col">
+                <span className="text-lg font-bold text-fx-text-primary font-heading">FlavorWheel México</span>
+                <span className="text-xs text-fx-text-secondary">Authentic Mexican Tasting</span>
+              </div>
               <div className="h-8 w-px bg-fx-border-default" />
             </div>
 

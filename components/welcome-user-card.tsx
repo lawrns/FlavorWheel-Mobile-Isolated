@@ -150,7 +150,7 @@ export function WelcomeUserCard() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3 }}
         >
-          <Card className="rounded-2xl bg-[var(--card-background)] p-4 shadow-lg">
+          <Card variant="elevated" className="rounded-2xl bg-[var(--card-background)] p-4 shadow-lg">
             <div className="flex items-start gap-3">
               <div className="flex-1">
                 <div className="mb-2 h-5 animate-pulse rounded bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200"></div>
@@ -183,7 +183,7 @@ export function WelcomeUserCard() {
             // Enhanced authenticated user panel with profile features
             <HeroGradient variant="subtle" className="rounded-lg">
               <Card className="bg-surface-card-solid bg-grain-texture border-border-subtle bg-blend-overlay">
-                <CardContent className="p-4 sm:p-6">
+                <CardContent className="p-4 sm:p-card">
                   {/* Profile Header */}
                   <div className="flex flex-col items-center space-y-4 md:flex-row md:items-center md:space-x-6 md:space-y-0">
                     <div className="relative">
@@ -315,7 +315,7 @@ export function WelcomeUserCard() {
             </HeroGradient>
            ) : (
              // Non-authenticated user welcome - consistent layout structure
-             <Card className="rounded-2xl bg-[#FFF5E1] shadow-lg transition-shadow duration-300 hover:shadow-xl">
+             <Card variant="elevated" className="rounded-2xl bg-[#FFF5E1] shadow-lg transition-shadow duration-300 hover:shadow-xl">
             <div className="p-4">
               <div className="flex flex-col items-center text-center">
                 <div className="mb-4 flex flex-col items-center gap-2">

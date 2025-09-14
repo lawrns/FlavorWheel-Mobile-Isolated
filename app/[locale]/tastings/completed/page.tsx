@@ -82,26 +82,26 @@ export default function TastingCompletedPage() {
   }
 
   return (
-    <div className="min-h-screen bg-fx-bg-subtle p-4 md:p-6">
+    <div className="min-h-screen bg-fx-bg-subtle p-4 md:p-card">
       <div className="mx-auto max-w-4xl">
         {/* Header */}
         <div className="mb-8 flex items-center justify-between">
           <Button
             variant="ghost"
             onClick={() => router.push(`/${locale}/landing`)}
-            className="flex items-center gap-2 text-fx-text-primary hover:text-fx-text-secondary"
+            className="flex items-center gap-2 text-card-text-primary hover:text-card-text-secondary"
           >
             <ArrowLeft className="h-5 w-5" />
             Back to Home
           </Button>
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-fx-text-primary">Tasting Complete!</h1>
+            <h1 className="text-3xl font-bold text-card-text-primary">Tasting Complete!</h1>
             <p className="text-sm text-fx-text-muted">Your flavor journey results</p>
           </div>
           <Button
             variant="ghost"
             onClick={() => router.push(`/${locale}/profile`)}
-            className="flex items-center gap-2 text-fx-text-primary hover:text-fx-text-secondary"
+            className="flex items-center gap-2 text-card-text-primary hover:text-card-text-secondary"
             data-testid="profile-button"
           >
             <Target className="h-5 w-5" />
@@ -110,17 +110,17 @@ export default function TastingCompletedPage() {
         </div>
 
         {/* Results Summary */}
-        <Card className="mb-8 rounded-xl p-6 bg-fx-card border border-fx-border-subtle shadow-fx-sm" data-testid="tasting-summary">
+        <Card variant="elevated" className="mb-8 rounded-xl p-card bg-fx-card border border-card-border-subtle shadow-fx-sm" data-testid="tasting-summary">
           <CardHeader className="pb-4">
-            <CardTitle className="text-2xl font-bold text-fx-text-primary flex items-center gap-3">
+            <CardTitle className="text-2xl font-bold text-card-text-primary flex items-center gap-3">
               <Trophy className="h-6 w-6 text-fx-flavor-sweet" />
               {tastingResults.name}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-card">
               <div>
-                <h3 className="text-lg font-semibold text-fx-text-primary mb-3">Overall Rating</h3>
+                <h3 className="text-lg font-semibold text-card-text-primary mb-3">Overall Rating</h3>
                 <div className="flex items-center gap-3">
                   <div className="text-4xl font-bold text-fx-flavor-vegetal">{tastingResults.rating}</div>
                   <div className="text-fx-text-muted">/ 10</div>
@@ -136,7 +136,7 @@ export default function TastingCompletedPage() {
               </div>
               
               <div>
-                <h3 className="text-lg font-semibold text-fx-text-primary mb-3">Extracted Flavors</h3>
+                <h3 className="text-lg font-semibold text-card-text-primary mb-3">Extracted Flavors</h3>
                 <div className="flex flex-wrap gap-2" data-testid="extracted-flavors">
                   {tastingResults.extractedFlavors.map((flavor, index) => (
                     <Badge key={index} variant="secondary" className="bg-fx-flavor-vegetal/10 text-fx-flavor-vegetal">
@@ -150,9 +150,9 @@ export default function TastingCompletedPage() {
         </Card>
 
         {/* Flavor Wheel Visualization */}
-        <Card className="mb-8 rounded-xl p-6 bg-fx-card border border-fx-border-subtle shadow-fx-sm">
+        <Card variant="elevated" className="mb-8 rounded-xl p-card bg-fx-card border border-card-border-subtle shadow-fx-sm">
           <CardHeader className="pb-4">
-            <CardTitle className="text-xl font-semibold text-fx-text-primary text-center">
+            <CardTitle className="text-xl font-semibold text-card-text-primary text-center">
               Your Flavor Wheel
             </CardTitle>
             <div className="text-center mt-4">
@@ -177,40 +177,40 @@ export default function TastingCompletedPage() {
         </Card>
 
         {/* Detailed Notes */}
-        <Card className="mb-8 rounded-xl p-6 bg-fx-card border border-fx-border-subtle shadow-fx-sm">
+        <Card variant="elevated" className="mb-8 rounded-xl p-card bg-fx-card border border-card-border-subtle shadow-fx-sm">
           <CardHeader className="pb-4">
-            <CardTitle className="text-xl font-semibold text-fx-text-primary">Tasting Notes</CardTitle>
+            <CardTitle className="text-xl font-semibold text-card-text-primary">Tasting Notes</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-card">
               <div>
-                <h4 className="font-semibold text-fx-text-primary mb-2">Aroma</h4>
+                <h4 className="font-semibold text-card-text-primary mb-2">Aroma</h4>
                 <p className="text-fx-text-muted">{tastingResults.notes.aroma}</p>
               </div>
               <div>
-                <h4 className="font-semibold text-fx-text-primary mb-2">Appearance</h4>
+                <h4 className="font-semibold text-card-text-primary mb-2">Appearance</h4>
                 <p className="text-fx-text-muted">{tastingResults.notes.appearance}</p>
               </div>
               <div>
-                <h4 className="font-semibold text-fx-text-primary mb-2">Taste</h4>
+                <h4 className="font-semibold text-card-text-primary mb-2">Taste</h4>
                 <p className="text-fx-text-muted">{tastingResults.notes.taste}</p>
               </div>
               <div>
-                <h4 className="font-semibold text-fx-text-primary mb-2">Finish</h4>
+                <h4 className="font-semibold text-card-text-primary mb-2">Finish</h4>
                 <p className="text-fx-text-muted">{tastingResults.notes.finish}</p>
               </div>
             </div>
             <div className="mt-6">
-              <h4 className="font-semibold text-fx-text-primary mb-2">Final Notes</h4>
+              <h4 className="font-semibold text-card-text-primary mb-2">Final Notes</h4>
               <p className="text-fx-text-muted">{tastingResults.finalNotes}</p>
             </div>
           </CardContent>
         </Card>
 
         {/* Share Section */}
-        <Card className="rounded-xl p-6 bg-fx-card border border-fx-border-subtle shadow-fx-sm">
+        <Card variant="elevated" className="rounded-xl p-card bg-fx-card border border-card-border-subtle shadow-fx-sm">
           <CardHeader className="pb-4">
-            <CardTitle className="text-xl font-semibold text-fx-text-primary">Share Your Results</CardTitle>
+            <CardTitle className="text-xl font-semibold text-card-text-primary">Share Your Results</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-4">

@@ -4,32 +4,32 @@ import { motion } from 'framer-motion'
 import { useHaptic } from '@/lib/haptic'
 import { cn } from '@/lib/utils'
 
-// Base button styles using unified design tokens
-const base = 'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-body-sm font-medium transition-all duration-fast ease-standard focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fx-accent focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 active:scale-98 min-h-[44px]'
+// Base button styles using unified Mexican design tokens
+const base = 'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-button py-button-y px-button-x text-[16px] font-medium leading-[1.5] font-[Inter Variable] transition-button duration-button ease-button focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 min-h-[44px]'
 
 // Enhanced button variants using fx- design tokens
 export const buttonVariants = cva(base, {
   variants: {
     variant: {
-      default: 'bg-gradient-to-r from-fx-primary to-fx-primary-hover text-fx-text-inverse hover:shadow-fx-lg active:shadow-fx-sm transform hover:-translate-y-1 transition-all duration-base',
-      primary: 'bg-gradient-to-r from-fx-primary to-fx-primary-hover text-fx-text-inverse hover:shadow-fx-lg active:shadow-fx-sm transform hover:-translate-y-1 transition-all duration-base',
-      secondary: 'bg-fx-bg text-fx-text-primary border border-fx-border-default hover:bg-fx-bg-subtle hover:border-fx-accent shadow-fx-xs hover:shadow-fx-sm',
-      accent: 'bg-gradient-to-r from-fx-accent to-fx-accent-hover text-fx-text-inverse hover:shadow-fx-lg active:shadow-fx-sm transform hover:-translate-y-1 transition-all duration-base',
-      ghost: 'text-fx-text-primary hover:bg-fx-bg-subtle hover:text-fx-text-primary',
-      destructive: 'bg-fx-ai-confidence-low text-fx-text-inverse hover:bg-fx-ai-confidence-med shadow-fx-sm',
-      success: 'bg-fx-flavor-vegetal text-fx-text-inverse hover:bg-fx-secondary shadow-fx-sm',
-      outline: 'border border-fx-border-default bg-transparent text-fx-text-primary hover:bg-fx-bg-subtle hover:border-fx-accent',
-      link: 'text-fx-primary underline-offset-4 hover:underline hover:text-fx-primary bg-transparent shadow-none hover:shadow-none',
+      default: 'bg-primary text-white hover:bg-primary-hover shadow-sm hover:shadow-md active:scale-96 focus-visible:ring-fx-accent',
+      primary: 'bg-primary text-white hover:bg-primary-hover shadow-sm hover:shadow-md active:scale-96 focus-visible:ring-fx-accent',
+      secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary-hover shadow-sm hover:shadow-md active:scale-96 focus-visible:ring-fx-accent',
+      accent: 'bg-accent text-white hover:bg-accent-hover shadow-sm hover:shadow-md active:scale-96 focus-visible:ring-fx-accent',
+      ghost: 'text-primary hover:bg-muted hover:text-primary border border-border hover:border-accent focus-visible:ring-fx-accent',
+      destructive: 'bg-red-600 text-white hover:bg-red-700 shadow-sm active:scale-96 focus-visible:ring-red-500',
+      success: 'bg-green-600 text-white hover:bg-green-700 shadow-sm active:scale-96 focus-visible:ring-green-500',
+      outline: 'border border-border bg-transparent text-foreground hover:bg-muted hover:border-accent focus-visible:ring-fx-accent',
+      link: 'text-primary underline-offset-4 hover:underline hover:text-primary bg-transparent shadow-none hover:shadow-none focus-visible:ring-fx-accent',
 
-      // Beautiful premium variants
-      beautiful: 'btn-primary-beautiful',
-      'beautiful-secondary': 'btn-secondary-beautiful',
-      'beautiful-accent': 'btn-accent-beautiful'
+      // Legacy beautiful variants (will be migrated)
+      beautiful: 'bg-primary text-white hover:bg-primary-hover shadow-sm hover:shadow-md active:scale-96',
+      'beautiful-secondary': 'bg-secondary text-secondary-foreground hover:bg-secondary-hover shadow-sm hover:shadow-md active:scale-96',
+      'beautiful-accent': 'bg-accent text-white hover:bg-accent-hover shadow-sm hover:shadow-md active:scale-96'
     },
     size: {
-      xs: 'h-11 px-3 text-xs min-h-[44px]', // 44px minimum touch target
-      sm: 'h-11 px-4 text-sm min-h-[44px]', // 44px minimum touch target
-      md: 'h-11 px-6 text-sm min-h-[44px]', // 44px minimum touch target
+      xs: 'h-11 px-button-x text-sm min-h-[44px]', // 44px minimum touch target
+      sm: 'h-11 px-button-x text-sm min-h-[44px]', // 44px minimum touch target
+      md: 'h-11 px-button-x text-base min-h-[44px]', // 44px minimum touch target
       lg: 'h-12 px-8 text-base min-h-[44px]', // 48px > 44px minimum
       xl: 'h-14 px-10 text-lg min-h-[44px]' // 56px > 44px minimum
     },
@@ -60,9 +60,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const { trigger } = useHaptic()
 
     const handleClick = React.useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
-      // Trigger haptic feedback on click
+      // Trigger haptic feedback on click (using unified system)
       if (hapticType !== 'none') {
-        trigger(hapticType as 'light' | 'medium' | 'heavy')
+        trigger('light') // Unified button press haptic
       }
 
       // Call original onClick handler
@@ -83,8 +83,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         className={classes}
         onClick={handleClick}
-        whileHover={{ scale: 1.02, y: -1 }}
-        whileTap={{ scale: 0.98 }}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.96 }}
         transition={{
           type: 'spring',
           stiffness: 400,

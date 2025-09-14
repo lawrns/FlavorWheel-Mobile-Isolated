@@ -1,0 +1,62 @@
+{
+  "schema": "flavorwheel.design_system.theme.light.v1",
+  "metadata": {
+    "title": "FlavorWheel Light Theme",
+    "version": "1.0.0",
+    "created": "2025-09-14",
+    "purpose": "Light theme overrides for FlavorWheel mobile app",
+    "scope": "Color and visual adjustments for light mode",
+    "single_source_of_truth": true,
+    "extends": "global/colors.json"
+  },
+
+  "color_overrides": {
+    "background": {
+      "app": "#FEF3E7",
+      "surface_primary": "#FFFFFF",
+      "surface_secondary": "#F7F3EA",
+      "surface_muted": "#F4E3CC",
+      "surface_dark": "#161614"
+    },
+    "brand": {
+      "primary": "#1F5D4C",
+      "primary_hover": "#2E7D32",
+      "secondary": "#D4AF37",
+      "secondary_hover": "#E6C84A",
+      "accent": "#C65A2E",
+      "accent_hover": "#D47027"
+    },
+    "text": {
+      "primary": "#2C1810",
+      "secondary": "#5C5C5C",
+      "tertiary": "#8B8B8B",
+      "inverse": "#FFFFFF"
+    },
+    "border": {
+      "default": "rgba(0,0,0,0.12)",
+      "subtle": "rgba(0,0,0,0.08)",
+      "strong": "rgba(0,0,0,0.20)",
+      "focus": "#1F5D4C"
+    },
+    "shadows": {
+      "level_1": "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
+      "level_2": "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)",
+      "level_3": "0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)",
+      "level_4": "0 15px 25px rgba(0,0,0,0.22), 0 10px 10px rgba(0,0,0,0.25)"
+    }
+  },
+
+  "opacity_adjustments": {
+    "backdrop_blur": "backdrop-blur-xl",
+    "glass_effect": "bg-white/80 backdrop-blur-md",
+    "overlay_scrim": "bg-black/30"
+  },
+
+  "accessibility_guarantees": {
+    "contrast_ratio": "All text meets WCAG AA (4.5:1) in light mode",
+    "color_blind_safe": true,
+    "high_contrast_fallback": "Available via system preferences"
+  }
+}
+
+

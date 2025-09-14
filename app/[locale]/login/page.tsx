@@ -157,9 +157,9 @@ export default function LoginPage() {
         </div>
 
         {/* Login Form */}
-        <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+        <Card variant="elevated" className="backdrop-blur-sm">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-semibold text-center">Sign In</CardTitle>
+            <CardTitle className="text-2xl font-semibold text-center text-card-text-primary">Sign In</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <form onSubmit={handleLogin} className="space-y-4">

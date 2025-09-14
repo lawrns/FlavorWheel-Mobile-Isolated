@@ -96,14 +96,14 @@ export function FilterPanel({ config, onConfigChange }: FilterPanelProps) {
               variant="outline"
               size="sm"
               onClick={clearAllFilters}
-              className="text-muted-foreground hover:text-foreground"
+              className="text-card-text-secondary hover:text-foreground"
             >
               <X className="h-4 w-4 mr-1" />
               Clear All
             </Button>
           )}
         </div>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-card-text-secondary">
           Filter your flavor wheel by user demographics for personalized insights
         </p>
       </CardHeader>
@@ -155,7 +155,7 @@ export function FilterPanel({ config, onConfigChange }: FilterPanelProps) {
         )}
 
         {/* Filter Controls */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-card">
           {/* Gender Filter */}
           <div className="space-y-2">
             <Label htmlFor="gender-filter" className="flex items-center">
@@ -239,7 +239,7 @@ export function FilterPanel({ config, onConfigChange }: FilterPanelProps) {
                 step={10}
                 className="mt-2"
               />
-              <div className="flex justify-between text-xs text-muted-foreground">
+              <div className="flex justify-between text-xs text-card-text-secondary">
                 <span>10km</span>
                 <span>500km</span>
               </div>
@@ -251,7 +251,7 @@ export function FilterPanel({ config, onConfigChange }: FilterPanelProps) {
         {hasActiveFilters && (
           <div className="pt-4 border-t">
             <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">
+              <span className="text-card-text-secondary">
                 Active filters will refine your flavor wheel results
               </span>
               <span className="font-medium">
@@ -263,7 +263,7 @@ export function FilterPanel({ config, onConfigChange }: FilterPanelProps) {
 
         {/* No Filters Message */}
         {!hasActiveFilters && (
-          <div className="text-center py-8 text-muted-foreground">
+          <div className="text-center py-8 text-card-text-secondary">
             <Filter className="h-12 w-12 mx-auto mb-3 opacity-50" />
             <p className="text-sm">
               Set demographic filters to personalize your flavor wheel experience

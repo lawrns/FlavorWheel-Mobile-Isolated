@@ -249,10 +249,10 @@ export function SocialFeed({ filter = 'all', userId }: SocialFeedProps) {
           <Card key={i} className="animate-pulse">
             <CardContent className="p-4">
               <div className="flex items-start space-x-3">
-                <div className="h-10 w-10 rounded-full bg-gray-200"></div>
+                <div className="h-10 w-10 rounded-full bg-card-text-secondary"></div>
                 <div className="flex-1 space-y-2">
-                  <div className="h-4 w-3/4 rounded bg-gray-200"></div>
-                  <div className="h-3 w-1/2 rounded bg-gray-200"></div>
+                  <div className="h-4 w-3/4 rounded bg-card-text-secondary"></div>
+                  <div className="h-3 w-1/2 rounded bg-card-text-secondary"></div>
                 </div>
               </div>
             </CardContent>
@@ -282,7 +282,7 @@ export function SocialFeed({ filter = 'all', userId }: SocialFeedProps) {
                 <div className="mb-2 flex items-center space-x-2">
                   <span className="text-lg">{getActivityIcon(activity.type)}</span>
                   <span className="text-sm font-medium">{activity.userName}</span>
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-card-text-tertiary">
                     {formatDistanceToNow(new Date(activity.timestamp), {
                       addSuffix: true,
                       locale: es,
@@ -291,7 +291,7 @@ export function SocialFeed({ filter = 'all', userId }: SocialFeedProps) {
                 </div>
 
                 {/* Activity Content */}
-                <p className="mb-3 text-sm text-gray-700">{activity.content}</p>
+                <p className="mb-3 text-sm text-card-text-secondary">{activity.content}</p>
 
                 {/* Activity Metadata */}
                 {activity.metadata && (
@@ -317,7 +317,7 @@ export function SocialFeed({ filter = 'all', userId }: SocialFeedProps) {
                     size="sm"
                     onClick={() => handleLike(activity.id)}
                     className={`flex items-center space-x-1 ${
-                      activity.isLiked ? 'text-red-500' : 'text-gray-500'
+                      activity.isLiked ? 'text-error' : 'text-card-text-tertiary'
                     }`}
                   >
                     <Heart className={`h-4 w-4 ${activity.isLiked ? 'fill-current' : ''}`} />
@@ -327,7 +327,7 @@ export function SocialFeed({ filter = 'all', userId }: SocialFeedProps) {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="flex items-center space-x-1 text-gray-500"
+                    className="flex items-center space-x-1 text-card-text-tertiary"
                   >
                     <MessageCircle className="h-4 w-4" />
                     <span>{activity.comments}</span>

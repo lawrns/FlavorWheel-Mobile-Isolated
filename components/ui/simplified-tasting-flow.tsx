@@ -361,7 +361,7 @@ export function SimplifiedTastingFlow() {
             )}
 
             <div className="bg-fx-bg-subtle p-4 rounded-lg">
-              <p className="text-sm text-fx-text-secondary">
+              <p className="text-sm text-card-text-secondary">
                 💡 <strong>Pro tip:</strong> Start with your favorite beverage type to get comfortable with the process.
               </p>
             </div>
@@ -429,9 +429,9 @@ export function SimplifiedTastingFlow() {
                   className="w-full"
                 />
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-fx-text-secondary">0 - Poor</span>
+                  <span className="text-sm text-card-text-secondary">0 - Poor</span>
                   <span className="text-2xl font-bold text-fx-accent">{tastingData.overallScore}</span>
-                  <span className="text-sm text-fx-text-secondary">100 - Excellent</span>
+                  <span className="text-sm text-card-text-secondary">100 - Excellent</span>
                 </div>
               </div>
             </div>
@@ -452,7 +452,7 @@ export function SimplifiedTastingFlow() {
               {/* Smart note suggestions */}
               {tastingData.productType && (
                 <div className="mt-4">
-                  <p className="text-sm text-fx-text-secondary mb-2">
+                  <p className="text-sm text-card-text-secondary mb-2">
                     💡 <strong>Quick notes:</strong>
                   </p>
                   <div className="flex flex-wrap gap-2">
@@ -463,7 +463,7 @@ export function SimplifiedTastingFlow() {
                           ...prev,
                           notes: prev.notes ? `${prev.notes}\n• ${note}` : `• ${note}`
                         }))}
-                        className="text-xs bg-fx-bg-subtle hover:bg-fx-accent/10 text-fx-text-secondary hover:text-fx-accent px-3 py-1 rounded-full border border-fx-border-default hover:border-fx-accent transition-colors"
+                        className="text-xs bg-fx-bg-subtle hover:bg-fx-accent/10 text-card-text-secondary hover:text-fx-accent px-3 py-1 rounded-full border border-card-border-default hover:border-fx-accent transition-colors"
                       >
                         + {note}
                       </button>
@@ -522,22 +522,22 @@ export function SimplifiedTastingFlow() {
           <div className="flex items-center justify-between">
             <button
               onClick={() => router.back()}
-              className="flex items-center gap-2 text-fx-text-secondary hover:text-fx-text-primary"
+              className="flex items-center gap-2 text-card-text-secondary hover:text-card-text-primary"
             >
               <ChevronLeft className="h-5 w-5" />
               Back
             </button>
-            <h1 className="text-xl font-semibold text-fx-text-primary">Quick Tasting</h1>
+            <h1 className="text-xl font-semibold text-card-text-primary">Quick Tasting</h1>
             <div className="w-16"></div>
           </div>
 
           {/* Progress Bar */}
           <div className="mt-4">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-medium text-fx-text-primary">
+              <span className="text-sm font-medium text-card-text-primary">
                 Step {currentStep + 1} of {steps.length}
               </span>
-              <span className="text-sm text-fx-text-secondary">
+              <span className="text-sm text-card-text-secondary">
                 {Math.round(progress)}% complete
               </span>
             </div>
@@ -556,7 +556,7 @@ export function SimplifiedTastingFlow() {
                 <div className={`flex items-center justify-center w-12 h-12 rounded-full border-2 ${
                   index <= currentStep
                     ? 'bg-fx-accent border-fx-accent text-white'
-                    : 'border-fx-border-default text-fx-text-secondary'
+                    : 'border-card-border-default text-card-text-secondary'
                 }`}>
                   {index < currentStep ? (
                     <Check className="h-6 w-6" />
@@ -576,10 +576,10 @@ export function SimplifiedTastingFlow() {
 
         {/* Step Title */}
         <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold text-fx-text-primary mb-2">
+          <h2 className="text-2xl font-bold text-card-text-primary mb-2">
             {steps[currentStep].title}
           </h2>
-          <p className="text-fx-text-secondary">
+          <p className="text-card-text-secondary">
             {currentStep === 0 && "Let's start with the basics"}
             {currentStep === 1 && "Trust your palate - select what you taste"}
             {currentStep === 2 && "Share your overall impression"}

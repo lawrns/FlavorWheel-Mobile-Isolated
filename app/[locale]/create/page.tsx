@@ -51,36 +51,37 @@ export default function CreatePage() {
         {/* Quick Actions */}
         <div className="grid md:grid-cols-2 gap-6 mb-12">
           {/* Quick Start */}
-          <Card className="group cursor-pointer hover:shadow-xl transition-all duration-300 hover:scale-105 border-2 hover:border-fx-accent">
+          <Card variant="interactive" className="group cursor-pointer hover:shadow-xl transition-all duration-300 hover:scale-105 border-2 hover:border-accent">
             <CardHeader className="text-center pb-4">
-              <div className="w-16 h-16 bg-gradient-to-br from-fx-accent to-fx-accent-hover rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+              <div className="w-16 h-16 bg-gradient-to-br from-accent to-accent-hover rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                 <Zap className="w-8 h-8 text-white" />
               </div>
-              <CardTitle className="text-2xl font-bold text-fx-text-primary mb-2">
+              <CardTitle className="text-2xl font-bold text-card-text-primary mb-2">
                 Quick Tasting
               </CardTitle>
-              <p className="text-fx-text-secondary">
+              <p className="text-card-text-secondary">
                 Get started in under 2 minutes with our streamlined tasting experience
               </p>
             </CardHeader>
             <CardContent className="pt-0">
               <div className="space-y-3 mb-6">
-                <div className="flex items-center gap-2 text-sm text-fx-text-secondary">
+                <div className="flex items-center gap-2 text-sm text-card-text-secondary">
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                   3 simple steps
                 </div>
-                <div className="flex items-center gap-2 text-sm text-fx-text-secondary">
+                <div className="flex items-center gap-2 text-sm text-card-text-secondary">
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                   AI flavor suggestions
                 </div>
-                <div className="flex items-center gap-2 text-sm text-fx-text-secondary">
+                <div className="flex items-center gap-2 text-sm text-card-text-secondary">
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                   Instant results
                 </div>
               </div>
               <Button
                 onClick={handleQuickStart}
-                className="w-full bg-fx-accent hover:bg-fx-accent-hover text-white font-semibold py-3"
+                variant="accent"
+                className="w-full"
                 size="lg"
               >
                 Start Quick Tasting
@@ -89,37 +90,37 @@ export default function CreatePage() {
           </Card>
 
           {/* Advanced Options */}
-          <Card className="group cursor-pointer hover:shadow-xl transition-all duration-300 hover:scale-105 border-2 hover:border-fx-secondary">
+          <Card variant="interactive" className="group cursor-pointer hover:shadow-xl transition-all duration-300 hover:scale-105 border-2 hover:border-secondary">
             <CardHeader className="text-center pb-4">
-              <div className="w-16 h-16 bg-gradient-to-br from-fx-secondary to-fx-secondary-hover rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+              <div className="w-16 h-16 bg-gradient-to-br from-secondary to-secondary-hover rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                 <Settings className="w-8 h-8 text-white" />
               </div>
-              <CardTitle className="text-2xl font-bold text-fx-text-primary mb-2">
+              <CardTitle className="text-2xl font-bold text-card-text-primary mb-2">
                 Advanced Options
               </CardTitle>
-              <p className="text-fx-text-secondary">
+              <p className="text-card-text-secondary">
                 Full control with professional tools and detailed customization
               </p>
             </CardHeader>
             <CardContent className="pt-0">
               <div className="space-y-3 mb-6">
-                <div className="flex items-center gap-2 text-sm text-fx-text-secondary">
+                <div className="flex items-center gap-2 text-sm text-card-text-secondary">
                   <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                   Study mode for learning
                 </div>
-                <div className="flex items-center gap-2 text-sm text-fx-text-secondary">
+                <div className="flex items-center gap-2 text-sm text-card-text-secondary">
                   <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                   Competition challenges
                 </div>
-                <div className="flex items-center gap-2 text-sm text-fx-text-secondary">
+                <div className="flex items-center gap-2 text-sm text-card-text-secondary">
                   <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                   Custom templates
                 </div>
               </div>
               <Button
                 onClick={handleAdvancedSetup}
-                variant="outline"
-                className="w-full border-fx-secondary text-fx-secondary hover:bg-fx-secondary hover:text-white font-semibold py-3"
+                variant="secondary"
+                className="w-full"
                 data-testid="btn-advanced-options"
                 size="lg"
               >

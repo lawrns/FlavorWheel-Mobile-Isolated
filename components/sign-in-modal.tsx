@@ -144,10 +144,10 @@ export function SignInModal({ isOpen, onClose }: SignInModalProps) {
         </button>
         
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-gray-900">
+          <CardTitle className="text-2xl font-bold text-card-text-primary">
             FlavorWheel México
           </CardTitle>
-          <p className="text-gray-600">Mexican Beverage Tasting Platform</p>
+          <p className="text-card-text-secondary">Mexican Beverage Tasting Platform</p>
         </CardHeader>
         
         <CardContent>

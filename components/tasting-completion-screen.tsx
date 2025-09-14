@@ -438,7 +438,7 @@ export function TastingCompletionScreen({
         <div className="min-h-screen flex items-center justify-center">
           <div className="text-center space-y-4">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-            <p className="text-muted-foreground">Loading your tasting results...</p>
+            <p className="text-card-text-secondary">Loading your tasting results...</p>
           </div>
         </div>
       </DashboardAppShell>
@@ -461,7 +461,7 @@ export function TastingCompletionScreen({
 
           <div className="text-center">
             <h1 className="text-2xl font-bold">Tasting Complete!</h1>
-            <p className="text-sm text-muted-foreground">Your flavor wheel is ready</p>
+            <p className="text-sm text-card-text-secondary">Your flavor wheel is ready</p>
           </div>
 
           <div className="w-16" /> {/* Spacer for balance */}
@@ -569,7 +569,7 @@ export function TastingCompletionScreen({
               <div className="flex items-center justify-center py-12">
                 <div className="text-center">
                   <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-card-text-secondary">
                     Generating your flavor wheel...
                   </p>
                 </div>
@@ -697,7 +697,7 @@ export function TastingCompletionScreen({
             <div className="text-center">
               <Trophy className="h-8 w-8 mx-auto mb-2 text-yellow-500" />
               <h3 className="font-semibold mb-1">Tasting Saved!</h3>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-card-text-secondary">
                 Your tasting data and flavor wheel have been saved to your profile.
               </p>
             </div>

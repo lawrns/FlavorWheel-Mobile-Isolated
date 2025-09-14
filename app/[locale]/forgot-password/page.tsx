@@ -88,8 +88,8 @@ export default function ForgotPasswordPage() {
             transition={{ duration: 0.5 }}
             className="w-full max-w-md"
           >
-            <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
-              <CardContent className="pt-8 pb-8 text-center">
+            <Card variant="elevated" className="backdrop-blur-sm">
+              <CardContent className="p-card text-center">
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
@@ -139,9 +139,9 @@ export default function ForgotPasswordPage() {
           </div>
 
           {/* Reset Form */}
-          <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+          <Card variant="elevated" className="backdrop-blur-sm">
             <CardHeader className="space-y-1">
-              <CardTitle className="text-2xl font-semibold text-center">Forgot Password</CardTitle>
+              <CardTitle className="text-2xl font-semibold text-center text-card-text-primary">Forgot Password</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <form onSubmit={handleResetPassword} className="space-y-4">

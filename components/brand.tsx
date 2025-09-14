@@ -3,6 +3,7 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import Image from 'next/image'
 
 // Centralized brand constants to prevent drift
 export const BRAND_NAME = 'FlavorWheel México'
@@ -175,11 +176,14 @@ export function LogoOnly({ size = 'md', className, animated = false, onClick }: 
   }
 
   const logo = (
-    <img
+    <Image
       src="/images/flavatix_logo.png"
       alt="FlavorWheel México Logo"
+      width={80}
+      height={80}
       className={cn('object-contain', onClick && 'cursor-pointer', sizeClasses[size], className)}
       onClick={onClick}
+      priority
     />
   )
 

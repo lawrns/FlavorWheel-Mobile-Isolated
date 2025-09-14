@@ -1,0 +1,116 @@
+{
+  "schema": "flavorwheel.design_system.breakpoints.v1",
+  "metadata": {
+    "title": "FlavorWheel Global Breakpoints System",
+    "version": "1.0.0",
+    "created": "2025-09-14",
+    "purpose": "Define mobile-first breakpoints for FlavorWheel mobile app",
+    "scope": "All responsive design across the application",
+    "single_source_of_truth": true
+  },
+
+  "mobile_first_breakpoints": {
+    "mobile": {
+      "min": "0px",
+      "max": "639px",
+      "name": "Mobile devices",
+      "container": "calc(100vw - 32px)",
+      "typography_scale": 1.0,
+      "touch_first": true
+    },
+    "tablet": {
+      "min": "640px",
+      "max": "1023px",
+      "name": "Tablet devices",
+      "container": "calc(100vw - 48px)",
+      "typography_scale": 1.1,
+      "hybrid_touch": true
+    },
+    "desktop": {
+      "min": "1024px",
+      "max": "1279px",
+      "name": "Desktop screens",
+      "container": "min(1200px, calc(100vw - 64px))",
+      "typography_scale": 1.2,
+      "mouse_first": true
+    },
+    "wide": {
+      "min": "1280px",
+      "max": "9999px",
+      "name": "Wide screens",
+      "container": "min(1400px, calc(100vw - 80px))",
+      "typography_scale": 1.25,
+      "mouse_first": true
+    }
+  },
+
+  "device_specific": {
+    "small_mobile": {
+      "min": "0px",
+      "max": "359px",
+      "name": "Small phones (iPhone SE, etc.)",
+      "container": "calc(100vw - 24px)",
+      "special_handling": "Extra small touch targets, simplified layouts"
+    },
+    "large_mobile": {
+      "min": "360px",
+      "max": "639px",
+      "name": "Standard mobile phones",
+      "container": "calc(100vw - 32px)",
+      "standard_mobile": true
+    },
+    "small_tablet": {
+      "min": "640px",
+      "max": "767px",
+      "name": "Small tablets",
+      "container": "calc(100vw - 48px)",
+      "orientation_aware": true
+    },
+    "large_tablet": {
+      "min": "768px",
+      "max": "1023px",
+      "name": "Large tablets",
+      "container": "calc(100vw - 56px)",
+      "desktop_like": true
+    }
+  },
+
+  "orientation_breakpoints": {
+    "portrait_mobile": {
+      "max_height": "500px",
+      "name": "Portrait mobile with keyboard",
+      "adjustments": "Compress vertical spacing, adjust touch targets"
+    },
+    "landscape_mobile": {
+      "min_width": "500px",
+      "max_width": "900px",
+      "name": "Landscape mobile/tablet",
+      "adjustments": "Horizontal layout optimizations, wider touch targets"
+    }
+  },
+
+  "cultural_breakpoints": {
+    "mexican_device_usage": {
+      "popular_sizes": "360px, 375px, 390px, 414px (Mexican market phones)",
+      "regional_optimization": "Optimized for Mexican Android devices",
+      "connectivity_aware": "Adjust for 3G/4G Mexican networks"
+    }
+  },
+
+  "accessibility_breakpoints": {
+    "high_contrast": {
+      "any_size": true,
+      "adjustments": "Enhanced borders, focus indicators, text contrast"
+    },
+    "large_text": {
+      "any_size": true,
+      "adjustments": "Fluid typography scales up, spacing increases"
+    },
+    "reduced_motion": {
+      "any_size": true,
+      "adjustments": "Disable motion-based breakpoints, use opacity instead"
+    }
+  }
+}
+
+

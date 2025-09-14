@@ -497,14 +497,14 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
               <div className="grid gap-4">
                 <div>
                   <Label className="text-sm font-medium">Study Name</Label>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className="text-sm text-card-text-secondary mt-1">
                     {studyName || 'Unnamed Study Session'}
                   </p>
                 </div>
 
                 <div>
                   <Label className="text-sm font-medium">Product Type</Label>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className="text-sm text-card-text-secondary mt-1">
                     {selectedProductType || 'Not selected'}
                   </p>
                 </div>
@@ -535,7 +535,7 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
 
                 <div>
                   <Label className="text-sm font-medium">Settings</Label>
-                  <div className="mt-2 space-y-1 text-sm text-muted-foreground">
+                  <div className="mt-2 space-y-1 text-sm text-card-text-secondary">
                     <p>Blind Tasting: {isBlindTasting ? 'Yes' : 'No'}</p>
                   </div>
                 </div>
@@ -812,7 +812,7 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
           </Button>
 
           {lastSaved && (
-            <div className="text-xs text-muted-foreground">
+            <div className="text-xs text-card-text-secondary">
               Auto-saved {lastSaved.toLocaleTimeString()}
             </div>
           )}
@@ -820,7 +820,7 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
 
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-2">Create Study Mode Tasting</h1>
-          <p className="text-muted-foreground">
+          <p className="text-card-text-secondary">
             Set up your tasting with categories, items, and evaluation parameters
           </p>
         </div>
@@ -853,7 +853,7 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
                   </SelectTrigger>
                   <SelectContent className="max-h-60">
                     {/* Wine Section */}
-                    <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-b">
+                    <div className="px-2 py-1.5 text-xs font-semibold text-card-text-secondary border-b">
                       🍷 Wine
                     </div>
                     {PRODUCT_TYPES.filter(pt => pt.category === 'wine').map((type) => (
@@ -866,7 +866,7 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
                     ))}
 
                     {/* Coffee Section */}
-                    <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-b border-t mt-2">
+                    <div className="px-2 py-1.5 text-xs font-semibold text-card-text-secondary border-b border-t mt-2">
                       ☕ Coffee
                     </div>
                     {PRODUCT_TYPES.filter(pt => pt.category === 'coffee').map((type) => (
@@ -879,7 +879,7 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
                     ))}
 
                     {/* Beer Section */}
-                    <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-b border-t mt-2">
+                    <div className="px-2 py-1.5 text-xs font-semibold text-card-text-secondary border-b border-t mt-2">
                       🍺 Beer
                     </div>
                     {PRODUCT_TYPES.filter(pt => pt.category === 'beer').map((type) => (
@@ -892,7 +892,7 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
                     ))}
 
                     {/* Spirits Section */}
-                    <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-b border-t mt-2">
+                    <div className="px-2 py-1.5 text-xs font-semibold text-card-text-secondary border-b border-t mt-2">
                       🥃 Spirits
                     </div>
                     {PRODUCT_TYPES.filter(pt => pt.category === 'spirits').map((type) => (
@@ -902,7 +902,7 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
                     ))}
 
                     {/* Other Section */}
-                    <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-b border-t mt-2">
+                    <div className="px-2 py-1.5 text-xs font-semibold text-card-text-secondary border-b border-t mt-2">
                       🧁 Other
                     </div>
                     {PRODUCT_TYPES.filter(pt => pt.category === 'other').map((type) => (
@@ -913,7 +913,7 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
                   </SelectContent>
                 </Select>
                 {selectedProductType && (
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className="text-sm text-card-text-secondary mt-1">
                     Selected: <span className="font-medium">{selectedProductType}</span>
                   </p>
                 )}
@@ -942,11 +942,11 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
                         {loadingTemplates ? (
                           <div className="col-span-full text-center py-8">
                             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-                            <p className="text-sm text-muted-foreground mt-2">Loading templates...</p>
+                            <p className="text-sm text-card-text-secondary mt-2">Loading templates...</p>
                           </div>
                         ) : templates.length === 0 ? (
                           <div className="col-span-full text-center py-8">
-                            <p className="text-muted-foreground">No templates available</p>
+                            <p className="text-card-text-secondary">No templates available</p>
                           </div>
                         ) : (
                           templates.map((template) => (
@@ -974,15 +974,15 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
                               <CardContent className="pt-0">
                                 <div className="space-y-2 text-sm">
                                   <div className="flex items-center gap-2">
-                                    <span className="text-muted-foreground">Duration:</span>
+                                    <span className="text-card-text-secondary">Duration:</span>
                                     <span>{template.duration} min</span>
                                   </div>
                                   <div className="flex items-center gap-2">
-                                    <span className="text-muted-foreground">Samples:</span>
+                                    <span className="text-card-text-secondary">Samples:</span>
                                     <span>{template.num_samples}</span>
                                   </div>
                                   <div className="flex items-center gap-2">
-                                    <span className="text-muted-foreground">Categories:</span>
+                                    <span className="text-card-text-secondary">Categories:</span>
                                     <span>{template.evaluation_criteria.length}</span>
                                   </div>
                                 </div>
@@ -1025,7 +1025,7 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
                           onCheckedChange={setIsBlindTasting}
                         />
                         <Label htmlFor="blind-tasting">Blind Tasting</Label>
-                        <HelpCircle className="h-4 w-4 text-muted-foreground" />
+                        <HelpCircle className="h-4 w-4 text-card-text-secondary" />
                       </div>
                     </TooltipTrigger>
                     <TooltipContent>
@@ -1086,7 +1086,7 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
                                       <FileText className="h-4 w-4" />
                                       <div>
                                         <div className="font-medium">Subjective Input</div>
-                                        <div className="text-xs text-muted-foreground">Free-form prose notes</div>
+                                        <div className="text-xs text-card-text-secondary">Free-form prose notes</div>
                                       </div>
                                     </div>
                                   </SelectItem>
@@ -1095,7 +1095,7 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
                                       <Sliders className="h-4 w-4" />
                                       <div>
                                         <div className="font-medium">Sliding Scale</div>
-                                        <div className="text-xs text-muted-foreground">Interactive 1-100 rating slider</div>
+                                        <div className="text-xs text-card-text-secondary">Interactive 1-100 rating slider</div>
                                       </div>
                                     </div>
                                   </SelectItem>
@@ -1104,7 +1104,7 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
                                       <CheckSquare className="h-4 w-4" />
                                       <div>
                                         <div className="font-medium">Multiple Choice</div>
-                                        <div className="text-xs text-muted-foreground">Select from predefined options</div>
+                                        <div className="text-xs text-card-text-secondary">Select from predefined options</div>
                                       </div>
                                     </div>
                                   </SelectItem>
@@ -1113,7 +1113,7 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
                                       <Type className="h-4 w-4" />
                                       <div>
                                         <div className="font-medium">Exact Answer</div>
-                                        <div className="text-xs text-muted-foreground">Precise text matching</div>
+                                        <div className="text-xs text-card-text-secondary">Precise text matching</div>
                                       </div>
                                     </div>
                                   </SelectItem>
@@ -1122,7 +1122,7 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
                                       <Search className="h-4 w-4" />
                                       <div>
                                         <div className="font-medium">Contains X</div>
-                                        <div className="text-xs text-muted-foreground">Fuzzy text matching with variations</div>
+                                        <div className="text-xs text-card-text-secondary">Fuzzy text matching with variations</div>
                                       </div>
                                     </div>
                                   </SelectItem>
@@ -1198,9 +1198,9 @@ export default function StudyModePageClient({ params }: StudyModePageProps) {
                             <Tooltip>
                               <TooltipTrigger asChild>
                                 <div className="flex items-center gap-2 p-2 bg-muted rounded-md cursor-help">
-                                  <FileText className="h-4 w-4 text-muted-foreground" />
-                                  <span className="text-xs text-muted-foreground">Describe aromas, flavors, textures, and observations</span>
-                                  <HelpCircle className="h-3 w-3 text-muted-foreground" />
+                                  <FileText className="h-4 w-4 text-card-text-secondary" />
+                                  <span className="text-xs text-card-text-secondary">Describe aromas, flavors, textures, and observations</span>
+                                  <HelpCircle className="h-3 w-3 text-card-text-secondary" />
                                 </div>
                               </TooltipTrigger>
                               <TooltipContent>

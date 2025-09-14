@@ -99,13 +99,13 @@ export function MobileFlavorSelector({
   const isMaxSelected = selectedFlavors.length >= maxSelection
 
   return (
-    <Card className="w-full bg-white border border-fx-border-default shadow-lg">
+    <Card variant="elevated" className="w-full">
       <CardHeader className="pb-4">
-        <CardTitle className="text-xl font-semibold text-fx-text-primary">
+        <CardTitle className="text-xl font-semibold text-card-text-primary">
           {title}
         </CardTitle>
         {subtitle && (
-          <p className="text-sm text-fx-text-secondary mt-1">
+          <p className="text-sm text-card-text-secondary mt-1">
             {subtitle}
           </p>
         )}

@@ -189,7 +189,7 @@ export function EventCalendar({ onEventSelect, onCreateEvent }: EventCalendarPro
   if (loading) {
     return (
       <Card>
-        <CardContent className="p-6">
+        <CardContent className="p-card">
           <div className="animate-pulse space-y-4">
             <div className="h-6 w-1/3 rounded bg-gray-200"></div>
             <div className="grid grid-cols-7 gap-2">

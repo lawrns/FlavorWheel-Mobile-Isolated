@@ -295,9 +295,9 @@ export default function ProfilePage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 flex items-center justify-center p-4">
         <Card className="w-full max-w-md text-center">
-          <CardContent className="p-6">
+          <CardContent className="p-card">
             <h2 className="text-xl font-semibold mb-4">Sign in required</h2>
-            <p className="text-muted-foreground mb-6">
+            <p className="text-card-text-secondary mb-6">
               Please sign in to view your profile.
             </p>
 
@@ -329,7 +329,7 @@ export default function ProfilePage() {
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-3xl font-bold text-foreground">Profile</h1>
-                <p className="text-muted-foreground mt-1">
+                <p className="text-card-text-secondary mt-1">
                   Manage your account settings and preferences
                 </p>
               </div>
@@ -345,11 +345,11 @@ export default function ProfilePage() {
 
         {/* Main Content */}
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-card">
             {/* Profile Card */}
             <div className="lg:col-span-1">
               <Card>
-                <CardContent className="p-6">
+                <CardContent className="p-card">
                   <div className="text-center space-y-4">
                     <div className="relative">
                       <Avatar className="h-24 w-24 mx-auto">
@@ -373,7 +373,7 @@ export default function ProfilePage() {
 
                     <div>
                       <h2 className="text-xl font-bold">{profile?.name || 'Anonymous User'}</h2>
-                      <p className="text-muted-foreground">{profile?.email}</p>
+                      <p className="text-card-text-secondary">{profile?.email}</p>
                       <Badge variant="secondary" className="mt-2">
                         {profile?.experience_level || 'Beginner'}
                       </Badge>
@@ -383,11 +383,11 @@ export default function ProfilePage() {
                       <div className="grid grid-cols-2 gap-4 pt-4 border-t">
                         <div className="text-center">
                           <div className="text-2xl font-bold text-fx-primary">{stats.totalTastings}</div>
-                          <div className="text-xs text-muted-foreground">Tastings</div>
+                          <div className="text-xs text-card-text-secondary">Tastings</div>
                         </div>
                         <div className="text-center">
                           <div className="text-2xl font-bold text-fx-primary">{stats.averageRating.toFixed(1)}</div>
-                          <div className="text-xs text-muted-foreground">Avg Rating</div>
+                          <div className="text-xs text-card-text-secondary">Avg Rating</div>
                         </div>
                       </div>
                     )}
@@ -467,7 +467,7 @@ export default function ProfilePage() {
                             />
                           ) : (
                             <div className="flex items-center p-2 border rounded-md bg-muted/50">
-                              <User className="h-4 w-4 mr-2 text-muted-foreground" />
+                              <User className="h-4 w-4 mr-2 text-card-text-secondary" />
                               <span>{profile?.name || 'Not set'}</span>
                             </div>
                           )}
@@ -476,7 +476,7 @@ export default function ProfilePage() {
                         <div>
                           <Label htmlFor="email">Email</Label>
                           <div className="flex items-center p-2 border rounded-md bg-muted/50">
-                            <Mail className="h-4 w-4 mr-2 text-muted-foreground" />
+                            <Mail className="h-4 w-4 mr-2 text-card-text-secondary" />
                             <span>{profile?.email}</span>
                           </div>
                         </div>
@@ -492,7 +492,7 @@ export default function ProfilePage() {
                             />
                           ) : (
                             <div className="flex items-center p-2 border rounded-md bg-muted/50">
-                              <MapPin className="h-4 w-4 mr-2 text-muted-foreground" />
+                              <MapPin className="h-4 w-4 mr-2 text-card-text-secondary" />
                               <span>{profile?.location || 'Not set'}</span>
                             </div>
                           )}
@@ -559,7 +559,7 @@ export default function ProfilePage() {
                           </Select>
                         ) : (
                           <div className="flex items-center p-2 border rounded-md bg-muted/50">
-                            <Award className="h-4 w-4 mr-2 text-muted-foreground" />
+                            <Award className="h-4 w-4 mr-2 text-card-text-secondary" />
                             <span className="capitalize">{profile?.experience_level || 'Beginner'}</span>
                           </div>
                         )}
@@ -600,7 +600,7 @@ export default function ProfilePage() {
                               </Badge>
                             ))}
                             {(!profile?.beverage_preferences || profile.beverage_preferences.length === 0) && (
-                              <span className="text-muted-foreground text-sm">No preferences set</span>
+                              <span className="text-card-text-secondary text-sm">No preferences set</span>
                             )}
                           </div>
                         )}
@@ -633,7 +633,7 @@ export default function ProfilePage() {
 
                 <TabsContent value="stats" className="space-y-6">
                   {stats && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-card">
                       <Card>
                         <CardHeader>
                           <CardTitle>Activity Overview</CardTitle>
@@ -663,7 +663,7 @@ export default function ProfilePage() {
                           <CardTitle>Member Since</CardTitle>
                         </CardHeader>
                         <CardContent>
-                          <div className="flex items-center text-muted-foreground">
+                          <div className="flex items-center text-card-text-secondary">
                             <Calendar className="h-4 w-4 mr-2" />
                             <span>
                               {profile?.created_at

@@ -1,0 +1,63 @@
+{
+  "schema": "flavorwheel.design_system.theme.dark.v1",
+  "metadata": {
+    "title": "FlavorWheel Dark Theme",
+    "version": "1.0.0",
+    "created": "2025-09-14",
+    "purpose": "Dark theme overrides for FlavorWheel mobile app",
+    "scope": "Color and visual adjustments for dark mode",
+    "single_source_of_truth": true,
+    "extends": "global/colors.json"
+  },
+
+  "color_overrides": {
+    "background": {
+      "app": "#0A0A0A",
+      "surface_primary": "#161614",
+      "surface_secondary": "#1C1C1A",
+      "surface_dark": "#FFFFFF"
+    },
+    "text": {
+      "primary": "#FFFFFF",
+      "secondary": "#E0E0E0",
+      "tertiary": "#A0A0A0",
+      "inverse": "#121212"
+    },
+    "border": {
+      "default": "rgba(255,255,255,0.12)",
+      "subtle": "rgba(255,255,255,0.08)",
+      "strong": "rgba(255,255,255,0.24)",
+      "focus": "#60A5FA"
+    },
+    "shadows": {
+      "level_1": "0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.4)",
+      "level_2": "0 3px 6px rgba(0,0,0,0.4), 0 3px 6px rgba(0,0,0,0.5)",
+      "level_3": "0 10px 20px rgba(0,0,0,0.5), 0 6px 6px rgba(0,0,0,0.6)",
+      "level_4": "0 15px 25px rgba(0,0,0,0.6), 0 10px 10px rgba(0,0,0,0.7)"
+    }
+  },
+
+  "opacity_adjustments": {
+    "backdrop_blur": "backdrop-blur-xl",
+    "glass_effect": "bg-black/60 backdrop-blur-md",
+    "overlay_scrim": "bg-black/60"
+  },
+
+  "brand_color_adjustments": {
+    "primary": "#4ADE80",
+    "secondary": "#FBBF24",
+    "accent": "#A78BFA",
+    "success": "#22C55E",
+    "warning": "#F59E0B",
+    "error": "#EF4444"
+  },
+
+  "accessibility_guarantees": {
+    "contrast_ratio": "All text meets WCAG AA (4.5:1) in dark mode",
+    "color_blind_safe": true,
+    "high_contrast_fallback": "Available via system preferences",
+    "reduced_eye_strain": "Warm colors and appropriate brightness levels"
+  }
+}
+
+

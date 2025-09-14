@@ -1,0 +1,75 @@
+{
+  "schema": "flavorwheel.design_system.shadows.v1",
+  "metadata": {
+    "title": "FlavorWheel Global Shadows System",
+    "version": "1.0.0",
+    "created": "2025-09-14",
+    "purpose": "Define elevation levels and overlay scrims for FlavorWheel mobile app",
+    "scope": "All shadow and elevation styling across the application",
+    "single_source_of_truth": true
+  },
+
+  "elevation_levels": {
+    "level_0": {
+      "value": "none",
+      "usage": "Flat elements, no elevation",
+      "mobile_optimized": "Battery-friendly, no shadow calculations"
+    },
+    "level_1": {
+      "value": "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
+      "usage": "Subtle elevation for cards, buttons",
+      "mobile_optimized": "Light shadow for readability without heavy blur"
+    },
+    "level_2": {
+      "value": "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)",
+      "usage": "Medium elevation for interactive elements",
+      "mobile_optimized": "Balanced for touch feedback"
+    },
+    "level_3": {
+      "value": "0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)",
+      "usage": "High elevation for modals, tooltips",
+      "mobile_optimized": "Strong presence without performance impact"
+    },
+    "level_4": {
+      "value": "0 15px 25px rgba(0,0,0,0.22), 0 10px 10px rgba(0,0,0,0.25)",
+      "usage": "Very high elevation for overlays, bottom sheets",
+      "mobile_optimized": "Maximum elevation for modal states"
+    }
+  },
+
+  "cultural_shadows": {
+    "mexican_elevation": {
+      "soft_diffuse": "Inspired by Mexican desert light",
+      "warm_tones": "Subtle gold/copper hints in shadow colors",
+      "natural_depth": "Organic, non-harsh elevation system"
+    },
+    "beverage_context": {
+      "mezcal_depth": "Earthy, grounded shadows",
+      "tequila_clarity": "Crisp, clean shadow edges",
+      "wine_sophistication": "Refined, subtle shadow system"
+    }
+  },
+
+  "mobile_optimizations": {
+    "performance": {
+      "gpu_acceleration": "Box-shadow uses GPU when possible",
+      "reduced_complexity": "Simplified shadows on low-end devices",
+      "battery_conscious": "Adjust shadow complexity based on device"
+    },
+    "accessibility": {
+      "contrast_maintenance": "Shadows don't interfere with text contrast",
+      "focus_indicators": "Shadows complement focus rings",
+      "reduced_motion": "Shadow transitions respect user preferences"
+    }
+  },
+
+  "overlay_scrims": {
+    "light_scrim": "rgba(0,0,0,0.04)",
+    "medium_scrim": "rgba(0,0,0,0.08)",
+    "heavy_scrim": "rgba(0,0,0,0.16)",
+    "modal_scrim": "rgba(0,0,0,0.32)",
+    "usage": "Background overlays for modals, side sheets, tooltips"
+  }
+}
+
+

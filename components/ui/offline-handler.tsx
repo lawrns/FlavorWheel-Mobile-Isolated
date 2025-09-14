@@ -140,7 +140,7 @@ export function OfflineHandler({
       {queuedActions.length > 0 && isOnline && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
           <Card className="w-full max-w-md">
-            <CardContent className="p-6">
+            <CardContent className="p-card">
               <h3 className="text-lg font-semibold mb-4">Processing Queued Actions</h3>
 
               <div className="space-y-3 mb-6">

@@ -355,14 +355,14 @@ export default function CreateStudyPage() {
         <div className="flex items-center justify-between p-4 border-b">
           <button
             onClick={() => router.back()}
-            className="flex items-center gap-2 text-fx-text-primary hover:text-fx-text-secondary"
+            className="flex items-center gap-2 text-card-text-primary hover:text-card-text-secondary"
           >
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
             Back
           </button>
-          <h1 className="text-lg font-semibold text-fx-text-primary">Study Session</h1>
+          <h1 className="text-lg font-semibold text-card-text-primary">Study Session</h1>
           <div className="w-16"></div>
           {lastSaved && (
             <div className="text-xs text-green-600">Auto-saved</div>
@@ -373,7 +373,7 @@ export default function CreateStudyPage() {
         <div className="flex items-center justify-between p-4 border-t bg-white">
           <button
             onClick={() => router.back()}
-            className="px-4 py-2 text-fx-text-secondary hover:text-fx-text-primary"
+            className="px-4 py-2 text-card-text-secondary hover:text-card-text-primary"
             disabled={isSubmitting}
           >
             Cancel
@@ -393,7 +393,7 @@ export default function CreateStudyPage() {
       <div className="space-y-6">
         {/* Basic Information */}
         <section>
-          <Card className="rounded-xl bg-white shadow-fx border border-fx-border p-4 sm:p-5">
+          <Card variant="elevated" className="rounded-xl bg-white shadow-fx border border-card-border p-4 sm:p-5">
             <CardHeader className="pb-4">
               <CardTitle className="text-xl font-semibold text-fx-text font-heading">Basic Information</CardTitle>
             </CardHeader>
@@ -408,7 +408,7 @@ export default function CreateStudyPage() {
                   placeholder="e.g., Red Wine Tasting 2024"
                   value={formData.tasting_name}
                   onChange={(e) => updateFormData({ tasting_name: e.target.value })}
-                  className="min-h-[48px] w-full rounded-lg border border-fx-border bg-white px-3 text-sm text-fx-text placeholder:text-fx-muted focus-enhanced form-input"
+                  className="min-h-[48px] w-full rounded-lg border border-card-border bg-white px-3 text-sm text-fx-text placeholder:text-fx-muted focus-enhanced form-input"
                   required
                 />
               </div>
@@ -433,7 +433,7 @@ export default function CreateStudyPage() {
                   id="template"
                   data-testid="button-template-picker"
                   variant="outline"
-                  className="min-h-[48px] w-full justify-start rounded-lg border border-fx-border bg-white px-3 text-sm text-fx-text hover:bg-fx-bg focus-enhanced hover-lift"
+                  className="min-h-[48px] w-full justify-start rounded-lg border border-card-border bg-white px-3 text-sm text-fx-text hover:bg-fx-bg focus-enhanced hover-lift"
                   onClick={() => setShowTemplatePicker(true)}
                 >
                   <Sparkles className="h-4 w-4 mr-2" />
@@ -449,7 +449,7 @@ export default function CreateStudyPage() {
                     <DialogTitle>Choose a Template</DialogTitle>
                   </DialogHeader>
                   <div className="space-y-4">
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-card-text-secondary">
                       Select a template to automatically add evaluation categories to your tasting session.
                     </p>
                     <div className="grid gap-4">
@@ -466,7 +466,7 @@ export default function CreateStudyPage() {
                             </CardTitle>
                           </CardHeader>
                           <CardContent>
-                            <p className="text-sm text-muted-foreground mb-3">
+                            <p className="text-sm text-card-text-secondary mb-3">
                               {template.description}
                             </p>
                             <div className="flex flex-wrap gap-1">
@@ -532,7 +532,7 @@ export default function CreateStudyPage() {
 
         {/* Tasting Photo */}
         <section>
-          <Card className="rounded-xl bg-white shadow-fx border border-fx-border p-4 sm:p-5">
+          <Card variant="elevated" className="rounded-xl bg-white shadow-fx border border-card-border p-4 sm:p-5">
             <CardHeader className="pb-4">
               <CardTitle className="text-xl font-semibold text-fx-text font-heading">Tasting Photo</CardTitle>
               <p className="text-sm text-fx-text2 mt-1">Add a photo for your tasting session</p>
@@ -553,7 +553,7 @@ export default function CreateStudyPage() {
 
         {/* Enhanced Evaluation Categories with Collapsible */}
         <section>
-          <Card className="rounded-xl bg-white shadow-soft border border-fx-border p-4 sm:p-5 hover-lift card-enter">
+          <Card variant="elevated" className="rounded-xl bg-white shadow-soft border border-card-border p-4 sm:p-5 hover-lift card-enter">
             <div className="flex items-center justify-between">
               <div>
                 <CardTitle className="text-xl font-semibold text-fx-text font-heading">Evaluation Categories</CardTitle>
@@ -594,7 +594,7 @@ export default function CreateStudyPage() {
               {/* Categories Repeater */}
               <div data-testid="rep-categories" className="space-y-4">
                 {formData.categories.map((category, index) => (
-                  <div key={category.id} className="border border-fx-border rounded-lg p-4 space-y-3">
+                  <div key={category.id} className="border border-card-border rounded-lg p-4 space-y-3">
                     <div className="flex items-center justify-between">
                       <Label className="text-sm font-semibold text-fx-text">
                         Category {index + 1}
@@ -736,7 +736,7 @@ export default function CreateStudyPage() {
 
         {/* Items to Taste */}
         <section>
-          <Card className="rounded-xl bg-white shadow-soft border border-fx-border p-4 sm:p-5 hover-lift card-enter">
+          <Card variant="elevated" className="rounded-xl bg-white shadow-soft border border-card-border p-4 sm:p-5 hover-lift card-enter">
             <CardHeader className="pb-4">
               <CardTitle className="text-xl font-semibold text-fx-text font-heading">
                 Items to Taste
@@ -756,7 +756,7 @@ export default function CreateStudyPage() {
             <CardContent className="space-y-4">
               <div data-testid="rep-items" className="space-y-4">
                 {formData.items.map((item, index) => (
-                  <div key={item.id} className="border border-fx-border rounded-lg p-4 space-y-3">
+                  <div key={item.id} className="border border-card-border rounded-lg p-4 space-y-3">
                     <div className="flex items-center justify-between">
                       <Label className="text-sm font-semibold text-fx-text">
                         Item {index + 1}

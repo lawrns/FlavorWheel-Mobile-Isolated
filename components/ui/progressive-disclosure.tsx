@@ -54,21 +54,21 @@ export function ProgressiveDisclosure({
 
   const levelStyles = {
     primary: {
-      title: 'text-lg font-semibold text-fx-text-primary',
-      description: 'text-fx-text-secondary',
-      border: 'border-fx-border-default',
+      title: 'text-lg font-semibold text-card-text-primary',
+      description: 'text-card-text-secondary',
+      border: 'border-card-border-default',
       hover: 'hover:bg-fx-bg-subtle hover:border-fx-accent'
     },
     secondary: {
-      title: 'text-base font-medium text-fx-text-primary',
-      description: 'text-sm text-fx-text-secondary',
-      border: 'border-fx-border-subtle',
-      hover: 'hover:bg-fx-bg-subtle hover:border-fx-border-default'
+      title: 'text-base font-medium text-card-text-primary',
+      description: 'text-sm text-card-text-secondary',
+      border: 'border-card-border-subtle',
+      hover: 'hover:bg-fx-bg-subtle hover:border-card-border-default'
     },
     tertiary: {
-      title: 'text-sm font-medium text-fx-text-primary',
+      title: 'text-sm font-medium text-card-text-primary',
       description: 'text-xs text-fx-text-muted',
-      border: 'border-fx-border-subtle',
+      border: 'border-card-border-subtle',
       hover: 'hover:bg-fx-bg-subtle'
     }
   }
@@ -279,10 +279,10 @@ export function ProgressiveForm({
       {showProgress && (
         <div className="mb-8">
           <div className="flex justify-between items-center mb-2">
-            <span className="text-sm font-medium text-fx-text-primary">
+            <span className="text-sm font-medium text-card-text-primary">
               Step {currentStep + 1} of {steps.length}
             </span>
-            <span className="text-sm text-fx-text-secondary">
+            <span className="text-sm text-card-text-secondary">
               {Math.round(progress)}% complete
             </span>
           </div>
@@ -309,12 +309,12 @@ export function ProgressiveForm({
                     ? 'bg-green-500 border-green-500 text-white'
                     : index === currentStep
                       ? 'bg-fx-accent border-fx-accent text-white'
-                      : 'bg-white border-fx-border-default text-fx-text-secondary'
+                      : 'bg-white border-card-border-default text-card-text-secondary'
                 )}>
                   {index < currentStep ? '✓' : index + 1}
                 </div>
                 {index === currentStep && (
-                  <div className="ml-2 text-sm font-medium text-fx-text-primary">
+                  <div className="ml-2 text-sm font-medium text-card-text-primary">
                     {step.title}
                   </div>
                 )}
@@ -348,7 +348,7 @@ export function ProgressiveForm({
                 )}
               </CardTitle>
               {currentStepData.description && (
-                <p className="text-fx-text-secondary">{currentStepData.description}</p>
+                <p className="text-card-text-secondary">{currentStepData.description}</p>
               )}
             </CardHeader>
             <CardContent>
@@ -422,7 +422,7 @@ export function ContextualHelp({
         onMouseLeave={() => trigger === 'hover' && setIsOpen(false)}
         onFocus={() => trigger === 'focus' && setIsOpen(true)}
         onBlur={() => trigger === 'focus' && setIsOpen(false)}
-        className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-fx-bg-subtle hover:bg-fx-accent/10 text-fx-text-secondary hover:text-fx-accent transition-colors"
+        className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-fx-bg-subtle hover:bg-fx-accent/10 text-card-text-secondary hover:text-fx-accent transition-colors"
         aria-label={`Help: ${title}`}
       >
         <HelpCircle className="w-4 h-4" />
@@ -443,22 +443,22 @@ export function ContextualHelp({
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
               className={cn(
-                'absolute z-50 w-64 p-4 bg-white rounded-lg shadow-lg border border-fx-border-default',
+                'absolute z-50 w-64 p-4 bg-white rounded-lg shadow-lg border border-card-border-default',
                 placementClasses[placement]
               )}
             >
               <div className="text-sm">
-                <h4 className="font-medium text-fx-text-primary mb-2">{title}</h4>
-                <div className="text-fx-text-secondary">{content}</div>
+                <h4 className="font-medium text-card-text-primary mb-2">{title}</h4>
+                <div className="text-card-text-secondary">{content}</div>
               </div>
 
               {/* Arrow */}
               <div className={cn(
                 'absolute w-2 h-2 bg-white border',
-                placement === 'top' && 'top-full left-1/2 transform -translate-x-1/2 -mt-1 border-l border-t border-fx-border-default',
-                placement === 'bottom' && 'bottom-full left-1/2 transform -translate-x-1/2 -mb-1 border-r border-b border-fx-border-default',
-                placement === 'left' && 'left-full top-1/2 transform -translate-y-1/2 -ml-1 border-t border-l border-fx-border-default',
-                placement === 'right' && 'right-full top-1/2 transform -translate-y-1/2 -mr-1 border-b border-r border-fx-border-default'
+                placement === 'top' && 'top-full left-1/2 transform -translate-x-1/2 -mt-1 border-l border-t border-card-border-default',
+                placement === 'bottom' && 'bottom-full left-1/2 transform -translate-x-1/2 -mb-1 border-r border-b border-card-border-default',
+                placement === 'left' && 'left-full top-1/2 transform -translate-y-1/2 -ml-1 border-t border-l border-card-border-default',
+                placement === 'right' && 'right-full top-1/2 transform -translate-y-1/2 -mr-1 border-b border-r border-card-border-default'
               )} />
             </motion.div>
           </>

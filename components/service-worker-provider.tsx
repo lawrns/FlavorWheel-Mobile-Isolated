@@ -41,7 +41,7 @@ export function ServiceWorkerProvider({ children }: ServiceWorkerProviderProps) 
 
       {/* Offline indicator */}
       {!isOnline && (
-        <div className="fixed bottom-4 left-4 z-50 bg-yellow-500 text-white px-4 py-2 rounded-lg shadow-lg">
+        <div className="fixed bottom-4 left-4 z-50 bg-warning text-white px-4 py-2 rounded-lg shadow-card">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
             <span className="text-sm font-medium">Offline Mode</span>
@@ -52,7 +52,7 @@ export function ServiceWorkerProvider({ children }: ServiceWorkerProviderProps) 
 
       {/* Update available indicator */}
       {updateAvailable && (
-        <div className="fixed top-4 right-4 z-50 bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg">
+        <div className="fixed top-4 right-4 z-50 bg-info text-white px-4 py-2 rounded-lg shadow-card">
           <div className="flex items-center gap-2">
             <span className="text-sm font-medium">Update Available</span>
             <button

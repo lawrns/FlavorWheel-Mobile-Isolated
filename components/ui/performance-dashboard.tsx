@@ -70,7 +70,7 @@ export function PerformanceDashboard({
 
   if (!metrics) {
     return (
-      <Card className="p-6">
+      <Card className="p-card">
         <div className="flex items-center justify-center h-32">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
         </div>
@@ -81,14 +81,14 @@ export function PerformanceDashboard({
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="p-6">
+      <Card className="p-card">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold flex items-center gap-2">
               <BarChart3 className="h-6 w-6" />
               Performance Dashboard
             </h2>
-            <p className="text-muted-foreground mt-1">
+            <p className="text-card-text-secondary mt-1">
               Real-time Core Web Vitals and performance metrics
             </p>
           </div>
@@ -105,13 +105,13 @@ export function PerformanceDashboard({
       </Card>
 
       {/* Core Web Vitals */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-card">
         {Object.entries(vitalsConfig).map(([key, config]) => {
           const value = coreWebVitals[key as keyof CoreWebVitals]
           const status = getVitalsStatus(value, config.thresholds)
 
           return (
-            <Card key={key} className="p-6">
+            <Card key={key} className="p-card">
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="font-semibold text-lg">{config.name}</h3>
@@ -135,23 +135,23 @@ export function PerformanceDashboard({
 
       {/* Navigation Timing */}
       {showDetailedMetrics && metrics.navigationTiming && (
-        <Card className="p-6">
+        <Card className="p-card">
           <h3 className="text-xl font-semibold mb-4">Navigation Timing</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div>
-              <p className="text-sm text-muted-foreground">DOM Interactive</p>
+              <p className="text-sm text-card-text-secondary">DOM Interactive</p>
               <p className="text-lg font-semibold">{formatMetric(metrics.navigationTiming.domInteractive)}</p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">DOM Content Loaded</p>
+              <p className="text-sm text-card-text-secondary">DOM Content Loaded</p>
               <p className="text-lg font-semibold">{formatMetric(metrics.navigationTiming.domContentLoaded)}</p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">DOM Complete</p>
+              <p className="text-sm text-card-text-secondary">DOM Complete</p>
               <p className="text-lg font-semibold">{formatMetric(metrics.navigationTiming.domComplete)}</p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Load Event</p>
+              <p className="text-sm text-card-text-secondary">Load Event</p>
               <p className="text-lg font-semibold">{formatMetric(metrics.navigationTiming.loadEventEnd)}</p>
             </div>
           </div>
@@ -160,7 +160,7 @@ export function PerformanceDashboard({
 
       {/* Resource Timing Summary */}
       {showDetailedMetrics && metrics.resourceTiming.length > 0 && (
-        <Card className="p-6">
+        <Card className="p-card">
           <h3 className="text-xl font-semibold mb-4">Resource Loading</h3>
           <div className="space-y-2">
             {metrics.resourceTiming
@@ -173,12 +173,12 @@ export function PerformanceDashboard({
                     <p className="text-sm font-medium truncate max-w-xs">
                       {resource.name.split('/').pop()}
                     </p>
-                    <p className="text-xs text-muted-foreground">{resource.type}</p>
+                    <p className="text-xs text-card-text-secondary">{resource.type}</p>
                   </div>
                   <div className="text-right">
                     <p className="text-sm font-semibold">{formatMetric(resource.duration)}</p>
                     {resource.size > 0 && (
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-xs text-card-text-secondary">
                         {(resource.size / 1024).toFixed(1)} KB
                       </p>
                     )}
@@ -191,12 +191,12 @@ export function PerformanceDashboard({
 
       {/* Custom Metrics */}
       {showDetailedMetrics && Object.keys(metrics.customMetrics).length > 0 && (
-        <Card className="p-6">
+        <Card className="p-card">
           <h3 className="text-xl font-semibold mb-4">Custom Metrics</h3>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {Object.entries(metrics.customMetrics).map(([key, value]) => (
               <div key={key}>
-                <p className="text-sm text-muted-foreground capitalize">
+                <p className="text-sm text-card-text-secondary capitalize">
                   {key.replace(/_/g, ' ')}
                 </p>
                 <p className="text-lg font-semibold">{formatMetric(value)}</p>
@@ -207,7 +207,7 @@ export function PerformanceDashboard({
       )}
 
       {/* Performance Tips */}
-      <Card className="p-6">
+      <Card className="p-card">
         <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
           <TrendingUp className="h-5 w-5" />
           Performance Optimization Tips
@@ -215,7 +215,7 @@ export function PerformanceDashboard({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
             <h4 className="font-medium">Core Web Vitals Targets:</h4>
-            <ul className="text-sm space-y-1 text-muted-foreground">
+            <ul className="text-sm space-y-1 text-card-text-secondary">
               <li>• LCP: &lt; 2.5s (Good), &lt; 4.0s (Needs improvement)</li>
               <li>• FID: &lt; 100ms (Good), &lt; 300ms (Needs improvement)</li>
               <li>• CLS: &lt; 0.1 (Good), &lt; 0.25 (Needs improvement)</li>
@@ -223,7 +223,7 @@ export function PerformanceDashboard({
           </div>
           <div className="space-y-2">
             <h4 className="font-medium">Optimization Strategies:</h4>
-            <ul className="text-sm space-y-1 text-muted-foreground">
+            <ul className="text-sm space-y-1 text-card-text-secondary">
               <li>• Use dynamic imports for heavy components</li>
               <li>• Implement proper caching strategies</li>
               <li>• Optimize images with responsive loading</li>
@@ -293,7 +293,7 @@ export function PerformanceIndicator() {
         Performance: {overallScore.replace('-', ' ')}
       </span>
       {coreWebVitals.lcp && (
-        <span className="text-xs text-muted-foreground">
+        <span className="text-xs text-card-text-secondary">
           LCP: {(coreWebVitals.lcp / 1000).toFixed(1)}s
         </span>
       )}

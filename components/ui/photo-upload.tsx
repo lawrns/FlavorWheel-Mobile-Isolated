@@ -197,7 +197,7 @@ export function PhotoUpload({
                 <span>Camera</span>
               </Button>
             </div>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-card-text-secondary">
               Upload photos from your device or capture with camera
             </p>
           </div>

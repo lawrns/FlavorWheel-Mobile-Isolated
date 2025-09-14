@@ -203,9 +203,9 @@ export default function SettingsPage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 flex items-center justify-center p-4">
         <Card className="w-full max-w-md text-center">
-          <CardContent className="p-6">
+          <CardContent className="p-card">
             <h2 className="text-xl font-semibold mb-4">Sign in required</h2>
-            <p className="text-muted-foreground mb-6">
+            <p className="text-card-text-secondary mb-6">
               Please sign in to access settings.
             </p>
           </CardContent>
@@ -233,7 +233,7 @@ export default function SettingsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-3xl font-bold text-foreground">Settings</h1>
-                <p className="text-muted-foreground mt-1">
+                <p className="text-card-text-secondary mt-1">
                   Customize your FlavorWheel experience
                 </p>
               </div>
@@ -273,7 +273,7 @@ export default function SettingsPage() {
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
                     <Label>Theme</Label>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-card-text-secondary">
                       Choose your preferred theme
                     </p>
                   </div>
@@ -312,7 +312,7 @@ export default function SettingsPage() {
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
                     <Label>Language</Label>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-card-text-secondary">
                       Select your preferred language
                     </p>
                   </div>
@@ -344,7 +344,7 @@ export default function SettingsPage() {
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
                     <Label>Email Notifications</Label>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-card-text-secondary">
                       Receive updates via email
                     </p>
                   </div>
@@ -359,7 +359,7 @@ export default function SettingsPage() {
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
                     <Label>Push Notifications</Label>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-card-text-secondary">
                       Get notified on your device
                     </p>
                   </div>
@@ -374,7 +374,7 @@ export default function SettingsPage() {
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
                     <Label>Tasting Reminders</Label>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-card-text-secondary">
                       Remind me to log tastings
                     </p>
                   </div>
@@ -389,7 +389,7 @@ export default function SettingsPage() {
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
                     <Label>Social Activity</Label>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-card-text-secondary">
                       Notifications about friends&apos; activity
                     </p>
                   </div>
@@ -404,7 +404,7 @@ export default function SettingsPage() {
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
                     <Label>Weekly Digest</Label>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-card-text-secondary">
                       Weekly summary of your activity
                     </p>
                   </div>
@@ -428,7 +428,7 @@ export default function SettingsPage() {
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
                     <Label>Profile Visibility</Label>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-card-text-secondary">
                       Who can see your profile
                     </p>
                   </div>
@@ -452,7 +452,7 @@ export default function SettingsPage() {
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
                     <Label>Show Activity</Label>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-card-text-secondary">
                       Display your tasting activity to others
                     </p>
                   </div>
@@ -467,7 +467,7 @@ export default function SettingsPage() {
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
                     <Label>Allow Friend Requests</Label>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-card-text-secondary">
                       Let others send you friend requests
                     </p>
                   </div>
@@ -491,7 +491,7 @@ export default function SettingsPage() {
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
                     <Label>Default Tasting Mode</Label>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-card-text-secondary">
                       Preferred tasting interface
                     </p>
                   </div>
@@ -515,7 +515,7 @@ export default function SettingsPage() {
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
                     <Label>Auto-save Drafts</Label>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-card-text-secondary">
                       Automatically save your work
                     </p>
                   </div>
@@ -530,7 +530,7 @@ export default function SettingsPage() {
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
                     <Label>Haptic Feedback</Label>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-card-text-secondary">
                       Enable vibration feedback
                     </p>
                   </div>
@@ -554,7 +554,7 @@ export default function SettingsPage() {
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
                     <Label className="text-fx-ai-confidence-low">Sign Out</Label>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-card-text-secondary">
                       Sign out of your account
                     </p>
                   </div>
@@ -573,7 +573,7 @@ export default function SettingsPage() {
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
                     <Label className="text-fx-ai-confidence-low">Delete Account</Label>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-card-text-secondary">
                       Permanently delete your account and all data
                     </p>
                   </div>

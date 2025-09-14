@@ -136,22 +136,22 @@ function ErrorFallback({
           <div className="mx-auto mb-4 w-16 h-16 bg-fx-ai-confidence-low/20 rounded-full flex items-center justify-center">
             <AlertTriangle className="w-8 h-8 text-fx-ai-confidence-low" />
           </div>
-          <CardTitle className="text-xl text-fx-text-primary">
+          <CardTitle className="text-xl text-card-text-primary">
             Oops! Something went wrong
           </CardTitle>
         </CardHeader>
 
         <CardContent className="space-y-4">
-          <p className="text-center text-fx-text-secondary">
+          <p className="text-center text-card-text-secondary">
             We encountered an unexpected error. Don&apos;t worry, our team has been notified.
           </p>
 
           {error && process.env.NODE_ENV === 'development' && (
             <details className="bg-fx-bg-subtle p-3 rounded-lg text-sm">
-              <summary className="cursor-pointer font-medium text-fx-text-primary">
+              <summary className="cursor-pointer font-medium text-card-text-primary">
                 Error Details (Development)
               </summary>
-              <pre className="mt-2 text-xs text-fx-text-secondary overflow-auto">
+              <pre className="mt-2 text-xs text-card-text-secondary overflow-auto">
                 {error.message}
                 {error.stack && '\n\n' + error.stack}
               </pre>
@@ -182,7 +182,7 @@ function ErrorFallback({
               <Button
                 onClick={onReport}
                 variant="ghost"
-                className="w-full text-fx-text-secondary"
+                className="w-full text-card-text-secondary"
               >
                 <Bug className="w-4 h-4 mr-2" />
                 Report This Error

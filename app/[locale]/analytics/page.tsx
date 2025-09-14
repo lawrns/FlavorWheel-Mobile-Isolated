@@ -238,9 +238,9 @@ export default function AnalyticsPage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 flex items-center justify-center p-4">
         <Card className="w-full max-w-md text-center">
-          <CardContent className="p-6">
+          <CardContent className="p-card">
             <h2 className="text-xl font-semibold mb-4">Sign in required</h2>
-            <p className="text-muted-foreground mb-6">
+            <p className="text-card-text-secondary mb-6">
               Please sign in to view your analytics.
             </p>
           </CardContent>
@@ -268,7 +268,7 @@ export default function AnalyticsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-3xl font-bold text-foreground">Analytics</h1>
-                <p className="text-muted-foreground mt-1">
+                <p className="text-card-text-secondary mt-1">
                   Track your tasting journey and discover insights about your preferences
                 </p>
               </div>
@@ -292,20 +292,20 @@ export default function AnalyticsPage() {
           {analytics && (
             <>
               {/* Key Metrics */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-card mb-8">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 }}
                 >
                   <Card>
-                    <CardContent className="p-6">
+                    <CardContent className="p-card">
                       <div className="flex items-center">
                         <div className="p-2 bg-blue-100 rounded-lg">
                           <BarChart3 className="h-6 w-6 text-blue-600" />
                         </div>
                         <div className="ml-4">
-                          <p className="text-sm font-medium text-muted-foreground">Total Tastings</p>
+                          <p className="text-sm font-medium text-card-text-secondary">Total Tastings</p>
                           <p className="text-2xl font-bold">{analytics.totalTastings}</p>
                         </div>
                       </div>
@@ -319,13 +319,13 @@ export default function AnalyticsPage() {
                   transition={{ delay: 0.2 }}
                 >
                   <Card>
-                    <CardContent className="p-6">
+                    <CardContent className="p-card">
                       <div className="flex items-center">
                         <div className="p-2 bg-green-100 rounded-lg">
                           <Star className="h-6 w-6 text-green-600" />
                         </div>
                         <div className="ml-4">
-                          <p className="text-sm font-medium text-muted-foreground">Average Rating</p>
+                          <p className="text-sm font-medium text-card-text-secondary">Average Rating</p>
                           <p className="text-2xl font-bold">{analytics.averageRating.toFixed(1)}</p>
                         </div>
                       </div>
@@ -339,13 +339,13 @@ export default function AnalyticsPage() {
                   transition={{ delay: 0.3 }}
                 >
                   <Card>
-                    <CardContent className="p-6">
+                    <CardContent className="p-card">
                       <div className="flex items-center">
                         <div className="p-2 bg-purple-100 rounded-lg">
                           <Target className="h-6 w-6 text-purple-600" />
                         </div>
                         <div className="ml-4">
-                          <p className="text-sm font-medium text-muted-foreground">Regions Explored</p>
+                          <p className="text-sm font-medium text-card-text-secondary">Regions Explored</p>
                           <p className="text-2xl font-bold">{analytics.regionsExplored}</p>
                         </div>
                       </div>
@@ -359,13 +359,13 @@ export default function AnalyticsPage() {
                   transition={{ delay: 0.4 }}
                 >
                   <Card>
-                    <CardContent className="p-6">
+                    <CardContent className="p-card">
                       <div className="flex items-center">
                         <div className="p-2 bg-orange-100 rounded-lg">
                           <Award className="h-6 w-6 text-orange-600" />
                         </div>
                         <div className="ml-4">
-                          <p className="text-sm font-medium text-muted-foreground">Achievements</p>
+                          <p className="text-sm font-medium text-card-text-secondary">Achievements</p>
                           <p className="text-2xl font-bold">{analytics.achievements}</p>
                         </div>
                       </div>
@@ -383,7 +383,7 @@ export default function AnalyticsPage() {
                 </TabsList>
 
                 <TabsContent value="overview" className="space-y-6">
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-card">
                     <Card>
                       <CardHeader>
                         <CardTitle className="flex items-center">
@@ -449,7 +449,7 @@ export default function AnalyticsPage() {
                             <span className="text-sm font-medium">{flavor.name}</span>
                             <div className="flex items-center space-x-2">
                               <Progress value={(flavor.count / Math.max(...analytics.flavorPreferences.map(f => f.count))) * 100} className="w-24" />
-                              <span className="text-sm text-muted-foreground w-8">{flavor.count}</span>
+                              <span className="text-sm text-card-text-secondary w-8">{flavor.count}</span>
                             </div>
                           </div>
                         ))}
@@ -459,7 +459,7 @@ export default function AnalyticsPage() {
                 </TabsContent>
 
                 <TabsContent value="progress" className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-card">
                     <Card>
                       <CardHeader>
                         <CardTitle>Tasting Types</CardTitle>
@@ -530,7 +530,7 @@ export default function AnalyticsPage() {
                                 <h4 className={`font-semibold text-sm ${achievement.earned ? 'text-green-800' : 'text-gray-600'}`}>
                                   {achievement.name}
                                 </h4>
-                                <p className="text-xs text-muted-foreground">{achievement.description}</p>
+                                <p className="text-xs text-card-text-secondary">{achievement.description}</p>
                               </div>
                             </div>
                           </CardContent>

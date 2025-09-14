@@ -1,0 +1,103 @@
+{
+  "schema": "flavorwheel.design_system.typography.v1",
+  "metadata": {
+    "title": "FlavorWheel Global Typography System",
+    "version": "1.0.0",
+    "created": "2025-09-14",
+    "purpose": "Define fonts, scales, weights, and fluid typography rules for FlavorWheel mobile app",
+    "scope": "All text styling across the application",
+    "single_source_of_truth": true
+  },
+
+  "font_families": {
+    "heading": {
+      "family": "Crimson Text Variable",
+      "fallback": "Crimson Text, ui-serif, Georgia",
+      "weights": [400, 600, 700],
+      "usage": "Headings, tasting titles, flavor categories",
+      "inspiration": "Mexican heritage serif, evokes tradition and craftsmanship"
+    },
+    "body": {
+      "family": "Inter Variable",
+      "fallback": "Inter, system-ui, -apple-system, sans-serif",
+      "weights": [400, 500, 600],
+      "usage": "Body text, inputs, labels, descriptions",
+      "inspiration": "Modern clarity, optimized for mobile readability"
+    },
+    "mono": {
+      "family": "JetBrains Mono",
+      "fallback": "JetBrains Mono, ui-monospace, monospace",
+      "weights": [400],
+      "usage": "Technical data, NOM numbers, tasting codes",
+      "inspiration": "Technical precision for regulatory and data elements"
+    }
+  },
+
+  "font_weights": {
+    "regular": 400,
+    "medium": 500,
+    "semibold": 600,
+    "bold": 700
+  },
+
+  "fluid_scales": {
+    "heading": {
+      "h1": "clamp(22px, 5vw, 28px)",
+      "h2": "clamp(18px, 4vw, 24px)",
+      "h3": "clamp(16px, 3.5vw, 20px)",
+      "h4": "clamp(14px, 3vw, 18px)",
+      "h5": "clamp(13px, 2.5vw, 16px)",
+      "h6": "clamp(12px, 2vw, 14px)"
+    },
+    "body": {
+      "large": "clamp(18px, 4vw, 20px)",
+      "base": "16px",
+      "small": "clamp(14px, 2.5vw, 15px)",
+      "caption": "clamp(12px, 2vw, 13px)"
+    }
+  },
+
+  "line_heights": {
+    "heading": {
+      "tight": 1.1,
+      "snug": 1.2,
+      "normal": 1.3
+    },
+    "body": {
+      "tight": 1.25,
+      "normal": 1.5,
+      "relaxed": 1.6
+    }
+  },
+
+  "letter_spacing": {
+    "heading": "-0.01em",
+    "body": "0em",
+    "caption": "0.01em"
+  },
+
+  "mobile_optimizations": {
+    "minimum_font_size": "16px to prevent iOS zoom",
+    "fluid_clamp": "Responsive scaling with mobile caps",
+    "font_display": "swap for performance",
+    "variable_fonts": "True for reduced bundle size",
+    "text_size_adjust": "100% to prevent browser scaling"
+  },
+
+  "accessibility": {
+    "contrast": "All text meets WCAG AA requirements",
+    "line_height": "Minimum 1.5 for body text readability",
+    "font_size": "No text smaller than 14px on mobile",
+    "focus_indicators": "Clear text-based focus states",
+    "reduced_motion": "Respects prefers-reduced-motion for animations"
+  },
+
+  "cultural_considerations": {
+    "spanish_first": "Typography optimized for Spanish readability",
+    "accented_characters": "Full support for ñ, á, é, í, ó, ú",
+    "indigenous_terms": "Proper rendering of Nahuatl and Mayan terms",
+    "bilingual_layout": "Support for Spanish-English text combinations"
+  }
+}
+
+

@@ -1,0 +1,143 @@
+{
+  "schema": "flavorwheel.design_system.card_system.v1",
+  "metadata": {
+    "title": "FlavorWheel Unified Card System",
+    "version": "1.0.0",
+    "created": "2025-09-14",
+    "purpose": "Define unified, mobile-first card components with consolidated tokens, cultural authenticity, and accessibility",
+    "scope": "Cards as primary containers for tasting notes, flavor descriptors, community posts, and insights",
+    "single_source_of_truth": true,
+    "replaces": ["fx_tokens", "fw_tokens", "Tailwind card styles"]
+  },
+
+  "design_tokens": {
+    "color": {
+      "bg_primary": "var(--fw-color-papel-artesanal)",
+      "bg_secondary": "var(--fw-color-surface-secondary)",
+      "bg_dark": "var(--fw-color-dark-surface)",
+      "text_primary": "#121212",
+      "text_secondary": "#5C5C5C",
+      "border": "rgba(0,0,0,0.08)",
+      "shadow": "0 2px 8px rgba(0,0,0,0.1)"
+    },
+    "spacing": {
+      "padding": "16px",
+      "margin": "12px",
+      "radius": "16px",
+      "gap": "12px"
+    },
+    "typography": {
+      "title": {
+        "font_family": "Crimson Text Variable",
+        "weight": 600,
+        "size": "clamp(18px, 4vw, 22px)",
+        "line_height": 1.3
+      },
+      "body": {
+        "font_family": "Inter Variable",
+        "weight": 400,
+        "size": "16px",
+        "line_height": 1.6
+      },
+      "caption": {
+        "font_family": "Inter Variable",
+        "weight": 500,
+        "size": "14px",
+        "line_height": 1.4
+      }
+    },
+    "motion": {
+      "hover_raise": {
+        "transform": "translateY(-2px)",
+        "shadow": "0 4px 12px rgba(0,0,0,0.12)",
+        "duration": "150ms",
+        "easing": "ease-out"
+      },
+      "tap_feedback": {
+        "scale": 0.98,
+        "duration": "120ms",
+        "easing": "ease-in",
+        "haptic": "UIImpactFeedbackStyleLight"
+      }
+    }
+  },
+
+  "card_variants": {
+    "default": {
+      "bg": "var(--fw-color-papel-artesanal)",
+      "usage": "General tasting content, static information",
+      "border": "1px solid var(--fw-color-border)"
+    },
+    "elevated": {
+      "bg": "var(--fw-color-surface-primary)",
+      "usage": "Featured tastings, premium elements",
+      "shadow": "var(--fw-color-shadow)"
+    },
+    "interactive": {
+      "bg": "var(--fw-color-papel-artesanal)",
+      "usage": "Flavor selection cards, tappable descriptors",
+      "motion": "tap_feedback",
+      "haptic": "tap"
+    },
+    "image_card": {
+      "bg": "var(--fw-color-surface-secondary)",
+      "usage": "Community posts, bottle imagery, terroir photos",
+      "image_ratio": "16:9 responsive",
+      "caption": "var(--fw-typography-caption)"
+    }
+  },
+
+  "states": {
+    "default": {
+      "shadow": "var(--fw-color-shadow)",
+      "scale": 1
+    },
+    "hover": {
+      "shadow": "0 4px 12px rgba(0,0,0,0.15)",
+      "motion": "hover_raise"
+    },
+    "pressed": {
+      "scale": "0.98",
+      "shadow": "0 1px 4px rgba(0,0,0,0.2)",
+      "haptic": "tap"
+    },
+    "focused": {
+      "outline": "2px solid var(--fw-color-focus-ring)",
+      "outline_offset": "2px"
+    },
+    "disabled": {
+      "bg": "#E0E0E0",
+      "text": "#9E9E9E",
+      "shadow": "none"
+    }
+  },
+
+  "accessibility": {
+    "contrast": "All text on cards >= 4.5:1",
+    "touch_target": "Cards interactive areas ≥44px",
+    "aria_labels": "Card titles and roles exposed for screen readers",
+    "dynamic_content": "Screen reader announces new tasting notes or comments",
+    "semantic_roles": {
+      "card": "role=group",
+      "image_card": "role=figure"
+    }
+  },
+
+  "implementation_notes": {
+    "consolidation": "All card tokens live in `tokens/card.json` with Tailwind plugin integration",
+    "react_component": "<Card /> API with props: variant, title, description, image, interactive",
+    "image_handling": "Responsive WebP/AVIF with lazy loading and blur placeholders",
+    "performance": "GPU-accelerated transforms for hover/tap motion",
+    "haptics": "Integrated via `useHaptics` hook for interactive cards"
+  },
+
+  "success_metrics": {
+    "usability": "95%+ tap accuracy on interactive cards",
+    "contrast": "100% WCAG AA compliance for text on all card backgrounds",
+    "performance": "Card load/render <100ms",
+    "consistency": "No duplicate card styles outside unified system",
+    "cultural_authenticity": "Cards feel artisanal, inspired by Mexican textures (papel, agave, clay)"
+  }
+}
+
+

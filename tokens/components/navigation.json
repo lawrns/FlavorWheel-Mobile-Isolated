@@ -1,0 +1,142 @@
+{
+  "schema": "flavorwheel.design_system.navigation_system.v1",
+  "metadata": {
+    "title": "FlavorWheel Unified Navigation System",
+    "version": "1.0.0",
+    "created": "2025-09-14",
+    "purpose": "Define mobile-first navigation components with consolidated tokens, gesture support, accessibility, and cultural context",
+    "scope": "Bottom navigation, top actions, side sheets, and gesture navigation across FlavorWheel mobile app",
+    "single_source_of_truth": true,
+    "replaces": ["fx_tokens", "fw_tokens", "Tailwind nav styles"]
+  },
+
+  "design_tokens": {
+    "color": {
+      "nav_bg": "var(--fw-color-papel-artesanal)",
+      "nav_bg_dark": "#161614",
+      "nav_icon_active": "var(--fw-color-agave-verde)",
+      "nav_icon_inactive": "#9E9E9E",
+      "nav_text_active": "#121212",
+      "nav_text_inactive": "#757575",
+      "nav_border": "rgba(0,0,0,0.12)"
+    },
+    "spacing": {
+      "height": "64px",
+      "icon_size": "24px",
+      "padding": "12px",
+      "safe_area_padding": "env(safe-area-inset-bottom)"
+    },
+    "typography": {
+      "label": {
+        "font_family": "Inter Variable",
+        "weight": 500,
+        "size": "12px",
+        "line_height": 1.2
+      }
+    },
+    "motion": {
+      "tab_switch": {
+        "type": "fade_slide",
+        "duration": "180ms",
+        "easing": "ease-in-out"
+      },
+      "gesture_feedback": {
+        "haptic": "UIImpactFeedbackStyleLight"
+      }
+    }
+  },
+
+  "navigation_patterns": {
+    "bottom_tab_nav": {
+      "usage": "Primary navigation across app",
+      "items": [
+        { "icon": "flavor_wheel_mexican", "label": "Rueda", "route": "/wheel" },
+        { "icon": "tasting_glass", "label": "Catas", "route": "/sessions" },
+        { "icon": "community", "label": "Comunidad", "route": "/community" },
+        { "icon": "user", "label": "Perfil", "route": "/profile" }
+      ],
+      "active_state": {
+        "icon": "var(--fw-color-agave-verde)",
+        "label": "bold",
+        "haptic": "selection"
+      },
+      "inactive_state": {
+        "icon": "var(--fw-color-nav-icon-inactive)",
+        "label": "regular"
+      }
+    },
+    "top_app_bar": {
+      "usage": "Contextual actions (search, share, settings)",
+      "height": "56px",
+      "actions": [
+        { "icon": "search", "action": "openSearch" },
+        { "icon": "share", "action": "shareTasting" }
+      ],
+      "branding": {
+        "logo": "assets/icons/mexican/agave-plant.svg",
+        "title": "FlavorWheel México"
+      }
+    },
+    "side_sheet": {
+      "usage": "Secondary navigation, advanced filters, settings",
+      "trigger": "hamburger_menu",
+      "motion": "slide_in_left",
+      "safe_area": true
+    },
+    "gestures": {
+      "back": "Swipe from left edge",
+      "forward": "Swipe from right edge",
+      "pull_to_refresh": "Vertical swipe down",
+      "flavor_wheel_gestures": {
+        "rotate": "Drag to rotate wheel",
+        "zoom": "Pinch gesture",
+        "select": "Tap segment",
+        "reset": "Double-tap to reset orientation"
+      }
+    }
+  },
+
+  "states": {
+    "active_tab": {
+      "color": "var(--fw-color-agave-verde)",
+      "haptic": "UISelectionFeedbackGenerator"
+    },
+    "inactive_tab": {
+      "color": "#9E9E9E"
+    },
+    "focused": {
+      "outline": "2px solid var(--fw-color-focus-ring)"
+    }
+  },
+
+  "accessibility": {
+    "contrast": "Icons and labels >= 4.5:1",
+    "touch_targets": "≥44px for all nav items",
+    "labels": "ARIA labels required for all nav items",
+    "screen_reader": "Announces active tab and navigation actions",
+    "gestures_alternatives": "Back button visible for users not using gestures",
+    "safe_area": "Bottom nav respects iOS and Android insets"
+  },
+
+  "implementation_notes": {
+    "consolidation": "All nav tokens live in `tokens/navigation.json`, consumed via Tailwind plugin + CSS vars",
+    "react_components": [
+      "<BottomNav />",
+      "<TopAppBar />",
+      "<SideSheet />"
+    ],
+    "gesture_integration": "React Native Gesture Handler / Capacitor plugin for gestures",
+    "performance": "GPU-accelerated transitions, lazy load side sheet",
+    "haptics": "Integrated via `useHaptics` hook on tab switches and wheel selection"
+  },
+
+  "success_metrics": {
+    "usability": "95%+ navigation success in usability tests",
+    "gesture_accuracy": "90%+ gesture recognition rate",
+    "safe_area_support": "100% across iOS notch + Android cutout devices",
+    "performance": "Nav transitions <200ms",
+    "consistency": "No duplicate nav styles, all from single source of truth"
+  }
+}
+
+

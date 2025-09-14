@@ -179,7 +179,7 @@ export function TemplateLibrary({
       <div className="sm:space-y-(0) flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-2xl font-bold text-mexican-earth">Biblioteca de Plantillas</h2>
-          <p className="text-muted-foreground">
+          <p className="text-card-text-secondary">
             Plantillas prediseñadas para acelerar la creación de catas
           </p>
         </div>
@@ -201,7 +201,7 @@ export function TemplateLibrary({
           <div className="sm:space-y-(0) flex flex-col space-y-4 sm:flex-row sm:items-center sm:space-x-4">
             {/* Search */}
             <div className="relative flex-1">
-              <HiMagnifyingGlass className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
+              <HiMagnifyingGlass className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-card-text-secondary" />
               <Input
                 placeholder="Buscar plantillas..."
                 value={searchQuery}
@@ -265,7 +265,7 @@ export function TemplateLibrary({
 
       {/* Templates Grid */}
       {loading ? (
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-card md:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 6 }).map((_, i) => (
             <Card key={i} className="animate-pulse">
               <CardHeader>
@@ -283,7 +283,7 @@ export function TemplateLibrary({
         </div>
       ) : (
         <AnimatePresence>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-card md:grid-cols-2 lg:grid-cols-3">
             {templates.map((template, index) => {
               const difficultyConfig = getDifficultyConfig(template.difficulty_level)
 
@@ -295,8 +295,7 @@ export function TemplateLibrary({
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  <Card
-                    className="border-organic cursor-pointer transition-all duration-200 hover:shadow-lg"
+                  <Card variant="elevated" className="border-organic cursor-pointer transition-all duration-200 hover:shadow-lg"
                     onClick={() => handleTemplateSelect(template)}
                   >
                     <CardHeader className="pb-3">
@@ -336,7 +335,7 @@ export function TemplateLibrary({
                       </Badge>
 
                       {/* Stats */}
-                      <div className="flex items-center justify-between text-sm text-muted-foreground">
+                      <div className="flex items-center justify-between text-sm text-card-text-secondary">
                         <div className="flex items-center space-x-1">
                           <HiClock className="h-4 w-4" />
                           <span>{formatDuration(template.duration)}</span>
@@ -356,7 +355,7 @@ export function TemplateLibrary({
                               {template.average_rating.toFixed(1)}
                             </span>
                           </div>
-                          <span className="text-xs text-muted-foreground">
+                          <span className="text-xs text-card-text-secondary">
                             ({template.rating_count} valoraciones)
                           </span>
                         </div>
@@ -364,7 +363,7 @@ export function TemplateLibrary({
 
                       {/* Usage Count */}
                       {template.usage_count > 0 && (
-                        <div className="text-xs text-muted-foreground">
+                        <div className="text-xs text-card-text-secondary">
                           Usada {template.usage_count} veces
                         </div>
                       )}
@@ -381,7 +380,7 @@ export function TemplateLibrary({
       {!loading && templates.length === 0 && (
         <Card className="py-12 text-center">
           <CardContent>
-            <div className="text-muted-foreground">
+            <div className="text-card-text-secondary">
               <HiMagnifyingGlass className="mx-auto mb-4 h-12 w-12 opacity-50" />
               <h3 className="mb-2 text-lg font-medium text-foreground">
                 No se encontraron plantillas
@@ -479,7 +478,7 @@ function TemplatePreviewModal({
           </div>
         </DialogHeader>
 
-        <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="mt-6 grid grid-cols-1 gap-card lg:grid-cols-3">
           {/* Main Info */}
           <div className="space-y-6 lg:col-span-2">
             {/* Overview */}
@@ -490,7 +489,7 @@ function TemplatePreviewModal({
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground">Dificultad</label>
+                    <label className="text-sm font-medium text-card-text-secondary">Dificultad</label>
                     <Badge
                       className={cn(
                         'mt-1 block w-fit',
@@ -503,15 +502,15 @@ function TemplatePreviewModal({
                     </Badge>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground">Duración</label>
+                    <label className="text-sm font-medium text-card-text-secondary">Duración</label>
                     <p className="mt-1 font-medium">{formatDuration(template.duration)}</p>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground">Muestras</label>
+                    <label className="text-sm font-medium text-card-text-secondary">Muestras</label>
                     <p className="mt-1 font-medium">{template.num_samples} bebidas</p>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground">
+                    <label className="text-sm font-medium text-card-text-secondary">
                       Método de Puntuación
                     </label>
                     <p className="mt-1 font-medium capitalize">{template.scoring_methods.method}</p>
@@ -534,7 +533,7 @@ function TemplatePreviewModal({
                     >
                       <div>
                         <p className="font-medium">{criteria.name}</p>
-                        <p className="text-sm capitalize text-muted-foreground">{criteria.type}</p>
+                        <p className="text-sm capitalize text-card-text-secondary">{criteria.type}</p>
                       </div>
                       {criteria.options && (
                         <Badge variant="outline" className="text-xs">
@@ -558,7 +557,7 @@ function TemplatePreviewModal({
                     {template.educational_content.map((content, index) => (
                       <div key={index} className="border-l-4 border-mexican-green pl-4">
                         <h4 className="font-medium text-mexican-earth">{content.title}</h4>
-                        <p className="mt-1 text-sm text-muted-foreground">{content.content}</p>
+                        <p className="mt-1 text-sm text-card-text-secondary">{content.content}</p>
                       </div>
                     ))}
                   </div>
@@ -577,7 +576,7 @@ function TemplatePreviewModal({
               <CardContent className="space-y-4">
                 {template.nom_classifications.length > 0 && (
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground">
+                    <label className="text-sm font-medium text-card-text-secondary">
                       Clasificaciones NOM
                     </label>
                     <div className="mt-2 flex flex-wrap gap-1">
@@ -592,7 +591,7 @@ function TemplatePreviewModal({
 
                 {template.terroir_regions.length > 0 && (
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground">Regiones</label>
+                    <label className="text-sm font-medium text-card-text-secondary">Regiones</label>
                     <div className="mt-2 flex flex-wrap gap-1">
                       {template.terroir_regions.map((region, index) => (
                         <Badge
@@ -609,7 +608,7 @@ function TemplatePreviewModal({
 
                 {template.production_methods.length > 0 && (
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground">
+                    <label className="text-sm font-medium text-card-text-secondary">
                       Métodos de Producción
                     </label>
                     <div className="mt-2 flex flex-wrap gap-1">
@@ -633,7 +632,7 @@ function TemplatePreviewModal({
                 <CardContent>
                   <div className="space-y-2">
                     {template.cultural_context.map((context, index) => (
-                      <p key={index} className="text-sm italic text-muted-foreground">
+                      <p key={index} className="text-sm italic text-card-text-secondary">
                         &ldquo;{context}&rdquo;
                       </p>
                     ))}
@@ -650,11 +649,11 @@ function TemplatePreviewModal({
               <CardContent className="space-y-3">
                 {template.rating_count > 0 && (
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Valoración</span>
+                    <span className="text-sm text-card-text-secondary">Valoración</span>
                     <div className="flex items-center space-x-1">
                       <HiStar className="h-4 w-4 fill-current text-mexican-amber" />
                       <span className="font-medium">{template.average_rating.toFixed(1)}</span>
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-xs text-card-text-secondary">
                         ({template.rating_count})
                       </span>
                     </div>
@@ -662,12 +661,12 @@ function TemplatePreviewModal({
                 )}
 
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Usos</span>
+                  <span className="text-sm text-card-text-secondary">Usos</span>
                   <span className="font-medium">{template.usage_count}</span>
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Creada</span>
+                  <span className="text-sm text-card-text-secondary">Creada</span>
                   <span className="text-xs font-medium">
                     {new Date(template.created_at).toLocaleDateString('es-MX')}
                   </span>

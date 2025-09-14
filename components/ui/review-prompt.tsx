@@ -93,7 +93,7 @@ export function ReviewPrompt({
             </Button>
           )}
         </CardTitle>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-card-text-secondary">
           Share your experience with {itemName} from {tastingName}
         </p>
       </CardHeader>

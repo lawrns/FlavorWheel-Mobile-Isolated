@@ -107,7 +107,6 @@ export async function getUserQuickTastings() {
       `)
       .eq('created_by', user.id)
       .order('created_at', { ascending: false })
-      .single()
 
     if (tastingsError) {
       throw tastingsError

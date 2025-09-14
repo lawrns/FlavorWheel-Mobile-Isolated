@@ -143,7 +143,7 @@ export default function TastingDetailPage() {
           </Button>
           <div className="space-y-4">
             <p className="text-sm text-red-600">Could not load tasting.</p>
-            <p className="text-xs text-muted-foreground">{error}</p>
+            <p className="text-xs text-card-text-secondary">{error}</p>
 
             <div className="flex gap-2">
               <Button onClick={refresh} variant="outline" size="sm">
@@ -336,7 +336,7 @@ export default function TastingDetailPage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-card-text-secondary">
               Share this tasting with friends so they can join and participate
             </p>
             <div className="flex gap-2">
@@ -371,7 +371,7 @@ export default function TastingDetailPage() {
           <CardContent className="space-y-3">
             {scheduledDate && scheduledTime ? (
               <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-card-text-secondary">
                   This tasting is scheduled for:
                 </p>
                 <div className="flex items-center gap-2 p-2 bg-muted rounded-md">
@@ -393,7 +393,7 @@ export default function TastingDetailPage() {
               </div>
             ) : (
               <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-card-text-secondary">
                   Schedule this tasting for a specific date and time
                 </p>
                 <Button

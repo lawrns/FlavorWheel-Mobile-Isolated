@@ -34,9 +34,9 @@ export default function SocialPage() {
       <UnifiedAppShell variant="dashboard" activeNavItemOverride="social">
         <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 flex items-center justify-center p-4">
           <Card className="w-full max-w-md text-center">
-            <CardContent className="p-6">
+            <CardContent className="p-card">
               <h2 className="text-xl font-semibold mb-4">Sign in required</h2>
-              <p className="text-muted-foreground mb-6">
+              <p className="text-card-text-secondary mb-6">
                 Please sign in to access the social community features.
               </p>
               <Link href={`/${locale}/login`}>
@@ -58,7 +58,7 @@ export default function SocialPage() {
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-3xl font-bold text-foreground">Social Community</h1>
-                <p className="text-muted-foreground mt-1">
+                <p className="text-card-text-secondary mt-1">
                   Connect with fellow tasting enthusiasts and share your experiences
                 </p>
               </div>
@@ -72,7 +72,7 @@ export default function SocialPage() {
                       statistics?.activeUsers || 0
                     )}
                   </div>
-                  <div className="text-xs text-muted-foreground">Active Members</div>
+                  <div className="text-xs text-card-text-secondary">Active Members</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-gradient-primary mb-2">
@@ -82,7 +82,7 @@ export default function SocialPage() {
                       statistics?.totalReviews || 0
                     )}
                   </div>
-                  <div className="text-xs text-muted-foreground">Reviews Shared</div>
+                  <div className="text-xs text-card-text-secondary">Reviews Shared</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-gradient-warm mb-2">
@@ -92,7 +92,7 @@ export default function SocialPage() {
                       statistics?.totalTastings || 0
                     )}
                   </div>
-                  <div className="text-xs text-muted-foreground">Tastings Completed</div>
+                  <div className="text-xs text-card-text-secondary">Tastings Completed</div>
                 </div>
               </div>
             </div>
@@ -132,7 +132,7 @@ export default function SocialPage() {
 
             <TabsContent value="discover" className="space-y-6">
               {/* Discover Section */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-card">
                 {/* Featured Tastings */}
                 <Card>
                   <CardHeader>
@@ -159,7 +159,7 @@ export default function SocialPage() {
                         <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                           <div>
                             <p className="font-medium">{spirit.name}</p>
-                            <p className="text-sm text-muted-foreground">
+                            <p className="text-sm text-card-text-secondary">
                               {spirit.reviewCount} reviews • ⭐ {spirit.avgRating.toFixed(1)}
                             </p>
                           </div>
@@ -169,7 +169,7 @@ export default function SocialPage() {
                         </div>
                       ))
                     ) : (
-                      <div className="text-center py-4 text-muted-foreground">
+                      <div className="text-center py-4 text-card-text-secondary">
                         <p className="text-sm">No trending spirits yet</p>
                         <p className="text-xs">Share reviews to see trends!</p>
                       </div>
@@ -221,7 +221,7 @@ export default function SocialPage() {
                             </div>
                             <div>
                               <p className="font-medium">{contributor.name}</p>
-                              <p className="text-sm text-muted-foreground">
+                              <p className="text-sm text-card-text-secondary">
                                 {contributor.reviewsCount} reviews
                               </p>
                             </div>
@@ -231,7 +231,7 @@ export default function SocialPage() {
                           </div>
                         ))
                       ) : (
-                        <div className="text-center py-4 text-muted-foreground">
+                        <div className="text-center py-4 text-card-text-secondary">
                           <p className="text-sm">No contributors yet</p>
                           <p className="text-xs">Be the first to share reviews!</p>
                         </div>
@@ -252,19 +252,19 @@ export default function SocialPage() {
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
                         <span className="text-sm">#MezcalMonday</span>
-                        <span className="text-xs text-muted-foreground">156 posts</span>
+                        <span className="text-xs text-card-text-secondary">156 posts</span>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-sm">#TequilaTasting</span>
-                        <span className="text-xs text-muted-foreground">89 posts</span>
+                        <span className="text-xs text-card-text-secondary">89 posts</span>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-sm">#BlindTasting</span>
-                        <span className="text-xs text-muted-foreground">67 posts</span>
+                        <span className="text-xs text-card-text-secondary">67 posts</span>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-sm">#FlavorWheels</span>
-                        <span className="text-xs text-muted-foreground">43 posts</span>
+                        <span className="text-xs text-card-text-secondary">43 posts</span>
                       </div>
                     </div>
                   </CardContent>
@@ -286,7 +286,7 @@ export default function SocialPage() {
                           statistics?.recentActivity?.find(a => a.type === 'review')?.count || 0
                         )}
                       </div>
-                      <div className="text-sm text-muted-foreground">New Reviews Today</div>
+                      <div className="text-sm text-card-text-secondary">New Reviews Today</div>
                       {statistics?.recentActivity?.find(a => a.type === 'review')?.change && (
                         <div className={`text-xs flex items-center justify-center mt-1 ${
                           statistics.recentActivity.find(a => a.type === 'review')!.change > 0
@@ -309,7 +309,7 @@ export default function SocialPage() {
                           statistics?.recentActivity?.find(a => a.type === 'tasting')?.count || 0
                         )}
                       </div>
-                      <div className="text-sm text-muted-foreground">New Tastings Today</div>
+                      <div className="text-sm text-card-text-secondary">New Tastings Today</div>
                       {statistics?.recentActivity?.find(a => a.type === 'tasting')?.change && (
                         <div className={`text-xs flex items-center justify-center mt-1 ${
                           statistics.recentActivity.find(a => a.type === 'tasting')!.change > 0
@@ -332,7 +332,7 @@ export default function SocialPage() {
                           statistics?.totalPhotos || 0
                         )}
                       </div>
-                      <div className="text-sm text-muted-foreground">Photos Shared</div>
+                      <div className="text-sm text-card-text-secondary">Photos Shared</div>
                     </div>
                     <div>
                       <div className="text-2xl font-bold text-gradient-accent">
@@ -342,7 +342,7 @@ export default function SocialPage() {
                           statistics?.communityEngagement || 0
                         )}
                       </div>
-                      <div className="text-sm text-muted-foreground">Community Activity</div>
+                      <div className="text-sm text-card-text-secondary">Community Activity</div>
                     </div>
                   </div>
                 </CardContent>

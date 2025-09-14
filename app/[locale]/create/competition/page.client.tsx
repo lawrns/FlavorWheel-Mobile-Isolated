@@ -440,14 +440,14 @@ export default function CreateCompetitionPage() {
           <div className="flex items-center justify-between p-4 border-b">
             <button
               onClick={() => setFlowStep('create')}
-              className="flex items-center gap-2 text-fx-text-primary hover:text-fx-text-secondary"
+              className="flex items-center gap-2 text-card-text-primary hover:text-card-text-secondary"
             >
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
               Back
             </button>
-            <h1 className="text-lg font-semibold text-fx-text-primary">Confirm Competition</h1>
+            <h1 className="text-lg font-semibold text-card-text-primary">Confirm Competition</h1>
             <div className="w-16"></div>
           </div>
         }
@@ -493,14 +493,14 @@ export default function CreateCompetitionPage() {
           <div className="flex items-center justify-between p-4 border-b">
             <button
               onClick={() => setFlowStep('confirm')}
-              className="flex items-center gap-2 text-fx-text-primary hover:text-fx-text-secondary"
+              className="flex items-center gap-2 text-card-text-primary hover:text-card-text-secondary"
             >
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
               Back
             </button>
-            <h1 className="text-lg font-semibold text-fx-text-primary">Competition Input</h1>
+            <h1 className="text-lg font-semibold text-card-text-primary">Competition Input</h1>
             <div className="w-16"></div>
           </div>
         }
@@ -568,14 +568,14 @@ export default function CreateCompetitionPage() {
           <div className="flex items-center justify-between p-4 border-b">
             <button
               onClick={() => setFlowStep('input')}
-              className="flex items-center gap-2 text-fx-text-primary hover:text-fx-text-secondary"
+              className="flex items-center gap-2 text-card-text-primary hover:text-card-text-secondary"
             >
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
               Back
             </button>
-            <h1 className="text-lg font-semibold text-fx-text-primary">Competition Complete</h1>
+            <h1 className="text-lg font-semibold text-card-text-primary">Competition Complete</h1>
             <div className="w-16"></div>
           </div>
         }
@@ -613,14 +613,14 @@ export default function CreateCompetitionPage() {
         <div className="flex items-center justify-between p-4 border-b">
           <button
             onClick={() => router.back()}
-            className="flex items-center gap-2 text-fx-text-primary hover:text-fx-text-secondary"
+            className="flex items-center gap-2 text-card-text-primary hover:text-card-text-secondary"
           >
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
             Back
           </button>
-          <h1 className="text-lg font-semibold text-fx-text-primary">Competition</h1>
+          <h1 className="text-lg font-semibold text-card-text-primary">Competition</h1>
           <div className="w-16"></div>
           {lastSaved && (
             <div className="text-xs text-green-600">Auto-saved</div>
@@ -634,7 +634,7 @@ export default function CreateCompetitionPage() {
       <div className="space-y-6 pb-24">
         {/* Basic Information */}
         <section id="basic_info">
-          <Card className="rounded-xl bg-white shadow-soft border border-fx-border p-4 sm:p-5 hover-lift card-enter">
+          <Card variant="elevated" className="rounded-xl bg-white shadow-soft border border-card-border p-4 sm:p-5 hover-lift card-enter">
             <CardHeader className="pb-4">
               <CardTitle className="text-xl font-semibold text-fx-text font-heading">Basic Information</CardTitle>
             </CardHeader>
@@ -728,7 +728,7 @@ export default function CreateCompetitionPage() {
 
         {/* Competition Photo */}
         <section id="competition_photo">
-          <Card className="rounded-xl bg-white shadow-soft border border-fx-border p-4 sm:p-5 hover-lift card-enter">
+          <Card variant="elevated" className="rounded-xl bg-white shadow-soft border border-card-border p-4 sm:p-5 hover-lift card-enter">
             <CardHeader className="pb-4">
               <CardTitle className="text-xl font-semibold text-fx-text font-heading">Competition Photo</CardTitle>
               <p className="text-sm text-fx-text2 mt-1">Add a photo for your competition</p>
@@ -749,7 +749,7 @@ export default function CreateCompetitionPage() {
 
         {/* Evaluation Categories */}
         <section id="evaluation_categories">
-          <Card className="rounded-xl bg-white shadow-fx border border-fx-border p-4 sm:p-5">
+          <Card variant="elevated" className="rounded-xl bg-white shadow-fx border border-card-border p-4 sm:p-5">
             <Collapsible defaultOpen={false}>
                       <div className="flex items-center justify-between">
                 <div>
@@ -797,7 +797,7 @@ export default function CreateCompetitionPage() {
                   {/* Categories Repeater */}
                   <div data-testid="repeater-categories" className="space-y-4">
                   {formData.categories.map((category, index) => (
-                    <div key={category.id} className="border border-fx-border rounded-lg p-4 space-y-3">
+                    <div key={category.id} className="border border-card-border rounded-lg p-4 space-y-3">
                       <div className="flex items-center justify-between">
                         <Label className="text-sm font-semibold text-fx-text">
                           Category {index + 1}
@@ -954,7 +954,7 @@ export default function CreateCompetitionPage() {
 
           {/* Items to Taste */}
         <section id="items_to_taste">
-          <Card className="rounded-xl bg-white shadow-fx border border-fx-border p-4 sm:p-5">
+          <Card variant="elevated" className="rounded-xl bg-white shadow-fx border border-card-border p-4 sm:p-5">
             <Collapsible defaultOpen={false}>
               <div className="flex items-center justify-between">
                 <div>
@@ -978,7 +978,7 @@ export default function CreateCompetitionPage() {
                 <div className="mt-4 space-y-4">
                   <div data-testid="repeater-items" className="space-y-4">
                 {formData.items.map((item, index) => (
-                  <div key={item.id} className="border border-fx-border rounded-lg p-4 space-y-3">
+                  <div key={item.id} className="border border-card-border rounded-lg p-4 space-y-3">
                     <div className="flex items-center justify-between">
                       <Label className="text-sm font-semibold text-fx-text">
                         Item {index + 1}
@@ -1075,7 +1075,7 @@ export default function CreateCompetitionPage() {
 
         {/* Participants */}
         <section id="participants">
-          <Card className="rounded-xl bg-white shadow-fx border border-fx-border p-4 sm:p-5">
+          <Card variant="elevated" className="rounded-xl bg-white shadow-fx border border-card-border p-4 sm:p-5">
             <Collapsible defaultOpen={false}>
               <div className="flex items-center justify-between">
                 <div>
@@ -1122,7 +1122,7 @@ export default function CreateCompetitionPage() {
                   {/* Participants List */}
                   <div data-testid="repeater-participants" className="space-y-4">
                     {formData.participants.map((participant, index) => (
-                      <div key={participant.id} className="border border-fx-border rounded-lg p-4 space-y-3">
+                      <div key={participant.id} className="border border-card-border rounded-lg p-4 space-y-3">
                         <div className="flex items-center justify-between">
                           <Label className="text-sm font-semibold text-fx-text">
                             Participant {index + 1}

@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { MOBILE_NAV_ITEMS } from '@/lib/navigation-config'
 import { LogoOnly, BrandTitle } from '@/components/brand'
-import { ThemeToggle } from '@/components/ui/loading-states'
+import { ThemeToggle } from '@/components/ui/theme-toggle'
 import { shouldShowNav } from '@/lib/navigation-visibility'
 import { navProps, navButtonProps, focusProps } from '@/lib/a11y/roles'
 
@@ -95,19 +95,21 @@ export function MobileNavigation({
         data-testid="mobile-navigation-root"
         id="mobile-navigation"
         className={cn(
-          'fixed bottom-0 left-0 right-0 z-[10] h-20', // Increased height for better touch targets
-          'pb-safe border-t border-fx-border-default',
-          'bg-fx-card/98 backdrop-blur-xl shadow-fx-xl will-change-transform',
+          'fixed bottom-0 left-0 right-0 z-[50] h-nav-height',
+          'pb-nav-safe-area border-t border-nav-border',
+          'bg-nav-bg/98 backdrop-blur-xl shadow-card will-change-transform',
           'supports-[backdrop-filter]:backdrop-blur-xl',
-          'md:hidden', // Only show on mobile
+          'md:hidden',
           className
         )}
         {...navProps('Bottom Navigation')}
         suppressHydrationWarning
         style={{
-          backgroundColor: 'var(--fx-card, rgba(255, 255, 255, 0.95))',
-          borderColor: 'var(--fx-border-default, #e5e7eb)',
-          borderTop: '1px solid var(--fx-border-default, #e5e7eb)',
+          backgroundColor: 'var(--fw-color-nav-bg, rgba(255, 255, 255, 0.95))',
+          borderColor: 'var(--fw-color-nav-border, #e5e7eb)',
+          borderTop: '1px solid var(--fw-color-nav-border, #e5e7eb)',
+          paddingBottom: 'calc(12px + env(safe-area-inset-bottom, 0px))',
+          height: 'calc(64px + env(safe-area-inset-bottom, 0px))',
           display: 'block',
           visibility: 'visible',
           opacity: 1
@@ -137,12 +139,13 @@ export function MobileNavigation({
               {...navButtonProps(activeScreen === item.id, `Navigate to ${item.label}${activeScreen === item.id ? ' (current page)' : ''}`)}
               data-nav-item={item.id}
               className={cn(
-                'group relative flex min-w-[64px] min-h-[48px] flex-col items-center justify-center rounded-xl p-3',
-                'transition-all duration-300 ease-out haptic-light touch-manipulation',
-                'focus-visible:ring-2 focus-visible:ring-fx-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-fx-bg',
+                'group relative flex min-w-[64px] min-h-[48px] flex-col items-center justify-center rounded-xl p-nav-padding',
+                'transition-all duration-fast ease-standard haptic-light touch-manipulation',
+                'focus-visible:ring-2 focus-visible:ring-offset-2',
                 activeScreen === item.id
-                  ? 'bg-fx-primary/20 text-fx-primary shadow-fx-md scale-105'
-                  : 'text-fx-text-secondary hover:bg-fx-bg-subtle/60 hover:text-fx-text-primary hover:scale-105 active:bg-fx-primary/10'
+                  ? 'bg-nav-icon-active/20 text-nav-icon-active shadow-card scale-105'
+                  : 'text-nav-text-inactive hover:bg-nav-bg/60 hover:text-nav-text-active hover:scale-105 active:bg-nav-icon-active/10',
+                'focus-visible:border-input-focus-border focus-visible:ring-input-focus-border'
               )}
               whileTap={{ scale: 0.92 }}
               whileHover={{ scale: 1.08 }}
@@ -152,14 +155,18 @@ export function MobileNavigation({
               }}
             >
               <item.icon className="mb-1 h-6 w-6" />
-              <span className="max-w-[60px] truncate text-center text-fx-text-primary text-xs font-medium">
+              <span className={cn(
+                'max-w-[60px] truncate text-center',
+                'font-[var(--fw-typography-nav-label-family)] font-[var(--fw-typography-nav-label-weight)] text-[var(--fw-typography-nav-label-size)] leading-[var(--fw-typography-nav-label-line-height)]',
+                activeScreen === item.id ? 'text-nav-text-active' : 'text-nav-text-inactive'
+              )}>
                 {item.label}
               </span>
 
               {/* Active indicator */}
               {activeScreen === item.id && (
                 <MotionDiv
-                  className="absolute -top-1 left-1/2 h-1 w-1 rounded-full bg-fx-primary"
+                  className="absolute -top-1 left-1/2 h-1 w-1 rounded-full bg-nav-icon-active"
                   layoutId="activeIndicator"
                   style={{ x: '-50%' }}
                 />
@@ -230,10 +237,10 @@ export function MobileNavigation({
                 {/* Header with Logo and Brand */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <LogoOnly size="sm" className="h-10 w-10" />
+                    <LogoOnly size="md" className="h-12 w-12" />
                     <div>
-                      <h3 className="text-lg font-bold text-fx-text-primary">FlavorWheel</h3>
-                      <p className="text-xs text-fx-text-secondary">Professional Tasting</p>
+                      <h3 className="text-lg font-bold text-fx-text-primary">FlavorWheel México</h3>
+                      <p className="text-xs text-fx-text-secondary">Authentic Mexican Tasting</p>
                     </div>
                   </div>
                   <motion.button

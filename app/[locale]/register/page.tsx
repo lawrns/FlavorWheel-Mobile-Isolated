@@ -221,9 +221,9 @@ export default function RegisterPage() {
         </div>
 
         {/* Registration Form */}
-        <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+        <Card variant="elevated" className="backdrop-blur-sm">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-semibold text-center">Create Account</CardTitle>
+            <CardTitle className="text-2xl font-semibold text-center text-card-text-primary">Create Account</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <form onSubmit={handleRegister} className="space-y-4">

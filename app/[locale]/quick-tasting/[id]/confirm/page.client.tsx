@@ -118,7 +118,7 @@ export default function QuickTastingConfirmPageClient({ params }: QuickTastingCo
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-sm text-muted-foreground">Loading tasting details...</p>
+            <p className="text-sm text-card-text-secondary">Loading tasting details...</p>
           </div>
         </div>
       </DashboardAppShell>
@@ -157,7 +157,7 @@ export default function QuickTastingConfirmPageClient({ params }: QuickTastingCo
 
           <div className="text-center">
             <h1 className="text-2xl font-bold">Quick Tasting Ready</h1>
-            <p className="text-sm text-muted-foreground">Ready to taste in seconds</p>
+            <p className="text-sm text-card-text-secondary">Ready to taste in seconds</p>
           </div>
 
           <div className="w-16" /> {/* Spacer */}

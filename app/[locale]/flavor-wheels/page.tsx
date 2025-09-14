@@ -15,6 +15,8 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Input } from '@/components/ui/input'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { ErrorBoundary } from '@/components/error-boundary'
+import { TransparencyModal } from '@/components/ai/TransparencyModal'
+import { ThemeDebug } from '@/components/ui/theme-debug'
 import { errorHandler } from '@/lib/error-handling'
 import {
   Target,
@@ -100,6 +102,7 @@ export default function FlavorWheelsPage() {
   const [wheelType, setWheelType] = useState<'aroma' | 'flavor' | 'combined' | 'metaphor'>('combined')
   const [scope, setScope] = useState<'personal' | 'universal'>('personal')
   const [wheelData, setWheelData] = useState<FlavorNode | null>(null)
+  const [showTransparency, setShowTransparency] = useState(false)
 
   // State for social features and pill button selection
   const [selectedSection, setSelectedSection] = useState<'reviews' | 'events' | 'friends' | 'create'>('reviews')
@@ -413,8 +416,8 @@ export default function FlavorWheelsPage() {
 
       // Show user-friendly error message only for critical errors
       toast({
-        title: 'Error de conexión',
-        description: 'Algunos datos sociales no se pudieron cargar. La aplicación seguirá funcionando.',
+        title: 'Connection error',
+        description: 'Some social data could not be loaded. The application will continue to function.',
         variant: 'destructive',
       })
     } finally {
@@ -465,7 +468,7 @@ export default function FlavorWheelsPage() {
         try {
           await navigator.share({
             title: `My Review: ${review.tasting?.name} - FlavorWheel`,
-            text: `Descubre mi reseña de ${review.item?.name}`,
+            text: `Check out my review of ${review.item?.name}`,
             url: `${window.location.origin}/${locale}/flavor-wheels?shared=${review.id}`,
           })
         } catch (error) {
@@ -475,20 +478,20 @@ export default function FlavorWheelsPage() {
         // Fallback: download PDF and copy link
         const link = document.createElement('a')
         link.href = pdfUrl
-        link.download = `reseña-${review.tasting?.name}-${review.item?.name}.pdf`
+        link.download = `review-${review.tasting?.name}-${review.item?.name}.pdf`
         link.click()
 
         await navigator.clipboard.writeText(`${window.location.origin}/${locale}/flavor-wheels?shared=${review.id}`)
         toast({
-          title: '¡PDF descargado y enlace copiado!',
-          description: 'El PDF se ha descargado y el enlace se copió al portapapeles',
+          title: 'PDF downloaded and link copied',
+          description: 'The PDF was downloaded and the link was copied to your clipboard.',
         })
       }
     } catch (error) {
       console.error('Error sharing review:', error)
       toast({
-        title: 'Error al compartir',
-        description: 'No se pudo generar el PDF para compartir',
+        title: 'Sharing error',
+        description: 'Could not generate the PDF for sharing',
         variant: 'destructive',
       })
     }
@@ -526,36 +529,47 @@ export default function FlavorWheelsPage() {
     <UnifiedAppShell variant="dashboard" activeNavItemOverride="flavor-wheels">
       <ErrorBoundary>
         <div className="min-h-screen bg-fx-bg">
-        {/* Header - Mobile Optimized */}
-        <div className="sticky top-0 z-10 bg-background/80 backdrop-blur border-b">
-          <div className="w-full px-3 sm:px-6 py-3 sm:py-4">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
-              <div className="min-w-0">
-                <h1 className="fx-text-lg sm:fx-text-2xl font-bold text-foreground truncate">Flavor Wheels</h1>
-                <p className="fx-text-xs sm:fx-text-sm text-fx-text-muted">Explore and analyze your personalized flavor profiles</p>
-              </div>
-              <div className="flex items-center space-x-2 flex-shrink-0">
-                <Button variant="outline" size="sm" onClick={refreshData} disabled={loading} className="fx-text-xs sm:fx-text-sm min-h-[44px]">
-                  <RefreshCw className={`mr-1 sm:mr-2 h-4 w-4 sm:h-5 sm:w-5 ${loading ? 'animate-spin' : ''}`} />
-                  <span className="hidden sm:inline">Refresh</span>
-                  <span className="sm:hidden">↻</span>
-                </Button>
+          {/* Header - Mobile Optimized */}
+          <div className="sticky top-0 z-10 bg-background/80 backdrop-blur border-b">
+            <div className="w-full px-3 sm:px-6 py-3 sm:py-4">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
+                <div className="min-w-0">
+                  <h1 className="fx-text-lg sm:fx-text-2xl font-bold text-foreground truncate">Flavor Wheels</h1>
+                  <p className="fx-text-xs sm:fx-text-sm text-fx-text-muted">Explore and analyze your personalized flavor profiles</p>
+                </div>
+                <div className="flex items-center space-x-2 flex-shrink-0">
+                  <Button variant="outline" size="sm" onClick={refreshData} disabled={loading} className="fx-text-xs sm:fx-text-sm min-h-[44px]">
+                    <RefreshCw className={`mr-1 sm:mr-2 h-4 w-4 sm:h-5 sm:w-5 ${loading ? 'animate-spin' : ''}`} />
+                    <span className="hidden sm:inline">Refresh</span>
+                    <span className="sm:hidden">↻</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowTransparency(true)}
+                    className="fx-text-xs sm:fx-text-sm min-h-[44px]"
+                  >
+                    <Globe className="mr-1 sm:mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                    <span className="hidden sm:inline">AI Transparency</span>
+                    <span className="sm:hidden">AI</span>
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-
+        {/* Header ends; keep main container open */}
+        {/* Duplicate header removed */}
         {/* Main Content - Mobile-First Responsive Design */}
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
           {/* Top Pill Buttons - Mobile Optimized */}
-          <div className="flex flex-col sm:flex-row justify-center gap-6 mb-6">
+          <div className="flex flex-col sm:flex-row justify-center gap-card mb-6">
             <Button
               variant={selectedSection === 'reviews' ? 'default' : 'outline'}
               size="sm"
               className={`w-full sm:w-auto rounded-full px-3 sm:px-4 py-2 fx-text-xs sm:fx-text-sm transition-colors duration-normal ease-standard ${
                 selectedSection === 'reviews'
                   ? 'bg-fx-primary hover:bg-fx-primary-hover text-fx-text-inverse'
-                  : 'bg-fx-bg border-fx-border-subtle text-fx-text-primary hover:bg-fx-bg-subtle'
+                  : 'bg-fx-bg border-card-border-subtle text-card-text-primary hover:bg-fx-bg-subtle'
               }`}
               onClick={() => setSelectedSection('reviews')}
             >
@@ -576,7 +590,7 @@ export default function FlavorWheelsPage() {
               className={`w-full sm:w-auto rounded-full px-3 sm:px-4 py-2 fx-text-xs sm:fx-text-sm transition-colors duration-normal ease-standard ${
                 selectedSection === 'events'
                   ? 'bg-fx-primary hover:bg-fx-primary-hover text-fx-text-inverse'
-                  : 'bg-fx-bg border-fx-border-subtle text-fx-text-primary hover:bg-fx-bg-subtle'
+                  : 'bg-fx-bg border-card-border-subtle text-card-text-primary hover:bg-fx-bg-subtle'
               }`}
               onClick={() => setSelectedSection('events')}
             >
@@ -597,7 +611,7 @@ export default function FlavorWheelsPage() {
               className={`w-full sm:w-auto rounded-full px-3 sm:px-4 py-2 fx-text-xs sm:fx-text-sm transition-colors duration-normal ease-standard ${
                 selectedSection === 'friends'
                   ? 'bg-fx-primary hover:bg-fx-primary-hover text-fx-text-inverse'
-                  : 'bg-fx-bg border-fx-border-subtle text-fx-text-primary hover:bg-fx-bg-subtle'
+                  : 'bg-fx-bg border-card-border-subtle text-card-text-primary hover:bg-fx-bg-subtle'
               }`}
               onClick={() => setSelectedSection('friends')}
             >
@@ -618,7 +632,7 @@ export default function FlavorWheelsPage() {
               className={`w-full sm:w-auto rounded-full px-3 sm:px-4 py-2 fx-text-xs sm:fx-text-sm transition-colors duration-normal ease-standard ${
                 selectedSection === 'create'
                   ? 'bg-fx-primary hover:bg-fx-primary-hover text-fx-text-inverse'
-                  : 'bg-fx-bg border-fx-border-subtle text-fx-text-primary hover:bg-fx-bg-subtle'
+                  : 'bg-fx-bg border-card-border-subtle text-card-text-primary hover:bg-fx-bg-subtle'
               }`}
               onClick={() => setSelectedSection('create')}
             >
@@ -643,7 +657,7 @@ export default function FlavorWheelsPage() {
                     <div className="space-y-2 sm:space-y-3">
                       {loadingSocial ? (
                         <div className="flex items-center justify-center py-6 sm:py-8">
-                          <div className="h-5 w-5 sm:h-6 sm:w-6 animate-spin rounded-full border-2 border-fx-border-subtle border-t-fx-primary"></div>
+                          <div className="h-5 w-5 sm:h-6 sm:w-6 animate-spin rounded-full border-2 border-card-border-subtle border-t-fx-primary"></div>
                         </div>
                       ) : userReviews.length > 0 ? (
                         userReviews.map((review) => (
@@ -716,7 +730,7 @@ export default function FlavorWheelsPage() {
                     <div className="space-y-2 sm:space-y-3">
                       {loadingSocial ? (
                         <div className="flex items-center justify-center py-6 sm:py-8">
-                          <div className="h-5 w-5 sm:h-6 sm:w-6 animate-spin rounded-full border-2 border-fx-border-subtle border-t-fx-accent"></div>
+                          <div className="h-5 w-5 sm:h-6 sm:w-6 animate-spin rounded-full border-2 border-card-border-subtle border-t-fx-accent"></div>
                         </div>
                       ) : nearbyEvents.length > 0 ? (
                         nearbyEvents.map((event) => (
@@ -783,7 +797,7 @@ export default function FlavorWheelsPage() {
                     <div className="space-y-2 sm:space-y-3">
                       {loadingSocial ? (
                         <div className="flex items-center justify-center py-6 sm:py-8">
-                          <div className="h-5 w-5 sm:h-6 sm:w-6 animate-spin rounded-full border-2 border-fx-border-subtle border-t-fx-secondary"></div>
+                          <div className="h-5 w-5 sm:h-6 sm:w-6 animate-spin rounded-full border-2 border-card-border-subtle border-t-fx-secondary"></div>
                         </div>
                       ) : friendsActivities.length > 0 ? (
                         friendsActivities.map((activity) => (
@@ -850,7 +864,7 @@ export default function FlavorWheelsPage() {
                     <div className="space-y-4">
                       <div className="text-center py-8">
                         <Target className="h-12 w-12 text-fx-primary mx-auto mb-3" />
-                        <h3 className="text-sm font-medium text-fx-text-primary mb-1">
+                        <h3 className="text-sm font-medium text-card-text-primary mb-1">
                           Flavor Wheel Creation
                         </h3>
                         <p className="text-xs text-fx-text-muted mb-4">
@@ -902,7 +916,7 @@ export default function FlavorWheelsPage() {
                   {/* Loading State */}
                   {loadingResults && (
                     <div className="flex items-center justify-center py-8">
-                      <div className="h-6 w-6 animate-spin rounded-full border-2 border-fx-border-subtle border-t-fx-primary"></div>
+                      <div className="h-6 w-6 animate-spin rounded-full border-2 border-card-border-subtle border-t-fx-primary"></div>
                     </div>
                   )}
 
@@ -1030,7 +1044,7 @@ export default function FlavorWheelsPage() {
                   {!loadingResults && filteredTastingResults.length === 0 && (
                     <div className="text-center py-8">
                       <Database className="h-12 w-12 text-fx-text-muted mx-auto mb-3" />
-                      <h3 className="text-sm font-medium text-fx-text-primary mb-1">
+                      <h3 className="text-sm font-medium text-card-text-primary mb-1">
                         {searchQuery ? 'No matching results' : 'No tasting results yet'}
                       </h3>
                       <p className="text-xs text-fx-text-muted mb-4">
@@ -1108,7 +1122,7 @@ export default function FlavorWheelsPage() {
                     }
                   </p>
                 </CardHeader>
-                <CardContent className="h-[50vh] sm:h-[60vh] md:h-[500px] flex items-center justify-center p-1 sm:p-2 md:p-6">
+                <CardContent className="h-[50vh] sm:h-[60vh] md:h-[500px] flex items-center justify-center p-1 sm:p-2 md:p-card">
                   {/* Error State */}
                   {error && (
                     <Alert variant="destructive" className="max-w-md">
@@ -1122,7 +1136,7 @@ export default function FlavorWheelsPage() {
                           className="mt-2 w-full"
                         >
                           <RefreshCw className="mr-2 h-4 w-4" />
-                          Reintentar
+                          Retry
                         </Button>
                       </AlertDescription>
                     </Alert>
@@ -1131,12 +1145,12 @@ export default function FlavorWheelsPage() {
                   {/* Loading State */}
                   {loading && !error && (
                     <div className="flex flex-col items-center justify-center text-center">
-                      <div className="mb-4 h-16 w-16 animate-spin rounded-full border-4 border-fx-border-subtle border-t-fx-primary"></div>
-                      <h3 className="mb-2 fx-text-lg font-semibold text-fx-text-primary">
-                        Generando rueda de sabores...
+                      <div className="mb-4 h-16 w-16 animate-spin rounded-full border-4 border-card-border-subtle border-t-fx-primary"></div>
+                      <h3 className="mb-2 fx-text-lg font-semibold text-card-text-primary">
+                        Generating flavor wheel...
                       </h3>
-                      <p className="max-w-md text-fx-text-secondary">
-                        Analizando tus datos de cata para crear tu perfil personalizado.
+                      <p className="max-w-md text-card-text-secondary">
+                        Analyzing your tasting data to create your personalized profile.
                       </p>
                     </div>
                   )}
@@ -1145,24 +1159,24 @@ export default function FlavorWheelsPage() {
                   {!loading && !error && (!flavorData || flavorData.length === 0) && (
                     <div className="flex flex-col items-center justify-center text-center">
                       <Database className="mb-4 h-16 w-16 text-fx-text-muted" />
-                      <h3 className="mb-2 fx-text-lg font-semibold text-fx-text-primary">
-                        {scope === 'personal' ? 'No hay datos personales' : 'No hay datos universales'}
+                      <h3 className="text-sm font-medium text-card-text-primary mb-1">
+                        {scope === 'personal' ? 'No personal data' : 'No universal data'}
                       </h3>
-                      <p className="mb-6 max-w-md text-fx-text-secondary">
+                      <p className="text-xs text-fx-text-muted mb-4">
                         {scope === 'personal'
-                          ? 'Participa en algunas catas para generar tu rueda personalizada.'
-                          : 'Los datos universales aún no están disponibles.'
+                          ? 'Complete some tastings to generate your personalized wheel.'
+                          : 'Universal data is not available yet.'
                         }
                       </p>
                       <div className="flex flex-col gap-3 sm:flex-row">
                         <Button onClick={() => router.push(`/${locale}/create`)}>
                           <Calendar className="mr-2 h-4 w-4" />
-                          Crear Cata
+                          Create a tasting
                         </Button>
                         {scope === 'personal' && (
                           <Button variant="outline" onClick={() => setScope('universal')}>
                             <Globe className="mr-2 h-4 w-4" />
-                            Ver Datos Universales
+                            View Universal Data
                           </Button>
                         )}
                       </div>
@@ -1187,8 +1201,8 @@ export default function FlavorWheelsPage() {
                         <div className="w-full max-w-[280px] sm:max-w-sm md:max-w-md lg:max-w-lg flex items-center justify-center">
                           <div className="w-full aspect-square max-w-full max-h-full flex items-center justify-center">
                             <FlavorWheel
-                              data={wheelData}
-                              title="Rueda de Sabores"
+                              data={wheelData!}
+                              title="Flavor Wheel"
                               reduceMotion={false}
                             />
                           </div>
@@ -1202,7 +1216,7 @@ export default function FlavorWheelsPage() {
                             variant={flavorData.length >= 5 ? "default" : "secondary"}
                             className="text-xs"
                           >
-                            {flavorData.length} categorías
+                            {flavorData.length} categories
                           </Badge>
                         </div>
                       )}
@@ -1212,11 +1226,11 @@ export default function FlavorWheelsPage() {
                   {/* Data Quality Alert - Positioned below wheel */}
                   {!loading && !error && flavorData && flavorData.length > 0 && flavorData.length < 5 && (
                     <div className="absolute bottom-4 left-4 right-4">
-                      <Alert className="border-fx-border-subtle bg-fx-bg-subtle/90 backdrop-blur">
+                      <Alert className="border-card-border-subtle bg-fx-bg-subtle/90 backdrop-blur">
                         <AlertTriangle className="h-4 w-4 text-fx-accent" />
-                        <AlertDescription className="text-fx-text-primary text-sm">
-                          <strong>Datos limitados:</strong> Tu rueda se basa en {flavorData.length} categoría{flavorData.length > 1 ? 's' : ''}.
-                          Participa en más catas para análisis más detallados.
+                        <AlertDescription className="text-card-text-primary text-sm">
+                          <strong>Limited data:</strong> Your wheel is based on {flavorData.length} categor{flavorData.length > 1 ? 'ies' : 'y' }.
+                          Complete more tastings for a more detailed analysis.
                         </AlertDescription>
                       </Alert>
                     </div>
@@ -1228,8 +1242,8 @@ export default function FlavorWheelsPage() {
                       <Alert className="border-green-200 bg-green-50/90 backdrop-blur">
                         <Target className="h-4 w-4 text-fx-accent" />
                         <AlertDescription className="text-green-800 text-sm">
-                          <strong>Datos completos:</strong> Tu rueda incluye {flavorData.length} categorías.
-                          ¡Excelente base para análisis detallado!
+                          <strong>Complete data:</strong> Your wheel includes {flavorData.length} categories.
+                          Great foundation for detailed analysis!
                         </AlertDescription>
                       </Alert>
                     </div>
@@ -1253,20 +1267,14 @@ export default function FlavorWheelsPage() {
             </DialogTitle>
           </DialogHeader>
           <div className="mt-4">
-            {selectedWheelData && (
-              <div className="space-y-4">
-                {/* Render the flavor wheel visualization */}
+            {selectedWheelData ? (
+              <div className="space-y-6">
                 <div className="flex justify-center">
                   <div className="w-full max-w-2xl">
-                    {/* Use the existing FlavorWheel component */}
-                    <FlavorWheel
-                      data={selectedWheelData}
-                    />
+                    <FlavorWheel data={selectedWheelData} />
                   </div>
                 </div>
-
-                {/* Additional wheel information */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <Card>
                     <CardHeader>
                       <CardTitle className="text-sm">Wheel Statistics</CardTitle>
@@ -1311,10 +1319,12 @@ export default function FlavorWheelsPage() {
                   </Card>
                 </div>
               </div>
-            )}
+            ) : null}
           </div>
         </DialogContent>
       </Dialog>
+        <TransparencyModal open={showTransparency} onOpenChange={setShowTransparency} />
+        <ThemeDebug />
       </ErrorBoundary>
     </UnifiedAppShell>
   )

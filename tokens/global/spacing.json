@@ -1,0 +1,150 @@
+{
+  "schema": "flavorwheel.design_system.spacing.v1",
+  "metadata": {
+    "title": "FlavorWheel Global Spacing System",
+    "version": "1.0.0",
+    "created": "2025-09-14",
+    "purpose": "Define base 8px spacing system, padding, margins, and layout scales for FlavorWheel mobile app",
+    "scope": "All spacing and layout values across the application",
+    "single_source_of_truth": true
+  },
+
+  "base_scale": {
+    "unit": "8px",
+    "ratio": "4px increments",
+    "mobile_first": true
+  },
+
+  "spacing_scale": {
+    "0": "0px",
+    "1": "4px",
+    "2": "8px",
+    "3": "12px",
+    "4": "16px",
+    "5": "20px",
+    "6": "24px",
+    "8": "32px",
+    "10": "40px",
+    "12": "48px",
+    "16": "64px",
+    "20": "80px",
+    "24": "96px",
+    "32": "128px"
+  },
+
+  "component_spacing": {
+    "button": {
+      "padding_y": "12px",
+      "padding_x": "20px",
+      "min_height": "44px",
+      "gap": "8px"
+    },
+    "card": {
+      "padding": "16px",
+      "margin": "12px",
+      "gap": "12px",
+      "border_radius": "16px"
+    },
+    "input": {
+      "padding_y": "12px",
+      "padding_x": "14px",
+      "height": "44px",
+      "gap": "8px"
+    },
+    "navigation": {
+      "height": "64px",
+      "padding": "12px",
+      "safe_area": "env(safe-area-inset-bottom)"
+    }
+  },
+
+  "layout_spacing": {
+    "page_padding": {
+      "mobile": "16px",
+      "tablet": "24px",
+      "desktop": "32px"
+    },
+    "section_spacing": {
+      "small": "24px",
+      "medium": "32px",
+      "large": "48px"
+    },
+    "content_width": {
+      "mobile": "calc(100vw - 32px)",
+      "tablet": "calc(100vw - 48px)",
+      "desktop": "min(1200px, calc(100vw - 64px))"
+    }
+  },
+
+  "mobile_optimizations": {
+    "touch_targets": {
+      "minimum": "44px",
+      "comfortable": "48px",
+      "generous": "56px"
+    },
+    "thumb_zones": {
+      "bottom_navigation": "64px height",
+      "safe_area_insets": "Respect device cutouts",
+      "gesture_areas": "44px minimum swipe zones"
+    },
+    "viewport_considerations": {
+      "horizontal_padding": "16px minimum",
+      "vertical_spacing": "12px minimum between elements",
+      "scroll_margins": "16px for focus scrolling"
+    }
+  },
+
+  "cultural_spacing": {
+    "spanish_text": {
+      "line_height": "1.5 minimum",
+      "letter_spacing": "0em (natural)",
+      "paragraph_spacing": "1.5em"
+    },
+    "mexican_ui_patterns": {
+      "card_spacing": "Generous whitespace inspired by Mexican plazas",
+      "icon_spacing": "8px gaps for clarity",
+      "form_spacing": "16px between form fields"
+    }
+  },
+
+  "responsive_breakpoints": {
+    "mobile": {
+      "min": "0px",
+      "max": "639px",
+      "container": "calc(100vw - 32px)"
+    },
+    "tablet": {
+      "min": "640px",
+      "max": "1023px",
+      "container": "calc(100vw - 48px)"
+    },
+    "desktop": {
+      "min": "1024px",
+      "max": "1279px",
+      "container": "min(1200px, calc(100vw - 64px))"
+    },
+    "wide": {
+      "min": "1280px",
+      "max": "9999px",
+      "container": "min(1400px, calc(100vw - 80px))"
+    }
+  },
+
+  "accessibility_spacing": {
+    "focus_indicators": {
+      "outline_offset": "2px",
+      "ring_width": "2px",
+      "safe_area": "4px from screen edges"
+    },
+    "error_states": {
+      "error_message_spacing": "8px below input",
+      "validation_icon_spacing": "8px from text"
+    },
+    "screen_reader": {
+      "live_region_spacing": "Ensure content doesn't overlap",
+      "skip_link_positioning": "Fixed top-left with adequate spacing"
+    }
+  }
+}
+
+

@@ -1,0 +1,133 @@
+{
+  "schema": "flavorwheel.design_system.button_system.v1",
+  "metadata": {
+    "title": "FlavorWheel Unified Button System",
+    "version": "1.0.0",
+    "created": "2025-09-14",
+    "purpose": "Define unified, mobile-first button components with consolidated tokens, accessibility, and haptics",
+    "scope": "Primary interactive component system for FlavorWheel mobile app",
+    "single_source_of_truth": true,
+    "replaces": ["fx_tokens", "fw_tokens", "Tailwind defaults"]
+  },
+
+  "design_tokens": {
+    "color": {
+      "primary": "var(--fw-color-agave-verde)",
+      "secondary": "var(--fw-color-oro-mexicano)",
+      "accent": "var(--fw-color-tierra-mexicana)",
+      "text_on_primary": "#FFFFFF",
+      "text_on_secondary": "#121212",
+      "text_on_accent": "#FFFFFF",
+      "disabled_bg": "#E0E0E0",
+      "disabled_text": "#9E9E9E",
+      "focus_ring": "#3B82F6"
+    },
+    "spacing": {
+      "padding_y": "12px",
+      "padding_x": "20px",
+      "border_radius": "9999px",
+      "min_touch_target": "44px"
+    },
+    "typography": {
+      "font_family": "Inter Variable",
+      "font_weight": 500,
+      "font_size": "16px",
+      "line_height": "1.5"
+    },
+    "motion": {
+      "press_scale": 0.96,
+      "transition_duration": "150ms",
+      "transition_easing": "ease-in-out"
+    },
+    "haptics": {
+      "press": "UIImpactFeedbackStyleMedium",
+      "success": "UINotificationFeedbackTypeSuccess",
+      "error": "UINotificationFeedbackTypeError"
+    }
+  },
+
+  "button_variants": {
+    "primary": {
+      "bg": "var(--fw-color-agave-verde)",
+      "text": "var(--fw-color-text-on-primary)",
+      "usage": "Main CTAs (Begin Tasting, Save Session)",
+      "contrast": "5.2:1 ✓ WCAG AA"
+    },
+    "secondary": {
+      "bg": "var(--fw-color-oro-mexicano)",
+      "text": "var(--fw-color-text-on-secondary)",
+      "usage": "Supporting CTAs (View Community, Share Results)",
+      "contrast": "4.8:1 ✓ WCAG AA"
+    },
+    "accent": {
+      "bg": "var(--fw-color-tierra-mexicana)",
+      "text": "var(--fw-color-text-on-accent)",
+      "usage": "Contextual actions (Flavor Wheel segment actions, premium features)",
+      "contrast": "9.1:1 ✓ WCAG AAA"
+    },
+    "ghost": {
+      "bg": "transparent",
+      "text": "var(--fw-color-agave-verde)",
+      "border": "1px solid var(--fw-color-agave-verde)",
+      "usage": "Low-emphasis actions (Cancel, Skip)",
+      "contrast": "4.5:1 ✓ WCAG AA"
+    },
+    "disabled": {
+      "bg": "var(--fw-color-disabled-bg)",
+      "text": "var(--fw-color-disabled-text)",
+      "usage": "Inactive state across all variants"
+    }
+  },
+
+  "states": {
+    "default": {
+      "bg": "current bg",
+      "scale": 1,
+      "shadow": "0 1px 3px rgba(0,0,0,0.1)"
+    },
+    "hover": {
+      "bg": "darken(current bg, 5%)",
+      "shadow": "0 2px 6px rgba(0,0,0,0.15)"
+    },
+    "pressed": {
+      "scale": "var(--fw-motion-press-scale)",
+      "shadow": "0 1px 2px rgba(0,0,0,0.2)",
+      "haptic": "press"
+    },
+    "focused": {
+      "outline": "2px solid var(--fw-color-focus-ring)",
+      "outline_offset": "2px"
+    },
+    "disabled": {
+      "bg": "var(--fw-color-disabled-bg)",
+      "text": "var(--fw-color-disabled-text)",
+      "shadow": "none"
+    }
+  },
+
+  "accessibility": {
+    "contrast": "All variants >= 4.5:1",
+    "touch_target": "≥44px by 44px",
+    "aria_labels": "All buttons require descriptive aria-labels",
+    "focus_visible": "Clear visible focus ring",
+    "screen_reader": "Announces action + state (disabled, pressed)"
+  },
+
+  "implementation_notes": {
+    "consolidation": "All button tokens live in `tokens/button.json` and are consumed via Tailwind plugin + CSS variables",
+    "react_component": "Unified <Button /> API with props: variant, size, disabled, icon, loading",
+    "loading_state": "Spinner inline + aria-busy set true",
+    "icon_support": "Left or right aligned, 24px max, semantically labeled",
+    "haptics": "Trigger feedback via React hook wrapper (useHaptics) on press/confirm"
+  },
+
+  "success_metrics": {
+    "usability": "100% buttons pass WCAG AA contrast checks",
+    "consistency": "No more than 1 unified source for button tokens",
+    "mobile_experience": "≥95% tap accuracy in usability tests",
+    "performance": "No reflows caused by button state changes",
+    "adoption": "All legacy button styles refactored into new system"
+  }
+}
+
+

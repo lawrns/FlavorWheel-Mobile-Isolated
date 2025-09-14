@@ -403,8 +403,8 @@ export default function ReviewPage() {
   }
 
   const ReviewCard = ({ review, showActions = true }: { review: Review, showActions?: boolean }) => (
-    <Card className="hover:shadow-md transition-shadow">
-      <CardContent className="p-6">
+    <Card variant="elevated" className="hover:shadow-md transition-shadow">
+      <CardContent className="p-card">
         <div className="flex items-start space-x-4">
           <Avatar className="h-10 w-10">
             <AvatarImage src={review.user_profile?.avatar_url} />
@@ -423,7 +423,7 @@ export default function ReviewPage() {
                   {review.tasting?.name}
                 </Badge>
               </div>
-              <span className="text-xs text-muted-foreground">
+              <span className="text-xs text-card-text-secondary">
                 {new Date(review.created_at).toLocaleDateString()}
               </span>
             </div>
@@ -437,7 +437,7 @@ export default function ReviewPage() {
 
             <div>
               <h4 className="font-semibold text-lg mb-2">{review.title}</h4>
-              <p className="text-muted-foreground mb-3">{review.content}</p>
+              <p className="text-card-text-secondary mb-3">{review.content}</p>
 
               {/* Photo display */}
               {review.photo_url && (
@@ -485,7 +485,7 @@ export default function ReviewPage() {
                 </div>
               )}
 
-              <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+              <div className="flex items-center space-x-4 text-sm text-card-text-secondary">
                 <span>📍 {review.item?.name}</span>
                 <span>🏷️ {review.item?.type || 'General'}</span>
               </div>
@@ -497,12 +497,12 @@ export default function ReviewPage() {
                   variant="ghost"
                   size="sm"
                   onClick={() => handleHelpfulVote(review.id)}
-                  className="text-muted-foreground hover:text-foreground"
+                  className="text-card-text-secondary hover:text-foreground"
                 >
                   <ThumbsUp className="h-4 w-4 mr-1" />
                   Helpful ({review.helpful_count})
                 </Button>
-                <Button variant="ghost" size="sm" className="text-muted-foreground">
+                <Button variant="ghost" size="sm" className="text-card-text-secondary">
                   <MessageCircle className="h-4 w-4 mr-1" />
                   Reply
                 </Button>
@@ -518,9 +518,9 @@ export default function ReviewPage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 flex items-center justify-center p-4">
         <Card className="w-full max-w-md text-center">
-          <CardContent className="p-6">
+          <CardContent className="p-card">
             <h2 className="text-xl font-semibold mb-4">Sign in required</h2>
-            <p className="text-muted-foreground mb-6">
+            <p className="text-card-text-secondary mb-6">
               Please sign in to view and create reviews.
             </p>
             <Link href={`/${locale}/login`}>
@@ -541,7 +541,7 @@ export default function ReviewPage() {
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-3xl font-bold text-foreground">Reviews</h1>
-                <p className="text-muted-foreground mt-1">
+                <p className="text-card-text-secondary mt-1">
                   Share your tasting experiences and discover insights from the community
                 </p>
               </div>
@@ -865,7 +865,7 @@ export default function ReviewPage() {
                 <div className="flex flex-col sm:flex-row gap-4">
                   <div className="flex-1">
                     <div className="relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-card-text-secondary" />
                       <Input
                         placeholder="Search reviews..."
                         value={searchQuery}
@@ -912,7 +912,7 @@ export default function ReviewPage() {
                   ))
                 ) : (
                   <Card className="p-12 text-center">
-                    <div className="text-muted-foreground">
+                    <div className="text-card-text-secondary">
                       <MessageCircle className="h-12 w-12 mx-auto mb-4 opacity-50" />
                       <h3 className="text-lg font-semibold mb-2">No reviews found</h3>
                       <p>Try adjusting your search or filters, or be the first to write a review!</p>
@@ -927,7 +927,7 @@ export default function ReviewPage() {
                 {loadingMyReviews ? (
                   <div className="flex justify-center py-12">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-600"></div>
-                    <span className="ml-2 text-muted-foreground">Loading your reviews...</span>
+                    <span className="ml-2 text-card-text-secondary">Loading your reviews...</span>
                   </div>
                 ) : myReviews.length > 0 ? (
                   myReviews.map((review) => (
@@ -935,7 +935,7 @@ export default function ReviewPage() {
                   ))
                 ) : (
                   <Card className="p-12 text-center">
-                    <div className="text-muted-foreground">
+                    <div className="text-card-text-secondary">
                       <User className="h-12 w-12 mx-auto mb-4 opacity-50" />
                       <h3 className="text-lg font-semibold mb-2">No reviews yet</h3>
                       <p>Share your first tasting experience by writing a review!</p>

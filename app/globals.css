@@ -33,34 +33,152 @@
   --fx-ai-confidence-med: #DFAF2B;
   --fx-ai-confidence-high: #57A773;
 
-  /* Primary Design Tokens - Light Mode */
-  --fx-primary: #2E7D32;      /* fx-brand-green-600 */
-  --fx-primary-hover: #3F9B6B; /* fx-brand-green-500 */
-  --fx-secondary: #D4AF37;    /* fx-brand-gold-600 */
-  --fx-secondary-hover: #E6C84A; /* fx-brand-gold-500 */
-  --fx-accent: #8B4513;       /* fx-brand-brown-600 */
-  --fx-accent-hover: #A0552B;  /* fx-brand-brown-500 */
+  /* ===== MEXICAN BRAND COLORS ===== */
+  --fw-color-agave-verde: #2E7D32;
+  --fw-color-agave-verde-hover: #3F9B6B;
+  --fw-color-oro-mexicano: #D4AF37;
+  --fw-color-oro-mexicano-hover: #E6C84A;
+  --fw-color-tierra-mexicana: #8B4513;
+  --fw-color-tierra-mexicana-hover: #A0552B;
+  --fw-color-text-on-primary: #FFFFFF;
+  --fw-color-text-on-secondary: #121212;
+  --fw-color-text-on-accent: #FFFFFF;
+  --fw-color-disabled-bg: #E0E0E0;
+  --fw-color-disabled-text: #9E9E9E;
+  --fw-color-focus-ring: #3B82F6;
 
-  /* Surface System - Light Mode */
-  --fx-bg: #FEFCF8;          /* fx-neutral-0 */
-  --fx-bg-subtle: #F7F3EA;   /* fx-neutral-50 */
-  --fx-bg-muted: #EDE7DA;    /* fx-neutral-100 */
-  --fx-card: #FAF7F2;        /* Light cream */
-  --fx-elevated: #F7F3EA;    /* fx-neutral-50 */
+  /* ===== BUTTON SYSTEM TOKENS ===== */
+  --fw-motion-press-scale: 0.96;
+  --fw-motion-transition-duration: 150ms;
+  --fw-motion-transition-easing: ease-in-out;
+  --fw-spacing-button-padding-y: 12px;
+  --fw-spacing-button-padding-x: 20px;
+  --fw-spacing-button-border-radius: 9999px;
+  --fw-typography-button-font-family: 'Inter Variable';
+  --fw-typography-button-font-weight: 500;
+  --fw-typography-button-font-size: 16px;
+  --fw-typography-button-line-height: 1.5;
 
-  /* Text Hierarchy - Light Mode */
-  --fx-text-primary: #2C1810;   /* fx-black */
-  --fx-text-secondary: #8B4513; /* fx-neutral-700 */
-  --fx-text-muted: #6B5B95;    /* Darker muted */
-  --fx-text-inverse: #FEFCF8;  /* fx-neutral-0 */
+  /* ===== FORM SYSTEM TOKENS ===== */
+  --fw-color-input-bg: var(--fw-color-papel-artesanal);
+  --fw-color-input-border: rgba(0,0,0,0.12);
+  --fw-color-input-focus-border: var(--fw-color-agave-verde);
+  --fw-color-input-text: #121212;
+  --fw-color-input-placeholder: #9E9E9E;
+  --fw-color-input-disabled-bg: #F0F0F0;
+  --fw-color-input-disabled-text: #BDBDBD;
+  --fw-color-label-text: #5C5C5C;
+  --fw-color-form-error: var(--fw-color-error);
+  --fw-color-form-success: var(--fw-color-success);
+  --fw-spacing-input-padding-y: 12px;
+  --fw-spacing-input-padding-x: 14px;
+  --fw-spacing-input-border-radius: 12px;
+  --fw-spacing-input-gap: 8px;
+  --fw-spacing-field-margin: 16px;
+  --fw-typography-label-family: 'Inter Variable';
+  --fw-typography-label-weight: 500;
+  --fw-typography-label-size: 14px;
+  --fw-typography-label-line-height: 1.4;
+  --fw-typography-input-family: 'Inter Variable';
+  --fw-typography-input-weight: 400;
+  --fw-typography-input-size: 16px;
+  --fw-typography-input-line-height: 1.5;
+  --fw-typography-helper-family: 'Inter Variable';
+  --fw-typography-helper-weight: 400;
+  --fw-typography-helper-size: 13px;
+  --fw-typography-helper-line-height: 1.3;
 
-  /* Border System - Light Mode */
-  --fx-border-subtle: #E0D8C7;  /* fx-neutral-200 */
-  --fx-border-default: #EDE7DA; /* fx-neutral-100 */
-  --fx-border-strong: #D4C7B0;  /* Even stronger */
+  /* ===== NAVIGATION SYSTEM TOKENS ===== */
+  --fw-color-nav-bg: var(--fw-color-papel-artesanal);
+  --fw-color-nav-bg-dark: #161614;
+  --fw-color-nav-icon-active: var(--fw-color-agave-verde);
+  --fw-color-nav-icon-inactive: #9E9E9E;
+  --fw-color-nav-text-active: #121212;
+  --fw-color-nav-text-inactive: #757575;
+  --fw-color-nav-border: rgba(0,0,0,0.12);
+  --fw-spacing-nav-height: 64px;
+  --fw-spacing-nav-icon-size: 24px;
+  --fw-spacing-nav-padding: 12px;
+  --fw-spacing-nav-safe-area: env(safe-area-inset-bottom);
+  --fw-typography-nav-label-family: 'Inter Variable';
+  --fw-typography-nav-label-weight: 500;
+  --fw-typography-nav-label-size: 12px;
+  --fw-typography-nav-label-line-height: 1.2;
 
-  /* Focus & Interaction - Light Mode */
-  --fx-focus-ring-color: #57A773;
+  /* ===== FLAVOR WHEEL TOKENS ===== */
+  --fw-layout-wheel-min-size: 320px;
+  --fw-layout-wheel-max-size: 100vw;
+  --fw-layout-wheel-padding: 16px;
+  --fw-layout-wheel-safe-area: env(safe-area-inset-bottom);
+  --fw-color-wheel-background: #FEFCF8;
+  --fw-color-wheel-border: #E0E0E0;
+  --fw-color-wheel-active-highlight: var(--fw-color-agave-verde);
+  --fw-color-wheel-inactive-opacity: 0.6;
+  --fw-typography-wheel-segment-family: 'Inter Variable';
+  --fw-typography-wheel-segment-weight: 500;
+  --fw-typography-wheel-segment-size: clamp(12px, 2vw, 14px);
+  --fw-typography-wheel-segment-line-height: 1.2;
+  --fw-typography-wheel-center-family: 'Crimson Text Variable';
+  --fw-typography-wheel-center-weight: 600;
+  --fw-typography-wheel-center-size: clamp(18px, 4vw, 22px);
+  --fw-typography-wheel-center-line-height: 1.3;
+
+/* ===== DARK THEME VARIABLES ===== */
+  --fw-dark-color-bg-app: #0A0A0A;
+  --fw-dark-color-bg-surface-primary: #161614;
+  --fw-dark-color-bg-surface-secondary: #1C1C1A;
+  --fw-dark-color-text-primary: #FFFFFF;
+  --fw-dark-color-text-secondary: #E0E0E0;
+  --fw-dark-color-text-tertiary: #A0A0A0;
+  --fw-dark-color-border-default: rgba(255,255,255,0.12);
+  --fw-dark-color-border-subtle: rgba(255,255,255,0.08);
+  --fw-dark-color-focus-ring: #60A5FA;
+  --fw-dark-color-primary: #4ADE80;
+  --fw-dark-color-secondary: #FBBF24;
+  --fw-dark-color-accent: #A78BFA;
+
+/* ===== HIGH CONTRAST THEME VARIABLES ===== */
+  --fw-hc-color-bg-app: #FFFFFF;
+  --fw-hc-color-bg-surface-primary: #FFFFFF;
+  --fw-hc-color-bg-surface-secondary: #F8F8F8;
+  --fw-hc-color-text-primary: #000000;
+  --fw-hc-color-text-secondary: #333333;
+  --fw-hc-color-text-tertiary: #666666;
+  --fw-hc-color-border-default: #000000;
+  --fw-hc-color-border-subtle: #666666;
+  --fw-hc-color-focus-ring: #0066CC;
+  --fw-hc-color-primary: #006600;
+  --fw-hc-color-secondary: #996600;
+  --fw-hc-color-accent: #660066;
+
+  /* Primary Design Tokens - Light Mode - Warm Cream Palette */
+  --fx-primary: #1F5D4C;      /* Deep agave green */
+  --fx-primary-hover: #2E7D32; /* Lighter agave green for hover */
+  --fx-secondary: #D4AF37;    /* Oro mexicano gold */
+  --fx-secondary-hover: #E6C84A; /* Lighter gold for hover */
+  --fx-accent: #C65A2E;       /* Terracotta accent */
+  --fx-accent-hover: #D47027;  /* Lighter terracotta for hover */
+
+  /* Surface System - Light Mode - Warm Cream Palette */
+  --fx-bg: #FEF3E7;          /* Warm cream background */
+  --fx-bg-subtle: #F7F3EA;   /* Muted cream */
+  --fx-bg-muted: #F4E3CC;    /* Subtle cream variation */
+  --fx-card: #FFFFFF;        /* Pure white cards */
+  --fx-elevated: #FFFFFF;    /* Pure white elevated surfaces */
+
+  /* Text Hierarchy - Light Mode - Enhanced Contrast */
+  --fx-text-primary: #2C1810;   /* Rich dark brown */
+  --fx-text-secondary: #5C5C5C; /* Medium gray for secondary text */
+  --fx-text-muted: #8B8B8B;    /* Light gray for muted text */
+  --fx-text-inverse: #FFFFFF;  /* White text on dark backgrounds */
+
+  /* Border System - Light Mode - Warm Cream Palette */
+  --fx-border-subtle: rgba(0,0,0,0.08);  /* Subtle borders for warm background */
+  --fx-border-default: rgba(0,0,0,0.12); /* Default borders */
+  --fx-border-strong: rgba(0,0,0,0.20);  /* Strong borders */
+
+  /* Focus & Interaction - Light Mode - Agave Green Focus */
+  --fx-focus-ring-color: #1F5D4C;  /* Deep agave green for focus */
   --fx-focus-ring-width: 2px;
   --fx-focus-ring-offset: 2px;
 
@@ -72,7 +190,7 @@
   --fx-shadow-xl: 0 20px 25px rgba(0,0,0,0.2);
   --fx-shadow-2xl: 0 25px 50px rgba(0,0,0,0.25);
 
-  --fx-gradient-subtle: linear-gradient(180deg, rgb(255 255 255 / 10%) 0%, transparent 100%);
+  --fx-gradient-subtle: radial-gradient(90% 120% at 0% 0%, #FDF4E6 0%, #F7E9D6 60%, #F4E3CC 100%);
 
   /* ===== FLAVOR WHEEL VISUALIZATION COLORS ===== */
 
@@ -89,7 +207,14 @@
   --fx-flavor-nutty: #C29F6D;
   --fx-flavor-mineral: #7A8A8C;
   --fx-flavor-earthy: #6D7F4B;
-  /* Metaphor Categories (only used ones) */
+  /* Metaphor Categories - CVD-Safe */
+  --fx-flavor-mood-emotion: #9B87E8;
+  --fx-flavor-setting-place: #6BCF7F;
+  --fx-flavor-texture-material: #FFD93D;
+  --fx-flavor-color-light: #FF8B8B;
+  --fx-flavor-movement-shape: #4FC3F7;
+  --fx-flavor-character-persona: #E4572E;
+  --fx-flavor-temporal-time: #C29F6D;
   --fx-flavor-molecule: #2F4858;
 
   /* Spacing Primitives */
@@ -149,39 +274,39 @@
 
 /* ===== SEMANTIC TOKENS ===== */
 :root {
-  /* Surface Semantics */
-  --fx-bg: var(--fx-neutral-0);
-  --fx-bg-subtle: var(--fx-neutral-50);
-  --fx-card: var(--fx-white);
-  --fx-elevated: var(--fx-white);
+  /* Surface Semantics - Warm Cream Palette */
+  --fx-bg: #FEF3E7;
+  --fx-bg-subtle: #F7F3EA;
+  --fx-card: #FFFFFF;
+  --fx-elevated: #FFFFFF;
   --fx-tasting-card: var(--fx-card);
   --fx-tasting-gradient: var(--fx-gradient-subtle);
 
-  /* Text Semantics */
-  --fx-text-primary: var(--fx-black);
-  --fx-text-secondary: #374151; /* Improved contrast for WCAG AA compliance */
-  --fx-text-inverse: var(--fx-white);
-  --fx-text-muted: rgb(0 0 0 / 60%);
+  /* Text Semantics - Enhanced Contrast */
+  --fx-text-primary: #2C1810;
+  --fx-text-secondary: #5C5C5C;
+  --fx-text-inverse: #FFFFFF;
+  --fx-text-muted: #8B8B8B;
 
-  /* Premium Brand Semantics - Consolidated with Tailwind */
-  --fx-primary: #8B4513;                           /* Rich Brown - Sophistication */
-  --fx-primary-hover: #6B3419;                     /* Darker Brown for hover */
-  --fx-accent: #D4AF37;                            /* Gold - Premium feel */
-  --fx-accent-hover: #B8941F;                      /* Darker Gold for hover */
-  --fx-secondary: #4ADE80;                         /* Light Green - Trust/Nature - WCAG AA compliant */
-  --fx-secondary-hover: #22C55E;                   /* Darker Green for hover - WCAG AA compliant */
+  /* Premium Brand Semantics - Warm Cream Palette */
+  --fx-primary: #1F5D4C;                           /* Deep agave green */
+  --fx-primary-hover: #2E7D32;                     /* Lighter agave green for hover */
+  --fx-accent: #C65A2E;                            /* Terracotta accent */
+  --fx-accent-hover: #D47027;                      /* Lighter terracotta for hover */
+  --fx-secondary: #D4AF37;                         /* Oro mexicano gold */
+  --fx-secondary-hover: #E6C84A;                   /* Lighter gold for hover */
 
   /* AI Semantics */
   --fx-ai-badge-bg: var(--fx-neutral-50);
   --fx-ai-confidence-ring: var(--fx-ai-confidence-med);
 
-  /* Border Semantics */
-  --fx-border-subtle: var(--fx-neutral-100);
-  --fx-border-default: var(--fx-neutral-200);
-  --fx-border-strong: var(--fx-neutral-700);
+  /* Border Semantics - Warm Cream Palette */
+  --fx-border-subtle: rgba(0,0,0,0.08);
+  --fx-border-default: rgba(0,0,0,0.12);
+  --fx-border-strong: rgba(0,0,0,0.20);
 
-  /* State Semantics */
-  --fx-focus-ring-color: var(--fx-accent); /* Gold for premium focus rings */
+  /* State Semantics - Agave Green Focus */
+  --fx-focus-ring-color: #1F5D4C; /* Deep agave green for focus rings */
   --fx-focus-ring-width: 2px;
   --fx-focus-ring-offset: 2px;
 
@@ -242,19 +367,24 @@
   --fx-font-heading: 'Crimson Text', serif;        /* Elegant serif for headings */
   --fx-font-body: 'Inter', system-ui, -apple-system, sans-serif; /* Clean sans-serif for body */
 
-  /* Fluid Typography Scale */
-  --fx-text-h1: clamp(28px, 4.5vw, 40px);
-  --fx-text-h2: clamp(22px, 3.6vw, 32px);
-  --fx-text-h3: clamp(18px, 2.8vw, 24px);
-  --fx-text-body: clamp(15px, 2.4vw, 18px);
-  --fx-text-label: clamp(13px, 2vw, 16px);
-  --fx-text-caption: clamp(12px, 1.8vw, 14px);
-  --fx-text-wheel-label: clamp(10px, 1.5vw, 12px);
+  /* Mobile-first fluid typography scale - WCAG AA compliant */
+  --fx-text-h1: clamp(24px, 6vw, 32px);    /* Primary headings */
+  --fx-text-h2: clamp(20px, 5vw, 28px);    /* Section headings */
+  --fx-text-h3: clamp(18px, 4.5vw, 24px);  /* Subsection headings */
+  --fx-text-h4: clamp(16px, 4vw, 20px);    /* Component headings */
+  --fx-text-h5: clamp(16px, 3.5vw, 18px);  /* Small headings */
+  --fx-text-h6: clamp(14px, 3vw, 16px);    /* Micro headings */
+  --fx-text-body: clamp(16px, 4vw, 18px);  /* WCAG minimum 16px */
+  --fx-text-small: 14px;                   /* Secondary text */
+  --fx-text-caption: 12px;                 /* Captions, metadata */
+  --fx-text-label: clamp(14px, 3vw, 16px); /* Form labels */
+  --fx-text-wheel-label: clamp(10px, 2vw, 12px); /* Wheel segments */
 
-  /* Line Heights */
-  --fx-line-height-tight: 1.15;
-  --fx-line-height-snug: 1.25;
-  --fx-line-height-normal: 1.5;
+  /* Line Heights - Optimized for readability */
+  --fx-line-height-tight: 1.3;   /* All headings */
+  --fx-line-height-snug: 1.4;    /* Subheadings */
+  --fx-line-height-normal: 1.6;  /* Body text */
+  --fx-line-height-relaxed: 1.7; /* Long-form content */
 
   /* Font Weights */
   --fx-weight-regular: 400;
@@ -297,6 +427,60 @@ body {
 [data-beverage="beer"] {
   --fx-primary: #A06C2E;
   --fx-accent: #6E2E2E;
+}
+
+/* ===== DARK THEME ===== */
+.dark {
+  /* Background Colors */
+  --fx-bg: #0F0F0F;
+  --fx-bg-subtle: #1A1A1A;
+  --fx-card: #262626;
+  --fx-elevated: #333333;
+
+  /* Text Colors */
+  --fx-text-primary: #FFFFFF;
+  --fx-text-secondary: #B3B3B3;
+  --fx-text-muted: rgba(255, 255, 255, 0.6);
+  --fx-text-inverse: #000000;
+
+  /* Border Colors */
+  --fx-border-default: #404040;
+  --fx-border-subtle: #2A2A2A;
+
+  /* Brand Colors (adjusted for dark mode) */
+  --fx-primary: #5ADE80;
+  --fx-primary-hover: #4ADE70;
+  --fx-secondary: #E6C84A;
+  --fx-secondary-hover: #D4AF37;
+  --fx-accent: #60A5FA;
+  --fx-accent-hover: #3B82F6;
+}
+
+/* ===== HIGH CONTRAST THEME ===== */
+.high-contrast {
+  /* Background Colors */
+  --fx-bg: #FFFFFF;
+  --fx-bg-subtle: #F8F8F8;
+  --fx-card: #FFFFFF;
+  --fx-elevated: #FFFFFF;
+
+  /* Text Colors */
+  --fx-text-primary: #000000;
+  --fx-text-secondary: #333333;
+  --fx-text-muted: #666666;
+  --fx-text-inverse: #FFFFFF;
+
+  /* Border Colors */
+  --fx-border-default: #000000;
+  --fx-border-subtle: #666666;
+
+  /* Brand Colors (high contrast) */
+  --fx-primary: #006600;
+  --fx-primary-hover: #004400;
+  --fx-secondary: #996600;
+  --fx-secondary-hover: #774400;
+  --fx-accent: #0066CC;
+  --fx-accent-hover: #004499;
 }
 
 [data-beverage="tea"] {
@@ -375,6 +559,13 @@ body {
   --fx-flavor-nutty: #E6B86A;
   --fx-flavor-mineral: #9CA3AF;
   --fx-flavor-earthy: #8FA86B;
+  --fx-flavor-mood-emotion: #9B87E8;
+  --fx-flavor-setting-place: #6BCF7F;
+  --fx-flavor-texture-material: #FFD93D;
+  --fx-flavor-color-light: #FF8B8B;
+  --fx-flavor-movement-shape: #4FC3F7;
+  --fx-flavor-character-persona: #E4572E;
+  --fx-flavor-temporal-time: #C29F6D;
   --fx-flavor-molecule: #5A7A8C;
 
   /* Focus & Interaction - Dark Mode */
@@ -502,17 +693,17 @@ body {
 
 /* ===== ENHANCED COMPONENT STYLES ===== */
 
-/* ===== BUTTONS ===== */
+/* ===== PREMIUM BUTTONS WITH MEXICAN CULTURAL ELEMENTS ===== */
 .btn-primary-beautiful {
   background: linear-gradient(135deg, var(--fx-primary) 0%, var(--fx-primary-hover) 100%);
   border: none;
-  border-radius: var(--fx-radius-md);
+  border-radius: 12px;
   color: var(--fx-text-inverse);
   font-weight: var(--fx-weight-semibold);
-  padding: var(--fx-spacing-3) var(--fx-spacing-5);
+  padding: 12px 20px;
   @apply transition-standard;
-  box-shadow: var(--fx-shadow-sm);
-  min-height: 48px;
+  box-shadow: 0 2px 8px rgba(31, 93, 76, 0.25);
+  min-height: 44px; /* WCAG minimum touch target */
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -520,16 +711,63 @@ body {
   text-decoration: none;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  font-family: var(--fx-font-body);
+  position: relative;
+  overflow: hidden;
 }
 
 .btn-primary-beautiful:hover {
   transform: translateY(-2px);
-  box-shadow: var(--fx-shadow-lg);
+  box-shadow: 0 4px 16px rgba(31, 93, 76, 0.35);
   background: linear-gradient(135deg, var(--fx-primary-hover) 0%, var(--fx-primary) 100%);
 }
 
 .btn-primary-beautiful:active {
-  transform: translateY(0) scale(0.98);
+  background: #174536; /* Darker on press */
+  transform: translateY(1px);
+  box-shadow: 0 1px 4px rgba(31, 93, 76, 0.3);
+}
+
+/* Mexican cultural button variant */
+.btn-agave-beautiful {
+  background: linear-gradient(135deg, #1F5D4C 0%, #2E7D32 100%);
+  border: none;
+  border-radius: 12px;
+  color: #ffffff;
+  font-weight: 600;
+  padding: 12px 20px;
+  min-height: 44px;
+  box-shadow: 0 2px 8px rgba(31, 93, 76, 0.25);
+  transition: all 0.2s ease;
+  font-family: var(--fx-font-body);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-agave-beautiful::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-agave-beautiful:hover::before {
+  left: 100%;
+}
+
+.btn-agave-beautiful:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(31, 93, 76, 0.35);
+}
+
+.btn-agave-beautiful:active {
+  background: #174536;
+  transform: translateY(1px) scale(0.98);
+  box-shadow: 0 1px 4px rgba(31, 93, 76, 0.3);
 }
 
 .btn-secondary-beautiful {
@@ -578,19 +816,65 @@ body {
   box-shadow: var(--fx-shadow-lg);
 }
 
-/* ===== CARDS ===== */
+/* ===== PREMIUM CARDS WITH MEXICAN CULTURAL DEPTH ===== */
 .card-beautiful {
   background: var(--fx-card);
   border: 1px solid var(--fx-border-default);
-  border-radius: var(--fx-radius-lg);
-  box-shadow: var(--fx-shadow-sm);
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.06);
   @apply transition-standard;
+  position: relative;
+  overflow: hidden;
+}
+
+.card-beautiful::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #1F5D4C, #D4AF37, #C65A2E);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .card-beautiful:hover {
-  box-shadow: var(--fx-shadow-lg);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.08);
   border-color: var(--fx-accent);
-  transform: translateY(-2px);
+  transform: translateY(-4px);
+}
+
+.card-beautiful:hover::before {
+  opacity: 1;
+}
+
+/* Mexican tasting card with papel artesanal texture */
+.card-tasting-mexican {
+  background: linear-gradient(135deg, #FEF3E7 0%, #F7F3EA 100%);
+  border: 1px solid rgba(31, 93, 76, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(31, 93, 76, 0.08);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.card-tasting-mexican::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 40px;
+  height: 40px;
+  background: radial-gradient(circle, rgba(31, 93, 76, 0.1) 0%, transparent 70%);
+  border-radius: 0 16px 0 40px;
+}
+
+.card-tasting-mexican:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 8px 24px rgba(31, 93, 76, 0.15);
+  border-color: rgba(31, 93, 76, 0.2);
 }
 
 .card-premium {
@@ -756,7 +1040,7 @@ body {
 
   /* Ensure all content has proper bottom spacing for navigation */
   main {
-    padding-bottom: 6rem !important;
+    padding-bottom: calc(6rem + env(safe-area-inset-bottom, 0px)) !important;
   }
 
   /* Improve touch targets on very small screens */
@@ -883,6 +1167,23 @@ body {
   /* Optimized mobile navigation */
   .mobile-nav-safe {
     padding-bottom: calc(80px + env(safe-area-inset-bottom));
+  }
+
+  /* Main content safe area for mobile navigation */
+  .main-content-mobile {
+    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Mobile bottom navigation with safe area support */
+  .mobile-bottom-navigation {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: calc(64px + env(safe-area-inset-bottom, 0px));
+    z-index: 50;
+    background: var(--fw-color-nav-bg);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
   /* Prevent horizontal overflow on mobile */

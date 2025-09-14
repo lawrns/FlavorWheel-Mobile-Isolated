@@ -182,11 +182,11 @@ export function UnifiedDashboard() {
   if (!isMounted) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100" data-testid="app-ready">
-        <div className="bg-white/80 backdrop-blur-sm border-b">
+        <div className="bg-card-surface/80 backdrop-blur-sm border-b border-card-border">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
             <div className="animate-pulse">
-              <div className="h-8 bg-gray-200 rounded w-1/3 mb-2"></div>
-              <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+              <div className="h-8 bg-card-text-secondary rounded w-1/3 mb-2"></div>
+              <div className="h-4 bg-card-text-secondary rounded w-1/2"></div>
             </div>
           </div>
         </div>
@@ -244,20 +244,21 @@ export function UnifiedDashboard() {
               {QUICK_ACTIONS.map((action) => (
                 <Card
                   key={action.id}
-                  className="group cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105"
+                  variant="interactive"
+                  className="group cursor-pointer"
                   onClick={() => handleQuickAction(action.action)}
                   data-testid={`${action.id}-card`}
                 >
-                  <CardContent className="p-6 text-center">
+                  <CardContent className="p-card text-center">
                     <div className={`w-12 h-12 bg-gradient-to-br ${action.gradient} rounded-xl flex items-center justify-center mb-4 mx-auto`}>
                       <div className="text-white">
                         {action.icon}
                       </div>
                     </div>
-                    <h3 className="font-semibold text-foreground mb-1">
+                    <h3 className="font-semibold text-card-text-primary mb-1">
                       {action.title}
                     </h3>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-card-text-secondary">
                       {action.description}
                     </p>
                   </CardContent>
@@ -274,50 +275,50 @@ export function UnifiedDashboard() {
               skeleton={<LoadingStates.DashboardStats />}
             >
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <Card>
-                  <CardContent className="p-6">
+                <Card variant="elevated">
+                  <CardContent className="p-card">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-muted-foreground">Total Tastings</p>
-                        <p className="text-2xl font-bold">{userStats?.totalTastings || 0}</p>
+                        <p className="text-sm text-card-text-secondary">Total Tastings</p>
+                        <p className="text-2xl font-bold text-card-text-primary">{userStats?.totalTastings || 0}</p>
                       </div>
-                      <Target className="h-8 w-8 text-amber-500" />
+                      <Target className="h-8 w-8 text-secondary" />
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card>
-                  <CardContent className="p-6">
+                <Card variant="elevated">
+                  <CardContent className="p-card">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-muted-foreground">Reviews Written</p>
-                        <p className="text-2xl font-bold">{userStats?.totalReviews || 0}</p>
+                        <p className="text-sm text-card-text-secondary">Reviews Written</p>
+                        <p className="text-2xl font-bold text-card-text-primary">{userStats?.totalReviews || 0}</p>
                       </div>
-                      <Star className="h-8 w-8 text-yellow-500" />
+                      <Star className="h-8 w-8 text-accent" />
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card>
-                  <CardContent className="p-6">
+                <Card variant="elevated">
+                  <CardContent className="p-card">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-muted-foreground">Avg Rating</p>
-                        <p className="text-2xl font-bold">{userStats?.averageRating?.toFixed(1) || '0.0'}</p>
+                        <p className="text-sm text-card-text-secondary">Avg Rating</p>
+                        <p className="text-2xl font-bold text-card-text-primary">{userStats?.averageRating?.toFixed(1) || '0.0'}</p>
                       </div>
-                      <Award className="h-8 w-8 text-green-500" />
+                      <Award className="h-8 w-8 text-primary" />
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card>
-                  <CardContent className="p-6">
+                <Card variant="elevated">
+                  <CardContent className="p-card">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-muted-foreground">Achievements</p>
-                        <p className="text-2xl font-bold">{userStats?.achievements || 0}</p>
+                        <p className="text-sm text-card-text-secondary">Achievements</p>
+                        <p className="text-2xl font-bold text-card-text-primary">{userStats?.achievements || 0}</p>
                       </div>
-                      <Trophy className="h-8 w-8 text-purple-500" />
+                      <Trophy className="h-8 w-8 text-accent" />
                     </div>
                   </CardContent>
                 </Card>
@@ -355,9 +356,9 @@ export function UnifiedDashboard() {
                     {userStats?.recentActivity?.map((activity, index) => (
                       <div key={index} className="flex items-center space-x-4">
                         <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                          activity.type === 'tasting' ? 'bg-amber-100 text-amber-600' :
-                          activity.type === 'review' ? 'bg-green-100 text-green-600' :
-                          'bg-purple-100 text-purple-600'
+                          activity.type === 'tasting' ? 'bg-secondary/20 text-secondary' :
+                          activity.type === 'review' ? 'bg-success/20 text-success' :
+                          'bg-primary/20 text-primary'
                         }`}>
                           {activity.type === 'tasting' && <Target className="h-5 w-5" />}
                           {activity.type === 'review' && <Star className="h-5 w-5" />}

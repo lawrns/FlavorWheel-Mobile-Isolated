@@ -248,7 +248,7 @@ export default function StudyConfirmPageClient({ params }: StudyConfirmPageClien
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-sm text-muted-foreground">Loading tasting details...</p>
+            <p className="text-sm text-card-text-secondary">Loading tasting details...</p>
           </div>
         </div>
       </DashboardAppShell>
@@ -287,7 +287,7 @@ export default function StudyConfirmPageClient({ params }: StudyConfirmPageClien
 
           <div className="text-center">
             <h1 className="text-2xl font-bold">Study Tasting Ready</h1>
-            <p className="text-sm text-muted-foreground">Review your setup before starting</p>
+            <p className="text-sm text-card-text-secondary">Review your setup before starting</p>
           </div>
 
           <div className="w-16" /> {/* Spacer */}
@@ -384,32 +384,32 @@ export default function StudyConfirmPageClient({ params }: StudyConfirmPageClien
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <Card className="cursor-pointer hover:shadow-md transition-shadow min-h-[100px]" onClick={handleInviteFriends}>
+          <Card variant="elevated" className="cursor-pointer hover:shadow-md transition-shadow min-h-[100px]" onClick={handleInviteFriends}>
             <CardContent className="pt-6">
               <div className="text-center">
                 <Users className="h-8 w-8 mx-auto mb-3 text-fx-primary" />
                 <h3 className="font-semibold mb-1">Invite Friends</h3>
-                <p className="text-sm text-muted-foreground">Share with others</p>
+                <p className="text-sm text-card-text-secondary">Share with others</p>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="cursor-pointer hover:shadow-md transition-shadow min-h-[100px]" onClick={handleScheduleTasting}>
+          <Card variant="elevated" className="cursor-pointer hover:shadow-md transition-shadow min-h-[100px]" onClick={handleScheduleTasting}>
             <CardContent className="pt-6">
               <div className="text-center">
                 <Calendar className="h-8 w-8 mx-auto mb-3 text-fx-flavor-vegetal" />
                 <h3 className="font-semibold mb-1">Schedule Tasting</h3>
-                <p className="text-sm text-muted-foreground">Plan for later</p>
+                <p className="text-sm text-card-text-secondary">Plan for later</p>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="cursor-pointer hover:shadow-md transition-shadow min-h-[100px]" onClick={handleStartNow}>
+          <Card variant="elevated" className="cursor-pointer hover:shadow-md transition-shadow min-h-[100px]" onClick={handleStartNow}>
             <CardContent className="pt-6">
               <div className="text-center">
                 <BookOpen className="h-8 w-8 mx-auto mb-3 text-fx-primary" />
                 <h3 className="font-semibold mb-1">Start Now</h3>
-                <p className="text-sm text-muted-foreground">Begin your study</p>
+                <p className="text-sm text-card-text-secondary">Begin your study</p>
               </div>
             </CardContent>
           </Card>

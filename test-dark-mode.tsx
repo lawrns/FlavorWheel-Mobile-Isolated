@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { ThemeToggle } from '@/components/ui/loading-states'
+import { ThemeToggle } from '@/components/ui/theme-toggle'
 
 // Simple test component to check dark mode functionality
 export default function TestDarkMode() {

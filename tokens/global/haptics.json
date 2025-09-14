@@ -1,0 +1,151 @@
+{
+  "schema": "flavorwheel.design_system.haptics.v1",
+  "metadata": {
+    "title": "FlavorWheel Global Haptics System",
+    "version": "1.0.0",
+    "created": "2025-09-14",
+    "purpose": "Define haptic feedback definitions for mobile interactions across FlavorWheel mobile app",
+    "scope": "All tactile feedback for touch interactions",
+    "single_source_of_truth": true
+  },
+
+  "haptic_types": {
+    "light": {
+      "ios": "UIImpactFeedbackStyleLight",
+      "android": "HapticFeedbackConstants.IMPACT_LIGHT",
+      "description": "Subtle feedback for minor interactions",
+      "vibration_pattern": "[10]",
+      "usage": "Button taps, segment selection, light gestures"
+    },
+    "medium": {
+      "ios": "UIImpactFeedbackStyleMedium",
+      "android": "HapticFeedbackConstants.IMPACT_MEDIUM",
+      "description": "Standard feedback for important interactions",
+      "vibration_pattern": "[20]",
+      "usage": "Form submissions, navigation changes, confirmations"
+    },
+    "heavy": {
+      "ios": "UIImpactFeedbackStyleHeavy",
+      "android": "HapticFeedbackConstants.IMPACT_HEAVY",
+      "description": "Strong feedback for significant actions",
+      "vibration_pattern": "[30]",
+      "usage": "Errors, destructive actions, major state changes"
+    },
+    "selection": {
+      "ios": "UISelectionFeedbackGenerator",
+      "android": "HapticFeedbackConstants.SELECTION_CHANGED",
+      "description": "Feedback for picker/selection changes",
+      "vibration_pattern": "[5, 5, 5]",
+      "usage": "Picker changes, slider movements, tab switches"
+    },
+    "success": {
+      "ios": "UINotificationFeedbackTypeSuccess",
+      "android": "HapticFeedbackConstants.NOTIFICATION_SUCCESS",
+      "description": "Positive feedback for successful actions",
+      "vibration_pattern": "[20, 10, 20]",
+      "usage": "Form success, task completion, positive confirmations"
+    },
+    "warning": {
+      "ios": "UINotificationFeedbackTypeWarning",
+      "android": "HapticFeedbackConstants.NOTIFICATION_WARNING",
+      "description": "Caution feedback for warnings",
+      "vibration_pattern": "[10, 10, 10, 10, 10]",
+      "usage": "Validation warnings, caution states"
+    },
+    "error": {
+      "ios": "UINotificationFeedbackTypeError",
+      "android": "HapticFeedbackConstants.NOTIFICATION_ERROR",
+      "description": "Error feedback for failures",
+      "vibration_pattern": "[50, 10, 50, 10, 50]",
+      "usage": "Form errors, network failures, validation errors"
+    }
+  },
+
+  "interaction_patterns": {
+    "buttons": {
+      "primary_action": "medium",
+      "secondary_action": "light",
+      "destructive_action": "heavy"
+    },
+    "forms": {
+      "input_focus": "light",
+      "validation_success": "success",
+      "validation_error": "error",
+      "form_submit": "medium"
+    },
+    "navigation": {
+      "tab_switch": "selection",
+      "page_transition": "light",
+      "back_gesture": "light"
+    },
+    "flavor_wheel": {
+      "segment_select": "light",
+      "wheel_spin_snap": "selection",
+      "zoom_gesture": "light"
+    },
+    "gestures": {
+      "swipe_navigation": "light",
+      "pull_to_refresh": "medium",
+      "pinch_zoom": "light"
+    }
+  },
+
+  "cultural_haptics": {
+    "mexican_patterns": {
+      "intensity": "Medium intensity - not too startling for Mexican users",
+      "celebratory_success": "Double-tap success pattern for positive Mexican celebrations",
+      "gesture_friendly": "Support for traditional Mexican hand gesture patterns"
+    },
+    "flavor_context": {
+      "mezcal_selection": "Warm, earthy feedback",
+      "tequila_confirmation": "Crisp, clear feedback",
+      "wine_completion": "Sophisticated, refined feedback"
+    }
+  },
+
+  "accessibility": {
+    "reduced_motion_alternatives": {
+      "enable_haptics_only": true,
+      "visual_feedback_maintained": true,
+      "screen_reader_announcements": "Maintained with haptic timing"
+    },
+    "user_preferences": {
+      "respect_system_settings": true,
+      "custom_intensity_levels": "Light, Medium, Heavy, Off",
+      "per_interaction_type": "Allow customization per pattern"
+    }
+  },
+
+  "platform_specific": {
+    "ios": {
+      "framework": "UIKit haptic engine",
+      "timing": "Precise millisecond control",
+      "energy_efficient": "Battery-optimized patterns"
+    },
+    "android": {
+      "framework": "Vibration API",
+      "amplitude_control": "Support for vibration strength",
+      "fallback": "Audio cues when vibration unavailable"
+    },
+    "web": {
+      "framework": "Navigator.vibrate()",
+      "pattern_support": "Full vibration pattern arrays",
+      "permission_handling": "Graceful degradation"
+    }
+  },
+
+  "performance_considerations": {
+    "battery_impact": {
+      "low_battery_mode": "Reduce intensity or disable",
+      "power_saving_mode": "Respect system power settings",
+      "usage_monitoring": "Track haptic usage for optimization"
+    },
+    "memory_usage": {
+      "pattern_preloading": "Load patterns on app start",
+      "cleanup": "Dispose haptic generators when not needed",
+      "pooling": "Reuse haptic instances"
+    }
+  }
+}
+
+

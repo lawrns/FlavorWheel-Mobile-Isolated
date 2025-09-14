@@ -221,9 +221,9 @@ export default function StudySessionPage() {
       <DashboardAppShell activeNavItem="study">
         <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 flex items-center justify-center p-4">
           <Card className="w-full max-w-md text-center">
-            <CardContent className="p-6">
+            <CardContent className="p-card">
               <h2 className="text-xl font-semibold mb-4">Study session not found</h2>
-              <p className="text-muted-foreground mb-6">
+              <p className="text-card-text-secondary mb-6">
                 The study session you&apos;re looking for doesn&apos;t exist or has been removed.
               </p>
               <Link href={`/${locale}/study`}>
@@ -274,7 +274,7 @@ export default function StudySessionPage() {
               <div className="flex items-center space-x-4">
                 <Link
                   href={`/${locale}/study`}
-                  className="text-muted-foreground hover:text-foreground"
+                  className="text-card-text-secondary hover:text-foreground"
                 >
                   ← Back to Study
                 </Link>
@@ -285,7 +285,7 @@ export default function StudySessionPage() {
                       {session.difficulty}
                     </Badge>
                     <Badge variant="outline">{session.type}</Badge>
-                    <div className="flex items-center text-sm text-muted-foreground">
+                    <div className="flex items-center text-sm text-card-text-secondary">
                       <Clock className="h-4 w-4 mr-1" />
                       {session.estimated_duration} min
                     </div>
@@ -293,7 +293,7 @@ export default function StudySessionPage() {
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-sm text-muted-foreground mb-2">Progress</div>
+                <div className="text-sm text-card-text-secondary mb-2">Progress</div>
                 <div className="flex items-center space-x-2">
                   <Progress value={session.progress} className="w-24" />
                   <span className="text-sm font-medium">{session.progress}%</span>
@@ -305,7 +305,7 @@ export default function StudySessionPage() {
 
         {/* Main Content */}
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-card">
             {/* Study Progress */}
             <div className="lg:col-span-1">
               <Card>
@@ -326,7 +326,7 @@ export default function StudySessionPage() {
                       <div className="text-2xl font-bold text-amber-600 mb-1">
                         {session.current_step}/{session.total_steps}
                       </div>
-                      <div className="text-sm text-muted-foreground">Steps Completed</div>
+                      <div className="text-sm text-card-text-secondary">Steps Completed</div>
                     </div>
 
                     <div className="space-y-2">
@@ -397,7 +397,7 @@ export default function StudySessionPage() {
                             <div className="flex space-x-1">
                               {renderStars(rating, true)}
                             </div>
-                            <span className="text-sm text-muted-foreground ml-2">
+                            <span className="text-sm text-card-text-secondary ml-2">
                               {rating}/10
                             </span>
                           </div>
@@ -473,7 +473,7 @@ export default function StudySessionPage() {
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="space-y-3 text-sm text-muted-foreground">
+                      <div className="space-y-3 text-sm text-card-text-secondary">
                         <p>• Take your time to observe each characteristic before rating</p>
                         <p>• Consider the balance between different flavor components</p>
                         <p>• Note how the spirit evolves from first sip to finish</p>

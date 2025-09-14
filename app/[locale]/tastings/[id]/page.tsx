@@ -219,9 +219,9 @@ export default function TastingDetailPage() {
       <DashboardAppShell activeNavItem="tastings">
         <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 flex items-center justify-center p-4">
           <Card className="w-full max-w-md text-center">
-            <CardContent className="p-6">
+            <CardContent className="p-card">
               <h2 className="text-xl font-semibold mb-4">Tasting not found</h2>
-              <p className="text-muted-foreground mb-6">
+              <p className="text-card-text-secondary mb-6">
                 The tasting session you&apos;re looking for doesn&apos;t exist or has been removed.
               </p>
               <Link href={`/${locale}/tastings`}>
@@ -257,7 +257,7 @@ export default function TastingDetailPage() {
               <div className="flex items-center space-x-4">
                 <Link
                   href={`/${locale}/tastings`}
-                  className="text-muted-foreground hover:text-foreground"
+                  className="text-card-text-secondary hover:text-foreground"
                 >
                   ← Back to Tastings
                 </Link>
@@ -268,7 +268,7 @@ export default function TastingDetailPage() {
                       {tasting.status.charAt(0).toUpperCase() + tasting.status.slice(1)}
                     </Badge>
                     <Badge variant="outline">{tasting.type}</Badge>
-                    <div className="flex items-center text-sm text-muted-foreground">
+                    <div className="flex items-center text-sm text-card-text-secondary">
                       <Users className="h-4 w-4 mr-1" />
                       {tasting.participants.length}/{tasting.max_participants || '∞'} participants
                     </div>
@@ -299,7 +299,7 @@ export default function TastingDetailPage() {
 
         {/* Main Content */}
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-card">
             {/* Tasting Details */}
             <div className="lg:col-span-2 space-y-6">
               {/* Description */}
@@ -308,14 +308,14 @@ export default function TastingDetailPage() {
                   <CardTitle>About This Tasting</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground mb-4">{tasting.description}</p>
+                  <p className="text-card-text-secondary mb-4">{tasting.description}</p>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="flex items-center space-x-2">
-                      <Calendar className="h-4 w-4 text-muted-foreground" />
+                      <Calendar className="h-4 w-4 text-card-text-secondary" />
                       <div>
                         <p className="text-sm font-medium">Date & Time</p>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-sm text-card-text-secondary">
                           {new Date(tasting.start_date).toLocaleDateString('en-US', {
                             weekday: 'long',
                             year: 'numeric',
@@ -329,15 +329,15 @@ export default function TastingDetailPage() {
                     </div>
 
                     <div className="flex items-center space-x-2">
-                      <MapPin className="h-4 w-4 text-muted-foreground" />
+                      <MapPin className="h-4 w-4 text-card-text-secondary" />
                       <div>
                         <p className="text-sm font-medium">Location</p>
-                        <p className="text-sm text-muted-foreground">{tasting.location}</p>
+                        <p className="text-sm text-card-text-secondary">{tasting.location}</p>
                       </div>
                     </div>
 
                     <div className="flex items-center space-x-2">
-                      <Users className="h-4 w-4 text-muted-foreground" />
+                      <Users className="h-4 w-4 text-card-text-secondary" />
                       <div>
                         <p className="text-sm font-medium">Organizer</p>
                         <div className="flex items-center space-x-2">
@@ -347,16 +347,16 @@ export default function TastingDetailPage() {
                               {tasting.organizer.name.charAt(0)}
                             </AvatarFallback>
                           </Avatar>
-                          <span className="text-sm text-muted-foreground">{tasting.organizer.name}</span>
+                          <span className="text-sm text-card-text-secondary">{tasting.organizer.name}</span>
                         </div>
                       </div>
                     </div>
 
                     <div className="flex items-center space-x-2">
-                      <Target className="h-4 w-4 text-muted-foreground" />
+                      <Target className="h-4 w-4 text-card-text-secondary" />
                       <div>
                         <p className="text-sm font-medium">Completion Rate</p>
-                        <p className="text-sm text-muted-foreground">{completionRate}%</p>
+                        <p className="text-sm text-card-text-secondary">{completionRate}%</p>
                       </div>
                     </div>
                   </div>
@@ -382,7 +382,7 @@ export default function TastingDetailPage() {
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-sm text-card-text-secondary">
                             {item.completed_count}/{tasting.participants.length} completed
                           </p>
                           <Progress
@@ -469,7 +469,7 @@ export default function TastingDetailPage() {
                       </div>
                       <Progress value={completionRate} />
                     </div>
-                    <div className="text-sm text-muted-foreground">
+                    <div className="text-sm text-card-text-secondary">
                       <p>{tasting.tasting_items.filter(item => item.completed_count > 0).length} of {tasting.tasting_items.length} items tasted</p>
                       <p>{tasting.participants.filter(p => p.status === 'completed').length} of {tasting.participants.length} participants finished</p>
                     </div>

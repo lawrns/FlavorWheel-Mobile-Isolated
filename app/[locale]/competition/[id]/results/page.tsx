@@ -260,7 +260,7 @@ export default function CompetitionResultsPage() {
       case 1: return <Crown className="h-6 w-6 text-yellow-500" />
       case 2: return <Medal className="h-6 w-6 text-gray-400" />
       case 3: return <Award className="h-6 w-6 text-amber-600" />
-      default: return <Trophy className="h-5 w-5 text-muted-foreground" />
+      default: return <Trophy className="h-5 w-5 text-card-text-secondary" />
     }
   }
 
@@ -288,9 +288,9 @@ export default function CompetitionResultsPage() {
       <DashboardAppShell activeNavItem="competition">
         <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 flex items-center justify-center p-4">
           <Card className="w-full max-w-md text-center">
-            <CardContent className="p-6">
+            <CardContent className="p-card">
               <h2 className="text-xl font-semibold mb-4">Competition not found</h2>
-              <p className="text-muted-foreground mb-6">
+              <p className="text-card-text-secondary mb-6">
                 The competition results you&apos;re looking for don&apos;t exist.
               </p>
               <Link href={`/${locale}/competition`}>
@@ -313,13 +313,13 @@ export default function CompetitionResultsPage() {
               <div className="flex items-center space-x-4">
                 <Link
                   href={`/${locale}/competition/${competitionId}`}
-                  className="text-muted-foreground hover:text-foreground"
+                  className="text-card-text-secondary hover:text-foreground"
                 >
                   ← Back to Competition
                 </Link>
                 <div>
                   <h1 className="text-3xl font-bold text-foreground">Competition Results</h1>
-                  <p className="text-muted-foreground">{competition.name}</p>
+                  <p className="text-card-text-secondary">{competition.name}</p>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
@@ -351,7 +351,7 @@ export default function CompetitionResultsPage() {
 
             {/* Leaderboard Tab */}
             <TabsContent value="leaderboard" className="space-y-6">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-card">
                 {/* Top 3 Podium */}
                 <div className="lg:col-span-2">
                   <Card>
@@ -395,7 +395,7 @@ export default function CompetitionResultsPage() {
                               <div className="text-2xl font-bold text-primary">
                                 {participant.score}
                               </div>
-                              <div className="text-sm text-muted-foreground">final score</div>
+                              <div className="text-sm text-card-text-secondary">final score</div>
                             </div>
                           </div>
                         ))}
@@ -469,7 +469,7 @@ export default function CompetitionResultsPage() {
                               <TableCell key={item.id} className="text-center">
                                 <div>
                                   <div className="font-semibold">{itemScore?.score || 0}</div>
-                                  <div className="text-xs text-muted-foreground max-w-24 truncate">
+                                  <div className="text-xs text-card-text-secondary max-w-24 truncate">
                                     {itemScore?.comments}
                                   </div>
                                 </div>
@@ -494,7 +494,7 @@ export default function CompetitionResultsPage() {
 
             {/* Statistics Tab */}
             <TabsContent value="statistics" className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-card">
                 <Card>
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm font-medium">Highest Score</CardTitle>
@@ -503,7 +503,7 @@ export default function CompetitionResultsPage() {
                     <div className="text-2xl font-bold text-green-600">
                       {Math.max(...participants.map(p => p.score))}
                     </div>
-                    <p className="text-xs text-muted-foreground">Perfect score: 100</p>
+                    <p className="text-xs text-card-text-secondary">Perfect score: 100</p>
                   </CardContent>
                 </Card>
 
@@ -515,7 +515,7 @@ export default function CompetitionResultsPage() {
                     <div className="text-2xl font-bold text-blue-600">
                       {Math.round(participants.reduce((sum, p) => sum + p.score, 0) / participants.length)}
                     </div>
-                    <p className="text-xs text-muted-foreground">Across all participants</p>
+                    <p className="text-xs text-card-text-secondary">Across all participants</p>
                   </CardContent>
                 </Card>
 
@@ -527,7 +527,7 @@ export default function CompetitionResultsPage() {
                     <div className="text-2xl font-bold text-purple-600">
                       {Math.max(...participants.map(p => p.score)) - Math.min(...participants.map(p => p.score))}
                     </div>
-                    <p className="text-xs text-muted-foreground">Highest to lowest</p>
+                    <p className="text-xs text-card-text-secondary">Highest to lowest</p>
                   </CardContent>
                 </Card>
 
@@ -537,7 +537,7 @@ export default function CompetitionResultsPage() {
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold text-amber-600">100%</div>
-                    <p className="text-xs text-muted-foreground">All participants completed</p>
+                    <p className="text-xs text-card-text-secondary">All participants completed</p>
                   </CardContent>
                 </Card>
               </div>
@@ -568,7 +568,7 @@ export default function CompetitionResultsPage() {
 
             {/* Awards Tab */}
             <TabsContent value="awards" className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-card">
                 {participants.slice(0, 3).map((participant, index) => (
                   <Card key={participant.id} className={`border-2 ${
                     index === 0 ? 'border-yellow-400 bg-yellow-50/50' :
@@ -618,21 +618,21 @@ export default function CompetitionResultsPage() {
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div className="text-center">
                       <div className="text-2xl font-bold text-primary">{participants.length}</div>
-                      <div className="text-sm text-muted-foreground">Participants</div>
+                      <div className="text-sm text-card-text-secondary">Participants</div>
                     </div>
                     <div className="text-center">
                       <div className="text-2xl font-bold text-primary">{competition.tasting_items.length}</div>
-                      <div className="text-sm text-muted-foreground">Items Evaluated</div>
+                      <div className="text-sm text-card-text-secondary">Items Evaluated</div>
                     </div>
                     <div className="text-center">
                       <div className="text-2xl font-bold text-primary">
                         {new Date(competition.end_date).toLocaleDateString()}
                       </div>
-                      <div className="text-sm text-muted-foreground">Completed</div>
+                      <div className="text-sm text-card-text-secondary">Completed</div>
                     </div>
                     <div className="text-center">
                       <div className="text-2xl font-bold text-primary">{competition.location}</div>
-                      <div className="text-sm text-muted-foreground">Location</div>
+                      <div className="text-sm text-card-text-secondary">Location</div>
                     </div>
                   </div>
                 </CardContent>

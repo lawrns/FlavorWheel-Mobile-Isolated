@@ -179,7 +179,7 @@ export default function CompetitionConfirmPageClient({ params, searchParams }: C
       <DashboardAppShell activeNavItem="create" maxWidth="full">
         <div className="text-center py-12">
           <h1 className="text-2xl font-bold mb-4">Competition Not Found</h1>
-          <p className="text-muted-foreground mb-6">The competition you&apos;re looking for doesn&apos;t exist.</p>
+          <p className="text-card-text-secondary mb-6">The competition you&apos;re looking for doesn&apos;t exist.</p>
           <Button onClick={() => router.push(`/${params.locale}/create`)}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Create
@@ -205,7 +205,7 @@ export default function CompetitionConfirmPageClient({ params, searchParams }: C
 
           <div className="text-center">
             <h1 className="text-2xl font-bold">Competition Created!</h1>
-            <p className="text-sm text-muted-foreground">Review and launch your competition</p>
+            <p className="text-sm text-card-text-secondary">Review and launch your competition</p>
           </div>
 
           <div className="w-16" /> {/* Spacer for balance */}
@@ -271,7 +271,7 @@ export default function CompetitionConfirmPageClient({ params, searchParams }: C
             {tasting.description && (
               <div>
                 <Label className="text-sm font-medium">Description</Label>
-                <p className="text-sm text-muted-foreground">{tasting.description}</p>
+                <p className="text-sm text-card-text-secondary">{tasting.description}</p>
               </div>
             )}
 
@@ -302,7 +302,7 @@ export default function CompetitionConfirmPageClient({ params, searchParams }: C
                     <div>
                       <span className="font-medium">{item.name}</span>
                       {item.description && (
-                        <p className="text-xs text-muted-foreground">{item.description}</p>
+                        <p className="text-xs text-card-text-secondary">{item.description}</p>
                       )}
                     </div>
                     <Badge variant="outline" className="text-xs">
@@ -311,7 +311,7 @@ export default function CompetitionConfirmPageClient({ params, searchParams }: C
                   </div>
                 ))}
                 {tasting.items.length > 3 && (
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-card-text-secondary">
                     +{tasting.items.length - 3} more items
                   </p>
                 )}
@@ -322,34 +322,34 @@ export default function CompetitionConfirmPageClient({ params, searchParams }: C
 
         {/* Action Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={handleInviteFriends}>
+          <Card variant="elevated" className="cursor-pointer hover:shadow-md transition-shadow" onClick={handleInviteFriends}>
             <CardContent className="pt-6">
               <div className="text-center">
                 <Users className="h-8 w-8 mx-auto mb-3 text-blue-600" />
                 <h3 className="font-semibold mb-1">Invite Friends</h3>
-                <p className="text-sm text-muted-foreground">Share with participants</p>
+                <p className="text-sm text-card-text-secondary">Share with participants</p>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={handleScheduleTasting}>
+          <Card variant="elevated" className="cursor-pointer hover:shadow-md transition-shadow" onClick={handleScheduleTasting}>
             <CardContent className="pt-6">
               <div className="text-center">
                 <Calendar className="h-8 w-8 mx-auto mb-3 text-green-600" />
                 <h3 className="font-semibold mb-1">Schedule Tasting</h3>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-card-text-secondary">
                   {scheduledDate ? `Scheduled for ${new Date(scheduledDate).toLocaleDateString()}` : 'Set a date & time'}
                 </p>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={handleStartNow}>
+          <Card variant="elevated" className="cursor-pointer hover:shadow-md transition-shadow" onClick={handleStartNow}>
             <CardContent className="pt-6">
               <div className="text-center">
                 <Trophy className="h-8 w-8 mx-auto mb-3 text-purple-600" />
                 <h3 className="font-semibold mb-1">Start Now</h3>
-                <p className="text-sm text-muted-foreground">Begin the competition</p>
+                <p className="text-sm text-card-text-secondary">Begin the competition</p>
               </div>
             </CardContent>
           </Card>

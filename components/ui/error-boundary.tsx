@@ -156,7 +156,7 @@ function DefaultErrorFallback({
         transition={{ duration: 0.3 }}
         className="max-w-md w-full"
       >
-        <Card className="border-red-200 shadow-lg">
+        <Card variant="elevated" className="border-red-200 shadow-lg">
           <CardHeader className="text-center pb-4">
             <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
               {isNetworkError ? (

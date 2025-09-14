@@ -36,17 +36,17 @@ export default function CreateTastingPageClient({ onModeSelect }: CreateTastingP
       <div className="container mx-auto max-w-4xl px-3 sm:px-4 py-4 sm:py-6 min-h-[calc(100vh-8rem)] flex items-center justify-center overflow-hidden">
         <div className="w-full">
           {/* Type Selection */}
-          <Card className="shadow-lg">
+          <Card variant="elevated" className="shadow-lg">
             <CardHeader className="text-center pb-6">
               <CardTitle className="text-xl">What would you like to create?</CardTitle>
               <CardDescription>Choose the type of experience you want to share</CardDescription>
             </CardHeader>
             <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 w-full max-w-full overflow-hidden">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-card w-full max-w-full overflow-hidden">
                 {/* Competition Mode Button */}
                 <button
                   onClick={handleCompetitionClick}
-                  className="p-4 sm:p-6 rounded-xl border-2 transition-all text-center border-gray-200 hover:border-gray-300 hover:shadow-md min-h-[140px] sm:min-h-[160px] flex flex-col items-center justify-center w-full"
+                  className="p-4 sm:p-card rounded-xl border-2 transition-all text-center border-gray-200 hover:border-gray-300 hover:shadow-md min-h-[140px] sm:min-h-[160px] flex flex-col items-center justify-center w-full"
                 >
                   <Target className="h-10 w-10 mx-auto mb-3 flex-shrink-0" />
                   <div className="flex flex-col flex-1 min-h-0">
@@ -58,7 +58,7 @@ export default function CreateTastingPageClient({ onModeSelect }: CreateTastingP
                 {/* Study Mode Button */}
                 <button
                   onClick={handleStudyClick}
-                  className="p-4 sm:p-6 rounded-xl border-2 transition-all text-center border-gray-200 hover:border-gray-300 hover:shadow-md min-h-[140px] sm:min-h-[160px] flex flex-col items-center justify-center w-full"
+                  className="p-4 sm:p-card rounded-xl border-2 transition-all text-center border-gray-200 hover:border-gray-300 hover:shadow-md min-h-[140px] sm:min-h-[160px] flex flex-col items-center justify-center w-full"
                 >
                   <BookOpen className="h-10 w-10 mx-auto mb-3 flex-shrink-0" />
                   <div className="flex flex-col flex-1 min-h-0">
@@ -70,7 +70,7 @@ export default function CreateTastingPageClient({ onModeSelect }: CreateTastingP
                 {/* Quick Tasting Button */}
                 <button
                   onClick={handleQuickClick}
-                  className="p-4 sm:p-6 rounded-xl border-2 transition-all text-center border-gray-200 hover:border-gray-300 hover:shadow-md min-h-[140px] sm:min-h-[160px] flex flex-col items-center justify-center w-full"
+                  className="p-4 sm:p-card rounded-xl border-2 transition-all text-center border-gray-200 hover:border-gray-300 hover:shadow-md min-h-[140px] sm:min-h-[160px] flex flex-col items-center justify-center w-full"
                 >
                   <Star className="h-10 w-10 mx-auto mb-3 flex-shrink-0" />
                   <div className="flex flex-col flex-1 min-h-0">

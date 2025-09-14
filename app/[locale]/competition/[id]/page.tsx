@@ -370,9 +370,9 @@ export default function CompetitionDetailPage() {
       <DashboardAppShell activeNavItem="competition">
         <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 flex items-center justify-center p-4">
           <Card className="w-full max-w-md text-center">
-            <CardContent className="p-6">
+            <CardContent className="p-card">
               <h2 className="text-xl font-semibold mb-4">Competition not found</h2>
-              <p className="text-muted-foreground mb-6">
+              <p className="text-card-text-secondary mb-6">
                 The competition you&apos;re looking for doesn&apos;t exist or has been removed.
               </p>
               <Link href={`/${locale}/competition`}>
@@ -404,7 +404,7 @@ export default function CompetitionDetailPage() {
               <div className="flex items-center space-x-4">
                 <Link
                   href={`/${locale}/competition`}
-                  className="text-muted-foreground hover:text-foreground"
+                  className="text-card-text-secondary hover:text-foreground"
                 >
                   ← Back to Competitions
                 </Link>
@@ -420,7 +420,7 @@ export default function CompetitionDetailPage() {
               </div>
               <div className="flex items-center space-x-3">
                 <div className="text-right">
-                  <p className="text-sm text-muted-foreground">Participants</p>
+                  <p className="text-sm text-card-text-secondary">Participants</p>
                   <p className="text-lg font-semibold">
                     {competition.current_participants}/{competition.max_participants}
                   </p>
@@ -444,7 +444,7 @@ export default function CompetitionDetailPage() {
 
         {/* Main Content */}
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-card">
             {/* Competition Details */}
             <div className="lg:col-span-2 space-y-6">
               {/* Description */}
@@ -453,14 +453,14 @@ export default function CompetitionDetailPage() {
                   <CardTitle>About This Competition</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground mb-4">{competition.description}</p>
+                  <p className="text-card-text-secondary mb-4">{competition.description}</p>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="flex items-center space-x-2">
-                      <Calendar className="h-4 w-4 text-muted-foreground" />
+                      <Calendar className="h-4 w-4 text-card-text-secondary" />
                       <div>
                         <p className="text-sm font-medium">Start Date</p>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-sm text-card-text-secondary">
                           {new Date(competition.start_date).toLocaleDateString('en-US', {
                             weekday: 'long',
                             year: 'numeric',
@@ -474,26 +474,26 @@ export default function CompetitionDetailPage() {
                     </div>
 
                     <div className="flex items-center space-x-2">
-                      <MapPin className="h-4 w-4 text-muted-foreground" />
+                      <MapPin className="h-4 w-4 text-card-text-secondary" />
                       <div>
                         <p className="text-sm font-medium">Location</p>
-                        <p className="text-sm text-muted-foreground">{competition.location}</p>
+                        <p className="text-sm text-card-text-secondary">{competition.location}</p>
                       </div>
                     </div>
 
                     <div className="flex items-center space-x-2">
-                      <Trophy className="h-4 w-4 text-muted-foreground" />
+                      <Trophy className="h-4 w-4 text-card-text-secondary" />
                       <div>
                         <p className="text-sm font-medium">Prize</p>
-                        <p className="text-sm text-muted-foreground">{competition.prize}</p>
+                        <p className="text-sm text-card-text-secondary">{competition.prize}</p>
                       </div>
                     </div>
 
                     <div className="flex items-center space-x-2">
-                      <Users className="h-4 w-4 text-muted-foreground" />
+                      <Users className="h-4 w-4 text-card-text-secondary" />
                       <div>
                         <p className="text-sm font-medium">Organizer</p>
-                        <p className="text-sm text-muted-foreground">{competition.organizer.name}</p>
+                        <p className="text-sm text-card-text-secondary">{competition.organizer.name}</p>
                       </div>
                     </div>
                   </div>
@@ -518,7 +518,7 @@ export default function CompetitionDetailPage() {
                             <Badge variant="secondary" className="text-xs">{item.type}</Badge>
                           </div>
                         </div>
-                        <Target className="h-4 w-4 text-muted-foreground" />
+                        <Target className="h-4 w-4 text-card-text-secondary" />
                       </div>
                     ))}
                   </div>
@@ -532,7 +532,7 @@ export default function CompetitionDetailPage() {
                     <CardTitle>Competition Rules</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-muted-foreground">{competition.rules}</p>
+                    <p className="text-card-text-secondary">{competition.rules}</p>
                   </CardContent>
                 </Card>
               )}
@@ -559,7 +559,7 @@ export default function CompetitionDetailPage() {
                             index === 0 ? 'bg-yellow-500 text-white' :
                             index === 1 ? 'bg-gray-400 text-white' :
                             index === 2 ? 'bg-amber-600 text-white' :
-                            'bg-muted text-muted-foreground'
+                            'bg-muted text-card-text-secondary'
                           }`}>
                             {index + 1}
                           </div>
@@ -572,7 +572,7 @@ export default function CompetitionDetailPage() {
                           <div className="flex-1">
                             <p className="font-medium">{participant.profile.name}</p>
                             <div className="flex items-center space-x-2">
-                              <p className="text-sm text-muted-foreground">{participant.score} points</p>
+                              <p className="text-sm text-card-text-secondary">{participant.score} points</p>
                               {participant.ranking && (
                                 <Badge variant="outline" className="text-xs">
                                   Rank #{participant.ranking}

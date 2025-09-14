@@ -1,0 +1,148 @@
+{
+  "schema": "flavorwheel.design_system.motion.v1",
+  "metadata": {
+    "title": "FlavorWheel Global Motion System",
+    "version": "1.0.0",
+    "created": "2025-09-14",
+    "purpose": "Define global motion primitives, durations, easings, and reduced motion rules for FlavorWheel mobile app",
+    "scope": "All animations and transitions across the application",
+    "single_source_of_truth": true
+  },
+
+  "duration_scale": {
+    "fast": "120ms",
+    "normal": "200ms",
+    "slow": "320ms",
+    "loaf": "480ms"
+  },
+
+  "easing_curves": {
+    "standard": "cubic-bezier(0.2, 0.8, 0.2, 1)",
+    "emphasized": "cubic-bezier(0.2, 0.0, 0, 1)",
+    "entrance": "cubic-bezier(0.12, 0.6, 0.1, 1)",
+    "exit": "cubic-bezier(0.4, 0, 1, 1)",
+    "spring": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+    "bounce": "cubic-bezier(0.68, -0.55, 0.265, 1.55)"
+  },
+
+  "motion_patterns": {
+    "hover": {
+      "transform": "translateY(-2px)",
+      "duration": "150ms",
+      "easing": "ease-out"
+    },
+    "tap": {
+      "scale": "0.96",
+      "duration": "120ms",
+      "easing": "ease-in",
+      "haptic": "UIImpactFeedbackStyleLight"
+    },
+    "fade_in": {
+      "opacity": "from 0 to 1",
+      "duration": "200ms",
+      "easing": "ease-out"
+    },
+    "slide_up": {
+      "transform": "translateY(20px) to translateY(0)",
+      "duration": "300ms",
+      "easing": "cubic-bezier(0.34, 1.56, 0.64, 1)"
+    },
+    "slide_down": {
+      "transform": "translateY(-20px) to translateY(0)",
+      "duration": "300ms",
+      "easing": "cubic-bezier(0.34, 1.56, 0.64, 1)"
+    },
+    "slide_left": {
+      "transform": "translateX(20px) to translateX(0)",
+      "duration": "300ms",
+      "easing": "cubic-bezier(0.34, 1.56, 0.64, 1)"
+    },
+    "slide_right": {
+      "transform": "translateX(-20px) to translateX(0)",
+      "duration": "300ms",
+      "easing": "cubic-bezier(0.34, 1.56, 0.64, 1)"
+    },
+    "scale_in": {
+      "transform": "scale(0.95) to scale(1)",
+      "duration": "200ms",
+      "easing": "cubic-bezier(0.34, 1.56, 0.64, 1)"
+    },
+    "scale_out": {
+      "transform": "scale(1) to scale(0.95)",
+      "duration": "150ms",
+      "easing": "ease-in"
+    }
+  },
+
+  "reduced_motion": {
+    "enabled": true,
+    "respect_user_preference": true,
+    "fallback_behavior": "Opacity changes instead of transforms",
+    "duration_multiplier": "0.01 (effectively disabled)",
+    "haptic_alternatives": "Maintain haptic feedback when motion is reduced"
+  },
+
+  "cultural_motion": {
+    "mexican_timing": {
+      "slightly_slower": "280ms vs 250ms Western standard",
+      "celebratory_easing": "Spring-like curves for positive interactions",
+      "gesture_responsive": "Mexican hand gesture patterns supported"
+    },
+    "flavor_wheel_specific": {
+      "spin_animation": {
+        "duration": "350ms",
+        "easing": "spring",
+        "haptic": "light feedback every 45° snap"
+      },
+      "segment_selection": {
+        "scale": "1.05",
+        "duration": "180ms",
+        "haptic": "UIImpactFeedbackStyleLight"
+      },
+      "zoom_gesture": {
+        "transition": "transform 200ms ease-in-out",
+        "scale_range": "0.8–1.5",
+        "haptic": "continuous soft feedback"
+      }
+    }
+  },
+
+  "performance_optimizations": {
+    "gpu_accelerated": {
+      "properties": ["transform", "opacity"],
+      "avoid_properties": ["width", "height", "margin", "padding"],
+      "will_change": "Applied only during animation, cleared after"
+    },
+    "mobile_considerations": {
+      "battery_conscious": "Disable complex animations on low battery",
+      "frame_rate": "60fps target for smooth interactions",
+      "memory_usage": "Limit concurrent animations to prevent jank"
+    }
+  },
+
+  "accessibility_motion": {
+    "focus_transitions": {
+      "duration": "150ms",
+      "easing": "ease-out",
+      "properties": ["outline", "box-shadow"]
+    },
+    "error_animations": {
+      "shake": {
+        "duration": "300ms",
+        "easing": "cubic-bezier(.36,.07,.19,.97)",
+        "haptic": "UIImpactFeedbackStyleHeavy"
+      },
+      "pulse": {
+        "duration": "500ms",
+        "easing": "ease-in-out",
+        "iterations": "3"
+      }
+    },
+    "screen_reader_timing": {
+      "aria_live_delay": "100ms after visual change",
+      "focus_announcements": "Immediate for navigation changes"
+    }
+  }
+}
+
+

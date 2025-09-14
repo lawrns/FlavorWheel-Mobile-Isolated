@@ -685,7 +685,7 @@ export default function TastingInputPageClient({ params }: TastingInputPageClien
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
             <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-            <p className="text-sm text-muted-foreground">Loading tasting data...</p>
+            <p className="text-sm text-card-text-secondary">Loading tasting data...</p>
           </div>
         </div>
       </DashboardAppShell>
@@ -731,7 +731,7 @@ export default function TastingInputPageClient({ params }: TastingInputPageClien
 
           <div className="text-center">
             <h1 className="text-2xl font-bold">{tastingData.name}</h1>
-            <p className="text-sm text-muted-foreground">Fill out your tasting notes</p>
+            <p className="text-sm text-card-text-secondary">Fill out your tasting notes</p>
           </div>
 
           <div className="w-16" /> {/* Spacer */}
@@ -744,7 +744,7 @@ export default function TastingInputPageClient({ params }: TastingInputPageClien
               <span className="text-sm font-medium">
                 Item {currentItemIndex + 1} of {tastingData.items.length}
               </span>
-              <span className="text-sm text-muted-foreground">
+              <span className="text-sm text-card-text-secondary">
                 {Math.round(progress)}% Complete
               </span>
             </div>
